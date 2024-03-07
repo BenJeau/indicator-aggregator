@@ -1,0 +1,1 @@
+DELETE FROM "providers" WHERE "name" = ANY(ARRAY['AlienVault OTX', 'Shodan.io', 'Google', 'Abuse.ch', 'Cisco Talos', 'OpenPhish', 'HaveIBeenPwned', 'URLScan.io', 'Cymru', 'AbuseIPDB', 'Internet Archive']);

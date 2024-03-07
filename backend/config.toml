@@ -1,0 +1,18 @@
+[database]
+username = "admin"
+password = "admin"
+host = "localhost"
+port = 5432
+name = "indicator_aggregator"
+
+[server.http]
+enabled = true
+host = "[::1]"
+port = 3456
+
+[encryption]
+server_key = "Wz=Z0!XUh%Ynp2B-L8_E#kDct+G3GC!$"
+db_key = "tj@e7uh--k.QCYdd!py7z3W_UERXEM3XDJrHeQLUuq-73.u4tRzo2cH9!JMx!GwnHPBDTorfjuYcJGir9q4.7CtYyRiYQ2X9-Ty3"
+
+[cache]
+# redis_url = "" # defaults to in memory if url not set
