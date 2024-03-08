@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE server_config\nSET description = temp.description,\n    value = temp.value\nFROM (\n    SELECT * FROM UNNEST($1::uuid[], $2::text[], $3::text[]) AS t(id, description, value)\n) AS temp\nWHERE server_config.id = temp.id\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "TextArray",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "69fef090d156084b624685b952b5b6c7ba025f45324711f34603d774f23c5b1c"
+}

@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            (SELECT count(*) FROM requests)::int as \"history!\",\n            (SELECT count(*) FROM providers)::int as \"providers!\",\n            (SELECT count(*) FROM sources)::int as \"sources!\",\n            (SELECT count(*) FROM ignore_lists)::int as \"ignore_lists!\"\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "history!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "providers!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "sources!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "ignore_lists!",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "d7f3fb5b33fe657c610d79c021a21edf5be8405b6faf0bf65c8e651eeab691f9"
+}

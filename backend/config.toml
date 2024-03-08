@@ -7,7 +7,7 @@ name = "indicator_aggregator"
 
 [server.http]
 enabled = true
-host = "[::1]"
+host = "0.0.0.0"
 port = 3456
 
 [encryption]

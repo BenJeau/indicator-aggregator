@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE sources SET provider_id = NULL WHERE provider_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5fabb8831230f4e0d8a0f2d91b29c81488795e8dcc17fe62c0a3618def3e5aca"
+}

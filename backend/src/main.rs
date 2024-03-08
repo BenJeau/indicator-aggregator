@@ -12,13 +12,16 @@ mod validators;
 pub use error::{Error, Result};
 pub use server::state::ServerState;
 
-const ENV_FILTER: &str = "cache=debug,backend=debug,tower_http=debug,shared=debug";
+const ENV_FILTER: &str = "backend=debug,cache=debug,tower_http=debug,shared=debug";
 
 #[tokio::main]
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    let opentelemetry_endpoint =
+        std::env::var("OTEL_ENDPOINT").unwrap_or_else(|_| "http://localhost:4317".to_string());
+
     shared::telemetry::Telemetry::new(
         "indicator-aggregator-server".to_string(),
-        "http://localhost:4317".to_string(),
+        opentelemetry_endpoint,
         ENV_FILTER.to_string(),
     )
     .setup()

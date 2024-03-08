@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO ignore_list_entries (data, indicator_kind, ignore_list_id) VALUES (UNNEST($1::TEXT[]), UNNEST($2::TEXT[]), $3) RETURNING id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "TextArray",
+        "TextArray",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "fbfee857e407edb74c5bbecb7cb5b5a1b6a98689de431d0525f8e9a800ef3a24"
+}

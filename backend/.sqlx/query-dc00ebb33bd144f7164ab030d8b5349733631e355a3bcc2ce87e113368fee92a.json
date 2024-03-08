@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM source_ignore_lists WHERE ignore_list_id = ANY($1) AND source_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "dc00ebb33bd144f7164ab030d8b5349733631e355a3bcc2ce87e113368fee92a"
+}

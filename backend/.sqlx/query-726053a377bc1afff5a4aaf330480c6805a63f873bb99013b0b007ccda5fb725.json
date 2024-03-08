@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM provider_ignore_lists WHERE ignore_list_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "726053a377bc1afff5a4aaf330480c6805a63f873bb99013b0b007ccda5fb725"
+}

@@ -27,7 +27,7 @@ impl Telemetry {
             .with_endpoint(&self.endpoint);
 
         let config = opentelemetry_sdk::trace::config().with_resource(Resource::new(vec![
-            opentelemetry::KeyValue::new("service.name", Value::from(self.service_name)),
+            opentelemetry::KeyValue::new("service.name", Value::from(self.service_name.clone())),
         ]));
 
         let tracer = opentelemetry_otlp::new_pipeline()
@@ -37,7 +37,8 @@ impl Telemetry {
             .install_batch(opentelemetry_sdk::runtime::Tokio)?;
 
         let opentelemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
-        let env_filter_layer = EnvFilter::try_from_default_env().unwrap_or(self.env_filter.into());
+        let env_filter_layer =
+            EnvFilter::try_from_default_env().unwrap_or(self.env_filter.clone().into());
         let default_layer = tracing_subscriber::fmt::layer();
 
         tracing_subscriber::registry()
@@ -45,6 +46,13 @@ impl Telemetry {
             .with(default_layer)
             .with(opentelemetry_layer)
             .try_init()?;
+
+        tracing::info!(
+            service_name = self.service_name,
+            endpoint = self.endpoint,
+            env_filter = self.env_filter,
+            "Telemetry setup complete"
+        );
 
         Ok(())
     }

@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO url_haus_refreshes (response_headers) VALUES ($1)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "53bd0ba9e1a5a20fad10fac752b9667b59077c6a9bafc788fbe7647055265893"
+}

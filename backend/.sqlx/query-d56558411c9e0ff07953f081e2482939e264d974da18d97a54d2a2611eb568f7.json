@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT secrets.name, pgp_sym_decrypt_bytea(value, $1)::BYTEA as \"value!: _\" FROM secrets INNER JOIN source_secrets ON source_secrets.secret_id = secrets.id WHERE source_id = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "value!: _",
+        "type_info": "Bytea"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "d56558411c9e0ff07953f081e2482939e264d974da18d97a54d2a2611eb568f7"
+}

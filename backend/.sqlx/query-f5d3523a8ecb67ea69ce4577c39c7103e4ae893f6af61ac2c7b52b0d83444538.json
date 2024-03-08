@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM ignore_list_entries WHERE ignore_list_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "updated_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "data",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "indicator_kind",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "ignore_list_id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "f5d3523a8ecb67ea69ce4577c39c7103e4ae893f6af61ac2c7b52b0d83444538"
+}

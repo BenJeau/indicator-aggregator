@@ -35,3 +35,9 @@ To run the backend, you'll need to have a PostgreSQL instance and run the follow
 ```sh
 cd backend && cargo run
 ```
+
+Or if you have Docker installed locally, simply run the whole stack (PostgreSQL, Redis, Jaeger UI, Rust REST API, React Web UI) with the following:
+
+```sh
+docker compose up
+```

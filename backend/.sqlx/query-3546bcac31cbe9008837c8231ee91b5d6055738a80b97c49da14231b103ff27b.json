@@ -1,0 +1,112 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT * FROM source_requests\n        WHERE request_id = $1\n        ORDER BY started_at DESC\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "updated_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "started_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 4,
+        "name": "ended_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 5,
+        "name": "errors",
+        "type_info": "JsonbArray"
+      },
+      {
+        "ordinal": 6,
+        "name": "data",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 7,
+        "name": "cache_action",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "cache_expires_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 9,
+        "name": "cache_cached_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 10,
+        "name": "cache_key",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "request_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 12,
+        "name": "source_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 13,
+        "name": "source_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "source_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "source_favicon",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "3546bcac31cbe9008837c8231ee91b5d6055738a80b97c49da14231b103ff27b"
+}

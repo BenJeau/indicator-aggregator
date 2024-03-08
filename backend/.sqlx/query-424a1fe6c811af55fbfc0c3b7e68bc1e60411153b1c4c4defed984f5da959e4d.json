@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO phishtank_refreshes (response_headers) VALUES ($1)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "424a1fe6c811af55fbfc0c3b7e68bc1e60411153b1c4c4defed984f5da959e4d"
+}

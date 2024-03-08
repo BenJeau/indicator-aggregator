@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT phish_id, phish_detail_url, url, submission_time, verification_time, target, details FROM phishtank WHERE url ILIKE '%' || $1 || '%'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "phish_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "phish_detail_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "submission_time",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 4,
+        "name": "verification_time",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 5,
+        "name": "target",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "details",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "c7c3dd9a424b0afe91270223e90a4df3d08a42be10677a4fd86439ae29b2a6a3"
+}

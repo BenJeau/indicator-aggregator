@@ -1,0 +1,70 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, dateadded, url, url_status, last_online, threat, tags, urlhaus_link, reporter FROM url_haus WHERE url = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "dateadded",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "url_status",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "last_online",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 5,
+        "name": "threat",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "tags",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "urlhaus_link",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "reporter",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "9621ddb27810a379e3078e485abafc64ded56bcac16217b13585467f1da9ca5b"
+}

@@ -12,8 +12,7 @@ const development = {
 };
 
 const production = {
-  rest_server_base_url:
-    window?._env_?.VITE_REST_SERVER_BASE_URL || "http://localhost:3456/api/v1",
+  rest_server_base_url: window?._env_?.VITE_REST_SERVER_BASE_URL || "",
   opentel_url: window?._env_?.VITE_OPENTEL_URL || "",
   admin_email: window?._env_?.VITE_ADMIN_EMAIL || "",
 };

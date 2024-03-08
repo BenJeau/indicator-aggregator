@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT pgp_sym_decrypt_bytea(value, $1)::BYTEA as \"value!: _\" FROM secrets WHERE id = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "value!: _",
+        "type_info": "Bytea"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "ef55a8cadc1fa2b1d83dbfaa9a51da8f652a006660b6be2f90d0310449905eb7"
+}

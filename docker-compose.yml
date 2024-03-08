@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+  indicator_aggregator_pg:
+    container_name: indicator_aggregator_pg
+    image: postgres:16.2-alpine3.18
+    restart: always
+    hostname: indicator_aggregator_pg
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: indicator_aggregator
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - proxy-network
+
+  indicator_aggregator_redis:
+    container_name: indicator_aggregator_redis
+    image: redis:7.2.3-alpine3.19
+    restart: always
+    hostname: indicator_aggregator_redis
+    ports:
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass rfXaxNIZ3XKso2ydfrU9nGKPVN8FK2YALCGr2i40cv
+    volumes:
+      - redis_data:/data
+    networks:
+      - proxy-network
+
+  indicator_aggregator_jaeger:
+    container_name: indicator_aggregator_jaeger
+    image: jaegertracing/all-in-one:1.55.0
+    restart: always
+    hostname: indicator_aggregator_jaeger
+    ports:
+      - 6831:6831
+      - 6832:6832
+      - 16686:16686
+      - 4318:4318
+      - 4317:4317
+    networks:
+      - proxy-network
+
+  indicator_aggregator_frontend:
+    container_name: indicator_aggregator_frontend
+    image: indicator_aggregator_frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.local
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/frontend
+      - frontend_data:/frontend/node_modules
+    networks:
+      - proxy-network
+    env_file:
+      - .env
+
+  indicator_aggregator_backend:
+    container_name: indicator_aggregator_backend
+    image: indicator_aggregator_backend:latest
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile.local
+    ports:
+      - 3456:3456
+    volumes:
+      - ./backend:/app/backend
+      - ./cache:/app/cache
+      - ./shared:/app/shared
+      - ./Cargo.toml:/app/Cargo.toml
+      - ./Cargo.lock:/app/Cargo.lock
+    depends_on:
+      - indicator_aggregator_pg
+    networks:
+      - proxy-network
+    env_file:
+      - .env
+
+networks:
+  proxy-network:
+
+volumes:
+  postgres_data:
+  redis_data:
+  frontend_data:
+  meilisearch_data:
