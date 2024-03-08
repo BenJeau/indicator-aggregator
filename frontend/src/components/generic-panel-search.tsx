@@ -60,7 +60,7 @@ function GenericPanelSearch<T>({
         minSize={30}
         className={cn(
           "shadow-md flex-1 flex-col h-full flex md:flex",
-          isDetailsView && "hidden"
+          isDetailsView && "hidden",
         )}
       >
         <div className="h-14 shadow bg-muted/25">

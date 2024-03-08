@@ -24,7 +24,7 @@ const ListEditComponent: React.FC = () => {
   const ignoreListEntries = useSuspenseQuery(ignoreListEntriesQueryOptions(id));
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
   const ignoreListProviders = useSuspenseQuery(
-    ignoreListProvidersQueryOptions(id)
+    ignoreListProvidersQueryOptions(id),
   );
 
   const patchIgnoreList = useIgnoreListPatch();

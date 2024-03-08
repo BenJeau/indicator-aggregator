@@ -41,7 +41,7 @@ const formSchema = z.object({
     z.object({
       id: z.string().uuid(),
       name: z.string(),
-    })
+    }),
   ),
 });
 
@@ -63,7 +63,7 @@ const RequestComponent: React.FC = () => {
   });
 
   const [mutationData, setMutationData] = useState<ModifiedRequest | undefined>(
-    undefined
+    undefined,
   );
 
   const request = useRequest(mutationData);
@@ -172,7 +172,7 @@ const RequestComponent: React.FC = () => {
                   const availableSources =
                     sources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id)
+                        !field.value.some((source) => source.id === id),
                     ) || [];
 
                   return (
@@ -183,7 +183,7 @@ const RequestComponent: React.FC = () => {
                           <Select
                             onValueChange={(name) => {
                               const id = sources.data?.find(
-                                ({ name: sourceName }) => sourceName === name
+                                ({ name: sourceName }) => sourceName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -212,8 +212,8 @@ const RequestComponent: React.FC = () => {
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"
@@ -254,7 +254,7 @@ const RequestComponent: React.FC = () => {
                                 <SelectItem key={value} value={value}>
                                   {key}
                                 </SelectItem>
-                              )
+                              ),
                             )}
                           </SelectContent>
                         </Select>

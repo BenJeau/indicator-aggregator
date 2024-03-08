@@ -46,7 +46,7 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
         }
 
         const url = new URL(
-          `${config.rest_server_base_url}/requests/execute/sse`
+          `${config.rest_server_base_url}/requests/execute/sse`,
         );
         const searchParamParts: string[] = [
           `data=${request!.data}`,
@@ -84,7 +84,7 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
                 },
               },
             }),
-            {} as RequestData
+            {} as RequestData,
           );
 
           queryClient.setQueryData<RequestData>(queryKey, () => newData);

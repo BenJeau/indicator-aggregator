@@ -16,7 +16,7 @@ const TanStackRouterDevtools =
     : lazy(() =>
         import("@tanstack/router-devtools").then((res) => ({
           default: res.TanStackRouterDevtools,
-        }))
+        })),
       );
 
 const RootComponent = () => (
@@ -40,5 +40,5 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         queryClient.ensureQueryData(statsCountQueryOptions),
         queryClient.ensureQueryData(notificationsQueryOptions),
       ]),
-  }
+  },
 );

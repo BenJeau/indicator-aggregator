@@ -9,7 +9,7 @@ const TitleEntryCount: React.FC<Props> = ({ count, className }) => (
   <span
     className={cn(
       "text-xs opacity-50 font-normal whitespace-nowrap",
-      className
+      className,
     )}
   >
     {count.toLocaleString()}

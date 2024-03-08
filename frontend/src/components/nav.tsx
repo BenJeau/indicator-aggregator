@@ -73,7 +73,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                       "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
                     "disabled" in link &&
                       link.disabled &&
-                      "opacity-50 cursor-default hover:bg-transparent hover:text-current"
+                      "opacity-50 cursor-default hover:bg-transparent hover:text-current",
                   )}
                   size="icon"
                   {...link}
@@ -100,7 +100,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 "h-9 cursor-pointer",
                 link.variant === "default" &&
                   "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                "justify-start"
+                "justify-start",
               )}
               {...link}
             >
@@ -110,7 +110,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 <span
                   className={cn(
                     "ml-auto",
-                    link.variant === "default" && "dark:text-white"
+                    link.variant === "default" && "dark:text-white",
                   )}
                 >
                   {link.label}
@@ -120,7 +120,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 <ExternalLinkIcon className="ml-auto" size={14} />
               )}
             </LinkOrButtonOrExternalLink>
-          )
+          ),
         )}
       </nav>
     </div>

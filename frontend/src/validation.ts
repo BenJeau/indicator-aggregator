@@ -3,7 +3,7 @@ import { z } from "zod";
 import { IndicatorKind } from "@/types/backendTypes";
 
 export const detectIndicatorKind = (
-  indicator: string
+  indicator: string,
 ): IndicatorKind | undefined => {
   const normalizedIndicator = indicator.trim().toUpperCase();
 

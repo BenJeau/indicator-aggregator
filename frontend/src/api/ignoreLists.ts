@@ -76,7 +76,7 @@ export const ignoreListProvidersQueryOptions = (listId: string) =>
         `/ignoreLists/${listId}/providers`,
         {
           signal,
-        }
+        },
       ),
   });
 

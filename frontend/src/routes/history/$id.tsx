@@ -74,7 +74,7 @@ const HistoryComponent: React.FC = () => {
             };
             return acc;
           },
-          {} as { [key: string]: ReqestSSEData }
+          {} as { [key: string]: ReqestSSEData },
         )}
       />
     </>

@@ -32,7 +32,7 @@ export const SectionPanelHeader: React.FC<Props> = ({
     <div
       className={cn(
         "px-4 py-3 bg-muted/60 flex justify-between items-center gap-4",
-        className
+        className,
       )}
     >
       <div className="flex gap-2">
@@ -46,13 +46,13 @@ export const SectionPanelHeader: React.FC<Props> = ({
       <div
         className={cn(
           "items-baseline flex flex-1 gap-2 overflow-hidden",
-          titleContainerClassName
+          titleContainerClassName,
         )}
       >
         <h3
           className={cn(
             "textl-xl font-semibold items-center whitespace-nowrap",
-            titleClassName
+            titleClassName,
           )}
         >
           {title}
