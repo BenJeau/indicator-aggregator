@@ -37,11 +37,24 @@ jobs:
           tags: |
             ${{ steps.date.outputs.date }}
       - name: Build and push production image
+        if: matrix.directory == 'backend'
         uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
-          file: ./${{ matrix.directory }}/Dockerfile
+          file: ./backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build and push production image
+        if: matrix.directory == 'frontend'
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./frontend/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
