@@ -46,7 +46,7 @@ jobs:
         with:
           context: ${{ steps.context_path.outputs.CONTEXT }}
           builder: ${{ steps.buildx.outputs.name }}
-          file: ./backend/Dockerfile
+          file: ./${{ matrix.directory }}/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
