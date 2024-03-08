@@ -36,10 +36,7 @@ pub async fn request(
     let mut data = sources::handle_indicator_request(&request, &state).await?;
 
     if should_ignore_errors {
-        data = data
-            .into_iter()
-            .filter(|data| data.errors.is_empty())
-            .collect();
+        data.retain(|data| data.errors.is_empty());
     }
 
     Ok(Json(data))
@@ -111,7 +108,7 @@ pub async fn sse_handler(
             Event::default()
                 .id(request_id.to_string())
                 .event("fetching_start")
-                .json_data(&start_data)
+                .json_data(start_data)
                 .unwrap(),
         ))
         .unwrap();
@@ -141,7 +138,7 @@ pub async fn sse_handler(
                                 Event::default()
                                     .event("fetching_data")
                                     .id(source.source_id.to_string())
-                                    .json_data(&SseDoneData::from(data))
+                                    .json_data(SseDoneData::from(data))
                                     .unwrap()
                             } else {
                                 encountered_error = true;
@@ -157,11 +154,11 @@ pub async fn sse_handler(
                             Event::default()
                                 .event("fetching_error")
                                 .id(source.source_id.to_string())
-                                .json_data(&[SourceError::from(e)])
+                                .json_data([SourceError::from(e)])
                                 .unwrap()
                         });
 
-                    if !should_ignore_errors || (should_ignore_errors && !encountered_error) {
+                    if !should_ignore_errors || !encountered_error {
                         tx.send(Result::Ok(data)).unwrap();
                     }
                 }

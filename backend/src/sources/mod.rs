@@ -37,7 +37,7 @@ async fn get_source_data(
     let (sources, request_id) = join(
         crate::postgres::logic::sources::get_sources_for_internal_request(
             &state.pool,
-            &indicator,
+            indicator,
             source_ids,
         ),
         crate::postgres::logic::requests::create_request(&state.pool, indicator),
@@ -58,7 +58,7 @@ async fn get_source_data(
             .map(|(integration, source)| async move {
                 if let Some(integration) = integration {
                     integration
-                        .get_indicator(indicator, &source, state, &request_id)
+                        .get_indicator(indicator, source, state, &request_id)
                         .await
                 } else {
                     Err(Error::MissingSourceCode)
@@ -135,7 +135,7 @@ impl FetchState {
     async fn from_server_state(state: &ServerState, source_id: &Uuid) -> Result<Self> {
         let secrets = crate::postgres::logic::secrets::internal_get_source_secrets(
             &state.pool,
-            &source_id,
+            source_id,
             &state.crypto,
             &state.config.encryption.db_key,
         )
@@ -282,13 +282,13 @@ fn get_source_errors(source: &InternalRequest, indicator_kind: &IndicatorKind) -
         errors.push(SourceError::DisabledIndicator);
     }
 
-    if source.within_ignore_lists.len() > 0 {
+    if !source.within_ignore_lists.is_empty() {
         errors.push(SourceError::WithinIgnoreList(
             source.within_ignore_lists.clone(),
         ));
     }
 
-    if source.missing_source_secrets.len() > 0 {
+    if !source.missing_source_secrets.is_empty() {
         errors.push(SourceError::MissingSecret(
             source.missing_source_secrets.clone(),
         ));
