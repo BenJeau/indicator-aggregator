@@ -41,3 +41,7 @@ Or if you have Docker installed locally, simply run the whole stack (PostgreSQL,
 ```sh
 docker compose up
 ```
+
+## Architecture
+
+Indicator Aggregator's architecture is defined at the [./docs/architecture.md](./docs/architecture.md) markdown file alongside other documents and diagrams. 
