@@ -3,6 +3,8 @@ name: Rust CI - Cargo clippy
 on: 
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:

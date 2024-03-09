@@ -3,6 +3,8 @@ name: React CI - Prettier format
 on: 
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
