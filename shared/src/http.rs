@@ -28,6 +28,7 @@ pub struct AxumLayerBuilder {
     timeout: u64,
     max_size: usize,
     tracing: bool,
+    enable_sentry_layer: bool,
 }
 
 impl Default for AxumLayerBuilder {
@@ -47,6 +48,7 @@ impl Default for AxumLayerBuilder {
             timeout: 30,
             max_size: 1024 * 1024 * 250,
             tracing: true,
+            enable_sentry_layer: true,
         }
     }
 }
@@ -97,6 +99,16 @@ impl AxumLayerBuilder {
         self
     }
 
+    pub fn disable_sentry_layer(mut self) -> Self {
+        self.enable_sentry_layer = false;
+        self
+    }
+
+    pub fn enable_sentry_layer(mut self) -> Self {
+        self.enable_sentry_layer = true;
+        self
+    }
+
     pub fn build(self, router: Router) -> Router {
         let cors_layer = CorsLayer::new()
             .allow_methods(self.allowed_methods)
@@ -139,6 +151,12 @@ impl AxumLayerBuilder {
 
         if let Some(tracing_layer) = tracing_layer {
             router = router.layer(tracing_layer);
+        }
+
+        if self.enable_sentry_layer {
+            router = router
+                .layer(sentry_tower::NewSentryLayer::<Request>::new_from_top())
+                .layer(sentry_tower::SentryHttpLayer::with_transaction());
         }
 
         router

@@ -11,7 +11,10 @@ pub struct Telemetry {
 }
 
 impl Telemetry {
-    pub fn new(service_name: String, endpoint: String, env_filter: String) -> Self {
+    pub fn new(service_name: String, env_filter: String) -> Self {
+        let endpoint =
+            std::env::var("OTEL_ENDPOINT").unwrap_or_else(|_| "http://localhost:4317".to_string());
+
         Self {
             service_name,
             endpoint,
@@ -21,6 +24,8 @@ impl Telemetry {
 
     pub fn setup(self) -> anyhow::Result<()> {
         global::set_text_map_propagator(TraceContextPropagator::new());
+
+        let _guard = sentry::init(Option::<String>::None);
 
         let exporter = opentelemetry_otlp::new_exporter()
             .tonic()
@@ -41,10 +46,13 @@ impl Telemetry {
             EnvFilter::try_from_default_env().unwrap_or(self.env_filter.clone().into());
         let default_layer = tracing_subscriber::fmt::layer();
 
+        let sentry_layer = sentry_tracing::layer();
+
         tracing_subscriber::registry()
             .with(env_filter_layer)
             .with(default_layer)
             .with(opentelemetry_layer)
+            .with(sentry_layer)
             .try_init()?;
 
         tracing::info!(
