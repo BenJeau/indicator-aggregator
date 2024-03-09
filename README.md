@@ -24,24 +24,22 @@ By having all of these already built, creating a source is as simple as configur
 
 ## Getting started
 
-You'll need to have Rust and Node.js installed locally, alongside PNPM. To run the frontend, you need to run:
+### Docker
 
-```sh
-cd frontend && pnpm i && pnpm dev
-```
-
-To run the backend, you'll need to have a PostgreSQL instance and run the following:
-
-```sh
-cd backend && cargo run
-```
-
-Or if you have Docker installed locally, simply run the whole stack (PostgreSQL, Redis, Jaeger UI, Rust REST API, React Web UI) with the following:
+The entire stack can be run using Docker with the following command:
 
 ```sh
 docker compose up
 ```
 
+By using docker compose, any changes in the frontend or backend will be hot reloaded - Rust will recompile and the frontend will use HMR.
+
+### Local
+
+Alternatively, you can spin up the stack locally by following the respective `README.md` files and by having access to a PostgreSQL server instance:
+- [./backend/README.md](./backend/README.md)
+- [./frontend/README.md](./frontend/README.md)
+
 ## Architecture
 
-Indicator Aggregator's architecture is defined at the [./docs/architecture.md](./docs/architecture.md) markdown file alongside other documents and diagrams. 
+Indicator Aggregator's architecture is defined at the [./docs/architecture.md](./docs/architecture.md) markdown file alongside other documents and diagrams.

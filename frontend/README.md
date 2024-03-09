@@ -1,37 +1,32 @@
-# React + TypeScript + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React frontend in TypeScript using [Vite.js](https://vitejs.dev/) to build the application using pnpm for dependency management.
 
-Currently, two official plugins are available:
+## Getting started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You'll need to have Rust and Node.js installed locally, alongside pnpm. To run the frontend, you need to run:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```sh
+pnpm i && pnpm dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Main packages
 
+As with any frontend in JavaScript, this project depends on multiple dependencies but tries to be minimal and not add _any_ package.
 
--------
+### User interface
 
+To style components, [Tailwind CSS](https://tailwindcss.com/) is used and [shadcn/ui](https://ui.shadcn.com/) is used as based components. For icons, [lucide](https://lucide.dev/) is used for generic icons and [Simple Icons](https://simpleicons.org/) is used for brand icons.
 
-typeshare ./indicator_aggregator --lang=typescript --output-file=./indicator_aggregator_ui/src/types/backendTypes.ts
-typeshare ./target/debug --lang=typescript --output-file=./indicator_aggregator_ui/src/types/otherBackendTypes.ts
+As for illustrations within the application (to represent empty states, loading states, welcome pages, ...) [manypixels](https://www.manypixels.co/gallery) SVG illustrations with the `Two Color` variants.
+
+### REST API
+
+For communication with the backend, the browser's built-in `fetch` and `EventSource` is used alongside [@tanstack/query](https://tanstack.com/query/) for easier async state management.
+
+### Routing
+
+To navigate within the application, [@tanstack/router](https://tanstack.com/router/) is used due to it:
+- being typesafe
+- being file based
+- having nice integrations with `@tanstack/query`
