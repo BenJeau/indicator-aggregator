@@ -40,3 +40,7 @@ make reset_db
 ## Configuration
 
 [Figment](https://docs.rs/figment/latest/figment/) is used to define the configuration of the service. Default values are set within the [config.toml](./config.toml) file and all fields can be overwritten using environment variables starting with `INDICATOR_AGGREGATOR__` and have sections in uppercase and separated with double underscores `__`. For example, to change the server port to `7890` via an environment variable, you would use `INDICATOR_AGGREGATOR__SERVER__HTTP__PORT=7890` as variable.
+
+### Sentry
+
+For Sentry.io to work correctly, you need to supply as environment variable the Sentry.io DSN via environment variable with `SENTRY_DSN`. Other values can be overriden as per the following documentation https://docs.sentry.io/platforms/rust/configuration/options/.
