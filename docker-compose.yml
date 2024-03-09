@@ -74,6 +74,7 @@ services:
       - ./shared:/app/shared
       - ./Cargo.toml:/app/Cargo.toml
       - ./Cargo.lock:/app/Cargo.lock
+      - backend_data:/target
     depends_on:
       - indicator_aggregator_pg
     networks:
@@ -88,4 +89,4 @@ volumes:
   postgres_data:
   redis_data:
   frontend_data:
-  meilisearch_data:
+  backend_data:
