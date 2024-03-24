@@ -82,6 +82,25 @@ services:
     env_file:
       - .env
 
+  indicator_aggregator_python_runner:
+    container_name: indicator_aggregator_python_runner
+    image: indicator_aggregator_python_runner:latest
+    build:
+      context: .
+      dockerfile: ./runners/python/Dockerfile.local
+    ports:
+      - 5051:5051
+    volumes:
+      - ./runners:/app/runners
+      - ./shared:/app/shared
+      - ./Cargo.toml:/app/Cargo.toml
+      - ./Cargo.lock:/app/Cargo.lock
+      - python_runner_data:/target
+    networks:
+      - proxy-network
+    env_file:
+      - .env
+
 networks:
   proxy-network:
 
@@ -90,3 +109,4 @@ volumes:
   redis_data:
   frontend_data:
   backend_data:
+  python_runner_data:

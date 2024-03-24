@@ -11,14 +11,14 @@ pub struct Telemetry {
 }
 
 impl Telemetry {
-    pub fn new(service_name: String, env_filter: String) -> Self {
+    pub fn new(service_name: impl Into<String>, env_filter: impl Into<String>) -> Self {
         let endpoint =
             std::env::var("OTEL_ENDPOINT").unwrap_or_else(|_| "http://localhost:4317".to_string());
 
         Self {
-            service_name,
+            service_name: service_name.into(),
             endpoint,
-            env_filter,
+            env_filter: env_filter.into(),
         }
     }
 

@@ -15,4 +15,4 @@ COPY . .
 
 EXPOSE 3456
 
-CMD [ "cargo", "watch", "-x", "run" ]
+CMD [ "cargo", "watch", "-x", "run", "--bin", "backend" ]

@@ -13,14 +13,12 @@ pub use error::{Error, Result};
 pub use server::state::ServerState;
 
 const ENV_FILTER: &str = "backend=debug,cache=debug,tower_http=debug,shared=debug";
+const SERVICE_NAME: &str = "indicator-aggregator-server";
 
 fn main() {
-    shared::telemetry::Telemetry::new(
-        "indicator-aggregator-server".to_string(),
-        ENV_FILTER.to_string(),
-    )
-    .setup()
-    .unwrap();
+    shared::telemetry::Telemetry::new(SERVICE_NAME, ENV_FILTER)
+        .setup()
+        .unwrap();
 
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
