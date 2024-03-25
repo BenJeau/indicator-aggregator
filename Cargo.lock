@@ -2365,6 +2365,7 @@ dependencies = [
  "shared",
  "tokio",
  "tonic",
+ "tracing",
 ]
 
 [[package]]

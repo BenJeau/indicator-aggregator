@@ -4,8 +4,8 @@ use common::{
     BackgroundTaskRequest, Empty, FetchDataReply, FetchDataRequest, InitRequest, SourceCodeMapping,
     UpdateRequest, Validator,
 };
-use shared::tower::CommonTowerLayerBuilder;
 use tonic::{transport::Server, Request, Response, Status};
+use tracing::info;
 
 use crate::executor;
 
@@ -55,15 +55,15 @@ impl PythonRunner {
     pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
         let config = common::config::Config::new("PYTHON_RUNNER", include_str!("../config.toml"))?;
 
-        let greeter = PythonRunner::default();
-
         pyo3::prepare_freethreaded_python();
 
-        let layers = CommonTowerLayerBuilder::new().build();
+        let addr = config.server.address()?;
+
+        info!("listening on http://{addr}");
 
         Server::builder()
-            .add_service(RunnerServer::new(greeter))
-            .serve(config.server.address()?)
+            .add_service(RunnerServer::new(PythonRunner::default()))
+            .serve(addr)
             .await?;
 
         Ok(())
