@@ -35,7 +35,7 @@ async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let (migration, background_tasks, servers) = futures_util::future::join3(
         postgres::run_migrations(&state.pool),
         sources::background_tasks::run_background_tasks(&state),
-        server::start_all_servers(state.clone()),
+        server::RestServer::new(state.clone()).start(),
     )
     .await;
 
