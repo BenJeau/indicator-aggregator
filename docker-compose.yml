@@ -3,7 +3,7 @@ version: "3.8"
 services:
   indicator_aggregator_pg:
     container_name: indicator_aggregator_pg
-    image: postgres:16.2-alpine3.18
+    image: postgres:16.2-alpine3.19
     restart: always
     hostname: indicator_aggregator_pg
     environment:
