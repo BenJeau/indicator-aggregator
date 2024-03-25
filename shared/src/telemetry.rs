@@ -1,6 +1,7 @@
 use opentelemetry::{global, trace::TraceContextExt, Value};
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{propagation::TraceContextPropagator, Resource};
+use sentry::ClientInitGuard;
 use tracing_opentelemetry::OpenTelemetrySpanExt;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
@@ -12,6 +13,8 @@ pub struct Telemetry {
 
 impl Telemetry {
     pub fn new(service_name: impl Into<String>, env_filter: impl Into<String>) -> Self {
+        global::set_text_map_propagator(TraceContextPropagator::new());
+
         let endpoint =
             std::env::var("OTEL_ENDPOINT").unwrap_or_else(|_| "http://localhost:4317".to_string());
 
@@ -22,11 +25,13 @@ impl Telemetry {
         }
     }
 
-    pub fn setup(self) -> anyhow::Result<()> {
-        global::set_text_map_propagator(TraceContextPropagator::new());
+    pub fn setup_sentry() -> ClientInitGuard {
+        tracing::info!("Setting up Sentry");
 
-        let _guard = sentry::init(Option::<String>::None);
+        sentry::init(Option::<String>::None)
+    }
 
+    pub fn setup_tracing(self) -> anyhow::Result<()> {
         let exporter = opentelemetry_otlp::new_exporter()
             .tonic()
             .with_endpoint(&self.endpoint);
@@ -45,7 +50,6 @@ impl Telemetry {
         let env_filter_layer =
             EnvFilter::try_from_default_env().unwrap_or(self.env_filter.clone().into());
         let default_layer = tracing_subscriber::fmt::layer();
-
         let sentry_layer = sentry_tracing::layer();
 
         tracing_subscriber::registry()

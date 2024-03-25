@@ -16,9 +16,7 @@ const ENV_FILTER: &str = "backend=debug,cache=debug,tower_http=debug,shared=debu
 const SERVICE_NAME: &str = "indicator-aggregator-server";
 
 fn main() {
-    shared::telemetry::Telemetry::new(SERVICE_NAME, ENV_FILTER)
-        .setup()
-        .unwrap();
+    let _guard = shared::telemetry::Telemetry::setup_sentry();
 
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
@@ -30,6 +28,8 @@ fn main() {
 }
 
 async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    shared::telemetry::Telemetry::new(SERVICE_NAME, ENV_FILTER).setup_tracing()?;
+
     let state = ServerState::new().await;
 
     let (migration, background_tasks, servers) = futures_util::future::join3(
