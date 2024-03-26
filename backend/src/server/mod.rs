@@ -1,8 +1,29 @@
-pub mod rest;
+use tracing::info;
+
+use crate::ServerState;
+
+pub mod routes;
 pub mod state;
 
-pub async fn start_all_servers(
-    state: state::ServerState,
-) -> Result<(), Box<dyn std::error::Error>> {
-    rest::RestServer::new(state.clone()).start().await
+pub struct RestServer(ServerState);
+
+impl RestServer {
+    pub fn new(state: ServerState) -> Self {
+        Self(state)
+    }
+
+    #[tracing::instrument(skip(self), fields(kind = "RestServer"), err)]
+    pub async fn start(self) -> Result<(), Box<dyn std::error::Error>> {
+        let addr = self.0.config.server.http.address()?;
+
+        info!("listening on http://{addr}");
+
+        axum::serve(
+            tokio::net::TcpListener::bind(addr).await?,
+            routes::router(self.0.clone()),
+        )
+        .await?;
+
+        Ok(())
+    }
 }

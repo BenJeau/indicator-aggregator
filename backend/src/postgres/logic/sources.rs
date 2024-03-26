@@ -5,7 +5,7 @@ use uuid::Uuid;
 use crate::{
     postgres::schemas::{
         ignore_lists::IgnoreList,
-        sources::{CreateSource, InternalRequest, Source, SourceKind, UpdateSource},
+        sources::{CreateSource, InternalRequest, Source, SourceCode, SourceKind, UpdateSource},
     },
     schemas::Indicator,
     Result,
@@ -57,6 +57,7 @@ pub async fn get_sources_for_internal_request(
 SELECT
 sources.id as source_id,
 sources.name as source_name,
+sources.kind as "source_kind: _",
 sources.enabled as source_enabled,
 sources.url as source_url,
 sources.favicon as source_favicon,
@@ -384,5 +385,17 @@ WHERE id = $21"#,
     .execute(pool)
     .await
     .map(|i| i.rows_affected())
+    .map_err(Into::into)
+}
+
+#[instrument(skip(pool), err, ret)]
+pub async fn get_source_code_by_kind(pool: &PgPool, kind: SourceKind) -> Result<Vec<SourceCode>> {
+    sqlx::query_as!(
+        SourceCode,
+        r#"SELECT id, source_code FROM sources WHERE kind = $1"#,
+        kind as SourceKind
+    )
+    .fetch_all(pool)
+    .await
     .map_err(Into::into)
 }

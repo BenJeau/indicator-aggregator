@@ -1,7 +1,7 @@
 use utoipa::OpenApi;
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
-use crate::{postgres::schemas as pg_schemas, schemas, server::rest::routes};
+use crate::{postgres::schemas as pg_schemas, schemas, server::routes};
 
 #[derive(OpenApi)]
 #[openapi(

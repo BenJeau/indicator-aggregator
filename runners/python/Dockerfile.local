@@ -15,4 +15,4 @@ COPY . .
 
 EXPOSE 3456
 
-CMD [ "cargo", "watch", "-x", "run --bin backend" ]
+CMD [ "cargo", "watch", "-x", "run --bin python_runner" ]

@@ -17,6 +17,7 @@ use crate::{
 
 pub mod background_tasks;
 pub mod integrations;
+pub mod runners;
 
 #[instrument(skip(state))]
 pub async fn handle_indicator_request(
@@ -49,7 +50,12 @@ async fn get_source_data(
 
     let source_integrations = sources
         .iter()
-        .map(|source| (integrations::source(&source.source_name), source))
+        .map(|source| {
+            (
+                integrations::source(&source.source_name, &source.source_kind),
+                source,
+            )
+        })
         .collect::<Vec<_>>();
 
     let data = join_all(
@@ -125,11 +131,16 @@ where
 pub struct FetchState {
     pool: sqlx::PgPool,
     secrets: HashMap<String, String>,
+    source_id: Uuid,
 }
 
 impl FetchState {
-    fn new(pool: sqlx::PgPool, secrets: HashMap<String, String>) -> Self {
-        Self { pool, secrets }
+    fn new(pool: sqlx::PgPool, secrets: HashMap<String, String>, source_id: Uuid) -> Self {
+        Self {
+            pool,
+            secrets,
+            source_id,
+        }
     }
 
     async fn from_server_state(state: &ServerState, source_id: &Uuid) -> Result<Self> {
@@ -141,13 +152,15 @@ impl FetchState {
         )
         .await?;
 
-        Ok(Self::new(state.pool.clone(), secrets))
+        Ok(Self::new(state.pool.clone(), secrets, source_id.clone()))
     }
 }
 
 #[async_trait]
 pub trait Source: Send + Sync {
-    fn source_name(&self) -> &'static str;
+    fn source_name(&self) -> &'static str {
+        ""
+    }
 
     async fn fetch_data(
         &self,

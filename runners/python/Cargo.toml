@@ -1,0 +1,14 @@
+[package]
+edition = "2021"
+name = "python_runner"
+version = "0.1.0"
+
+[dependencies]
+tokio = { workspace = true }
+tonic = { workspace = true }
+tracing = { workspace = true }
+
+common = { path = "../common" }
+shared = { path = "../../shared" }
+
+pyo3 = "0.20.3"
