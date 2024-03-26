@@ -36,7 +36,7 @@ async fn prapare_background_task(state: &ServerState, source: Source) -> Result<
     if let Some(interval_secs) = source.task_interval {
         let fetch_state = FetchState::from_server_state(state, &source.id).await?;
 
-        let info_span = info_span!("background_task", id = %source.id, name = source.name,);
+        let info_span = info_span!("background_task", id = %source.id, name = source.name);
 
         tokio::task::spawn(
             async move {
