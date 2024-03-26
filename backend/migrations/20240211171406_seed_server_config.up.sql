@@ -11,4 +11,4 @@ VALUES
   ('JAVASCRIPT_RUNNER_GRPC_ADDRESS', 'JavaScript Runner gRPC Address', 'The address of the JavaScript Runner gRPC server', 'localhost:50052', 'string', 'Runners'),
   ('JAVASCRIPT_RUNNER_ENABLED', 'JavaScript Runner Enabled', 'Whether to enable the JavaScript Runner', 'true', 'boolean', 'Runners'),
   ('PYTHON_RUNNER_GRPC_ADDRESS', 'Python Runner gRPC Address', 'The address of the Python Runner gRPC server', 'localhost:50051', 'string', 'Runners'),
-  ('PYTHON_RUNNER_ENABLED', 'Python Runner Enabled', 'Whether to enable the Python Runner', 'true', 'boolean', 'Runners'),;
+  ('PYTHON_RUNNER_ENABLED', 'Python Runner Enabled', 'Whether to enable the Python Runner', 'true', 'boolean', 'Runners');
