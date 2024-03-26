@@ -166,6 +166,7 @@ pub struct UpdateSource {
 #[derive(FromRow, Debug, Clone)]
 pub struct InternalRequest {
     pub source_id: Uuid,
+    pub source_kind: SourceKind,
     pub source_enabled: bool,
     pub source_name: String,
     pub source_url: String,
@@ -178,4 +179,19 @@ pub struct InternalRequest {
     pub provider_enabled: Option<bool>,
     pub missing_source_secrets: Vec<Uuid>,
     pub within_ignore_lists: Vec<Uuid>,
+}
+
+#[derive(FromRow, Debug, Clone)]
+pub struct SourceCode {
+    pub id: Uuid,
+    pub source_code: Option<String>,
+}
+
+impl SourceCode {
+    pub fn into_update_request(self) -> Option<common::UpdateRequest> {
+        self.source_code.map(|source_code| common::UpdateRequest {
+            source: self.id.to_string(),
+            source_code,
+        })
+    }
 }
