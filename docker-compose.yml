@@ -84,12 +84,13 @@ services:
 
   indicator_aggregator_python_runner:
     container_name: indicator_aggregator_python_runner
+    hostname: indicator_aggregator_python_runner
     image: indicator_aggregator_python_runner:latest
     build:
       context: .
       dockerfile: ./runners/python/Dockerfile.local
     ports:
-      - 5051:5051
+      - 50051:50051
     volumes:
       - ./runners:/app/runners
       - ./shared:/app/shared
