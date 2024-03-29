@@ -1,4 +1,6 @@
-import { SourceKind } from "@/types/backendTypes";
+import { Globe, Globe2, Hash, Link, LucideIcon, Mail } from "lucide-react";
+
+import { IndicatorKind, SourceKind } from "@/types/backendTypes";
 
 export function dedupeListOnId<T extends { id: unknown }>(data: T[]): T[] {
   return data.reduce((acc, list) => {
@@ -8,6 +10,38 @@ export function dedupeListOnId<T extends { id: unknown }>(data: T[]): T[] {
     return acc;
   }, [] as T[]);
 }
+
+export const indicatorKindMapping: {
+  [key in IndicatorKind]: string;
+} = {
+  [IndicatorKind.Md5]: "MD5",
+  [IndicatorKind.Sha1]: "SHA1",
+  [IndicatorKind.Sha256]: "SHA256",
+  [IndicatorKind.Sha512]: "SHA512",
+  [IndicatorKind.Tlsh]: "TLSH",
+  [IndicatorKind.Ssdeep]: "SSDEEP",
+  [IndicatorKind.Ipv4]: "IPv4",
+  [IndicatorKind.Ipv6]: "IPv6",
+  [IndicatorKind.Url]: "URL",
+  [IndicatorKind.Email]: "Email",
+  [IndicatorKind.Domain]: "Domain",
+};
+
+export const indicatorKindIconMapping: {
+  [key in IndicatorKind]: LucideIcon;
+} = {
+  [IndicatorKind.Md5]: Hash,
+  [IndicatorKind.Sha1]: Hash,
+  [IndicatorKind.Sha256]: Hash,
+  [IndicatorKind.Sha512]: Hash,
+  [IndicatorKind.Tlsh]: Hash,
+  [IndicatorKind.Ssdeep]: Hash,
+  [IndicatorKind.Ipv4]: Globe,
+  [IndicatorKind.Ipv6]: Globe,
+  [IndicatorKind.Url]: Link,
+  [IndicatorKind.Email]: Mail,
+  [IndicatorKind.Domain]: Globe2,
+};
 
 export const sourceKindIconMapping: {
   [key in SourceKind]: React.FC<React.SVGProps<SVGSVGElement>>;

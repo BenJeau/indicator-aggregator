@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { sourcesQueryOptions } from "@/api/sources";
 import RequestDataView from "@/components/request-data-view";
+import { indicatorKindIconMapping, indicatorKindMapping } from "@/data";
 
 const formSchema = z.object({
   indicator: z.string().min(2).max(100),
@@ -57,7 +58,7 @@ const RequestComponent: React.FC = () => {
     defaultValues: {
       indicator: "",
       indicatorKind: undefined,
-      autoDetectKind: false,
+      autoDetectKind: true,
       sources: [],
     },
   });
@@ -67,6 +68,15 @@ const RequestComponent: React.FC = () => {
   );
 
   const request = useRequest(mutationData);
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "indicator" && value.autoDetectKind) {
+        form.setValue("indicatorKind", detectIndicatorKind(value.indicator));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
 
   const onSubmit = (values: FormSchema) => {
     navigate({
@@ -243,19 +253,22 @@ const RequestComponent: React.FC = () => {
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
-                          disabled={form.getValues("autoDetectKind")}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select kind" />
                           </SelectTrigger>
                           <SelectContent>
-                            {Object.entries(IndicatorKind).map(
-                              ([key, value]) => (
+                            {Object.values(IndicatorKind).map((value) => {
+                              const Icon = indicatorKindIconMapping[value];
+                              return (
                                 <SelectItem key={value} value={value}>
-                                  {key}
+                                  <div className="flex gap-2 items-center">
+                                    <Icon size={14} />
+                                    {indicatorKindMapping[value]}
+                                  </div>
                                 </SelectItem>
-                              ),
-                            )}
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </FormControl>
