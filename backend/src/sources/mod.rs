@@ -2,12 +2,17 @@ use async_trait::async_trait;
 use cache::Cache;
 use futures_util::future::{join, join_all};
 use serde::de::DeserializeOwned;
+use sqlx::PgPool;
 use std::collections::HashMap;
 use tracing::{error, instrument, warn};
 use uuid::Uuid;
 
 use crate::{
-    postgres::schemas::{requests::CreateSourceRequest, sources::InternalRequest},
+    postgres::schemas::{
+        requests::CreateSourceRequest,
+        server_config,
+        sources::{InternalRequest, SourceKind},
+    },
     schemas::{
         Data, DataCache, DataCacheAction, DataSource, DataTiming, Indicator, IndicatorKind,
         RequestExecuteParam, SourceError,
@@ -17,6 +22,7 @@ use crate::{
 
 pub mod background_tasks;
 pub mod integrations;
+pub mod runners;
 
 #[instrument(skip(state))]
 pub async fn handle_indicator_request(
@@ -49,7 +55,12 @@ async fn get_source_data(
 
     let source_integrations = sources
         .iter()
-        .map(|source| (integrations::source(&source.source_name), source))
+        .map(|source| {
+            (
+                integrations::source(&source.source_name, &source.source_kind),
+                source,
+            )
+        })
         .collect::<Vec<_>>();
 
     let data = join_all(
@@ -125,11 +136,16 @@ where
 pub struct FetchState {
     pool: sqlx::PgPool,
     secrets: HashMap<String, String>,
+    source_id: Uuid,
 }
 
 impl FetchState {
-    fn new(pool: sqlx::PgPool, secrets: HashMap<String, String>) -> Self {
-        Self { pool, secrets }
+    fn new(pool: sqlx::PgPool, secrets: HashMap<String, String>, source_id: Uuid) -> Self {
+        Self {
+            pool,
+            secrets,
+            source_id,
+        }
     }
 
     async fn from_server_state(state: &ServerState, source_id: &Uuid) -> Result<Self> {
@@ -141,13 +157,19 @@ impl FetchState {
         )
         .await?;
 
-        Ok(Self::new(state.pool.clone(), secrets))
+        Ok(Self::new(state.pool.clone(), secrets, *source_id))
+    }
+
+    async fn get_server_config(&self) -> Result<server_config::ServerConfig> {
+        server_config::ServerConfig::get_config_with_defaults_and_db_results(&self.pool).await
     }
 }
 
 #[async_trait]
 pub trait Source: Send + Sync {
-    fn source_name(&self) -> &'static str;
+    fn source_name(&self) -> &'static str {
+        ""
+    }
 
     async fn fetch_data(
         &self,
@@ -165,7 +187,7 @@ pub trait Source: Send + Sync {
     ) -> Result<Data> {
         let started_at = chrono::Utc::now().naive_utc();
 
-        let errors = get_source_errors(source, &indicator.kind);
+        let errors = get_source_errors(source, &indicator.kind, &state.pool).await?;
 
         let (data, cache) = if errors.is_empty() {
             get_data(source, &mut state.clone(), indicator, self).await?
@@ -262,7 +284,11 @@ async fn get_data<S: Source + ?Sized>(
     Ok((Some(data), data_cache))
 }
 
-fn get_source_errors(source: &InternalRequest, indicator_kind: &IndicatorKind) -> Vec<SourceError> {
+async fn get_source_errors(
+    source: &InternalRequest,
+    indicator_kind: &IndicatorKind,
+    pool: &PgPool,
+) -> Result<Vec<SourceError>> {
     let kind = indicator_kind.to_string().to_uppercase();
     let mut errors = vec![];
 
@@ -276,6 +302,15 @@ fn get_source_errors(source: &InternalRequest, indicator_kind: &IndicatorKind) -
 
     if !source.provider_enabled.unwrap_or(true) {
         errors.push(SourceError::ProviderDisabled(source.provider_id.unwrap()));
+    }
+
+    if source.source_kind != SourceKind::System {
+        let server_config =
+            server_config::ServerConfig::get_config_with_defaults_and_db_results(pool).await?;
+
+        if !server_config.runner_enabled(&source.source_kind) {
+            errors.push(SourceError::RunnerDisabled(source.source_kind.clone()));
+        }
     }
 
     if source.source_disabled_indicators.contains(&kind) {
@@ -294,5 +329,5 @@ fn get_source_errors(source: &InternalRequest, indicator_kind: &IndicatorKind) -
         ));
     }
 
-    errors
+    Ok(errors)
 }

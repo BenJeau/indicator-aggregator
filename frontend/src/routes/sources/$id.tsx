@@ -43,8 +43,10 @@ import ListSearchResult from "@/components/list-search-result";
 import { globalIgnoreListsQueryOptions } from "@/api/ignoreLists";
 import { dedupeListOnId, sourceKindIconMapping } from "@/data";
 import { Separator } from "@/components/ui/separator";
-import { IndicatorKind, SourceSecret } from "@/types/backendTypes";
+import { IndicatorKind, SourceKind, SourceSecret } from "@/types/backendTypes";
 import HistorySearchResult from "@/components/history-search-result";
+import { Editor } from "@/components/editor";
+import { cleanConfigValue } from "@/api/config";
 
 const SourceComponent: React.FC = () => {
   const { id } = Route.useParams();
@@ -398,6 +400,18 @@ const SourceComponent: React.FC = () => {
               </div>
             )}
 
+            {source.data.kind !== SourceKind.System && (
+              <>
+                <Separator className="mt-2" />
+                <h2 className="mt-2 flex items-baseline gap-2 font-medium">
+                  Source Code
+                </h2>
+                <Editor
+                  sourceKind={source.data.kind}
+                  value={cleanConfigValue(source.data.sourceCode) ?? ""}
+                />
+              </>
+            )}
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
               Requests

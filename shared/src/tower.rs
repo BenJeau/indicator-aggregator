@@ -1,4 +1,5 @@
 use axum::{
+    body::Body,
     extract::{DefaultBodyLimit, Request},
     middleware::{self, Next},
     response::Response,
@@ -6,10 +7,17 @@ use axum::{
 };
 use http::{header, HeaderName, HeaderValue, Method};
 use opentelemetry::global;
-use std::{str::FromStr, time::Duration};
+use sentry::Hub;
+use sentry_tower::{NewFromTopProvider, SentryHttpLayer, SentryLayer};
+use std::{str::FromStr, sync::Arc, time::Duration};
+use tower::{
+    layer::util::{Identity, Stack},
+    ServiceBuilder,
+};
 use tower_http::{
+    classify::{ServerErrorsAsFailures, SharedClassifier},
     compression::{
-        predicate::{NotForContentType, SizeAbove},
+        predicate::{And, NotForContentType, SizeAbove},
         CompressionLayer, CompressionLevel, Predicate,
     },
     cors::{AllowOrigin, Any, CorsLayer},
@@ -19,7 +27,7 @@ use tower_http::{
 use tracing::Span;
 use tracing_opentelemetry::OpenTelemetrySpanExt;
 
-pub struct AxumLayerBuilder {
+pub struct CommonTowerLayerBuilder {
     allowed_methods: Vec<Method>,
     allowed_origins: AllowOrigin,
     allowed_headers: Vec<HeaderName>,
@@ -31,7 +39,7 @@ pub struct AxumLayerBuilder {
     enable_sentry_layer: bool,
 }
 
-impl Default for AxumLayerBuilder {
+impl Default for CommonTowerLayerBuilder {
     fn default() -> Self {
         Self {
             allowed_methods: vec![
@@ -53,7 +61,11 @@ impl Default for AxumLayerBuilder {
     }
 }
 
-impl AxumLayerBuilder {
+impl CommonTowerLayerBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn allowed_methods(mut self, methods: Vec<Method>) -> Self {
         self.allowed_methods = methods;
         self
@@ -109,7 +121,9 @@ impl AxumLayerBuilder {
         self
     }
 
-    pub fn build(self, router: Router) -> Router {
+    pub fn build(
+        self,
+    ) -> CommonTowerLayer<impl Fn(&Request<Body>) -> Span + Send + Clone + 'static + Sync> {
         let cors_layer = CorsLayer::new()
             .allow_methods(self.allowed_methods)
             .allow_origin(self.allowed_origins)
@@ -124,9 +138,11 @@ impl AxumLayerBuilder {
 
         let timeout_layer = TimeoutLayer::new(Duration::from_secs(self.timeout));
 
+        let size_limit_layer = DefaultBodyLimit::max(self.max_size);
+
         let tracing_layer = if self.tracing {
             Some(
-                TraceLayer::new_for_http().make_span_with(|request: &Request<_>| {
+                TraceLayer::new_for_http().make_span_with(|request: &Request<Body>| {
                     tracing::info_span!(
                         "request",
                         user_id = tracing::field::Empty,
@@ -140,23 +156,87 @@ impl AxumLayerBuilder {
             None
         };
 
-        let size_limit_layer = DefaultBodyLimit::max(self.max_size);
+        let sentry_layer = if self.enable_sentry_layer {
+            Some(
+                ServiceBuilder::new()
+                    .layer(sentry_tower::NewSentryLayer::<Request>::new_from_top())
+                    .layer(sentry_tower::SentryHttpLayer::with_transaction()),
+            )
+        } else {
+            None
+        };
 
+        CommonTowerLayer {
+            cors_layer,
+            compression_layer,
+            timeout_layer,
+            size_limit_layer,
+            tracing_layer,
+            sentry_layer,
+        }
+    }
+}
+
+type CTLCompressionLayer = CompressionLayer<And<SizeAbove, NotForContentType>>;
+type CTLTracingLayer<F> = TraceLayer<SharedClassifier<ServerErrorsAsFailures>, F>;
+type CTLSentryLayer = ServiceBuilder<
+    Stack<
+        SentryHttpLayer,
+        Stack<SentryLayer<NewFromTopProvider, Arc<Hub>, Request<Body>>, Identity>,
+    >,
+>;
+
+pub struct CommonTowerLayer<F: Fn(&Request<Body>) -> Span + Send + Clone + 'static + Sync> {
+    cors_layer: CorsLayer,
+    compression_layer: CTLCompressionLayer,
+    timeout_layer: TimeoutLayer,
+    size_limit_layer: DefaultBodyLimit,
+    tracing_layer: Option<CTLTracingLayer<F>>,
+    sentry_layer: Option<CTLSentryLayer>,
+}
+
+impl<F> CommonTowerLayer<F>
+where
+    F: Fn(&Request<Body>) -> Span + Send + Clone + 'static + Sync,
+{
+    pub fn cors_layer(&self) -> CorsLayer {
+        self.cors_layer.clone()
+    }
+
+    pub fn compression_layer(&self) -> CTLCompressionLayer {
+        self.compression_layer.clone()
+    }
+
+    pub fn timeout_layer(&self) -> TimeoutLayer {
+        self.timeout_layer
+    }
+
+    pub fn size_limit_layer(&self) -> DefaultBodyLimit {
+        self.size_limit_layer.clone()
+    }
+
+    pub fn tracing_layer(&self) -> Option<CTLTracingLayer<F>> {
+        self.tracing_layer.clone()
+    }
+
+    pub fn sentry_layer(&self) -> Option<CTLSentryLayer> {
+        self.sentry_layer.clone()
+    }
+
+    pub fn apply_middlewares(self, router: Router) -> Router {
         let mut router = router
-            .layer(size_limit_layer)
-            .layer(timeout_layer)
-            .layer(compression_layer)
-            .layer(cors_layer)
+            .layer(self.size_limit_layer())
+            .layer(self.timeout_layer())
+            .layer(self.compression_layer())
+            .layer(self.cors_layer())
             .route_layer(middleware::from_fn(middleware));
 
-        if let Some(tracing_layer) = tracing_layer {
-            router = router.layer(tracing_layer);
+        if let Some(layer) = self.tracing_layer() {
+            router = router.layer(layer);
         }
 
-        if self.enable_sentry_layer {
-            router = router
-                .layer(sentry_tower::NewSentryLayer::<Request>::new_from_top())
-                .layer(sentry_tower::SentryHttpLayer::with_transaction());
+        if let Some(layer) = self.sentry_layer() {
+            router = router.layer(layer);
         }
 
         router

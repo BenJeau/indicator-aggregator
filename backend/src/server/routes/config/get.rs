@@ -1,7 +1,7 @@
 use axum::{extract::State, response::IntoResponse, Json};
 use sqlx::PgPool;
 
-use crate::{postgres::logic::server_config, Result};
+use crate::{postgres::schemas::server_config::ServerConfig, Result};
 
 /// Get server configuration values
 #[utoipa::path(
@@ -13,7 +13,7 @@ use crate::{postgres::logic::server_config, Result};
     )
 )]
 pub async fn get_config(State(pool): State<PgPool>) -> Result<impl IntoResponse> {
-    let config = server_config::get_all_server_configs(&pool).await?;
+    let config = ServerConfig::get_config_with_defaults_and_db_results(&pool).await?;
 
     Ok(Json(config))
 }

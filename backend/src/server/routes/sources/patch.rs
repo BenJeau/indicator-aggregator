@@ -8,7 +8,11 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
-    postgres::{logic::sources, schemas::sources::UpdateSource},
+    postgres::{
+        logic::sources,
+        schemas::sources::{SourceKind, UpdateSource},
+    },
+    sources::runners::send_update_request,
     Result,
 };
 
@@ -36,6 +40,14 @@ pub async fn patch_source(
     Json(source): Json<UpdateSource>,
 ) -> Result<impl IntoResponse> {
     let num_affected = sources::update_source(&pool, &source_id, source).await?;
+
+    let source = sources::get_source(&pool, &source_id).await?;
+
+    if source.kind != SourceKind::System {
+        if let Some(source_code) = source.source_code {
+            send_update_request(&pool, source.kind, &source_id, &source_code).await?;
+        }
+    }
 
     if num_affected > 0 {
         Ok(StatusCode::NO_CONTENT)

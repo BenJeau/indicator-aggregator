@@ -1,7 +1,7 @@
 use utoipa::OpenApi;
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
-use crate::{postgres::schemas as pg_schemas, schemas, server::rest::routes};
+use crate::{postgres::schemas as pg_schemas, schemas, server::routes};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -95,7 +95,12 @@ Currently no authentication is required to access the API.",
             pg_schemas::secrets::SourceSecret,
             pg_schemas::secrets::UpdateSecret,
             pg_schemas::server_config::ServerConfig,
+            pg_schemas::server_config::ServerConfigEntryString,
+            pg_schemas::server_config::ServerConfigEntryBool,
+            pg_schemas::server_config::ServerConfigEntryU32,
             pg_schemas::server_config::UpdateServerConfig,
+            pg_schemas::server_config::ServerConfigCategory,
+            pg_schemas::server_config::ServerConfigKind,
             pg_schemas::sources::CreateSource,
             pg_schemas::sources::Source,
             pg_schemas::sources::SourceKind,

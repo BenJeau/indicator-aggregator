@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ServerConfig,
+  ServerConfigEntry,
   ServerConfigKind,
   SourceKind,
 } from "@/types/backendTypes";
@@ -30,13 +31,13 @@ import {
 import { useConfigUpdate } from "@/api/config";
 
 interface Props {
-  config: ServerConfig[];
+  config: ServerConfig;
 }
 
 const formSchema = z.object({
   config: z.array(
     z.object({
-      id: z.string(),
+      key: z.string(),
       value: z.coerce.string().optional(),
     }),
   ),
@@ -44,17 +45,19 @@ const formSchema = z.object({
 
 export type FormSchema = z.infer<typeof formSchema>;
 
+type ServerConfigWithKey = ServerConfigEntry<unknown> & { key: string };
+
 const GeneralServerConfig: React.FC<Props> = ({ config }) => {
   const groupedConfig = useMemo(() => {
-    return config.reduce(
-      (acc, curr, index) => {
+    return Object.entries(config).reduce(
+      (acc, [key, curr], index) => {
         if (!acc[curr.category]) {
           acc[curr.category] = [];
         }
-        acc[curr.category].push({ data: curr, index });
+        acc[curr.category].push({ data: { ...curr, key }, index });
         return acc;
       },
-      {} as { [key: string]: { data: ServerConfig; index: number }[] },
+      {} as { [key: string]: { data: ServerConfigWithKey; index: number }[] },
     );
   }, [config]);
 
@@ -63,25 +66,25 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      config: config.map((i) => ({
-        id: i.id,
-        value: i.value ?? i.defaultValue,
+      config: Object.entries(config).map(([key, { value, defaultValue }]) => ({
+        key,
+        value: value ?? defaultValue,
       })),
     },
   });
 
   const handleOnSubmit = async (values: FormSchema) => {
-    const changedValues = values.config
-      .filter((value) => {
-        const originalValue =
-          config.find((i) => i.id === value.id)?.value ?? "";
-        return originalValue !== value.value;
-      })
-      .map((value) => ({
-        id: value.id,
-        description: config.find((i) => i.id === value.id)?.description ?? "",
-        value: value.value,
-      }));
+    const changedValues = values.config.filter((value) => {
+      const foundEntry = Object.entries(config).find(
+        ([key]) => key === value.key,
+      );
+
+      if (!foundEntry) {
+        return false;
+      }
+
+      return foundEntry[1].value !== value.value;
+    });
 
     await configMutate.mutateAsync(changedValues);
     toast.success("Config updated");
@@ -92,9 +95,26 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
   const isFormDirty = form.formState.isDirty;
 
   const allFieldsAreDefaultValues = form.watch("config").every((i) => {
-    const originalValue = config.find((j) => j.id === i.id)?.defaultValue ?? "";
+    const foundEntry = Object.entries(config).find(([key]) => key === i.key);
+
+    if (!foundEntry) {
+      return false;
+    }
+
+    const originalValue = foundEntry[1].defaultValue ?? "";
     return originalValue === i.value;
   });
+
+  const revertToDefault = () => {
+    form.setValue(
+      "config",
+      Object.entries(config).map(([key, { defaultValue }]) => ({
+        key,
+        value: defaultValue,
+      })),
+      { shouldDirty: true },
+    );
+  };
 
   return (
     <Form {...form}>
@@ -111,7 +131,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
               >
                 {data.map(({ data, index }) => (
                   <ConfigEntry
-                    key={data.id}
+                    key={data.key}
                     index={index}
                     config={data}
                     form={form}
@@ -128,16 +148,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
               className="gap-2"
               disabled={allFieldsAreDefaultValues}
               type="button"
-              onClick={() => {
-                form.setValue(
-                  "config",
-                  config.map((i) => ({
-                    id: i.id,
-                    value: i.defaultValue,
-                  })),
-                  { shouldDirty: true },
-                );
-              }}
+              onClick={revertToDefault}
             >
               <Eraser size={16} /> Reset all to defaults
             </Button>
@@ -182,7 +193,7 @@ const numberToGridCols = {
 };
 
 const calulcatorOfCols = (
-  data: ServerConfig[],
+  data: ServerConfigWithKey[],
 ): keyof typeof numberToGridCols => {
   const colCount = data.reduce((acc, curr) => {
     return acc + configGridColMapping[curr.kind];
@@ -200,7 +211,7 @@ const configGridColMapping: {
 };
 
 const ConfigEntry: React.FC<{
-  config: ServerConfig;
+  config: ServerConfigWithKey;
   form: UseFormReturn<FormSchema>;
   index: number;
 }> = ({

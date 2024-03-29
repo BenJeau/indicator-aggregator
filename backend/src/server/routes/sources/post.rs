@@ -2,7 +2,11 @@ use axum::{extract::State, response::IntoResponse, Json};
 use sqlx::PgPool;
 
 use crate::{
-    postgres::{logic::sources, schemas::sources::CreateSource},
+    postgres::{
+        logic::sources,
+        schemas::sources::{CreateSource, SourceKind},
+    },
+    sources::runners::send_update_request,
     Result,
 };
 
@@ -24,7 +28,13 @@ pub async fn create_source(
     State(pool): State<PgPool>,
     Json(source): Json<CreateSource>,
 ) -> Result<impl IntoResponse> {
-    let source_id = sources::create_source(&pool, source).await?;
+    let source_id = sources::create_source(&pool, &source).await?;
+
+    if source.kind != SourceKind::System {
+        if let Some(source_code) = source.source_code {
+            send_update_request(&pool, source.kind, &source_id, &source_code).await?;
+        }
+    }
 
     Ok(source_id.to_string())
 }

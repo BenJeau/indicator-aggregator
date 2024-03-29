@@ -32,6 +32,8 @@ pub enum Error {
     Url(url::ParseError),
     CacheError(cache::CacheError),
     InvalidHeaderValue(reqwest::header::InvalidHeaderValue),
+    TonicTransportError(tonic::transport::Error),
+    TonicStatus(tonic::Status),
 }
 
 impl std::error::Error for Error {}
@@ -87,6 +89,18 @@ impl From<cache::CacheError> for Error {
 impl From<reqwest::header::InvalidHeaderValue> for Error {
     fn from(error: reqwest::header::InvalidHeaderValue) -> Self {
         Self::InvalidHeaderValue(error)
+    }
+}
+
+impl From<tonic::transport::Error> for Error {
+    fn from(error: tonic::transport::Error) -> Self {
+        Self::TonicTransportError(error)
+    }
+}
+
+impl From<tonic::Status> for Error {
+    fn from(error: tonic::Status) -> Self {
+        Self::TonicStatus(error)
     }
 }
 

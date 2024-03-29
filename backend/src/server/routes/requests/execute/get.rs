@@ -85,7 +85,12 @@ pub async fn sse_handler(
 
     let source_integrations = sources
         .into_iter()
-        .map(|source| (integrations::source(&source.source_name), source))
+        .map(|source| {
+            (
+                integrations::source(&source.source_name, &source.source_kind),
+                source,
+            )
+        })
         .collect::<Vec<_>>();
 
     let start_data = source_integrations

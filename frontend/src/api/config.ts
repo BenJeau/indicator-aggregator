@@ -3,21 +3,31 @@ import { queryOptions, useMutation } from "@tanstack/react-query";
 import { fetcher, queryClient } from "@/api";
 import { ServerConfig, UpdateServerConfig } from "@/types/backendTypes";
 
-const cleanConfigValue = (value?: string) =>
-  value?.replace(/\\n/g, "\n").replace(/\\t/g, "\t").replace(/\\r/g, "\r");
+export const cleanConfigValue = (value?: string) =>
+  value
+    ?.toString()
+    .replace(/\\n/g, "\n")
+    .replace(/\\t/g, "\t")
+    .replace(/\\r/g, "\r");
 
 export const configQueryOptions = queryOptions({
   queryKey: ["config"],
-  queryFn: async ({ signal }) =>
-    (
-      await fetcher.get<ServerConfig[]>("/config", {
-        signal,
-      })
-    ).map((config) => ({
-      ...config,
-      value: cleanConfigValue(config.value),
-      defaultValue: cleanConfigValue(config.defaultValue)!,
-    })),
+  queryFn: async ({ signal }) => {
+    const config = await fetcher.get<ServerConfig>("/config", {
+      signal,
+    });
+
+    return Object.fromEntries(
+      Object.entries(config).map(([key, value]) => [
+        key,
+        {
+          ...value,
+          value: cleanConfigValue(value.value),
+          defaultValue: cleanConfigValue(value.defaultValue),
+        },
+      ]),
+    ) as ServerConfig;
+  },
 });
 
 export const useConfigUpdate = () =>

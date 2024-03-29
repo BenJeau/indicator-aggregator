@@ -23,6 +23,12 @@ VALUES
   ('URLScan.io - Submit', '...', 'https://urlscan.io/docs/api/', '{}', '{"URL"}', TRUE, FALSE, NULL, 150, 60, (SELECT id FROM "providers" WHERE name = 'URLScan.io'), 'system', FALSE, NULL),
   ('Internet Archive', 'Stores archived versions of websites', 'https://archive.org/help/wayback_api.php', '{}', '{"URL"}', TRUE, FALSE, NULL, 150, 60, (SELECT id FROM "providers" WHERE name = 'URLScan.io'), 'system', FALSE, NULL);
 
+INSERT INTO "sources"
+  ("name", "description", "url", "tags", "supported_indicators", "enabled", "task_enabled", "task_interval", "limit_count", "limit_interval", "provider_id", "kind", "cache_enabled", "cache_interval", "source_code")
+VALUES
+  ('Simple Get Request Python', 'Execute a simple GET request on the indicator data', '...', '{}', '{"URL"}', TRUE, FALSE, NULL, NULL, NULL, NULL, 'python', FALSE, NULL, 'import urllib.request\n\ndef fetch(url):\n  try:\n    with urllib.request.urlopen(url) as response:\n      html_content = response.read().decode("utf-8", "ignore")\n    return html_content\n  except Exception as e:\n    print(f"An error occurred: {e}")\n    return None\n\ndef fetch_data(indicator_data, indicator_kind):\n  return fetch(indicator_data) or ""\n\ndef background_task():\n  pass');
+
+
 -- # [cloudflare]
 -- # [censys]
 -- # [cira]

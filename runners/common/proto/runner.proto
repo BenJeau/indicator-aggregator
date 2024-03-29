@@ -1,0 +1,35 @@
+syntax = "proto3";
+package runner;
+
+service Runner {
+  rpc FetchData(FetchDataRequest) returns (FetchDataReply);
+  rpc BackgroundTask(BackgroundTaskRequest) returns (Empty);
+  rpc Update(UpdateRequest) returns (Empty);
+  rpc Delete(DeleteRequest) returns (Empty);
+  rpc Init(InitRequest) returns (Empty);
+}
+
+message Indicator {
+  string data = 1;
+  string kind = 2;
+}
+
+message FetchDataRequest {
+  Indicator indicator = 1;
+  string source = 2;
+}
+
+message FetchDataReply { string data = 1; }
+
+message BackgroundTaskRequest { string source = 1; }
+
+message UpdateRequest {
+  string source = 1;
+  string source_code = 2;
+}
+
+message DeleteRequest { string source = 1; }
+
+message Empty {}
+
+message InitRequest { repeated UpdateRequest updates = 1; }

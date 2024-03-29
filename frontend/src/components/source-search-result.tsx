@@ -7,11 +7,14 @@ import { Source } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 import config from "@/config";
+import { sourceKindIconMapping } from "@/data";
 
 const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
-  data: { id, name, description, enabled, providerId, url, favicon },
+  data: { id, name, description, enabled, providerId, url, favicon, kind },
 }) => {
   const [imgHasError, setImgHasError] = useState(true);
+
+  const SourceKindIcon = sourceKindIconMapping[kind];
 
   return (
     <Link
@@ -31,18 +34,21 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               }
               style={{ imageRendering: "pixelated" }}
               className={cn(
-                "w-6 h-6 rounded shadow border",
+                "w-8 h-8 rounded shadow border",
                 imgHasError && "hidden",
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
             />
             <Database
-              size={16}
+              size={32}
               className={cn("min-w-4", !imgHasError && "hidden")}
             />
-            <div className="flex gap-2 items-baseline flex-wrap gap-y-0">
-              <div className="font-semibold">{name}</div>
+            <div className="flex gap-2 flex-col gap-y-0">
+              <div className="font-semibold flex items-center gap-1">
+                <SourceKindIcon className="w-4 h-4" />
+                {name}
+              </div>
               <div className="text-xs opacity-70 whitespace-nowrap">
                 {providerId && "has provider"}
                 {!providerId && "has no provider"}
@@ -52,7 +58,6 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
 
           <div className="text-sm">
             {description}
-
             {description.length === 0 && (
               <div className="opacity-50 italic">no description</div>
             )}

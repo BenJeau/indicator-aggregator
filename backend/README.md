@@ -23,6 +23,12 @@ sqlx migrate run
 
 > **Note**: you will need to have the `DATABASE_URL` environment variable properly defined either in the shell or in the `.env` file.
 
+Whenever you make modifications to the migrations or the SQL queries made within the codebase, you need to run the following in order for the build steps in CI to not need a live PostgreSQL instance:
+
+```sh
+cargo sqlx prepare
+```
+
 ### Frontend types
 
 Backend types used for the REST API are available for the TypeScript frontend thanks to [typeshare](https://github.com/1Password/typeshare) and can be created using the following command:

@@ -175,12 +175,7 @@ CREATE TABLE IF NOT EXISTS "server_config" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
     "key" TEXT NOT NULL UNIQUE,
-    "friendly_name" TEXT NOT NULL,
-    "description" TEXT NOT NULL DEFAULT '',
-    "default_value" TEXT NOT NULL,
-    "kind" "server_config_kind" NOT NULL,
-    "category" TEXT,
-    "value" TEXT
+    "value" TEXT NOT NULL
 );
 
 CREATE TRIGGER "source_providers_updated_at" BEFORE UPDATE ON "providers" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");

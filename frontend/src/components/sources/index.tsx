@@ -247,6 +247,7 @@ function getElapsedTime(diff: number): string {
 const SourceErrorPreview: { [key in SourceError["kind"]]: string } = {
   DISABLED_INDICATOR: "Disabled Indicator",
   PROVIDER_DISABLED: "Disabled Provider",
+  RUNNER_DISABLED: "Disabled Runner",
   MISSING_SECRET: "Missing Secret",
   SOURCE_DISABLED: "Source Disabled",
   UNSUPPORTED_INDICATOR: "Unsupported Indicator",

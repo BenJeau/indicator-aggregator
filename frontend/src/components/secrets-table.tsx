@@ -93,8 +93,8 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
             Secrets are used to store sensitive information such as API keys,
             passwords, and other credentials.{" "}
             <span className="font-semibold">
-              Data is encrypted in transit, encrypted at the application, and
-              doubly encrypted at rest.
+              Data is encrypted in transit, encrypted at the application level,
+              and doubly encrypted at rest.
             </span>
           </p>
         </div>

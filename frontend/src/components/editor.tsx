@@ -59,6 +59,7 @@ export const Editor: FC<Props> = ({ value, onChange, sourceKind }) => {
         onChange && onChange(value ?? "");
       }}
       options={{
+        readOnly: !onChange,
         lineNumbers: "off",
         folding: false,
         minimap: { enabled: false },
