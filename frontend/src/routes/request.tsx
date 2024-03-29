@@ -71,12 +71,16 @@ const RequestComponent: React.FC = () => {
 
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
-      if (name === "indicator" && value.autoDetectKind) {
-        form.setValue("indicatorKind", detectIndicatorKind(value.indicator));
+      if (name === "indicator" && value.autoDetectKind && value.indicator) {
+        const indicatorKindDetected = detectIndicatorKind(value.indicator);
+
+        if (indicatorKindDetected) {
+          form.setValue("indicatorKind", indicatorKindDetected);
+        }
       }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch]);
+  }, [form]);
 
   const onSubmit = (values: FormSchema) => {
     navigate({
