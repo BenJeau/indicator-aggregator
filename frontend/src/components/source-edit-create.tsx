@@ -62,7 +62,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { configQueryOptions } from "@/api/config";
+import { cleanConfigValue, configQueryOptions } from "@/api/config";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -185,10 +185,10 @@ export const SourceEditCreate: React.FC<Props> = ({
       cacheInterval: undefined,
       providerId: undefined,
       kind: "PYTHON",
-      sourceCode: "",
       ignoreLists,
       sourceSecrets,
       ...source,
+      sourceCode: cleanConfigValue(source?.sourceCode ?? ""),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [source]

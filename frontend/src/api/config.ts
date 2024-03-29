@@ -3,7 +3,7 @@ import { queryOptions, useMutation } from "@tanstack/react-query";
 import { fetcher, queryClient } from "@/api";
 import { ServerConfig, UpdateServerConfig } from "@/types/backendTypes";
 
-const cleanConfigValue = (value?: string) =>
+export const cleanConfigValue = (value?: string) =>
   value
     ?.toString()
     .replace(/\\n/g, "\n")
