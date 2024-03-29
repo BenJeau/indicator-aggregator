@@ -25,7 +25,7 @@ export const configQueryOptions = queryOptions({
           value: cleanConfigValue(value.value),
           defaultValue: cleanConfigValue(value.defaultValue),
         },
-      ])
+      ]),
     ) as ServerConfig;
   },
 });
