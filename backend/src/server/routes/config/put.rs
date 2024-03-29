@@ -22,7 +22,7 @@ pub async fn update_config(
     State(pool): State<PgPool>,
     Json(data): Json<Vec<UpdateServerConfig>>,
 ) -> Result<impl IntoResponse> {
-    server_config::update_server_configs(&pool, &data).await?;
+    server_config::create_or_update_server_configs(&pool, &data).await?;
 
     Ok(StatusCode::NO_CONTENT)
 }

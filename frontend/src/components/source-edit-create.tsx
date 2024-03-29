@@ -1080,13 +1080,9 @@ export const SourceEditCreate: React.FC<Props> = ({
                         let configEntry;
 
                         if (formSourceKind === SourceKind.Python) {
-                          configEntry = config.data?.filter(
-                            (i) => i.key === "PYTHON_SOURCE_TEMPLATE"
-                          )[0];
+                          configEntry = config.data?.python_source_template;
                         } else if (formSourceKind === SourceKind.JavaScript) {
-                          configEntry = config.data?.filter(
-                            (i) => i.key === "JAVASCRIPT_SOURCE_TEMPLATE"
-                          )[0];
+                          configEntry = config.data?.javascript_source_template;
                         }
 
                         if (configEntry) {
