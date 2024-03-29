@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use common::{BackgroundTaskRequest, FetchDataRequest};
+use tonic::transport::Endpoint;
 use tracing::instrument;
 
 use crate::{
@@ -25,10 +26,11 @@ impl Source for Python {
             }),
         };
 
-        let mut client = common::runner_client::RunnerClient::connect(
-            "http://indicator_aggregator_python_runner:50051",
-        )
-        .await?;
+        let config = state.get_server_config().await?;
+        let endpoint =
+            Endpoint::from_shared(config.python_runner_grpc_address.get_value().to_string())?;
+
+        let mut client = common::runner_client::RunnerClient::connect(endpoint).await?;
 
         let data = client.fetch_data(request).await?.into_inner().data;
 
@@ -41,10 +43,11 @@ impl Source for Python {
             source: state.source_id.to_string(),
         };
 
-        let mut client = common::runner_client::RunnerClient::connect(
-            "http://indicator_aggregator_python_runner:50051",
-        )
-        .await?;
+        let config = state.get_server_config().await?;
+        let endpoint =
+            Endpoint::from_shared(config.python_runner_grpc_address.get_value().to_string())?;
+
+        let mut client = common::runner_client::RunnerClient::connect(endpoint).await?;
 
         client.background_task(request).await?;
 

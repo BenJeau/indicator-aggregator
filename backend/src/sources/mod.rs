@@ -7,7 +7,7 @@ use tracing::{error, instrument, warn};
 use uuid::Uuid;
 
 use crate::{
-    postgres::schemas::{requests::CreateSourceRequest, sources::InternalRequest},
+    postgres::schemas::{requests::CreateSourceRequest, server_config, sources::InternalRequest},
     schemas::{
         Data, DataCache, DataCacheAction, DataSource, DataTiming, Indicator, IndicatorKind,
         RequestExecuteParam, SourceError,
@@ -153,6 +153,10 @@ impl FetchState {
         .await?;
 
         Ok(Self::new(state.pool.clone(), secrets, source_id.clone()))
+    }
+
+    async fn get_server_config(&self) -> Result<server_config::ServerConfig> {
+        server_config::ServerConfig::get_config_with_defaults_and_db_results(&self.pool).await
     }
 }
 

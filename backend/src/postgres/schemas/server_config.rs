@@ -1,9 +1,11 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use sqlx::{FromRow, PgPool};
 use typeshare::typeshare;
 use utoipa::ToSchema;
 use uuid::Uuid;
-use sqlx::FromRow;
+
+use crate::{postgres::logic, Result};
 
 /// Enum containing the different kinds of server configuration entries
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, PartialEq, Hash, ToSchema, Default)]
@@ -54,6 +56,11 @@ pub struct ServerConfigEntry<T: Default> {
     pub category: ServerConfigCategory,
 }
 
+impl<T: Default> ServerConfigEntry<T> {
+    pub fn get_value(&self) -> &T {
+        self.value.as_ref().unwrap_or(&self.default_value)
+    }
+}
 
 #[typeshare]
 pub type ServerConfigEntryString = ServerConfigEntry<String>;
@@ -88,32 +95,46 @@ pub struct DbServerConfig {
 #[typeshare]
 
 pub struct ServerConfig {
-    javascript_source_template: ServerConfigEntryString,
-    python_source_template: ServerConfigEntryString,
-    proxy_enabled: ServerConfigEntryBool,
-    proxy_type: ServerConfigEntryString,
-    proxy_value: ServerConfigEntryString,
-    sse_keep_alive: ServerConfigEntryU32,
-    sse_number_concurrent_source_fetching: ServerConfigEntryU32,
-    javascript_runner_grpc_address: ServerConfigEntryString,
-    javascript_runner_enabled: ServerConfigEntryBool,
-    python_runner_grpc_address: ServerConfigEntryString,
-    python_runner_enabled: ServerConfigEntryBool
+    pub javascript_source_template: ServerConfigEntryString,
+    pub python_source_template: ServerConfigEntryString,
+    pub proxy_enabled: ServerConfigEntryBool,
+    pub proxy_type: ServerConfigEntryString,
+    pub proxy_value: ServerConfigEntryString,
+    pub sse_keep_alive: ServerConfigEntryU32,
+    pub sse_number_concurrent_source_fetching: ServerConfigEntryU32,
+    pub javascript_runner_grpc_address: ServerConfigEntryString,
+    pub javascript_runner_enabled: ServerConfigEntryBool,
+    pub python_runner_grpc_address: ServerConfigEntryString,
+    pub python_runner_enabled: ServerConfigEntryBool,
 }
 
 impl Default for ServerConfig {
     fn default() -> Self {
         Self {
             javascript_source_template: ServerConfigEntry {
-                default_value: "async function fetchData(indicator, state) {\n    // perform your source data correlation here \n}\n\nasync function backgroundTask(state) {\n    // perform your background task here \n}".to_string(),
+                default_value: r#"async function fetchData(indicator_data, indicator_kind) {
+  // perform your source data correlation here
+}
+
+async function backgroundTask() {
+  // perform your background task here
+}"#
+                .to_string(),
                 friendly_name: "Javascript Source Template".to_string(),
                 description: "Template for the Javascript source code".to_string(),
                 kind: ServerConfigKind::Code,
                 category: ServerConfigCategory::Code,
-                ..Default::default()    
+                ..Default::default()
             },
             python_source_template: ServerConfigEntry {
-                default_value: "def fetch_data(indicator, state):\n    # perform your source data correlation here \n\n\ndef background_task(state):\n    # perform your background task here \n".to_string(),
+                default_value: r#"def fetch_data(indicator_data, indicator_kind):
+  # perform your source data correlation here
+  pass
+
+def background_task():
+  # perform your background task here
+  pass"#
+                    .to_string(),
                 friendly_name: "Python Source Template".to_string(),
                 description: "Template for the Python source code".to_string(),
                 kind: ServerConfigKind::Code,
@@ -161,7 +182,7 @@ impl Default for ServerConfig {
                 ..Default::default()
             },
             javascript_runner_grpc_address: ServerConfigEntry {
-                default_value: "localhost:50051".to_string(),
+                default_value: "http://indicator_aggregator_javascript_runner:50051".to_string(),
                 friendly_name: "Javascript Runner GRPC Address".to_string(),
                 description: "GRPC address of the Javascript runner".to_string(),
                 kind: ServerConfigKind::String,
@@ -169,7 +190,7 @@ impl Default for ServerConfig {
                 ..Default::default()
             },
             javascript_runner_enabled: ServerConfigEntry {
-                default_value: true,
+                default_value: false,
                 friendly_name: "Javascript Runner Enabled".to_string(),
                 description: "Enable or disable the Javascript runner".to_string(),
                 kind: ServerConfigKind::Boolean,
@@ -177,7 +198,7 @@ impl Default for ServerConfig {
                 ..Default::default()
             },
             python_runner_grpc_address: ServerConfigEntry {
-                default_value: "localhost:50053".to_string(),
+                default_value: "http://indicator_aggregator_python_runner:50051".to_string(),
                 friendly_name: "Python Runner GRPC Address".to_string(),
                 description: "GRPC address of the Python runner".to_string(),
                 kind: ServerConfigKind::String,
@@ -205,69 +226,82 @@ impl ServerConfig {
                     self.javascript_source_template.created_at = Some(db_result.created_at);
                     self.javascript_source_template.updated_at = Some(db_result.updated_at);
                     self.javascript_source_template.value = Some(db_result.value);
-                },
+                }
                 "python_source_template" => {
                     self.python_source_template.id = Some(db_result.id);
                     self.python_source_template.created_at = Some(db_result.created_at);
                     self.python_source_template.updated_at = Some(db_result.updated_at);
                     self.python_source_template.value = Some(db_result.value);
-                },
+                }
                 "proxy_enabled" => {
                     self.proxy_enabled.id = Some(db_result.id);
                     self.proxy_enabled.created_at = Some(db_result.created_at);
                     self.proxy_enabled.updated_at = Some(db_result.updated_at);
                     self.proxy_enabled.value = Some(db_result.value.parse().unwrap());
-                },
+                }
                 "proxy_type" => {
                     self.proxy_type.id = Some(db_result.id);
                     self.proxy_type.created_at = Some(db_result.created_at);
                     self.proxy_type.updated_at = Some(db_result.updated_at);
                     self.proxy_type.value = Some(db_result.value);
-                },
+                }
                 "proxy_value" => {
                     self.proxy_value.id = Some(db_result.id);
                     self.proxy_value.created_at = Some(db_result.created_at);
                     self.proxy_value.updated_at = Some(db_result.updated_at);
                     self.proxy_value.value = Some(db_result.value);
-                },
+                }
                 "sse_keep_alive" => {
                     self.sse_keep_alive.id = Some(db_result.id);
                     self.sse_keep_alive.created_at = Some(db_result.created_at);
                     self.sse_keep_alive.updated_at = Some(db_result.updated_at);
                     self.sse_keep_alive.value = Some(db_result.value.parse().unwrap());
-                },
+                }
                 "sse_number_concurrent_source_fetching" => {
                     self.sse_number_concurrent_source_fetching.id = Some(db_result.id);
-                    self.sse_number_concurrent_source_fetching.created_at = Some(db_result.created_at);
-                    self.sse_number_concurrent_source_fetching.updated_at = Some(db_result.updated_at);
-                    self.sse_number_concurrent_source_fetching.value = Some(db_result.value.parse().unwrap());
-                },
+                    self.sse_number_concurrent_source_fetching.created_at =
+                        Some(db_result.created_at);
+                    self.sse_number_concurrent_source_fetching.updated_at =
+                        Some(db_result.updated_at);
+                    self.sse_number_concurrent_source_fetching.value =
+                        Some(db_result.value.parse().unwrap());
+                }
                 "javascript_runner_grpc_address" => {
                     self.javascript_runner_grpc_address.id = Some(db_result.id);
                     self.javascript_runner_grpc_address.created_at = Some(db_result.created_at);
                     self.javascript_runner_grpc_address.updated_at = Some(db_result.updated_at);
                     self.javascript_runner_grpc_address.value = Some(db_result.value);
-                },
+                }
                 "javascript_runner_enabled" => {
                     self.javascript_runner_enabled.id = Some(db_result.id);
                     self.javascript_runner_enabled.created_at = Some(db_result.created_at);
                     self.javascript_runner_enabled.updated_at = Some(db_result.updated_at);
                     self.javascript_runner_enabled.value = Some(db_result.value.parse().unwrap());
-                },
+                }
                 "python_runner_grpc_address" => {
                     self.python_runner_grpc_address.id = Some(db_result.id);
                     self.python_runner_grpc_address.created_at = Some(db_result.created_at);
                     self.python_runner_grpc_address.updated_at = Some(db_result.updated_at);
                     self.python_runner_grpc_address.value = Some(db_result.value);
-                },
+                }
                 "python_runner_enabled" => {
                     self.python_runner_enabled.id = Some(db_result.id);
                     self.python_runner_enabled.created_at = Some(db_result.created_at);
                     self.python_runner_enabled.updated_at = Some(db_result.updated_at);
                     self.python_runner_enabled.value = Some(db_result.value.parse().unwrap());
-                },
+                }
                 _ => (),
             };
         }
+    }
+
+    pub async fn get_config_with_defaults_and_db_results(pool: &PgPool) -> Result<Self> {
+        let mut config = ServerConfig::default();
+
+        let db_config = logic::server_config::get_all_server_configs(pool).await?;
+
+        config.combine_with_db_results(db_config);
+
+        Ok(config)
     }
 }

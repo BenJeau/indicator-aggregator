@@ -78,7 +78,7 @@ impl Validator for runner::InitRequest {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct SourceCodeMapping(Arc<Mutex<BTreeMap<String, String>>>);
 
 impl SourceCodeMapping {
