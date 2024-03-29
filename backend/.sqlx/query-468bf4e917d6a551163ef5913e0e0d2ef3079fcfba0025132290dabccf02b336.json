@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO server_config (key, value)\nSELECT * FROM UNNEST($1::text[], $2::text[]) AS t(key, value)\nON CONFLICT (key) DO UPDATE\nSET value = EXCLUDED.value\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "TextArray",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "468bf4e917d6a551163ef5913e0e0d2ef3079fcfba0025132290dabccf02b336"
+}

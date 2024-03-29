@@ -1,0 +1,113 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nSELECT\nsources.id as source_id,\nsources.name as source_name,\nsources.kind as \"source_kind: _\",\nsources.enabled as source_enabled,\nsources.url as source_url,\nsources.favicon as source_favicon,\nsources.supported_indicators as source_supported_indicators,\nsources.disabled_indicators as source_disabled_indicators,\nsources.cache_enabled as source_cache_enabled,\nsources.cache_interval as source_cache_interval,\nproviders.id as \"provider_id: Option<Uuid>\",\nproviders.enabled as \"provider_enabled: Option<bool>\",\nCOALESCE(array_agg(DISTINCT source_secrets.id) FILTER (WHERE source_secrets.id IS NOT NULL), '{}') AS \"missing_source_secrets!\",\nCOALESCE(array_agg(DISTINCT ignore_list_entries.ignore_list_id) FILTER (WHERE ignore_list_entries.ignore_list_id IS NOT NULL), '{}') AS \"within_ignore_lists!\"\nFROM sources\nLEFT JOIN providers ON providers.id = sources.provider_id\nLEFT JOIN source_secrets ON source_secrets.source_id = sources.id AND source_secrets.required = TRUE AND source_secrets.secret_id IS NULL\nLEFT JOIN source_ignore_lists ON source_ignore_lists.source_id = sources.id\nLEFT JOIN ignore_lists ON ignore_lists.id = source_ignore_lists.ignore_list_id OR ignore_lists.\"global\" = TRUE\nLEFT JOIN ignore_list_entries on ignore_lists.id = ignore_list_entries.ignore_list_id AND ignore_list_entries.indicator_kind = $1 AND ignore_list_entries.data LIKE '%' || $2 || '%'\nWHERE CARDINALITY($3::UUID[]) = 0 OR sources.id = ANY($3::UUID[])\nGROUP BY sources.id, providers.id;\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "source_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "source_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "source_kind: _",
+        "type_info": {
+          "Custom": {
+            "name": "source_kind",
+            "kind": {
+              "Enum": [
+                "system",
+                "javascript",
+                "python"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "source_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "source_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "source_favicon",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "source_supported_indicators",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "source_disabled_indicators",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 8,
+        "name": "source_cache_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 9,
+        "name": "source_cache_interval",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "provider_id: Option<Uuid>",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 11,
+        "name": "provider_enabled: Option<bool>",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "missing_source_secrets!",
+        "type_info": "UuidArray"
+      },
+      {
+        "ordinal": 13,
+        "name": "within_ignore_lists!",
+        "type_info": "UuidArray"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "d645b63aac8fc70bd12f60aa3f938e262d9695036b7319e40c49370622d8782f"
+}
