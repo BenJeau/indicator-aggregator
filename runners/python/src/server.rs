@@ -5,21 +5,24 @@ use common::{
     UpdateRequest, Validator,
 };
 use tonic::{transport::Server, Request, Response, Status};
-use tracing::info;
+use tracing::{info, instrument};
 
 use crate::executor;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct PythonRunner {
     source_code: SourceCodeMapping,
 }
 
 #[tonic::async_trait]
 impl Runner for PythonRunner {
+    #[instrument(err, ret, skip_all, fields(request = ?request.get_ref()))]
     async fn fetch_data(
         &self,
         request: Request<FetchDataRequest>,
     ) -> Result<Response<FetchDataReply>, Status> {
+        tracing::info!("received request");
+
         let request_data = request.into_inner().validate()?;
         let source_code = self.source_code.get(request_data.source.as_str())?;
 
@@ -29,10 +32,13 @@ impl Runner for PythonRunner {
         Ok(Response::new(data.into()))
     }
 
+    #[instrument(err, ret)]
     async fn background_task(
         &self,
         request: Request<BackgroundTaskRequest>,
     ) -> Result<Response<Empty>, Status> {
+        tracing::info!("received request");
+
         let request_data = request.into_inner().validate()?;
         let source_code = self.source_code.get(request_data.source.as_str())?;
 
@@ -42,10 +48,12 @@ impl Runner for PythonRunner {
         Ok(Response::new(Empty {}))
     }
 
+    #[instrument(err, ret)]
     async fn update(&self, request: Request<UpdateRequest>) -> Result<Response<Empty>, Status> {
         handle_update(&self.source_code, request)
     }
 
+    #[instrument(err, ret)]
     async fn init(&self, request: Request<InitRequest>) -> Result<Response<Empty>, Status> {
         handle_init(&self.source_code, request)
     }
@@ -62,6 +70,7 @@ impl PythonRunner {
         info!("listening on http://{addr}");
 
         Server::builder()
+            .trace_fn(|_| tracing::info_span!("python_runner"))
             .add_service(RunnerServer::new(PythonRunner::default()))
             .serve(addr)
             .await?;
