@@ -22,7 +22,7 @@ where
 }
 
 pub fn fetch_data(source_code: &str, indicator: Indicator) -> PyResult<String> {
-    execute_code(source_code, "fetch_data", &[indicator.data, indicator.kind])
+    execute_code(source_code, "fetch_data", [indicator.data, indicator.kind])
 }
 
 pub fn background_task(source_code: &str) -> PyResult<String> {

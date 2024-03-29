@@ -10,7 +10,7 @@ use crate::{
 };
 
 pub async fn send_init_request(pool: &PgPool) -> Result<()> {
-    let updates = get_source_code_by_kind(&pool, SourceKind::Python).await?;
+    let updates = get_source_code_by_kind(pool, SourceKind::Python).await?;
 
     let request = InitRequest {
         updates: updates

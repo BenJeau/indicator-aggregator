@@ -208,7 +208,7 @@ where
     }
 
     pub fn timeout_layer(&self) -> TimeoutLayer {
-        self.timeout_layer.clone()
+        self.timeout_layer
     }
 
     pub fn size_limit_layer(&self) -> DefaultBodyLimit {

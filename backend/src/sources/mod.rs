@@ -152,7 +152,7 @@ impl FetchState {
         )
         .await?;
 
-        Ok(Self::new(state.pool.clone(), secrets, source_id.clone()))
+        Ok(Self::new(state.pool.clone(), secrets, *source_id))
     }
 
     async fn get_server_config(&self) -> Result<server_config::ServerConfig> {

@@ -109,7 +109,7 @@ impl SourceCodeMapping {
 
         binding
             .get(source)
-            .map(|a| a.clone())
+            .cloned()
             .ok_or_else(|| tonic::Status::not_found(format!("source {} not found", source)))
     }
 }
