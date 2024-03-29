@@ -10,6 +10,7 @@ mod utils;
 mod validators;
 
 pub use error::{Error, Result};
+use postgres::schemas::sources::SourceKind;
 pub use server::state::ServerState;
 
 const ENV_FILTER: &str = "backend=debug,cache=debug,tower_http=debug,shared=debug";
@@ -35,7 +36,7 @@ async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
     postgres::run_migrations(&state.pool).await?;
 
     let (runners_init, background_tasks, servers) = futures_util::future::join3(
-        sources::runners::send_init_request(&state.pool),
+        sources::runners::send_init_request(&state.pool, SourceKind::Python),
         sources::background_tasks::run_background_tasks(&state),
         server::RestServer::new(state.clone()).start(),
     )

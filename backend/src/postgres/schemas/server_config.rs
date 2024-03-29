@@ -1,11 +1,14 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, PgPool};
+use tonic::transport::Endpoint;
 use typeshare::typeshare;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::{postgres::logic, Result};
+
+use super::sources::SourceKind;
 
 /// Enum containing the different kinds of server configuration entries
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, PartialEq, Hash, ToSchema, Default)]
@@ -218,6 +221,16 @@ def background_task():
 }
 
 impl ServerConfig {
+    pub fn runner_endpoint(&self, source_kind: SourceKind) -> Result<Endpoint> {
+        let addr = match source_kind {
+            SourceKind::JavaScript => self.javascript_runner_grpc_address.get_value(),
+            SourceKind::Python => self.python_runner_grpc_address.get_value(),
+            _ => panic!("Invalid source kind"),
+        };
+
+        Endpoint::from_shared(addr.to_string()).map_err(Into::into)
+    }
+
     pub fn combine_with_db_results(&mut self, db_results: Vec<DbServerConfig>) {
         for db_result in db_results {
             match db_result.key.to_lowercase().as_str() {

@@ -1,9 +1,9 @@
 use async_trait::async_trait;
 use common::{BackgroundTaskRequest, FetchDataRequest};
-use tonic::transport::Endpoint;
 use tracing::instrument;
 
 use crate::{
+    postgres::schemas::sources::SourceKind,
     sources::{FetchState, Indicator, Source},
     Result,
 };
@@ -27,8 +27,7 @@ impl Source for Python {
         };
 
         let config = state.get_server_config().await?;
-        let endpoint =
-            Endpoint::from_shared(config.python_runner_grpc_address.get_value().to_string())?;
+        let endpoint = config.runner_endpoint(SourceKind::Python)?;
 
         let mut client = common::runner_client::RunnerClient::connect(endpoint).await?;
 
@@ -44,8 +43,7 @@ impl Source for Python {
         };
 
         let config = state.get_server_config().await?;
-        let endpoint =
-            Endpoint::from_shared(config.python_runner_grpc_address.get_value().to_string())?;
+        let endpoint = config.runner_endpoint(SourceKind::Python)?;
 
         let mut client = common::runner_client::RunnerClient::connect(endpoint).await?;
 

@@ -134,6 +134,20 @@ pub fn handle_init(
     Ok(Response::new(Empty {}))
 }
 
+pub fn handle_delete(
+    source_code: &SourceCodeMapping,
+    request: Request<DeleteRequest>,
+) -> Result<Response<Empty>, Status> {
+    let source = request.into_inner().source;
+    source_code
+        .0
+        .lock()
+        .map_err(|_| Status::internal("failed to lock source code mapping".to_string()))?
+        .remove(&source);
+
+    Ok(Response::new(Empty {}))
+}
+
 impl From<String> for runner::FetchDataReply {
     fn from(data: String) -> Self {
         runner::FetchDataReply { data }

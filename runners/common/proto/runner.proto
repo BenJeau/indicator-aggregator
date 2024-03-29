@@ -5,6 +5,7 @@ service Runner {
   rpc FetchData(FetchDataRequest) returns (FetchDataReply);
   rpc BackgroundTask(BackgroundTaskRequest) returns (Empty);
   rpc Update(UpdateRequest) returns (Empty);
+  rpc Delete(DeleteRequest) returns (Empty);
   rpc Init(InitRequest) returns (Empty);
 }
 
@@ -26,6 +27,8 @@ message UpdateRequest {
   string source = 1;
   string source_code = 2;
 }
+
+message DeleteRequest { string source = 1; }
 
 message Empty {}
 

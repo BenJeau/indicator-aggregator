@@ -304,7 +304,7 @@ pub async fn delete_source(pool: &PgPool, id: &Uuid) -> Result<u64> {
 }
 
 #[instrument(skip(pool), err, ret)]
-pub async fn create_source(pool: &PgPool, data: CreateSource) -> Result<Uuid> {
+pub async fn create_source(pool: &PgPool, data: &CreateSource) -> Result<Uuid> {
     sqlx::query_scalar!(
         r#"
 INSERT INTO sources (name, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)
@@ -325,7 +325,7 @@ RETURNING id"#,
         data.limit_count,
         data.limit_interval,
         data.provider_id,
-        data.kind as SourceKind,
+        &data.kind as &SourceKind,
         data.source_code,
         data.cache_enabled,
         data.cache_interval

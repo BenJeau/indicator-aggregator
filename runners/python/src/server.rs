@@ -1,8 +1,8 @@
 use common::{
-    handle_init, handle_update,
+    handle_delete, handle_init, handle_update,
     runner_server::{Runner, RunnerServer},
-    BackgroundTaskRequest, Empty, FetchDataReply, FetchDataRequest, InitRequest, SourceCodeMapping,
-    UpdateRequest, Validator,
+    BackgroundTaskRequest, DeleteRequest, Empty, FetchDataReply, FetchDataRequest, InitRequest,
+    SourceCodeMapping, UpdateRequest, Validator,
 };
 use tonic::{transport::Server, Request, Response, Status};
 use tracing::{info, instrument};
@@ -56,6 +56,11 @@ impl Runner for PythonRunner {
     #[instrument(err, ret)]
     async fn init(&self, request: Request<InitRequest>) -> Result<Response<Empty>, Status> {
         handle_init(&self.source_code, request)
+    }
+
+    #[instrument(err, ret)]
+    async fn delete(&self, request: Request<DeleteRequest>) -> Result<Response<Empty>, Status> {
+        handle_delete(&self.source_code, request)
     }
 }
 
