@@ -4,7 +4,7 @@ use typeshare::typeshare;
 use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
-use crate::Error;
+use crate::{postgres::schemas::sources::SourceKind, Error};
 
 /// Kind of the indicator
 #[derive(Deserialize, Debug, strum::Display, PartialEq, Eq, Clone, Copy, ToSchema)]
@@ -203,6 +203,7 @@ impl SseStartData {
 pub enum SourceError {
     UnsupportedIndicator,
     DisabledIndicator,
+    RunnerDisabled(SourceKind),
     SourceDisabled,
     ProviderDisabled(Uuid),
     WithinIgnoreList(Vec<Uuid>),

@@ -567,6 +567,7 @@ export interface DataTiming {
 export type SourceError = 
 	| { kind: "UNSUPPORTED_INDICATOR", content?: undefined }
 	| { kind: "DISABLED_INDICATOR", content?: undefined }
+	| { kind: "RUNNER_DISABLED", content: SourceKind }
 	| { kind: "SOURCE_DISABLED", content?: undefined }
 	| { kind: "PROVIDER_DISABLED", content: Uuid }
 	| { kind: "WITHIN_IGNORE_LIST", content: Uuid[] }

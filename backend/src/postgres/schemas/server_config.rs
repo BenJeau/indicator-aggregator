@@ -231,6 +231,14 @@ impl ServerConfig {
         Endpoint::from_shared(addr.to_string()).map_err(Into::into)
     }
 
+    pub fn runner_enabled(&self, source_kind: &SourceKind) -> bool {
+        match source_kind {
+            SourceKind::JavaScript => *self.javascript_runner_enabled.get_value(),
+            SourceKind::Python => *self.python_runner_enabled.get_value(),
+            _ => panic!("Invalid source kind"),
+        }
+    }
+
     pub fn combine_with_db_results(&mut self, db_results: Vec<DbServerConfig>) {
         for db_result in db_results {
             match db_result.key.to_lowercase().as_str() {
