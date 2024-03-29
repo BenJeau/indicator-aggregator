@@ -53,8 +53,8 @@ services:
     ports:
       - 5173:5173
     volumes:
-      - ./frontend:/frontend
-      - frontend_data:/frontend/node_modules
+      - ./frontend:/app
+      - frontend_data:/app/node_modules
     networks:
       - proxy-network
     env_file:
