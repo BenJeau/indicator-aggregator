@@ -4,19 +4,32 @@ import {
   AreaChart,
   Database,
   Globe,
+  History,
   LucideIcon,
   Scroll,
   Send,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  TooltipProps,
+} from "recharts";
 
 import RequestForm from "@/components/request-form";
 import { sourcesQueryOptions } from "@/api/sources";
 import { Separator } from "@/components/ui/separator";
 import { statsCountQueryOptions } from "@/api/stats";
+import { requestsQueryOptions } from "@/api/requests";
+import HistorySearchResult from "@/components/history-search-result";
 
 const IndexComponent: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
+  const requests = useSuspenseQuery(requestsQueryOptions);
 
   return (
     <>
@@ -36,58 +49,131 @@ const IndexComponent: React.FC = () => {
       </h4>
       <RequestForm sources={sources.data} />
 
-      <h4 className="mx-4 font-medium -mb-4 z-20 flex gap-2 items-center">
-        <AreaChart size={16} /> Stats
-      </h4>
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-        <StatsCounter
-          Icon={Database}
-          title="Total sources"
-          count={statsCount.data.sources}
-          to="/sources"
-        />
-        <StatsCounter
-          Icon={Globe}
-          title="Total providers"
-          count={statsCount.data.providers}
-          to="/providers"
-        />
-        <StatsCounter
-          Icon={Send}
-          title="Total requests"
-          count={statsCount.data.history}
-          to="/history"
-        />
-        <StatsCounter
-          Icon={Scroll}
-          title="Total ignore lists"
-          count={statsCount.data.ignoreLists}
-          to="/lists"
-        />
+      <div>
+        <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
+          <AreaChart size={16} /> Stats
+        </h4>
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatsCounter
+            Icon={Send}
+            count={statsCount.data.history}
+            title="Total requests"
+            subCount={statsCount.data.historyLast24hrs}
+            subTitle="Last 24 hours"
+            to="/history"
+          />
+          <StatsCounter
+            Icon={Database}
+            count={statsCount.data.sources}
+            title="Total sources"
+            subCount={statsCount.data.enabledSources}
+            subTitle="Enabled sources"
+            to="/sources"
+          />
+          <StatsCounter
+            Icon={Globe}
+            count={statsCount.data.providers}
+            title="Total providers"
+            subCount={statsCount.data.enabledProviders}
+            subTitle="Enabled providers"
+            to="/providers"
+          />
+          <StatsCounter
+            Icon={Scroll}
+            count={statsCount.data.ignoreLists}
+            title="Total ignore lists"
+            subCount={statsCount.data.enabledIgnoreLists}
+            subTitle="Enabled ignore lists"
+            to="/lists"
+          />
+        </div>
       </div>
+      <div className="mx-4">
+        <Separator />
+      </div>
+      <div>
+        <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
+          <History size={16} /> Latest requests
+        </h4>
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {requests.data.slice(0, 4).map((request) => (
+            <HistorySearchResult key={request.id} data={request} />
+          ))}
+        </div>
+      </div>
+      <div className="mx-4">
+        <Separator />
+      </div>
+
+      <Chart />
     </>
   );
 };
 
+const data = [{ name: "Page A", uv: 400, pv: 2400, amt: 2400 }];
+
+function CustomTooltip({
+  payload,
+  label,
+  active,
+}: TooltipProps<number, string>) {
+  if (active) {
+    return (
+      <div className="shadow-md rounded-md border bg-popover/50 backdrop-blur-md p-2 text-sm">
+        <p>{`${label} : ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+const Chart = () => (
+  <LineChart
+    width={600}
+    height={300}
+    data={data}
+    className="border rounded-md shadow-md p-2"
+  >
+    <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+    <CartesianGrid stroke="#ccc" />
+    <XAxis dataKey="name" />
+    <YAxis />
+    <Tooltip content={CustomTooltip} />
+  </LineChart>
+);
+
 interface StatsCounterProps {
   Icon: LucideIcon;
-  title: string;
   count: number;
+  title: string;
+  subCount: number;
+  subTitle: string;
   to: string;
 }
 
 const StatsCounter: React.FC<StatsCounterProps> = ({
   Icon,
-  title,
   count,
+  title,
+  subCount,
+  subTitle,
   to,
 }) => (
-  <Link to={to}>
-    <div className="rounded-md border shadow items-center p-4 flex gap-4 hover:bg-muted transition duration-100 ease-in-out cursor-pointer">
-      <Icon size={32} strokeWidth={1.5} className="text-primary" />
+  <Link to={to} title="Search results...">
+    <div className="rounded-xl border shadow-sm items-center p-4 flex gap-4 hover:bg-muted transition duration-100 ease-in-out cursor-pointer">
+      <div className="p-2 rounded-xl bg-primary border">
+        <Icon size={32} className="text-white" />
+      </div>
       <div>
-        <h5 className="text-lg font-semibold">{count}</h5>
-        <p>{title}</p>
+        <div className="flex items-baseline gap-2 font-semibold -mb-1">
+          <h5 className="text-xl">{count}</h5>
+          <p className="text-lg">{title}</p>
+        </div>
+        <div className="flex items-baseline gap-2 opacity-50">
+          <h5 className="text-sm">{subCount}</h5>
+          <p className="text-sm">{subTitle}</p>
+        </div>
       </div>
     </div>
   </Link>
@@ -99,5 +185,6 @@ export const Route = createFileRoute("/")({
     await Promise.all([
       queryClient.ensureQueryData(sourcesQueryOptions),
       queryClient.ensureQueryData(statsCountQueryOptions),
+      queryClient.ensureQueryData(requestsQueryOptions),
     ]),
 });

@@ -9,11 +9,11 @@ import "./index.css";
 
 import { routeTree } from "./routeTree.gen";
 import { queryClient } from "./api";
+import config from "./config";
 
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Utc from "dayjs/plugin/utc";
-import config from "./config";
 
 dayjs.extend(LocalizedFormat);
 dayjs.extend(Utc);
@@ -73,5 +73,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
