@@ -4,11 +4,11 @@ name = "python_runner"
 version = "0.1.0"
 
 [dependencies]
+pyo3 = { workspace = true }
 tokio = { workspace = true }
 tonic = { workspace = true }
+tonic-health = { workspace = true }
 tracing = { workspace = true }
 
 common = { path = "../common" }
 shared = { path = "../../shared" }
-
-pyo3 = "0.20.3"
