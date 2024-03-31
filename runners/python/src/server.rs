@@ -66,6 +66,8 @@ impl Runner for PythonRunner {
 
 impl PythonRunner {
     pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
+        let (_, health_service) = tonic_health::server::health_reporter();
+
         let config = common::config::Config::new("PYTHON_RUNNER", include_str!("../config.toml"))?;
 
         pyo3::prepare_freethreaded_python();
@@ -76,6 +78,7 @@ impl PythonRunner {
 
         Server::builder()
             .trace_fn(|_| tracing::info_span!("python_runner"))
+            .add_service(health_service)
             .add_service(RunnerServer::new(PythonRunner::default()))
             .serve(addr)
             .await?;
