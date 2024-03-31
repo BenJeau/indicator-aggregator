@@ -1,5 +1,5 @@
 use tracing::instrument;
-use validator::{validate_email, validate_ip_v4, validate_ip_v6, validate_url};
+use validator::{ValidateEmail, ValidateIp, ValidateUrl};
 
 use crate::{
     hashing::{figure_hash_type, Hash},
@@ -26,10 +26,10 @@ impl Indicator {
     pub fn validate(&self) -> Result<()> {
         let valid_data = match self.kind {
             IndicatorKind::Domain => validate_domain(&self.data),
-            IndicatorKind::Ipv4 => validate_ip_v4(&self.data),
-            IndicatorKind::Ipv6 => validate_ip_v6(&self.data),
-            IndicatorKind::Url => validate_url(&self.data),
-            IndicatorKind::Email => validate_email(&self.data),
+            IndicatorKind::Ipv4 => self.data.validate_ipv4(),
+            IndicatorKind::Ipv6 => self.data.validate_ipv6(),
+            IndicatorKind::Url => self.data.validate_url(),
+            IndicatorKind::Email => self.data.validate_email(),
             IndicatorKind::Sha1 => validate_hash(&self.data, Hash::Sha1),
             IndicatorKind::Sha256 => validate_hash(&self.data, Hash::Sha256),
             IndicatorKind::Sha512 => validate_hash(&self.data, Hash::Sha512),

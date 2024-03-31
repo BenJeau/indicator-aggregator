@@ -1,8 +1,5 @@
 use common::Indicator;
-use pyo3::{
-    types::{PyModule, PyTuple},
-    PyResult, Python, ToPyObject,
-};
+use pyo3::{prelude::*, types::PyTuple};
 
 fn execute_code<T, U>(
     source_code: &str,
@@ -14,9 +11,9 @@ where
     U: ExactSizeIterator<Item = T>,
 {
     Python::with_gil(|py| {
-        let code = PyModule::from_code(py, source_code, "", "")?;
+        let code = PyModule::from_code_bound(py, source_code, "", "")?;
 
-        let args = PyTuple::new(py, args);
+        let args = PyTuple::new_bound(py, args);
         code.getattr(function)?.call1(args)?.extract()
     })
 }
