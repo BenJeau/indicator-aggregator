@@ -389,11 +389,11 @@ WHERE id = $21"#,
 }
 
 #[instrument(skip(pool), err, ret)]
-pub async fn get_source_code_by_kind(pool: &PgPool, kind: SourceKind) -> Result<Vec<SourceCode>> {
+pub async fn get_source_code_by_kind(pool: &PgPool, kind: &SourceKind) -> Result<Vec<SourceCode>> {
     sqlx::query_as!(
         SourceCode,
         r#"SELECT id, source_code FROM sources WHERE kind = $1"#,
-        kind as SourceKind
+        kind as &SourceKind
     )
     .fetch_all(pool)
     .await

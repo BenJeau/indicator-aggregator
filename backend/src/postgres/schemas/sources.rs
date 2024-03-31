@@ -16,6 +16,15 @@ pub enum SourceKind {
     JavaScript,
 }
 
+impl ToString for SourceKind {
+    fn to_string(&self) -> String {
+        serde_json::to_string(&self)
+            .unwrap()
+            .trim_matches('"')
+            .to_string()
+    }
+}
+
 /// A place where indicator data is retrieved from
 #[derive(FromRow, Serialize, Clone, Debug, ToSchema)]
 #[serde(rename_all = "camelCase")]

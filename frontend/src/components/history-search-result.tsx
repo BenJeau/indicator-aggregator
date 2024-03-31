@@ -12,9 +12,9 @@ const HistorySearchResult: React.FC<ComponentSearchResultProps<Request>> = ({
     to="/history/$id"
     params={{ id }}
     activeProps={{
-      className: "bg-primary/10 border-primary shadow-primary/40 p-4",
+      className: "bg-primary/10 border-primary shadow-primary/40",
     }}
-    className="border rounded-xl p-2 shadow-sm flex gap-2 flex-col hover:bg-muted transition-all duration-100 ease-in-out"
+    className="border rounded-xl p-4 shadow-sm flex gap-2 flex-col hover:bg-muted transition-all duration-100 ease-in-out"
   >
     <div className="flex flex-col">
       <div className="flex justify-between gap-2">

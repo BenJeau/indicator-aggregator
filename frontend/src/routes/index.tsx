@@ -1,13 +1,15 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   AreaChart,
   Database,
   Globe,
   History,
   LucideIcon,
+  Power,
   Scroll,
   Send,
+  Server,
 } from "lucide-react";
 import {
   LineChart,
@@ -25,11 +27,25 @@ import { Separator } from "@/components/ui/separator";
 import { statsCountQueryOptions } from "@/api/stats";
 import { requestsQueryOptions } from "@/api/requests";
 import HistorySearchResult from "@/components/history-search-result";
+import { RunnerStatus, useRunnersStatus } from "@/api/runners";
+import { ServerConfigEntry, SourceKind } from "@/types/backendTypes";
+import {
+  runnerStatusBadgeVariantMapping,
+  runnerStatusMapping,
+  sourceKindIconMapping,
+} from "@/data";
+import { cn, getConfigValue, getKeyByValue } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { configQueryOptions } from "@/api/config";
 
 const IndexComponent: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const requests = useSuspenseQuery(requestsQueryOptions);
+
+  const config = useQuery(configQueryOptions);
+
+  const runnersStatus = useRunnersStatus();
 
   return (
     <>
@@ -53,7 +69,7 @@ const IndexComponent: React.FC = () => {
         <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
           <AreaChart size={16} /> Stats
         </h4>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
           <StatsCounter
             Icon={Send}
             count={statsCount.data.history}
@@ -95,7 +111,7 @@ const IndexComponent: React.FC = () => {
         <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
           <History size={16} /> Latest requests
         </h4>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
           {requests.data.slice(0, 4).map((request) => (
             <HistorySearchResult key={request.id} data={request} />
           ))}
@@ -104,9 +120,81 @@ const IndexComponent: React.FC = () => {
       <div className="mx-4">
         <Separator />
       </div>
+      <div>
+        <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
+          <Server size={16} /> Runners status
+        </h4>
+        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <RunnerStatusViewer
+            sourceKind={SourceKind.Python}
+            status={runnersStatus.data?.PYTHON}
+            address={config.data?.python_runner_grpc_address}
+            enabled={config.data?.python_runner_enabled}
+          />
+          <RunnerStatusViewer
+            sourceKind={SourceKind.JavaScript}
+            status={runnersStatus.data?.JAVA_SCRIPT}
+            address={config.data?.javascript_runner_grpc_address}
+            enabled={config.data?.javascript_runner_enabled}
+          />
+        </div>
+      </div>
 
       <Chart />
     </>
+  );
+};
+
+interface RunnerStatusViewerProps {
+  sourceKind: SourceKind;
+  status?: RunnerStatus;
+  address?: ServerConfigEntry<string>;
+  enabled?: ServerConfigEntry<boolean>;
+}
+
+const RunnerStatusViewer: React.FC<RunnerStatusViewerProps> = ({
+  sourceKind,
+  status,
+  address,
+  enabled,
+}) => {
+  const Icon = sourceKindIconMapping[sourceKind];
+  return (
+    <Link
+      to="/config"
+      className="border rounded-xl p-4 shadow-sm flex gap-2 justify-between items-center hover:bg-muted transition-all duration-100 ease-in-out flex-wrap"
+      title="View runner configuration..."
+    >
+      <div className="flex gap-x-4 gap-y-2 items-center flex-wrap">
+        <div
+          className={cn(
+            "rounded-lg w-8 h-8 flex items-center justify-center",
+            enabled
+              ? getConfigValue(enabled)
+                ? "bg-green-500/20"
+                : "bg-red-500/20"
+              : "bg-muted"
+          )}
+        >
+          <Power size={16} strokeWidth={2.54} />
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold flex gap-2">
+            <Icon width={16} className="fill-foreground" />
+            {getKeyByValue(SourceKind, sourceKind)} runner
+          </h3>
+          <p className="text-sm opacity-70 italic">
+            {address ? getConfigValue(address) : "-"}
+          </p>
+        </div>
+      </div>
+      <Badge
+        className="text-xs"
+        variant={status ? runnerStatusBadgeVariantMapping[status] : "secondary"}
+      >
+        {status ? runnerStatusMapping[status] : "Offline"}
+      </Badge>
+    </Link>
   );
 };
 

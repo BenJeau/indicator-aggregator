@@ -66,7 +66,7 @@ impl Runner for PythonRunner {
 
 impl PythonRunner {
     pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
-        let (_, health_service) = tonic_health::server::health_reporter();
+        let (_, health_service) = common::health::server::health_reporter();
 
         let config = common::config::Config::new("PYTHON_RUNNER", include_str!("../config.toml"))?;
 

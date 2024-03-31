@@ -7,7 +7,6 @@ version = "0.1.0"
 pyo3 = { workspace = true }
 tokio = { workspace = true }
 tonic = { workspace = true }
-tonic-health = { workspace = true }
 tracing = { workspace = true }
 
 common = { path = "../common" }

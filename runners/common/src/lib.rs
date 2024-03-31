@@ -9,6 +9,7 @@ use std::{
 
 pub use runner::*;
 use tonic::{Request, Response, Status};
+pub use tonic_health as health;
 
 pub mod config;
 

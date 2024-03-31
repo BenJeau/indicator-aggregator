@@ -531,6 +531,7 @@ dependencies = [
  "serde",
  "tonic",
  "tonic-build",
+ "tonic-health",
  "tracing",
 ]
 
@@ -2396,7 +2397,6 @@ dependencies = [
  "shared",
  "tokio",
  "tonic",
- "tonic-health",
  "tracing",
 ]
 
