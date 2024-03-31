@@ -1,3 +1,5 @@
+#![allow(clippy::blocks_in_conditions)]
+
 mod config;
 mod crypto;
 mod error;

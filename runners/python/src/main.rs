@@ -1,3 +1,5 @@
+#![allow(clippy::blocks_in_conditions)]
+
 mod executor;
 mod server;
 
