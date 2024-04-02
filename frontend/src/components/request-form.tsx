@@ -111,7 +111,7 @@ const RequestForm = forwardRef<RequestFormRef, Props>(
                     <FormLabel className="text-xs">Value</FormLabel>
                     <FormControl>
                       <Input
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. https://abuse.ch"
                         {...field}
                       />

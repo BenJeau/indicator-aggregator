@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::prelude::FromRow;
 use typeshare::typeshare;
@@ -32,5 +33,15 @@ pub struct Count {
 #[typeshare]
 pub struct CountPerId {
     pub id: Option<Uuid>,
-    pub count: i32,
+    pub name: Option<String>,
+    pub count: Option<i32>,
+}
+
+#[derive(FromRow, Serialize, ToSchema, Debug)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct CountPerHour {
+    pub total_count: i32,
+    pub cache_count: i32,
+    pub time_window: DateTime<Utc>,
 }

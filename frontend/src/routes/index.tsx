@@ -19,16 +19,27 @@ import {
   YAxis,
   Tooltip,
   TooltipProps,
+  Bar,
+  Legend,
 } from "recharts";
 
 import RequestForm from "@/components/request-form";
 import { sourcesQueryOptions } from "@/api/sources";
 import { Separator } from "@/components/ui/separator";
-import { statsCountQueryOptions } from "@/api/stats";
+import {
+  statsCountQueryOptions,
+  statsCountRequestsByHourQueryOptions,
+  statsCountRequestsByProvidersQueryOptions,
+  statsCountRequestsBySourcesQueryOptions,
+} from "@/api/stats";
 import { requestsQueryOptions } from "@/api/requests";
 import HistorySearchResult from "@/components/history-search-result";
 import { RunnerStatus, useRunnersStatus } from "@/api/runners";
-import { ServerConfigEntry, SourceKind } from "@/types/backendTypes";
+import {
+  CountPerHour,
+  ServerConfigEntry,
+  SourceKind,
+} from "@/types/backendTypes";
 import {
   runnerStatusBadgeVariantMapping,
   runnerStatusMapping,
@@ -42,6 +53,15 @@ const IndexComponent: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const requests = useSuspenseQuery(requestsQueryOptions);
+  const statsCountRequestsBySources = useSuspenseQuery(
+    statsCountRequestsBySourcesQueryOptions
+  );
+  const statsCountRequestsByProviders = useSuspenseQuery(
+    statsCountRequestsByProvidersQueryOptions
+  );
+  const statsCountRequestsByHour = useSuspenseQuery(
+    statsCountRequestsByHourQueryOptions
+  );
 
   const config = useQuery(configQueryOptions);
 
@@ -140,7 +160,7 @@ const IndexComponent: React.FC = () => {
         </div>
       </div>
 
-      <Chart />
+      <Chart data={statsCountRequestsByHour.data} />
     </>
   );
 };
@@ -198,8 +218,6 @@ const RunnerStatusViewer: React.FC<RunnerStatusViewerProps> = ({
   );
 };
 
-const data = [{ name: "Page A", uv: 400, pv: 2400, amt: 2400 }];
-
 function CustomTooltip({
   payload,
   label,
@@ -216,17 +234,25 @@ function CustomTooltip({
   return null;
 }
 
-const Chart = () => (
+interface ChartProps {
+  data: CountPerHour[];
+}
+
+const Chart: React.FC<ChartProps> = ({ data }) => (
   <LineChart
     width={600}
     height={300}
     data={data}
     className="border rounded-md shadow-md p-2"
   >
-    <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+    {/* <Line type="monotone" dataKey="totalCount" stroke="#8884d8" /> */}
     <CartesianGrid stroke="#ccc" />
-    <XAxis dataKey="name" />
+    <XAxis dataKey="timeWindow" />
     <YAxis />
+
+    <Legend />
+    <Bar dataKey="totalCount" stackId="a" fill="#8884d8" />
+    <Bar dataKey="cachedCount" stackId="a" fill="#82ca9d" />
     <Tooltip content={CustomTooltip} />
   </LineChart>
 );
@@ -251,7 +277,7 @@ const StatsCounter: React.FC<StatsCounterProps> = ({
   <Link to={to} title="Search results...">
     <div className="rounded-xl border shadow-sm items-center p-4 flex gap-4 hover:bg-muted transition duration-100 ease-in-out cursor-pointer">
       <div className="p-2 rounded-xl bg-primary border">
-        <Icon size={32} className="text-white" />
+        <Icon size={32} className="text-white dark:text-black" />
       </div>
       <div>
         <div className="flex items-baseline gap-2 font-semibold -mb-1">
@@ -274,5 +300,8 @@ export const Route = createFileRoute("/")({
       queryClient.ensureQueryData(sourcesQueryOptions),
       queryClient.ensureQueryData(statsCountQueryOptions),
       queryClient.ensureQueryData(requestsQueryOptions),
+      queryClient.ensureQueryData(statsCountRequestsBySourcesQueryOptions),
+      queryClient.ensureQueryData(statsCountRequestsByProvidersQueryOptions),
+      queryClient.ensureQueryData(statsCountRequestsByHourQueryOptions),
     ]),
 });

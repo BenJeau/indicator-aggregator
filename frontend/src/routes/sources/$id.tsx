@@ -55,7 +55,7 @@ const SourceComponent: React.FC = () => {
   const sourceIgnoreLists = useSuspenseQuery(sourceIgnoreListsQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
   const provider = useSuspenseQuery(
-    providerQueryOptions(source.data.providerId),
+    providerQueryOptions(source.data.providerId)
   );
   const sourceSecrets = useSuspenseQuery(sourceSecretsQueryOptions(id));
   const sourceRequests = useSuspenseQuery(sourceRequestsQueryOptions(id));
@@ -70,7 +70,7 @@ const SourceComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/sources/$id/edit"),
-    [matches],
+    [matches]
   );
 
   const requiredSecret = sourceSecrets.data.filter((i) => i.required);
@@ -83,13 +83,13 @@ const SourceComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "blur-sm pointer-events-none select-none opacity-20"
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              source.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
+              source.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -118,7 +118,7 @@ const SourceComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
             )}
           >
             <div className="flex flex-wrap gap-2">
@@ -327,20 +327,6 @@ const SourceComponent: React.FC = () => {
             </div>
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Configuration
-            </h2>
-
-            <div className="text-sm">
-              {source.data.config.length > 0 ? (
-                <p>Interval {source.data.taskInterval}</p>
-              ) : (
-                <span className="text-xs italic opacity-50">
-                  no extra configuration needed
-                </span>
-              )}
-            </div>
-
-            <h2 className="mt-2 flex items-baseline gap-2 font-medium">
               Secrets
             </h2>
             <div className="grid grid-cols-2 text-sm">
@@ -456,7 +442,7 @@ export const Route = createFileRoute("/sources/$id")({
     await Promise.all([
       async () => {
         const { providerId } = await queryClient.ensureQueryData(
-          sourceQueryOptions(id),
+          sourceQueryOptions(id)
         );
         await queryClient.ensureQueryData(providerQueryOptions(providerId));
       },

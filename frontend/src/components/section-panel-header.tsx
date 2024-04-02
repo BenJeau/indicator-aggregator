@@ -15,6 +15,7 @@ interface Props {
   titleContainerClassName?: string;
   titleClassName?: string;
   extraClassName?: string;
+  titleIconClassName?: string;
 }
 
 export const SectionPanelHeader: React.FC<Props> = ({
@@ -27,17 +28,18 @@ export const SectionPanelHeader: React.FC<Props> = ({
   titleContainerClassName,
   titleClassName,
   extraClassName,
+  titleIconClassName,
 }) => (
   <div className={outerClassName}>
     <div
       className={cn(
         "px-4 py-3 bg-muted/60 flex justify-between items-center gap-4",
-        className,
+        className
       )}
     >
-      <div className="flex gap-2">
+      <div className={cn("flex gap-2", titleIconClassName)}>
         <Link to=".." className="md:hidden">
-          <Button className="p-0 w-8 h-8" variant="secondary">
+          <Button className="p-0 w-8 h-8" variant="outline">
             <ChevronLeft size={16} />
           </Button>
         </Link>
@@ -46,24 +48,30 @@ export const SectionPanelHeader: React.FC<Props> = ({
       <div
         className={cn(
           "items-baseline flex flex-1 gap-2 overflow-hidden",
-          titleContainerClassName,
+          titleContainerClassName
         )}
       >
-        <h3
-          className={cn(
-            "textl-xl font-semibold items-center whitespace-nowrap",
-            titleClassName,
-          )}
-        >
-          {title}
-        </h3>
-        <div className="text-xs overflow-hidden overflow-ellipsis whitespace-nowrap flex-1">
-          {description}
+        {title && (
+          <h3
+            className={cn(
+              "textl-xl font-semibold items-center whitespace-nowrap",
+              titleClassName
+            )}
+          >
+            {title}
+          </h3>
+        )}
+        {description && (
+          <div className="text-xs overflow-hidden overflow-ellipsis whitespace-nowrap flex-1">
+            {description}
+          </div>
+        )}
+      </div>
+      {extra && (
+        <div className={cn("flex gap-2 items-center", extraClassName)}>
+          {extra}
         </div>
-      </div>
-      <div className={cn("flex gap-2 items-center", extraClassName)}>
-        {extra}
-      </div>
+      )}
     </div>
     <Separator orientation="horizontal" className="shadow" />
   </div>

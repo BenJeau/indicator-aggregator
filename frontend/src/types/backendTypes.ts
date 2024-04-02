@@ -503,6 +503,18 @@ export interface Count {
 	enabledIgnoreLists: number;
 }
 
+export interface CountPerId {
+	id?: Uuid;
+	name?: string;
+	count?: number;
+}
+
+export interface CountPerHour {
+	totalCount: number;
+	cacheCount: number;
+	timeWindow: DateTime<Utc>;
+}
+
 /** Kind of the indicator */
 export enum IndicatorKind {
 	Domain = "DOMAIN",

@@ -25,7 +25,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
       }}
       className="border rounded-xl p-4 shadow-sm flex gap-2 flex-col hover:bg-muted transition duration-100 ease-in-out"
     >
-      <div className="flex justify-between gap-2">
+      <div className="flex justify-between gap-2 flex-col lg:flex-row">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <img
@@ -34,19 +34,19 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               }
               style={{ imageRendering: "pixelated" }}
               className={cn(
-                "w-8 h-8 rounded shadow border",
-                imgHasError && "hidden",
+                "w-8 h-8 rounded shadow border hidden",
+                !imgHasError && "xl:block"
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
             />
             <Database
               size={32}
-              className={cn("min-w-4", !imgHasError && "hidden")}
+              className={cn("min-w-4 hidden", imgHasError && "xl:block")}
             />
-            <div className="flex gap-2 flex-col gap-y-0">
+            <div className="flex gap-2 flex-col gap-y-1 lg:gap-y-0">
               <div className="font-semibold flex items-center gap-1">
-                <SourceKindIcon className="w-4 h-4" />
+                <SourceKindIcon className="min-w-4 h-4 dark:fill-white" />
                 {name}
               </div>
               <div className="text-xs opacity-70 whitespace-nowrap">
@@ -63,13 +63,13 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
             )}
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex items-baseline">
           <Badge
             className={cn(
               "p-1",
               enabled
                 ? "bg-green-500/20 hover:bg-green-500/20"
-                : "bg-red-500/20 hover:bg-red-500/20",
+                : "bg-red-500/20 hover:bg-red-500/20"
             )}
             variant="secondary"
           >

@@ -109,7 +109,7 @@ const formSchema = z.object({
     z.object({
       id: z.string().uuid(),
       name: z.string(),
-    }),
+    })
   ),
   sourceSecrets: z.array(
     z.object({
@@ -124,7 +124,7 @@ const formSchema = z.object({
         .nullish()
         .transform((x) => x ?? undefined),
       required: z.boolean(),
-    }),
+    })
   ),
 });
 
@@ -191,7 +191,7 @@ export const SourceEditCreate: React.FC<Props> = ({
       sourceCode: cleanConfigValue(source?.sourceCode ?? ""),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [source],
+    [source]
   );
 
   const form = useForm<FormSchema>({
@@ -216,6 +216,57 @@ export const SourceEditCreate: React.FC<Props> = ({
   const secrets = useQuery(secretsQueryOptions);
   const config = useQuery(configQueryOptions);
 
+  const cancelSaveDeleteSection = (
+    <>
+      <Link to="../">
+        <Button
+          variant="ghost"
+          size="sm"
+          type="reset"
+          onClick={() => {
+            form.reset();
+          }}
+        >
+          Cancel
+        </Button>
+      </Link>
+      {source && source.kind !== SourceKind.System && (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="destructive" size="sm" className="gap-2">
+              <Trash size={16} /> Delete
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently{" "}
+                <span className="font-semibold">{source.name}</span> as a
+                source.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogPrimitive.Close asChild>
+                <Button variant="secondary">Cancel</Button>
+              </DialogPrimitive.Close>
+              <Button
+                variant="destructive"
+                className="gap-2"
+                onClick={onDelete}
+              >
+                <Trash size={16} /> Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+      <Button className="gap-2" size="sm" type="submit">
+        <Save size={16} />
+        Save
+      </Button>
+    </>
+  );
   return (
     <Form {...form}>
       <form
@@ -223,122 +274,80 @@ export const SourceEditCreate: React.FC<Props> = ({
         className="flex h-full flex-col"
       >
         <SectionPanelHeader
-          titleContainerClassName={"items-center"}
-          extraClassName={"self-end"}
+          titleContainerClassName="items-center overflow-visible"
+          titleClassName="flex-1"
+          extraClassName="hidden 2xl:flex self-end"
+          className="flex-col items-stretch 2xl:items-center 2xl:flex-row"
           titleIcon={
-            <FormField
-              control={form.control}
-              name="enabled"
-              render={({ field }) => (
-                <FormItem className="text-sm">
-                  <FormControl>
-                    <button
-                      type="button"
-                      className={cn(
-                        "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
-                      )}
-                      onClick={() => {
-                        field.onChange(!field.value);
-                      }}
-                    >
-                      <Power size={16} strokeWidth={2.54} />
-                    </button>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          }
-          title={
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="text-sm">
-                  <FormLabel className="text-xs">Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="h-8 bg-white dark:bg-black"
-                      placeholder="e.g. Abuse.ch"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          }
-          description={
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem className="flex-1 text-sm">
-                  <FormLabel className="text-xs">Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="h-8 bg-white dark:bg-black"
-                      placeholder="e.g. Reputable provider of threat intelligence"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          }
-          extra={
             <>
-              <Link to="../">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  type="reset"
-                  onClick={() => {
-                    form.reset();
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Link>
-              {source && source.kind !== SourceKind.System && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="destructive" size="sm" className="gap-2">
-                      <Trash size={16} /> Delete
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. This will permanently{" "}
-                        <span className="font-semibold">{source.name}</span> as
-                        a source.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <DialogPrimitive.Close asChild>
-                        <Button variant="secondary">Cancel</Button>
-                      </DialogPrimitive.Close>
-                      <Button
-                        variant="destructive"
-                        className="gap-2"
-                        onClick={onDelete}
+              <FormField
+                control={form.control}
+                name="enabled"
+                render={({ field }) => (
+                  <FormItem className="text-sm">
+                    <FormControl>
+                      <button
+                        type="button"
+                        className={cn(
+                          "rounded-md p-2 text-white shadow",
+                          field.value ? "bg-green-500" : "bg-red-500"
+                        )}
+                        onClick={() => {
+                          field.onChange(!field.value);
+                        }}
                       >
-                        <Trash size={16} /> Delete
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              )}
-              <Button className="gap-2" size="sm" type="submit">
-                <Save size={16} />
-                Save
-              </Button>
+                        <Power size={16} strokeWidth={2.54} />
+                      </button>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex-1 2xl:hidden" />
+              <div className="flex 2xl:hidden gap-2 items-center">
+                {cancelSaveDeleteSection}
+              </div>
             </>
           }
+          title={
+            <div className="flex gap-2 flex-col 2xl:flex-row flex-1">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="flex-1 text-sm">
+                    <FormLabel className="text-xs">Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-8"
+                        placeholder="e.g. Abuse.ch"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="flex-1 text-sm">
+                    <FormLabel className="text-xs">Description</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-8"
+                        placeholder="e.g. Reputable provider of threat intelligence"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          }
+          extra={cancelSaveDeleteSection}
         />
         <div className="overflow-y-scroll">
           <div className="flex flex-col gap-2 p-4">
@@ -353,7 +362,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                       <div className="flex flex-col gap-2">
                         <div className="flex gap-2">
                           <Input
-                            className="h-8 flex-1 bg-white dark:bg-black"
+                            className="h-8 flex-1"
                             placeholder="e.g. threat-intelligence"
                             value={newTag}
                             onChange={(e) => setNewTag(e.target.value)}
@@ -384,7 +393,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                               <button
                                 onClick={() => {
                                   field.onChange(
-                                    field.value.filter((_, i) => i !== index),
+                                    field.value.filter((_, i) => i !== index)
                                   );
                                 }}
                                 type="button"
@@ -451,10 +460,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                   <FormItem className="text-sm">
                     <FormLabel className="text-xs">URL</FormLabel>
                     <FormControl>
-                      <Input
-                        className="h-8 bg-white dark:bg-black"
-                        {...field}
-                      />
+                      <Input className="h-8" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -474,7 +480,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                         />
                         <div className="relative flex flex-1">
@@ -490,7 +496,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                                 reader.onloadend = () => {
                                   form.setValue(
                                     "favicon",
-                                    reader.result?.toString(),
+                                    reader.result?.toString()
                                   );
                                 };
                                 reader.readAsDataURL(file);
@@ -498,7 +504,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                             }}
                           />
                           <Input
-                            className="h-8 flex-1 bg-white dark:bg-black"
+                            className="h-8 flex-1"
                             placeholder={
                               field.value
                                 ? "Change favicon"
@@ -511,7 +517,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                           type="button"
                           className={cn(
                             "h-8 w-8 p-0",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                           onClick={() => field.onChange("")}
                         >
@@ -566,13 +572,13 @@ export const SourceEditCreate: React.FC<Props> = ({
                                   if (isSupported && isDisabled) {
                                     supportedIndicatorsField.onChange(
                                       supportedIndicatorsField.value.filter(
-                                        (i) => i !== value,
-                                      ),
+                                        (i) => i !== value
+                                      )
                                     );
                                     disabledIndicatorsField.onChange(
                                       disabledIndicatorsField.value.filter(
-                                        (i) => i !== value,
-                                      ),
+                                        (i) => i !== value
+                                      )
                                     );
                                   } else if (isSupported && !isDisabled) {
                                     disabledIndicatorsField.onChange([
@@ -637,7 +643,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                       <Input
                         disabled={!form.getValues("limitEnabled")}
                         type="number"
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. 50"
                         min={1}
                         value={field.value?.toString() ?? undefined}
@@ -660,7 +666,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                       <Input
                         disabled={!form.getValues("limitEnabled")}
                         type="number"
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. 360"
                         min={1}
                         value={field.value?.toString() ?? undefined}
@@ -711,7 +717,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                       <Input
                         disabled={!form.getValues("taskEnabled")}
                         type="number"
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. 120"
                         min={1}
                         value={field.value?.toString() ?? undefined}
@@ -762,7 +768,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                       <Input
                         disabled={!form.getValues("cacheEnabled")}
                         type="number"
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. 3600"
                         min={1}
                         value={field.value?.toString() ?? undefined}
@@ -888,7 +894,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                                                       sources
                                                     </span>
                                                   </SelectItem>
-                                                ),
+                                                )
                                               )}
                                             </SelectContent>
                                           </Select>
@@ -909,7 +915,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                                             type="button"
                                             onClick={() =>
                                               sourceSecretFormFields.remove(
-                                                index,
+                                                index
                                               )
                                             }
                                           >
@@ -962,7 +968,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                   const availableIgnoreLists =
                     sourceIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
@@ -973,7 +979,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = sourceIgnoreLists.data?.find(
-                                ({ name: listName }) => listName === name,
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -1002,8 +1008,8 @@ export const SourceEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -1026,7 +1032,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                 name="providerId"
                 render={({ field }) => {
                   const name = providers.data?.find(
-                    (i) => field.value === i.id,
+                    (i) => field.value === i.id
                   )?.name;
 
                   return (
@@ -1036,7 +1042,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                         <Select
                           onValueChange={(name) => {
                             const id = providers.data?.find(
-                              ({ name: listName }) => listName === name,
+                              ({ name: listName }) => listName === name
                             )?.id;
                             field.onChange(id);
                           }}
@@ -1088,7 +1094,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                         if (configEntry) {
                           form.setValue(
                             "sourceCode",
-                            configEntry.value ?? configEntry.defaultValue,
+                            configEntry.value ?? configEntry.defaultValue
                           );
                         }
                       }}

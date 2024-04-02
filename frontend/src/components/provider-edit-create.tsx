@@ -54,13 +54,13 @@ const formSchema = z.object({
     z.object({
       id: z.string().uuid(),
       name: z.string(),
-    }),
+    })
   ),
   ignoreLists: z.array(
     z.object({
       id: z.string().uuid(),
       name: z.string(),
-    }),
+    })
   ),
 });
 
@@ -151,7 +151,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
+                        field.value ? "bg-green-500" : "bg-red-500"
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -174,7 +174,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                   <FormLabel className="text-xs">Name</FormLabel>
                   <FormControl>
                     <Input
-                      className="h-8 bg-white dark:bg-black"
+                      className="h-8"
                       placeholder="e.g. Abuse.ch"
                       {...field}
                     />
@@ -193,7 +193,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                   <FormLabel className="text-xs">Description</FormLabel>
                   <FormControl>
                     <Input
-                      className="h-8 bg-white dark:bg-black"
+                      className="h-8"
                       placeholder="e.g. Reputable provider of threat intelligence"
                       {...field}
                     />
@@ -268,7 +268,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                     <div className="flex flex-col gap-2">
                       <div className="flex gap-2">
                         <Input
-                          className="h-8 flex-1 bg-white dark:bg-black"
+                          className="h-8 flex-1"
                           placeholder="e.g. threat-intelligence"
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
@@ -299,7 +299,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                             <button
                               onClick={() => {
                                 field.onChange(
-                                  field.value.filter((_, i) => i !== index),
+                                  field.value.filter((_, i) => i !== index)
                                 );
                               }}
                               type="button"
@@ -325,7 +325,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                     <FormLabel className="text-xs">URL</FormLabel>
                     <FormControl>
                       <Input
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. https://abuse.ch"
                         {...field}
                       />
@@ -348,7 +348,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                         />
                         <div className="relative flex flex-1">
@@ -364,7 +364,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                                 reader.onloadend = () => {
                                   form.setValue(
                                     "favicon",
-                                    reader.result?.toString(),
+                                    reader.result?.toString()
                                   );
                                 };
                                 reader.readAsDataURL(file);
@@ -372,7 +372,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                             }}
                           />
                           <Input
-                            className="h-8 flex-1 bg-white dark:bg-black"
+                            className="h-8 flex-1"
                             placeholder={
                               field.value
                                 ? "Change favicon"
@@ -385,7 +385,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                           type="button"
                           className={cn(
                             "h-8 w-8 p-0",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                           onClick={() => field.onChange("")}
                         >
@@ -406,7 +406,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                   const availableSources =
                     providerSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id),
+                        !field.value.some((source) => source.id === id)
                     ) || [];
 
                   return (
@@ -417,7 +417,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = providerSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name,
+                                ({ name: sourceName }) => sourceName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -446,8 +446,8 @@ export const ProviderEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -472,7 +472,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                   const availableIgnoreLists =
                     providerIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
@@ -483,7 +483,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = providerIgnoreLists.data?.find(
-                                ({ name: listName }) => listName === name,
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -512,8 +512,8 @@ export const ProviderEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
