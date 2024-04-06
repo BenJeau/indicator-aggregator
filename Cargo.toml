@@ -10,7 +10,7 @@ resolver = "2"
 [workspace.dependencies]
 anyhow = "1.0.81"
 async-trait = "0.1.79"
-axum = { version = "0.7.5", features = ["macros", "multipart", "original-uri", "tokio"] }
+axum = { version = "0.7.5" }
 axum-extra = { version = "0.9.3", features = ["query", "typed-header"] }
 chacha20poly1305 = "0.10.1"
 chrono = { version = "0.4.37", features = ["serde"] }
@@ -39,7 +39,7 @@ serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.115"
 sqlx = { version = "0.7.4", features = ["chrono", "json", "macros", "postgres", "runtime-tokio-native-tls", "uuid"] }
 strum = { version = "0.26.2", features = ["derive"] }
-tokio = { version = "1.37.0", features = ["full"] }
+tokio = { version = "1.37.0", features = ["parking_lot", "rt", "rt-multi-thread"] }
 tokio-stream = "0.1.15"
 tonic = "0.11.0"
 tonic-build = "0.11.0"
