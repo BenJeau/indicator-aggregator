@@ -31,5 +31,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Add clippy to the toolchain
         run: rustup component add clippy
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - name: Run cargo clippy
         run: cargo clippy -- -D warnings
