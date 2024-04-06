@@ -27,11 +27,11 @@ opentelemetry-jaeger = { version = "0.21.0", features = ["rt-tokio"] }
 opentelemetry-otlp = "0.15.0"
 opentelemetry-stdout = { version = "0.3.0", features = ["trace"] }
 opentelemetry_sdk = { version = "0.22.1", features = ["rt-tokio-current-thread"] }
-prost = "0.12.3"
-pyo3 = "0.21.0"
-redis = { version = "0.25.2", features = ["tokio-comp"] }
+prost = "0.12.4"
+pyo3 = "0.21.1"
+redis = { version = "0.25.3", features = ["tokio-comp"] }
 regex = "1.10.4"
-reqwest = { version = "0.12.2", features = ["json"] }
+reqwest = { version = "0.12.3", features = ["json"] }
 sentry = "0.32.2"
 sentry-tower = { version = "0.32.2", features = ["http"] }
 sentry-tracing = "0.32.2"
@@ -54,5 +54,5 @@ url = "2.5.0"
 utoipa = { version = "4.2.0", features = ["axum_extras", "chrono", "preserve_order", "uuid"] }
 utoipa-swagger-ui = { version = "6.0.0", features = ["axum"] }
 uuid = { version = "1.8.0", features = ["serde", "v4"] }
-validator = { version = "0.17.0", features = ["derive"] }
+validator = { version = "0.18.0", features = ["derive"] }
 zip = "0.6.6"
