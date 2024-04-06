@@ -35,7 +35,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "w-8 h-8 rounded shadow border hidden",
-                !imgHasError && "xl:block"
+                !imgHasError && "xl:block",
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
@@ -69,7 +69,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               "p-1",
               enabled
                 ? "bg-green-500/20 hover:bg-green-500/20"
-                : "bg-red-500/20 hover:bg-red-500/20"
+                : "bg-red-500/20 hover:bg-red-500/20",
             )}
             variant="secondary"
           >

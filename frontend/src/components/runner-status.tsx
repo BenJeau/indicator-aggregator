@@ -39,7 +39,7 @@ const RunnerStatus: React.FC<Props> = ({
               ? getConfigValue(enabled)
                 ? "bg-green-500/20"
                 : "bg-red-500/20"
-              : "bg-muted"
+              : "bg-muted",
           )}
         >
           <Power size={16} strokeWidth={2.54} />

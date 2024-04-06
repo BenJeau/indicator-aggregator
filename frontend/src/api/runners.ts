@@ -22,7 +22,7 @@ export const useRunnersStatus = () =>
     queryFn: async ({ queryKey }) =>
       await new Promise((_resolve, reject) => {
         const url = new URL(
-          `${config.rest_server_base_url}/runners/status/sse`
+          `${config.rest_server_base_url}/runners/status/sse`,
         );
 
         const sse = new EventSource(url);
