@@ -504,14 +504,19 @@ export interface Count {
 }
 
 export interface CountPerId {
-	id?: Uuid;
+	id?: string;
 	name?: string;
-	count?: number;
+	count: number;
+}
+
+export interface CountPerIdWrapper {
+	data: CountPerId[];
+	timeWindow: DateTime<Utc>;
 }
 
 export interface CountPerHour {
-	totalCount: number;
-	cacheCount: number;
+	uncachedCount: number;
+	cachedCount: number;
 	timeWindow: DateTime<Utc>;
 }
 

@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { fetcher } from "@/api";
-import { Count, CountPerHour, CountPerId } from "@/types/backendTypes";
+import { Count, CountPerHour, CountPerIdWrapper } from "@/types/backendTypes";
 
 export const statsCountQueryOptions = queryOptions({
   queryKey: ["stats", "count"],
@@ -14,7 +14,7 @@ export const statsCountQueryOptions = queryOptions({
 export const statsCountRequestsBySourcesQueryOptions = queryOptions({
   queryKey: ["stats", "count", "requests", "sources"],
   queryFn: async ({ signal }) =>
-    await fetcher.get<CountPerId[]>("/stats/count/requests/sources", {
+    await fetcher.get<CountPerIdWrapper[]>("/stats/count/requests/sources", {
       signal,
     }),
 });
@@ -22,7 +22,15 @@ export const statsCountRequestsBySourcesQueryOptions = queryOptions({
 export const statsCountRequestsByProvidersQueryOptions = queryOptions({
   queryKey: ["stats", "count", "requests", "providers"],
   queryFn: async ({ signal }) =>
-    await fetcher.get<CountPerId[]>("/stats/count/requests/providers", {
+    await fetcher.get<CountPerIdWrapper[]>("/stats/count/requests/providers", {
+      signal,
+    }),
+});
+
+export const statsCountRequestsByKindsQueryOptions = queryOptions({
+  queryKey: ["stats", "count", "requests", "kinds"],
+  queryFn: async ({ signal }) =>
+    await fetcher.get<CountPerIdWrapper[]>("/stats/count/requests/kinds", {
       signal,
     }),
 });

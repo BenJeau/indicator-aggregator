@@ -1,9 +1,8 @@
 use chrono::{DateTime, Utc};
-use serde::Serialize;
-use sqlx::prelude::FromRow;
+use serde::{Deserialize, Serialize};
+use sqlx::{postgres::PgRow, FromRow, Row};
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 /// Overview of the number of providers, sources, and indicators
 #[derive(FromRow, Serialize, ToSchema, Debug)]
@@ -28,20 +27,37 @@ pub struct Count {
     pub enabled_ignore_lists: i32,
 }
 
-#[derive(FromRow, Serialize, ToSchema, Debug)]
+#[derive(Serialize, ToSchema, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct CountPerId {
-    pub id: Option<Uuid>,
+    pub id: Option<String>,
     pub name: Option<String>,
-    pub count: Option<i32>,
+    pub count: i32,
+}
+
+#[derive(Serialize, ToSchema, Debug)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct CountPerIdWrapper {
+    pub data: Vec<CountPerId>,
+    pub time_window: DateTime<Utc>,
+}
+
+impl FromRow<'_, PgRow> for CountPerIdWrapper {
+    fn from_row(row: &PgRow) -> Result<Self, sqlx::Error> {
+        Ok(Self {
+            data: serde_json::from_value(row.try_get("data")?).unwrap_or_default(),
+            time_window: row.try_get("time_window")?,
+        })
+    }
 }
 
 #[derive(FromRow, Serialize, ToSchema, Debug)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct CountPerHour {
-    pub total_count: i32,
-    pub cache_count: i32,
+    pub uncached_count: i32,
+    pub cached_count: i32,
     pub time_window: DateTime<Utc>,
 }

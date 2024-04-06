@@ -56,7 +56,7 @@ type Page =
   | "lists";
 
 const PageDescription: { [key in Page]: string } = {
-  home: "A place to grow and sing",
+  home: "Overview of the Indicator Aggregator",
   request:
     "Make requests against all available sources for the specified indicator and it's kind",
   history: "View the history of all the requests made",
@@ -117,7 +117,7 @@ export function Layout({ children }: MailProps) {
       <div
         className={cn(
           "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out",
-          isCollapsed && "w-14 min-w-14",
+          isCollapsed && "w-14 min-w-14"
         )}
       >
         <div>
@@ -127,7 +127,7 @@ export function Layout({ children }: MailProps) {
               "bg-primary/20 text-primary hover:bg-primary/10 flex h-[52px] items-center gap-2 whitespace-nowrap font-medium transition-all",
               isCollapsed ? "justify-center" : "px-4",
               page === "home" &&
-                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white",
+                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white"
             )}
             disabled={page === "home"}
           >
@@ -274,7 +274,7 @@ export function Layout({ children }: MailProps) {
           <div
             className={cn(
               "bg-muted/50 flex  items-center gap-2 py-4",
-              isCollapsed ? "justify-center" : "px-4",
+              isCollapsed ? "justify-center" : "px-4"
             )}
           >
             <Avatar className="border">
@@ -296,7 +296,7 @@ export function Layout({ children }: MailProps) {
       <div
         className={cn(
           "flex h-full flex-col",
-          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]",
+          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]"
         )}
       >
         <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">

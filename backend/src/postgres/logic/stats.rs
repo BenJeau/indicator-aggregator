@@ -2,7 +2,7 @@ use sqlx::PgPool;
 use tracing::instrument;
 
 use crate::{
-    postgres::schemas::stats::{Count, CountPerHour, CountPerId},
+    postgres::schemas::stats::{Count, CountPerHour, CountPerIdWrapper},
     Result,
 };
 
@@ -27,14 +27,39 @@ pub async fn count(pool: &PgPool) -> Result<Count> {
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn requests_per_source_last_day(pool: &PgPool) -> Result<Vec<CountPerId>> {
-    sqlx::query_as!(
-        CountPerId,
-        r#"SELECT count(*)::int as "count", sources.id as "id", sources.name
-FROM source_requests
-INNER JOIN sources ON sources.id = source_requests.source_id
-WHERE source_requests.created_at >= NOW() - INTERVAL '24 hours'
-GROUP BY sources.id;"#
+pub async fn requests_per_source_last_day(pool: &PgPool) -> Result<Vec<CountPerIdWrapper>> {
+    sqlx::query_as(
+        r#"SELECT
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', id,
+                'name', name,
+                'count', count
+            )
+        ) FILTER (WHERE count > 0),
+        '[]'
+    ) AS data,
+    time_window
+FROM (
+	SELECT
+		sources.id,
+		sources.name,
+		COUNT(DISTINCT source_requests.request_id)::INT,
+		time_window
+	FROM 
+	    generate_series(
+		    date_trunc('hour', NOW()) - INTERVAL '24 hours', 
+		    date_trunc('hour', NOW()), 
+		    '1 hour'
+		) AS time_window
+	LEFT JOIN source_requests 
+	LEFT JOIN sources ON sources.id = source_requests.source_id
+	ON date_trunc('hour', source_requests.created_at) = time_window
+	GROUP BY time_window, sources.id
+) nested_data
+GROUP BY time_window
+ORDER BY time_window ASC;"#,
     )
     .fetch_all(pool)
     .await
@@ -42,19 +67,44 @@ GROUP BY sources.id;"#
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn requests_per_provider_last_day(pool: &PgPool) -> Result<Vec<CountPerId>> {
-    let data = sqlx::query_as::<_, CountPerId>(
-        r#"SELECT count(*)::int, providers.id, providers.name
-FROM sources
-LEFT JOIN providers ON providers.id = sources.provider_id
-GROUP BY providers.id;"#,
+pub async fn requests_per_provider_last_day(pool: &PgPool) -> Result<Vec<CountPerIdWrapper>> {
+    sqlx::query_as(
+        r#"SELECT
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', id,
+                'name', name,
+                'count', count
+            )
+        ) filter (where count > 0),
+        '[]'
+    ) AS data,
+    time_window
+from (
+	SELECT
+		providers.id,
+		providers.name,
+		COUNT(DISTINCT source_requests.request_id)::INT,
+		time_window
+	FROM 
+	    generate_series(
+		    date_trunc('hour', NOW()) - INTERVAL '24 hours', 
+		    date_trunc('hour', NOW()), 
+		    '1 hour'
+		) AS time_window
+	LEFT JOIN source_requests 
+	LEFT JOIN sources ON sources.id = source_requests.source_id
+	LEFT JOIN providers ON providers.id = sources.provider_id
+	ON date_trunc('hour', source_requests.created_at) = time_window
+	GROUP BY time_window, providers.id
+) nested_data
+GROUP BY time_window
+ORDER BY time_window ASC;"#,
     )
     .fetch_all(pool)
-    .await;
-
-    dbg!(data);
-
-    Ok(vec![])
+    .await
+    .map_err(Into::into)
 }
 
 #[instrument(skip(pool), ret, err)]
@@ -62,8 +112,8 @@ pub async fn requests_per_hour_last_day(pool: &PgPool) -> Result<Vec<CountPerHou
     sqlx::query_as!(
         CountPerHour,
         r#"SELECT
-	COUNT(DISTINCT source_requests.request_id)::INT AS "total_count!",
-	(COUNT(DISTINCT source_requests.request_id) FILTER (WHERE source_requests.cache_action = 'FROM_CACHE'))::INT AS "cache_count!",
+	(COUNT(DISTINCT source_requests.request_id) FILTER (WHERE source_requests.cache_action IS NULL OR source_requests.cache_action != 'FROM_CACHE'))::INT AS "uncached_count!",
+	(COUNT(DISTINCT source_requests.request_id) FILTER (WHERE source_requests.cache_action = 'FROM_CACHE'))::INT AS "cached_count!",
 	time_window AS "time_window!"
 FROM 
     generate_series(
@@ -74,7 +124,45 @@ FROM
 LEFT JOIN source_requests 
 ON date_trunc('hour', source_requests.created_at) = time_window
 GROUP BY time_window
-ORDER BY time_window DESC;"#
+ORDER BY time_window ASC;"#
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn requests_per_kind_last_day(pool: &PgPool) -> Result<Vec<CountPerIdWrapper>> {
+    sqlx::query_as(
+        r#"SELECT
+    COALESCE(
+        json_agg(
+            json_build_object(
+            	'id', kind,
+                'name', kind,
+                'count', count
+            )
+        ) filter (where count > 0),
+        '[]'
+    ) AS data,
+    time_window
+from (
+	SELECT
+		requests.kind,
+		COUNT(DISTINCT requests.id)::INT,
+		time_window
+	FROM 
+	    generate_series(
+		    date_trunc('hour', NOW()) - INTERVAL '24 hours', 
+		    date_trunc('hour', NOW()), 
+		    '1 hour'
+		) AS time_window
+	LEFT JOIN requests 
+	ON date_trunc('hour', requests.created_at) = time_window
+	GROUP BY time_window, requests.kind
+) nested_data
+GROUP BY time_window
+ORDER BY time_window ASC;"#,
     )
     .fetch_all(pool)
     .await
