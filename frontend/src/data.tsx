@@ -1,6 +1,8 @@
 import { Globe, Globe2, Hash, Link, LucideIcon, Mail } from "lucide-react";
 
 import { IndicatorKind, SourceKind } from "@/types/backendTypes";
+import { RunnerStatus } from "@/api/runners";
+import { BadgeProps } from "@/components/ui/badge";
 
 export function dedupeListOnId<T extends { id: unknown }>(data: T[]): T[] {
   return data.reduce((acc, list) => {
@@ -10,6 +12,24 @@ export function dedupeListOnId<T extends { id: unknown }>(data: T[]): T[] {
     return acc;
   }, [] as T[]);
 }
+
+export const runnerStatusMapping: {
+  [key in RunnerStatus]: string;
+} = {
+  UNKNOWN: "Unknown",
+  SERVING: "Serving",
+  NOT_SERVING: "Not Serving",
+  SERVICE_UNKNOWN: "Service Unknown",
+};
+
+export const runnerStatusBadgeVariantMapping: {
+  [key in RunnerStatus]: BadgeProps["variant"];
+} = {
+  UNKNOWN: "secondary",
+  SERVING: "success",
+  NOT_SERVING: "destructive",
+  SERVICE_UNKNOWN: "secondary",
+};
 
 export const indicatorKindMapping: {
   [key in IndicatorKind]: string;

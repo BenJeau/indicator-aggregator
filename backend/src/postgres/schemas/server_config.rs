@@ -221,7 +221,7 @@ def background_task():
 }
 
 impl ServerConfig {
-    pub fn runner_endpoint(&self, source_kind: SourceKind) -> Result<Endpoint> {
+    pub fn runner_endpoint(&self, source_kind: &SourceKind) -> Result<Endpoint> {
         let addr = match source_kind {
             SourceKind::JavaScript => self.javascript_runner_grpc_address.get_value(),
             SourceKind::Python => self.python_runner_grpc_address.get_value(),

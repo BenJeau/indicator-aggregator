@@ -66,7 +66,7 @@ function GenericPanelSearch<T>({
         <div className="h-14 shadow bg-muted/25">
           <div className="flex gap-2 h-full items-center px-4">
             <Link to="/" className="flex md:hidden">
-              <Button className="p-0 w-8 h-8" variant="secondary">
+              <Button className="p-0 w-8 h-8" variant="outline">
                 <ChevronLeft size={16} />
               </Button>
             </Link>

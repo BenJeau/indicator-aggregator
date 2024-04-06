@@ -192,7 +192,7 @@ export const ListEditCreate: React.FC<Props> = ({
                   <FormLabel className="text-xs">Name</FormLabel>
                   <FormControl>
                     <Input
-                      className="h-8 bg-white dark:bg-black"
+                      className="h-8"
                       placeholder="e.g. Abuse.ch"
                       {...field}
                     />
@@ -211,7 +211,7 @@ export const ListEditCreate: React.FC<Props> = ({
                   <FormLabel className="text-xs">Description</FormLabel>
                   <FormControl>
                     <Input
-                      className="h-8 bg-white dark:bg-black"
+                      className="h-8"
                       placeholder="e.g. Reputable provider of threat intelligence"
                       {...field}
                     />

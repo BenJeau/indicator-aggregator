@@ -56,7 +56,7 @@ type Page =
   | "lists";
 
 const PageDescription: { [key in Page]: string } = {
-  home: "A place to grow and sing",
+  home: "Overview of the Indicator Aggregator",
   request:
     "Make requests against all available sources for the specified indicator and it's kind",
   history: "View the history of all the requests made",

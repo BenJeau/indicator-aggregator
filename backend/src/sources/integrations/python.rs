@@ -27,7 +27,7 @@ impl Source for Python {
         };
 
         let config = state.get_server_config().await?;
-        let endpoint = config.runner_endpoint(SourceKind::Python)?;
+        let endpoint = config.runner_endpoint(&SourceKind::Python)?;
 
         let mut client = common::runner_client::RunnerClient::connect(endpoint).await?;
 
@@ -43,7 +43,7 @@ impl Source for Python {
         };
 
         let config = state.get_server_config().await?;
-        let endpoint = config.runner_endpoint(SourceKind::Python)?;
+        let endpoint = config.runner_endpoint(&SourceKind::Python)?;
 
         let mut client = common::runner_client::RunnerClient::connect(endpoint).await?;
 

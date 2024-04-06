@@ -6,4 +6,4 @@
 
 ### Linked Issues
 
-<!-- Speficy the linked GitHub issue, every change should have a linked issue, wether it fixes/closes it or not -->
+<!-- Specify the linked GitHub issue, every change should have a linked issue, whether it fixes/closes it or not -->

@@ -174,7 +174,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                   <FormLabel className="text-xs">Name</FormLabel>
                   <FormControl>
                     <Input
-                      className="h-8 bg-white dark:bg-black"
+                      className="h-8"
                       placeholder="e.g. Abuse.ch"
                       {...field}
                     />
@@ -193,7 +193,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                   <FormLabel className="text-xs">Description</FormLabel>
                   <FormControl>
                     <Input
-                      className="h-8 bg-white dark:bg-black"
+                      className="h-8"
                       placeholder="e.g. Reputable provider of threat intelligence"
                       {...field}
                     />
@@ -268,7 +268,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                     <div className="flex flex-col gap-2">
                       <div className="flex gap-2">
                         <Input
-                          className="h-8 flex-1 bg-white dark:bg-black"
+                          className="h-8 flex-1"
                           placeholder="e.g. threat-intelligence"
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
@@ -325,7 +325,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                     <FormLabel className="text-xs">URL</FormLabel>
                     <FormControl>
                       <Input
-                        className="h-8 bg-white dark:bg-black"
+                        className="h-8"
                         placeholder="e.g. https://abuse.ch"
                         {...field}
                       />
@@ -372,7 +372,7 @@ export const ProviderEditCreate: React.FC<Props> = ({
                             }}
                           />
                           <Input
-                            className="h-8 flex-1 bg-white dark:bg-black"
+                            className="h-8 flex-1"
                             placeholder={
                               field.value
                                 ? "Change favicon"

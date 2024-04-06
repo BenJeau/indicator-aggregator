@@ -1,15 +1,15 @@
 [package]
+edition = "2021"
 name = "common"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
-prost = "0.12.3"
-
-serde = { workspace = true }
-tracing = { workspace = true }
 figment = { workspace = true }
+prost = { workspace = true }
+serde = { workspace = true }
 tonic = { workspace = true }
+tonic-health = { workspace = true }
+tracing = { workspace = true }
 
 [build-dependencies]
-tonic-build = "0.11.0"
+tonic-build = { workspace = true }

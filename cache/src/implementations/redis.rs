@@ -42,7 +42,7 @@ impl FromRedisValue for CacheKey {
 impl InnerCache for RedisCache {
     #[instrument(skip_all)]
     async fn set_inner(&mut self, key: CacheKey, entry: Vec<u8>) -> Result<bool> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
 
         let mut pipe = redis::pipe();
 
@@ -59,7 +59,7 @@ impl InnerCache for RedisCache {
 
     #[instrument(skip_all)]
     async fn get_inner(&self, key: CacheKey) -> Result<Option<Vec<u8>>> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
 
         let data: Option<Vec<u8>> = conn.get(&key).await?;
 
@@ -71,7 +71,7 @@ impl InnerCache for RedisCache {
 impl Cache for RedisCache {
     #[instrument(skip_all)]
     async fn invalidate<S: Into<CacheKey> + Send>(&mut self, key: S) -> Result<bool> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         let value: bool = conn.del::<_, i32>(key.into()).await? > 0;
 
         Ok(value)
@@ -84,7 +84,7 @@ impl Cache for RedisCache {
     ) -> Result<u64> {
         let partial_key = String::from(&partial_key.into());
 
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
 
         let keys: Vec<CacheKey> = conn.keys(&format!("{partial_key}*")).await?;
         let len = keys.len();
@@ -96,7 +96,7 @@ impl Cache for RedisCache {
 
     #[instrument(skip_all)]
     async fn clear(&mut self) -> Result<u64> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         let num = conn.del("*").await?;
 
         Ok(num)
@@ -104,7 +104,7 @@ impl Cache for RedisCache {
 
     #[instrument(skip_all)]
     async fn keys(&self) -> Result<Vec<CacheKey>> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         let keys = conn.keys("*").await?;
 
         Ok(keys)
@@ -114,7 +114,7 @@ impl Cache for RedisCache {
     async fn get_all<T: DeserializeOwned + Send>(
         &self,
     ) -> Result<HashMap<CacheKey, CacheEntry<T>>> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         let keys = self.keys().await?;
 
         let mut data = HashMap::new();

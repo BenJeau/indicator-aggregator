@@ -327,20 +327,6 @@ const SourceComponent: React.FC = () => {
             </div>
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Configuration
-            </h2>
-
-            <div className="text-sm">
-              {source.data.config.length > 0 ? (
-                <p>Interval {source.data.taskInterval}</p>
-              ) : (
-                <span className="text-xs italic opacity-50">
-                  no extra configuration needed
-                </span>
-              )}
-            </div>
-
-            <h2 className="mt-2 flex items-baseline gap-2 font-medium">
               Secrets
             </h2>
             <div className="grid grid-cols-2 text-sm">

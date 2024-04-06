@@ -487,12 +487,37 @@ export interface UpdateSource {
 export interface Count {
   /** Number of requests done in the past */
   history: number;
+  /** Number of requests done in the past 24 hours */
+  historyLast24hrs: number;
   /** Number of source providers */
   providers: number;
+  /** Number of enabled source providers */
+  enabledProviders: number;
   /** Number of sources */
   sources: number;
+  /** Number of enabled sources */
+  enabledSources: number;
   /** Number of indicators */
   ignoreLists: number;
+  /** Number of enabled indicators */
+  enabledIgnoreLists: number;
+}
+
+export interface CountPerId {
+  id?: string;
+  name?: string;
+  count: number;
+}
+
+export interface CountPerIdWrapper {
+  data: CountPerId[];
+  timeWindow: DateTime<Utc>;
+}
+
+export interface CountPerHour {
+  uncachedCount: number;
+  cachedCount: number;
+  timeWindow: DateTime<Utc>;
 }
 
 /** Kind of the indicator */
