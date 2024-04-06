@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n\t(COUNT(DISTINCT source_requests.request_id) FILTER (WHERE source_requests.cache_action IS NULL OR source_requests.cache_action != 'FROM_CACHE'))::INT AS \"uncached_count!\",\n\t(COUNT(DISTINCT source_requests.request_id) FILTER (WHERE source_requests.cache_action = 'FROM_CACHE'))::INT AS \"cached_count!\",\n\ttime_window AS \"time_window!\"\nFROM \n    generate_series(\n\t    date_trunc('hour', NOW()) - INTERVAL '24 hours', \n\t    date_trunc('hour', NOW()), \n\t    '1 hour'\n\t) AS time_window\nLEFT JOIN source_requests \nON date_trunc('hour', source_requests.created_at) = time_window\nGROUP BY time_window\nORDER BY time_window ASC;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "uncached_count!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "cached_count!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "time_window!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "73d076ab57520ffb2233b322b38108a3068629bf05b916a3b4a4691e8e27ae04"
+}
