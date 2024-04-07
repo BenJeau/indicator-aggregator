@@ -1,10 +1,8 @@
 use axum::{extract::State, response::IntoResponse, Json};
-use sqlx::PgPool;
+use postgres::{logic::providers, schemas::providers::CreateProvider};
+use postgres::PgPool;
 
-use crate::{
-    postgres::{logic::providers, schemas::providers::CreateProvider},
-    Result,
-};
+use crate::Result;
 
 /// Create a new source provider
 #[utoipa::path(

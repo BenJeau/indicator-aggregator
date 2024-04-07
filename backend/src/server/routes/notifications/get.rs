@@ -1,7 +1,8 @@
 use axum::{extract::State, response::IntoResponse, Json};
-use sqlx::PgPool;
+use postgres::logic::notifications;
+use postgres::PgPool;
 
-use crate::{postgres::logic::notifications, Result};
+use crate::Result;
 
 /// Get all notifications from the service related to the configuration of the various aspects of the service
 #[utoipa::path(

@@ -3,10 +3,11 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use sqlx::PgPool;
+use postgres::logic::providers;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::providers, Result};
+use crate::Result;
 
 /// Delete a specific provider by ID
 #[utoipa::path(

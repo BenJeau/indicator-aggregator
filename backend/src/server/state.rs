@@ -1,9 +1,12 @@
 use axum::extract::FromRef;
 use cache::CacheImpl;
-use sqlx::PgPool;
+use postgres::PgPool;
+use shared::crypto::Crypto;
+use sources::FetchState;
 use tracing::instrument;
+use uuid::Uuid;
 
-use crate::{config::Config, crypto::Crypto, postgres};
+use crate::{config::Config, Result};
 
 #[derive(Clone)]
 pub struct ServerState {
@@ -48,5 +51,17 @@ impl ServerState {
             crypto,
             cache,
         }
+    }
+
+    pub async fn into_fetch_state(&self, source_id: &Uuid) -> Result<FetchState> {
+        let secrets = postgres::logic::secrets::internal_get_source_secrets(
+            &self.pool,
+            source_id,
+            &self.crypto,
+            &self.config.encryption.db_key,
+        )
+        .await?;
+
+        Ok(FetchState::new(self.pool.clone(), secrets, *source_id))
     }
 }

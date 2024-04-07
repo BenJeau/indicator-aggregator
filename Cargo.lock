@@ -285,25 +285,19 @@ dependencies = [
 name = "backend"
 version = "0.1.0"
 dependencies = [
- "async-trait",
  "axum 0.7.5",
  "axum-extra",
  "cache",
- "chacha20poly1305",
  "chrono",
  "common",
- "csv",
  "figment",
- "flate2",
  "futures-util",
- "hickory-resolver",
- "once_cell",
- "regex",
+ "postgres",
  "reqwest 0.12.3",
  "serde",
  "serde_json",
  "shared",
- "sqlx",
+ "sources",
  "strum",
  "tokio",
  "tokio-stream",
@@ -314,8 +308,6 @@ dependencies = [
  "utoipa",
  "utoipa-swagger-ui",
  "uuid",
- "validator",
- "zip",
 ]
 
 [[package]]
@@ -2175,6 +2167,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7170ef9988bc169ba16dd36a7fa041e5c4cbeb6a35b76d4c03daded371eae7c0"
 
 [[package]]
+name = "postgres"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "shared",
+ "sqlx",
+ "strum",
+ "tracing",
+ "typeshare",
+ "utoipa",
+ "uuid",
+ "validator",
+]
+
+[[package]]
 name = "powerfmt"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2993,6 +3002,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum 0.7.5",
+ "chacha20poly1305",
  "http 1.1.0",
  "opentelemetry",
  "opentelemetry-jaeger",
@@ -3043,6 +3053,35 @@ checksum = "05ffd9c0a93b7543e062e759284fcf5f5e3b098501104bfbdde4d404db792871"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sources"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "cache",
+ "chrono",
+ "common",
+ "csv",
+ "flate2",
+ "futures-util",
+ "hickory-resolver",
+ "once_cell",
+ "postgres",
+ "regex",
+ "reqwest 0.12.3",
+ "serde",
+ "serde_json",
+ "shared",
+ "strum",
+ "tokio",
+ "tonic",
+ "tracing",
+ "typeshare",
+ "utoipa",
+ "uuid",
+ "zip",
 ]
 
 [[package]]

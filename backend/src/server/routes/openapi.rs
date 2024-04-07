@@ -1,7 +1,9 @@
+use postgres::schemas as pg_schemas;
+use sources::schemas;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
-use crate::{postgres::schemas as pg_schemas, schemas, server::routes};
+use crate::server::routes;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -85,14 +87,16 @@ Currently no authentication is required to access the API.",
             pg_schemas::ignore_lists::IgnoreList,
             pg_schemas::ignore_lists::IgnoreListEntry,
             pg_schemas::ignore_lists::UpdateIgnoreList,
+            pg_schemas::indicators::Indicator,
+            pg_schemas::indicators::IndicatorKind,
             pg_schemas::notifications::MinimalSource,
             pg_schemas::notifications::NotificationKind,
             pg_schemas::providers::CreateProvider,
             pg_schemas::providers::PatchProvider,
             pg_schemas::providers::Provider,
             pg_schemas::providers::ProviderWithNumSources,
-            pg_schemas::requests::SourceRequest,
             pg_schemas::requests::Request,
+            pg_schemas::requests::SourceRequest,
             pg_schemas::secrets::CreateSecret,
             pg_schemas::secrets::CreateSourceSecret,
             pg_schemas::secrets::Secret,
@@ -100,12 +104,12 @@ Currently no authentication is required to access the API.",
             pg_schemas::secrets::SourceSecret,
             pg_schemas::secrets::UpdateSecret,
             pg_schemas::server_config::ServerConfig,
-            pg_schemas::server_config::ServerConfigEntryString,
-            pg_schemas::server_config::ServerConfigEntryBool,
-            pg_schemas::server_config::ServerConfigEntryU32,
-            pg_schemas::server_config::UpdateServerConfig,
             pg_schemas::server_config::ServerConfigCategory,
+            pg_schemas::server_config::ServerConfigEntryBool,
+            pg_schemas::server_config::ServerConfigEntryString,
+            pg_schemas::server_config::ServerConfigEntryU32,
             pg_schemas::server_config::ServerConfigKind,
+            pg_schemas::server_config::UpdateServerConfig,
             pg_schemas::sources::CreateSource,
             pg_schemas::sources::Source,
             pg_schemas::sources::SourceKind,
@@ -119,8 +123,6 @@ Currently no authentication is required to access the API.",
             schemas::DataCacheAction,
             schemas::DataSource,
             schemas::DataTiming,
-            schemas::Indicator,
-            schemas::IndicatorKind,
             schemas::RequestExecuteParam,
             schemas::SourceError,
         )

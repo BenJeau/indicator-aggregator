@@ -1,10 +1,8 @@
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-use sqlx::PgPool;
+use postgres::{logic::server_config, schemas::server_config::UpdateServerConfig};
+use postgres::PgPool;
 
-use crate::{
-    postgres::{logic::server_config, schemas::server_config::UpdateServerConfig},
-    Result,
-};
+use crate::Result;
 
 /// Update server configuration values
 #[utoipa::path(

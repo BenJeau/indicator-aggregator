@@ -3,14 +3,11 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use sqlx::PgPool;
+use postgres::PgPool;
+use postgres::{logic::sources, schemas::sources::SourceKind};
 use uuid::Uuid;
 
-use crate::{
-    postgres::{logic::sources, schemas::sources::SourceKind},
-    sources::runners::send_delete_request,
-    Result,
-};
+use crate::{runners::send_delete_request, Result};
 
 /// Delete a specific source by ID
 #[utoipa::path(

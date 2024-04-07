@@ -5,7 +5,7 @@ use axum::{
 use strum::Display;
 use tracing::error;
 
-use crate::schemas::IndicatorKind;
+use postgres::schemas::indicators::IndicatorKind;
 
 #[derive(Debug, Display)]
 pub enum Error {
@@ -13,11 +13,9 @@ pub enum Error {
         kind: String,
         supported_indicators: Vec<String>,
     },
-    RequestError(reqwest::Error),
-    ZipError(zip::result::ZipError),
     ResponseError,
     IoError(std::io::Error),
-    SqlxError(sqlx::Error),
+    SqlxError(postgres::Error),
     NotFound,
     Unauthorized,
     Timeout,
@@ -27,26 +25,21 @@ pub enum Error {
     FigmentError(figment::Error),
     InvalidConfig(String),
     Conflict(String),
-    Crypto(chacha20poly1305::Error),
+    Reqwest(reqwest::Error),
     InvalidIndicatorKind(IndicatorKind),
     Url(url::ParseError),
     CacheError(cache::CacheError),
-    InvalidHeaderValue(reqwest::header::InvalidHeaderValue),
     TonicTransportError(tonic::transport::Error),
     TonicStatus(tonic::Status),
+    InvalidHeaderValue(reqwest::header::InvalidHeaderValue),
+    ZipError(sources::error::ZipError),
 }
 
 impl std::error::Error for Error {}
 
 impl From<reqwest::Error> for Error {
-    fn from(error: reqwest::Error) -> Self {
-        Self::RequestError(error)
-    }
-}
-
-impl From<zip::result::ZipError> for Error {
-    fn from(error: zip::result::ZipError) -> Self {
-        Self::ZipError(error)
+    fn from(e: reqwest::Error) -> Self {
+        Self::Reqwest(e)
     }
 }
 
@@ -56,8 +49,8 @@ impl From<std::io::Error> for Error {
     }
 }
 
-impl From<sqlx::Error> for Error {
-    fn from(error: sqlx::Error) -> Self {
+impl From<postgres::Error> for Error {
+    fn from(error: postgres::Error) -> Self {
         Self::SqlxError(error)
     }
 }
@@ -65,12 +58,6 @@ impl From<sqlx::Error> for Error {
 impl From<figment::Error> for Error {
     fn from(error: figment::Error) -> Self {
         Self::FigmentError(error)
-    }
-}
-
-impl From<chacha20poly1305::Error> for Error {
-    fn from(error: chacha20poly1305::Error) -> Self {
-        Self::Crypto(error)
     }
 }
 
@@ -83,12 +70,6 @@ impl From<url::ParseError> for Error {
 impl From<cache::CacheError> for Error {
     fn from(error: cache::CacheError) -> Self {
         Self::CacheError(error)
-    }
-}
-
-impl From<reqwest::header::InvalidHeaderValue> for Error {
-    fn from(error: reqwest::header::InvalidHeaderValue) -> Self {
-        Self::InvalidHeaderValue(error)
     }
 }
 
@@ -112,11 +93,13 @@ impl IntoResponse for Error {
         error!(error=?self);
 
         match self {
-            Self::SqlxError(sqlx::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
+            Self::SqlxError(postgres::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
             Self::Unauthorized => StatusCode::UNAUTHORIZED.into_response(),
             Self::Timeout => StatusCode::REQUEST_TIMEOUT.into_response(),
             Self::Conflict(data) => (StatusCode::CONFLICT, data).into_response(),
-            Self::SqlxError(sqlx::Error::Database(err)) if err.code() == Some("23505".into()) => {
+            Self::SqlxError(postgres::Error::Database(err))
+                if err.code() == Some("23505".into()) =>
+            {
                 StatusCode::CONFLICT.into_response()
             }
             Self::InvalidIndicatorKind(kind) => (
@@ -125,6 +108,27 @@ impl IntoResponse for Error {
             )
                 .into_response(),
             _ => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+        }
+    }
+}
+
+impl From<sources::Error> for Error {
+    fn from(error: sources::Error) -> Self {
+        match error {
+            sources::Error::NotFound => Self::NotFound,
+            sources::Error::Unauthorized => Self::Unauthorized,
+            sources::Error::RateLimited => Self::RateLimited,
+            sources::Error::ResponseError => Self::ResponseError,
+            sources::Error::Timeout => Self::Timeout,
+            sources::Error::InternalError => Self::InternalError,
+            sources::Error::IoError(err) => Self::IoError(err),
+            sources::Error::MissingSourceCode => Self::MissingSourceCode,
+            sources::Error::TonicTransportError(err) => Self::TonicTransportError(err),
+            sources::Error::TonicStatus(err) => Self::TonicStatus(err),
+            sources::Error::Postgres(err) => Self::SqlxError(err),
+            sources::Error::Reqwest(err) => Self::Reqwest(err),
+            sources::Error::InvalidHeaderValue(err) => Self::InvalidHeaderValue(err),
+            sources::Error::ZipError(err) => Self::ZipError(err),
         }
     }
 }

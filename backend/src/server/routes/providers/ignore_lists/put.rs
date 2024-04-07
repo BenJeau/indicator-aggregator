@@ -4,10 +4,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::logic::providers;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::providers, Result};
+use crate::Result;
 
 /// Replace the ignore lists of a specific provider
 #[utoipa::path(

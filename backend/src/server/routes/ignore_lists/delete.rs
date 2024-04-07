@@ -3,10 +3,11 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use sqlx::PgPool;
+use postgres::logic::ignore_lists;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::ignore_lists, Result};
+use crate::Result;
 
 /// Deletes an ignore list by its ID
 #[utoipa::path(

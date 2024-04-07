@@ -4,13 +4,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::{logic::ignore_lists, schemas::ignore_lists::UpdateIgnoreList};
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{
-    postgres::{logic::ignore_lists, schemas::ignore_lists::UpdateIgnoreList},
-    Result,
-};
+use crate::Result;
 
 /// Partially update an ignore list by its ID
 #[utoipa::path(

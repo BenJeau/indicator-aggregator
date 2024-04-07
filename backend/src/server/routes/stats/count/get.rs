@@ -1,7 +1,8 @@
 use axum::{extract::State, response::IntoResponse, Json};
-use sqlx::PgPool;
+use postgres::logic::stats;
+use postgres::PgPool;
 
-use crate::{postgres::logic::stats, Result};
+use crate::Result;
 
 /// Total count of various items
 #[utoipa::path(

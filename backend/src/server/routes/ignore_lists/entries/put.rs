@@ -4,13 +4,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::{logic::ignore_lists, schemas::ignore_lists::CreateIngoreListEntry};
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{
-    postgres::{logic::ignore_lists, schemas::ignore_lists::CreateIngoreListEntry},
-    Result,
-};
+use crate::Result;
 
 /// Replace all ignore list entries for a specific list
 #[utoipa::path(

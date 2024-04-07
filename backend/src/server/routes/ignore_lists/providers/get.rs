@@ -3,10 +3,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::logic::ignore_lists;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::ignore_lists, Result};
+use crate::Result;
 
 /// Get the providers affected by an ignore list
 #[utoipa::path(

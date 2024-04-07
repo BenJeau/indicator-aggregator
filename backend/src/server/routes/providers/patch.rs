@@ -4,13 +4,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::{logic::providers, schemas::providers::PatchProvider};
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{
-    postgres::{logic::providers, schemas::providers::PatchProvider},
-    Result,
-};
+use crate::Result;
 
 /// Partially update a specific source provider by database ID
 #[utoipa::path(

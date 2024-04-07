@@ -4,12 +4,10 @@ use axum::{
     response::IntoResponse,
     Json,
 };
+use postgres::{logic::secrets, schemas::secrets::UpdateSecret};
 use uuid::Uuid;
 
-use crate::{
-    postgres::{logic::secrets, schemas::secrets::UpdateSecret},
-    Result, ServerState,
-};
+use crate::{Result, ServerState};
 
 /// Partially update a secret by its ID
 #[utoipa::path(

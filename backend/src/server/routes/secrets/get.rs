@@ -3,10 +3,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::logic::secrets;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::secrets, Result, ServerState};
+use crate::{Result, ServerState};
 
 /// Get all secrets from the service, without their values
 #[utoipa::path(

@@ -8,12 +8,16 @@ use axum::{
 };
 use axum_extra::extract::Query;
 use futures_util::future::join;
+use postgres::schemas::indicators::Indicator;
+use sources::{
+    integrations,
+    schemas::{DataSource, RequestExecuteParam, SseDoneData, SseStartData},
+};
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use tracing::{info_span, Instrument};
 
 use crate::{
-    schemas::{DataSource, Indicator, RequestExecuteParam, SourceError, SseDoneData, SseStartData},
-    sources::{self, integrations},
+    e_sources::{get_indicator, handle_indicator_request},
     Result, ServerState,
 };
 
@@ -33,7 +37,7 @@ pub async fn request(
 ) -> Result<impl IntoResponse> {
     let should_ignore_errors = request.ignore_errors;
 
-    let mut data = sources::handle_indicator_request(&request, &state).await?;
+    let mut data = handle_indicator_request(&request, &state).await?;
 
     if should_ignore_errors {
         data.retain(|data| data.errors.is_empty());
@@ -71,12 +75,12 @@ pub async fn sse_handler(
     let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
 
     let (sources, request_id) = join(
-        crate::postgres::logic::sources::get_sources_for_internal_request(
+        postgres::logic::sources::get_sources_for_internal_request(
             &state.pool,
             &indicator,
             &source_ids,
         ),
-        crate::postgres::logic::requests::create_request(&state.pool, &indicator),
+        postgres::logic::requests::create_request(&state.pool, &indicator),
     )
     .await;
 
@@ -135,33 +139,38 @@ pub async fn sse_handler(
             tokio::task::spawn(
                 async move {
                     let mut encountered_error = false;
-                    let data = integration
-                        .get_indicator(&indicator, &source, &state, &request_id)
-                        .await
-                        .map(|data| {
-                            if data.errors.is_empty() {
-                                Event::default()
-                                    .event("fetching_data")
-                                    .id(source.source_id.to_string())
-                                    .json_data(SseDoneData::from(data))
-                                    .unwrap()
-                            } else {
-                                encountered_error = true;
-                                Event::default()
-                                    .event("fetching_error")
-                                    .id(source.source_id.to_string())
-                                    .json_data(&data.errors)
-                                    .unwrap()
-                            }
-                        })
-                        .unwrap_or_else(|e| {
+                    let data = get_indicator(
+                        &indicator,
+                        &source,
+                        &state,
+                        &request_id,
+                        integration.as_ref(),
+                    )
+                    .await
+                    .map(|data| {
+                        if data.errors.is_empty() {
+                            Event::default()
+                                .event("fetching_data")
+                                .id(source.source_id.to_string())
+                                .json_data(SseDoneData::from(data))
+                                .unwrap()
+                        } else {
                             encountered_error = true;
                             Event::default()
                                 .event("fetching_error")
                                 .id(source.source_id.to_string())
-                                .json_data([SourceError::from(e)])
+                                .json_data(&data.errors)
                                 .unwrap()
-                        });
+                        }
+                    })
+                    .unwrap_or_else(|e| {
+                        encountered_error = true;
+                        Event::default()
+                            .event("fetching_error")
+                            .id(source.source_id.to_string())
+                        // .json_data([SourceError::from(e)])
+                        // .unwrap()
+                    });
 
                     if !should_ignore_errors || !encountered_error {
                         tx.send(Result::Ok(data)).unwrap();

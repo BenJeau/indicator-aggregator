@@ -1,10 +1,8 @@
 use axum::{extract::State, response::IntoResponse, Json};
-use sqlx::PgPool;
+use postgres::{logic::ignore_lists, schemas::ignore_lists::CreateIgnoreList};
+use postgres::PgPool;
 
-use crate::{
-    postgres::{logic::ignore_lists, schemas::ignore_lists::CreateIgnoreList},
-    Result,
-};
+use crate::Result;
 
 /// Create a new ignore list
 #[utoipa::path(

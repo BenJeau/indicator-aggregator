@@ -2,11 +2,10 @@ use axum::{
     extract::State,
     response::{sse::KeepAlive, IntoResponse, Sse},
 };
-use sqlx::PgPool;
+use postgres::schemas::sources::SourceKind;
+use postgres::PgPool;
 
-use crate::{
-    postgres::schemas::sources::SourceKind, sources::runners::stream_health_check, Result,
-};
+use crate::{runners::stream_health_check, Result};
 
 /// Get a stream of Server-Sent Events (SSE) for the status of all runners
 ///

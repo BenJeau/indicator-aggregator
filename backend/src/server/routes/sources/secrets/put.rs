@@ -4,13 +4,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::{logic::secrets, schemas::secrets::CreateSourceSecret};
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{
-    postgres::{logic::secrets, schemas::secrets::CreateSourceSecret},
-    Result,
-};
+use crate::Result;
 
 /// Sets the source secrets for a specific source
 #[utoipa::path(

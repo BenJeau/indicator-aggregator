@@ -3,10 +3,11 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use sqlx::PgPool;
+use postgres::logic::secrets;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::secrets, Result};
+use crate::Result;
 
 /// Delete a secret by its ID
 #[utoipa::path(

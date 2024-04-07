@@ -4,10 +4,11 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::logic::requests;
+use postgres::PgPool;
 use uuid::Uuid;
 
-use crate::{postgres::logic::requests, Result};
+use crate::Result;
 
 /// Get all requests
 #[utoipa::path(

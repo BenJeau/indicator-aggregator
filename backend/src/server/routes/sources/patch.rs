@@ -4,17 +4,14 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use sqlx::PgPool;
+use postgres::PgPool;
+use postgres::{
+    logic::sources,
+    schemas::sources::{SourceKind, UpdateSource},
+};
 use uuid::Uuid;
 
-use crate::{
-    postgres::{
-        logic::sources,
-        schemas::sources::{SourceKind, UpdateSource},
-    },
-    sources::runners::send_update_request,
-    Result,
-};
+use crate::{runners::send_update_request, Result};
 
 /// Partially update a specific source by ID
 #[utoipa::path(

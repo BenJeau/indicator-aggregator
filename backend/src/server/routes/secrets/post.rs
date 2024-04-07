@@ -1,9 +1,7 @@
 use axum::{extract::State, response::IntoResponse, Json};
+use postgres::{logic::secrets, schemas::secrets::CreateSecret};
 
-use crate::{
-    postgres::{logic::secrets, schemas::secrets::CreateSecret},
-    Result, ServerState,
-};
+use crate::{Result, ServerState};
 
 /// Create a new secret
 #[utoipa::path(

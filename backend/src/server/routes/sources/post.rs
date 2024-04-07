@@ -1,14 +1,11 @@
 use axum::{extract::State, response::IntoResponse, Json};
-use sqlx::PgPool;
-
-use crate::{
-    postgres::{
-        logic::sources,
-        schemas::sources::{CreateSource, SourceKind},
-    },
-    sources::runners::send_update_request,
-    Result,
+use postgres::PgPool;
+use postgres::{
+    logic::sources,
+    schemas::sources::{CreateSource, SourceKind},
 };
+
+use crate::{runners::send_update_request, Result};
 
 /// Create a new source
 #[utoipa::path(

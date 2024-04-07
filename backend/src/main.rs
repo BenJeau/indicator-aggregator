@@ -1,15 +1,12 @@
 #![allow(clippy::blocks_in_conditions)]
 
+mod background_tasks;
 mod config;
-mod crypto;
+mod e_sources;
 mod error;
-mod hashing;
-mod postgres;
+mod runners;
 mod schemas;
 mod server;
-mod sources;
-mod utils;
-mod validators;
 
 pub use error::{Error, Result};
 use postgres::schemas::sources::SourceKind;
@@ -38,8 +35,8 @@ async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
     postgres::run_migrations(&state.pool).await?;
 
     let (runners_init, background_tasks, servers) = futures_util::future::join3(
-        sources::runners::send_init_request(&state.pool, SourceKind::Python),
-        sources::background_tasks::run_background_tasks(&state),
+        runners::send_init_request(&state.pool, SourceKind::Python),
+        background_tasks::run_background_tasks(&state),
         server::RestServer::new(state.clone()).start(),
     )
     .await;
