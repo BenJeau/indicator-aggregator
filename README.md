@@ -37,7 +37,7 @@ By using docker compose, any changes in the frontend or backend will be hot relo
 ### Local
 
 Alternatively, you can spin up the stack locally by following the respective `README.md` files and by having access to a PostgreSQL server instance:
-- [./backend/README.md](./backend/README.md)
+- [./backend/server/README.md](./backend/server/README.md)
 - [./frontend/README.md](./frontend/README.md)
 
 ## Architecture

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 for i in {1..10}; do
-  sqlx migrate revert
+  (cd ./database && sqlx migrate revert)
 done
 
-sqlx migrate run
+(cd ./database && sqlx migrate run)
