@@ -1,9 +1,6 @@
 use tracing::info;
 
-use crate::ServerState;
-
-pub mod routes;
-pub mod state;
+use crate::{routes, ServerState};
 
 pub struct RestServer(ServerState);
 

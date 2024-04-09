@@ -4,13 +4,14 @@ mod background_tasks;
 mod config;
 mod error;
 mod integrations;
+mod routes;
 mod runners;
 mod schemas;
-mod server;
+mod state;
 
 use database::schemas::sources::SourceKind;
 pub use error::{Error, Result};
-pub use server::state::ServerState;
+pub use state::ServerState;
 
 const ENV_FILTER: &str = "server=debug,cache=debug,tower_http=debug,shared=debug,database=debug";
 const SERVICE_NAME: &str = "indicator-aggregator-server";
@@ -37,7 +38,7 @@ async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let (runners_init, background_tasks, servers) = futures_util::future::join3(
         runners::send_init_request(&state.pool, SourceKind::Python),
         background_tasks::run_background_tasks(&state),
-        server::RestServer::new(state.clone()).start(),
+        routes::server::RestServer::new(state.clone()).start(),
     )
     .await;
 
@@ -47,3 +48,34 @@ async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use axum::{
+//         body::Body,
+//         extract::connect_info::MockConnectInfo,
+//         http::{self, Request, StatusCode},
+//     };
+//     use http_body_util::BodyExt; // for `collect`
+//     use serde_json::{json, Value};
+//     use tokio::net::TcpListener;
+//     use tower::{Service, ServiceExt}; // for `call`, `oneshot`, and `ready`
+
+//     #[tokio::test]
+//     async fn hello_world() {
+//         let app = app();
+
+//         // `Router` implements `tower::Service<Request<Body>>` so we can
+//         // call it like any tower service, no need to run an HTTP server.
+//         let response = app
+//             .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+//             .await
+//             .unwrap();
+
+//         assert_eq!(response.status(), StatusCode::OK);
+
+//         let body = response.into_body().collect().await.unwrap().to_bytes();
+//         assert_eq!(&body[..], b"Hello, World!");
+//     }
+// }

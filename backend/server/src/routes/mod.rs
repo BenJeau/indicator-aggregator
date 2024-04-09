@@ -13,6 +13,7 @@ pub mod providers;
 pub mod requests;
 pub mod runners;
 pub mod secrets;
+pub mod server;
 pub mod sources;
 pub mod stats;
 
