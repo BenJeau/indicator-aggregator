@@ -3,7 +3,7 @@
 mod executor;
 mod server;
 
-const ENV_FILTER: &str = "python_runner=debug,common=debug,shared=debug";
+const ENV_FILTER: &str = "python_runner=debug,common=debug,shared=debug,database=debug";
 const SERVICE_NAME: &str = "python-runner";
 
 fn main() {

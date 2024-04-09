@@ -8,17 +8,14 @@ use database::{
     PgPool,
 };
 use futures_util::future::{join, join_all};
-use sources::{
-    integrations,
-    schemas::{
-        Data, DataCache, DataCacheAction, DataSource, DataTiming, RequestExecuteParam, SourceError,
-    },
-    Source,
-};
+use sources::{integrations, schemas::SourceError, Source};
 use tracing::{error, instrument, warn};
 use uuid::Uuid;
 
-use crate::{Error, Result, ServerState};
+use crate::{
+    schemas::{Data, DataCache, DataCacheAction, DataSource, DataTiming, RequestExecuteParam},
+    Error, Result, ServerState,
+};
 
 #[instrument(skip(state))]
 pub async fn handle_indicator_request(
@@ -26,7 +23,10 @@ pub async fn handle_indicator_request(
     state: &ServerState,
 ) -> Result<Vec<Data>> {
     let indicator: Indicator = request.clone().into();
-    // indicator.validate()?;
+
+    if !indicator.validate() {
+        return Err(Error::InvalidIndicatorKind(indicator.kind));
+    }
 
     get_source_data(&indicator, state, &request.sources).await
 }
@@ -94,8 +94,7 @@ async fn get_source_data(
                     started_at: chrono::Utc::now().naive_utc(),
                     ended_at: chrono::Utc::now().naive_utc(),
                 },
-                // errors: vec![SourceError::from(error)],
-                errors: vec![],
+                errors: vec![SourceError::from(error)],
                 data: None,
             }
         }

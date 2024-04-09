@@ -2,6 +2,7 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use sources::schemas::SourceError;
 use strum::Display;
 use tracing::error;
 
@@ -129,6 +130,22 @@ impl From<sources::Error> for Error {
             sources::Error::Reqwest(err) => Self::Reqwest(err),
             sources::Error::InvalidHeaderValue(err) => Self::InvalidHeaderValue(err),
             sources::Error::ZipError(err) => Self::ZipError(err),
+        }
+    }
+}
+
+impl From<Error> for SourceError {
+    fn from(error: Error) -> Self {
+        match error {
+            Error::NotFound => Self::NotFound,
+            Error::Unauthorized => Self::Unauthorized,
+            Error::RateLimited => Self::RateLimited,
+            Error::ResponseError => Self::ResponseError,
+            Error::Timeout => Self::Timeout,
+            Error::SqlxError(_) => Self::DatabaseError,
+            Error::Reqwest(_) => Self::RequestError,
+            Error::MissingSourceCode => Self::MissingSourceCode,
+            _ => Self::InternalServerError,
         }
     }
 }

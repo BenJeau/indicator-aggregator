@@ -9,15 +9,13 @@ use axum::{
 use axum_extra::extract::Query;
 use database::schemas::indicators::Indicator;
 use futures_util::future::join;
-use sources::{
-    integrations,
-    schemas::{DataSource, RequestExecuteParam, SseDoneData, SseStartData},
-};
+use sources::{integrations, schemas::SourceError};
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use tracing::{info_span, Instrument};
 
 use crate::{
-    e_sources::{get_indicator, handle_indicator_request},
+    integrations::{get_indicator, handle_indicator_request},
+    schemas::{DataSource, RequestExecuteParam, SseDoneData, SseStartData},
     Result, ServerState,
 };
 
@@ -168,8 +166,8 @@ pub async fn sse_handler(
                         Event::default()
                             .event("fetching_error")
                             .id(source.source_id.to_string())
-                        // .json_data([SourceError::from(e)])
-                        // .unwrap()
+                            .json_data([SourceError::from(e)])
+                            .unwrap()
                     });
 
                     if !should_ignore_errors || !encountered_error {

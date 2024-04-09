@@ -2,8 +2,8 @@
 
 mod background_tasks;
 mod config;
-mod e_sources;
 mod error;
+mod integrations;
 mod runners;
 mod schemas;
 mod server;
@@ -12,7 +12,7 @@ use database::schemas::sources::SourceKind;
 pub use error::{Error, Result};
 pub use server::state::ServerState;
 
-const ENV_FILTER: &str = "backend=debug,cache=debug,tower_http=debug,shared=debug";
+const ENV_FILTER: &str = "server=debug,cache=debug,tower_http=debug,shared=debug,database=debug";
 const SERVICE_NAME: &str = "indicator-aggregator-server";
 
 fn main() {
