@@ -1,4 +1,4 @@
-name: Rust CI - Cargo clippy
+name: Rust CI - Cargo test
 
 on: 
   workflow_dispatch:
