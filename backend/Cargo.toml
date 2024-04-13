@@ -8,14 +8,14 @@ members = ["cache", "database", "runners/common", "runners/python", "server", "s
 resolver = "2"
 
 [workspace.dependencies]
-anyhow = "1.0.81"
-async-trait = "0.1.79"
+anyhow = "1.0.82"
+async-trait = "0.1.80"
 axum = { version = "0.7.5", features = ["json"] }
 axum-extra = { version = "0.9.3", features = ["query", "typed-header"] }
 chacha20poly1305 = "0.10.1"
 chrono = { version = "0.4.37", features = ["serde"] }
 csv = "1.3.0"
-figment = { version = "0.10.15", features = ["env", "toml"] }
+figment = { version = "0.10.16", features = ["env", "toml"] }
 flate2 = "1.0.28"
 futures-util = "0.3.30"
 hickory-resolver = { version = "0.24.0", features = ["serde-config"] }
@@ -56,5 +56,5 @@ url = "2.5.0"
 utoipa = { version = "4.2.0", features = ["axum_extras", "chrono", "preserve_order", "uuid"] }
 utoipa-swagger-ui = { version = "6.0.0", features = ["axum"] }
 uuid = { version = "1.8.0", features = ["serde", "v4"] }
-validator = { version = "0.18.0", features = ["derive"] }
+validator = { version = "0.18.1", features = ["derive"] }
 zip = "0.6.6"
