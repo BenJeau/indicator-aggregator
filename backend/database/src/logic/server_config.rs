@@ -36,6 +36,21 @@ SET value = EXCLUDED.value
 }
 
 #[instrument(skip(pool), ret, err)]
+pub async fn remove_server_configs(pool: &PgPool, configs: &[UpdateServerConfig]) -> Result<u64> {
+    sqlx::query!(
+        r#"
+DELETE FROM server_config
+WHERE key = ANY($1::text[])
+        "#,
+        configs.iter().map(|c| c.key.as_str()).collect::<Vec<_>>() as _
+    )
+    .execute(pool)
+    .await
+    .map_err(Into::into)
+    .map(|e| e.rows_affected())
+}
+
+#[instrument(skip(pool), ret, err)]
 pub async fn get_config_with_defaults_and_db_results(pool: &PgPool) -> Result<ServerConfig> {
     let mut config = ServerConfig::default();
 

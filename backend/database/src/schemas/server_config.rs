@@ -32,7 +32,7 @@ pub enum ServerConfigCategory {
 }
 
 /// Configuration entry for the server
-#[derive(Serialize, Debug, ToSchema, Default)]
+#[derive(Deserialize, Serialize, Debug, ToSchema, Default, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct ServerConfigEntry<T: Default> {
@@ -91,7 +91,7 @@ pub struct DbServerConfig {
 }
 
 /// General server configuration
-#[derive(Serialize, Debug, ToSchema)]
+#[derive(Deserialize, Serialize, Debug, ToSchema, Eq, PartialEq)]
 #[typeshare]
 
 pub struct ServerConfig {
@@ -216,6 +216,20 @@ def background_task():
         }
     }
 }
+
+pub const SERVER_CONFIG_ENTRIES: [&str; 11] = [
+    "javascript_source_template",
+    "python_source_template",
+    "proxy_enabled",
+    "proxy_type",
+    "proxy_value",
+    "sse_keep_alive",
+    "sse_number_concurrent_source_fetching",
+    "javascript_runner_grpc_address",
+    "javascript_runner_enabled",
+    "python_runner_grpc_address",
+    "python_runner_enabled",
+];
 
 impl ServerConfig {
     pub fn combine_with_db_results(&mut self, db_results: Vec<DbServerConfig>) {

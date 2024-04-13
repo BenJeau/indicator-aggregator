@@ -4,13 +4,17 @@ mod background_tasks;
 mod config;
 mod error;
 mod integrations;
+mod routes;
 mod runners;
 mod schemas;
-mod server;
+mod state;
+
+#[cfg(test)]
+mod test_utils;
 
 use database::schemas::sources::SourceKind;
 pub use error::{Error, Result};
-pub use server::state::ServerState;
+pub use state::ServerState;
 
 const ENV_FILTER: &str = "server=debug,cache=debug,tower_http=debug,shared=debug,database=debug";
 const SERVICE_NAME: &str = "indicator-aggregator-server";
@@ -37,7 +41,7 @@ async fn start() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let (runners_init, background_tasks, servers) = futures_util::future::join3(
         runners::send_init_request(&state.pool, SourceKind::Python),
         background_tasks::run_background_tasks(&state),
-        server::RestServer::new(state.clone()).start(),
+        routes::server::RestServer::new(state.clone()).start(),
     )
     .await;
 

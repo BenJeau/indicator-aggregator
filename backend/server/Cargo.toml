@@ -28,3 +28,9 @@ common = { path = "../runners/common" }
 database = { path = "../database" }
 shared = { path = "../shared" }
 sources = { path = "../sources" }
+
+[dev-dependencies]
+http-body-util = { workspace = true }
+sqlx = { workspace = true }
+tower = { workspace = true }
+tracing-test = { workspace = true }

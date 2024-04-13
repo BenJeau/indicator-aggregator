@@ -65,3 +65,22 @@ impl ServerState {
         Ok(FetchState::new(self.pool.clone(), secrets, *source_id))
     }
 }
+
+#[cfg(test)]
+pub mod test {
+    use super::*;
+    use crate::config::test::create_config;
+
+    pub fn create_state(pool: PgPool) -> ServerState {
+        let config = create_config();
+        let crypto = Crypto::new(&config.encryption.server_key);
+        let cache = CacheImpl::in_memory();
+
+        ServerState {
+            pool,
+            config,
+            crypto,
+            cache,
+        }
+    }
+}

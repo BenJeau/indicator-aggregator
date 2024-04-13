@@ -1,0 +1,60 @@
+name: Rust CI - Cargo clippy
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.2-alpine3.19
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: indicator_aggregator
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    defaults:
+      run:
+        working-directory: ./backend
+    env:
+      DATABASE_URL: postgres://admin:admin@localhost/indicator_aggregator
+      PGPASSWORD: admin
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Rust setup
+        run: rustup toolchain install stable --profile minimal
+      - name: Setup cache
+        uses: actions/cache@v4
+        with:
+          save-always: true
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Add clippy to the toolchain
+        run: rustup component add clippy
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+      - name: Run migrations
+        run: >-
+          for file in ./database/migrations/*.up.sql; do
+            psql -h localhost -U admin -d indicator_aggregator -f $file
+          done
+      - name: Run cargo test
+        run: cargo test --all -- --nocapture
