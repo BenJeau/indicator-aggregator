@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { Database, Download, Hourglass, Save, ServerCrash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { SourceError } from "@/types/backendTypes";
@@ -10,7 +10,6 @@ import config from "@/config";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ReqestSSEData } from "@/api/requests";
-import { useTheme } from "@/components/theme-provider";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -31,29 +30,6 @@ const InnerSource = {
   },
 };
 
-const DefaultSource: React.FC<{ data: unknown }> = ({ data }) => {
-  const { computedTheme } = useTheme();
-
-  useEffect(() => {
-    const style =
-      document.querySelector("style#highlightjs-theme") ??
-      (() => {
-        const style = document.createElement("style");
-        style.setAttribute("id", "highlightjs-theme");
-        document.head.appendChild(style);
-        return style;
-      })();
-
-    if (computedTheme === "dark") {
-      style.innerHTML = darkTheme;
-    } else {
-      style.innerHTML = lightTheme;
-    }
-  }, [computedTheme]);
-
-  return <Editor language="json" value={JSON.stringify(data, null, 2)} />;
-};
-
 export const Source: React.FC<ReqestSSEData> = ({
   source,
   data,
@@ -67,7 +43,7 @@ export const Source: React.FC<ReqestSSEData> = ({
   const Content =
     source.name in InnerSource
       ? InnerSource[source.name as keyof typeof InnerSource].Component
-      : () => <DefaultSource data={data} />;
+      : () => <Editor language="json" value={JSON.stringify(data, null, 2)} />;
   const diff = dayjs(timing?.endedAt).diff(dayjs(timing?.startedAt));
 
   const [imgHasError, setImgHasError] = useState(true);
@@ -80,7 +56,7 @@ export const Source: React.FC<ReqestSSEData> = ({
         "col-span-12 flex flex-col gap-2 2xl:col-span-6",
         !shouldHaveData &&
           "border-destructive justify-center rounded-md border bg-red-500/20 px-2 py-1 md:col-span-6 2xl:col-span-4",
-        !hasSourceCode && "opacity-50 grayscale",
+        !hasSourceCode && "opacity-50 grayscale"
       )}
     >
       <div className="flex items-center justify-between">
@@ -94,7 +70,7 @@ export const Source: React.FC<ReqestSSEData> = ({
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "min-h-4 w-4 min-w-4 rounded border shadow",
-                imgHasError && "hidden",
+                imgHasError && "hidden"
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
