@@ -72,3 +72,32 @@ impl Config {
             .extract()
     }
 }
+
+#[cfg(test)]
+pub mod test {
+    use super::*;
+
+    pub fn create_config() -> Config {
+        Config {
+            database: Database {
+                username: "test".to_string(),
+                password: "test".to_string(),
+                host: "localhost".to_string(),
+                port: 5432,
+                name: "test".to_string(),
+            },
+            server: Server {
+                http: ServerInstance {
+                    enabled: true,
+                    host: "localhost".to_string(),
+                    port: 8080,
+                },
+            },
+            encryption: Encryption {
+                db_key: "tqQxsKu7z2CWMGuWJ@HAXF_oRHtsyFHR7HHEmNhmyNw4gCzqiez.T4hbN2jLH.LrVJbtAecRyb3J9Ke6!qjK4RzY_NqgFBEN*C6h".to_string(),
+                server_key: "AsuKXKermWGsAPo3e9XnEHMzt*7svap#".to_string(), 
+            },
+            cache: Cache { redis_url: None },
+        }
+    }
+}

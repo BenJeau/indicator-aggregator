@@ -3,7 +3,7 @@ use sources::schemas as sources_schemas;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
-use crate::{schemas, server::routes};
+use crate::{routes, schemas};
 
 #[derive(OpenApi)]
 #[openapi(
