@@ -153,8 +153,6 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        dbg!(&result);
-
         assert_eq!(value, result.value);
 
         tokio::time::sleep(tokio::time::Duration::from_millis(1001)).await;
