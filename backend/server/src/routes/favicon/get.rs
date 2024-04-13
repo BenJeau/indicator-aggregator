@@ -37,3 +37,35 @@ pub async fn get_favicon(
 
     Ok(response)
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::test_utils::*;
+
+    #[tracing_test::traced_test]
+    #[sqlx::test]
+    async fn given_valid_url_when_calling_get_favicon_endpoint_then_returns_favicon(pool: PgPool) {
+        let endpoint = "/api/v1/favicon?url=http://www.google.com";
+        let response = request(Method::GET, endpoint, pool).await;
+
+        assert_eq!(response.status(), StatusCode::OK);
+        assert_eq!(
+            response.headers().get("content-type").unwrap(),
+            "application/octet-stream"
+        );
+        assert_eq!(
+            response.headers().get("cache-control").unwrap(),
+            "public, max-age=86400, immutable, must-revalidate"
+        )
+    }
+
+    #[tracing_test::traced_test]
+    #[sqlx::test]
+    async fn given_invalid_url_when_calling_get_favicon_endpoint_then_returns_no_content(
+        pool: PgPool,
+    ) {
+        let response = request(Method::GET, "/api/v1/favicon?url=invalid", pool).await;
+
+        assert_eq!(response.status(), StatusCode::NO_CONTENT);
+    }
+}
