@@ -30,6 +30,7 @@ jobs:
         working-directory: ./backend
     env:
       DATABASE_URL: postgres://admin:admin@localhost/indicator_aggregator
+      SQLX_OFFLINE: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
