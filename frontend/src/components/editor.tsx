@@ -18,9 +18,10 @@ self.MonacoEnvironment = {
 };
 
 import { loader } from "@monaco-editor/react";
-import "monaco-editor/esm/vs/language/json/monaco.contribution.js";
-import "monaco-editor/esm/vs/language/typescript/monaco.contribution.js";
-import "monaco-editor/esm/vs/basic-languages/python/python.contribution.js";
+import "monaco-editor/esm/vs/language/json/monaco.contribution";
+import "monaco-editor/esm/vs/language/typescript/monaco.contribution";
+import "monaco-editor/esm/vs/basic-languages/python/python.contribution";
+import "monaco-editor/esm/vs/editor/editor.all";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 loader.config({ monaco });
