@@ -52,7 +52,7 @@ const SourceKindLanguageMap: { [key in SourceKind]: string } = {
 };
 
 export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
-  const { theme } = useTheme();
+  const { computedTheme } = useTheme();
 
   const numberOfLines = value.split("\n").length;
 
@@ -75,7 +75,7 @@ export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
         folding: false,
         minimap: { enabled: false },
         bracketPairColorization: { enabled: true },
-        theme: theme === "light" ? "vs" : "vs-dark",
+        theme: computedTheme === "light" ? "vs" : "vs-dark",
       }}
       className="shadow border"
     />
