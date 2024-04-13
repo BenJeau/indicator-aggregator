@@ -30,7 +30,7 @@ jobs:
         working-directory: ./backend
     env:
       DATABASE_URL: postgres://admin:admin@localhost/indicator_aggregator
-      SQLX_OFFLINE: true
+      PGPASSWORD: admin
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -51,5 +51,10 @@ jobs:
         run: rustup component add clippy
       - name: Install Protoc
         uses: arduino/setup-protoc@v3
+      - name: Run migrations
+        run: >-
+          for file in ./database/migrations/*.up.sql; do
+            psql -h localhost -U admin -d indicator_aggregator -f $file
+          done
       - name: Run cargo test
         run: cargo test --all -- --nocapture
