@@ -10,6 +10,14 @@ import config from "@/config";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ReqestSSEData } from "@/api/requests";
+import { useTheme } from "@/components/theme-provider";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Editor } from "@/components/editor";
 
 import { PhishTank } from "./phishtank";
 
@@ -22,17 +30,6 @@ const InnerSource = {
     Component: PhishTank,
   },
 };
-
-import hljs from "highlight.js/lib/core";
-import json from "highlight.js/lib/languages/json";
-import darkTheme from "highlight.js/styles/github-dark.css?raw";
-import lightTheme from "highlight.js/styles/github.css?raw";
-import { useTheme } from "@/components/theme-provider";
-import { Badge } from "../ui/badge";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-
-// Then register the languages you need
-hljs.registerLanguage("json", json);
 
 const DefaultSource: React.FC<{ data: unknown }> = ({ data }) => {
   const { computedTheme } = useTheme();
@@ -54,20 +51,7 @@ const DefaultSource: React.FC<{ data: unknown }> = ({ data }) => {
     }
   }, [computedTheme]);
 
-  return (
-    <div className="bg-muted/20 max-h-[300px] flex-1 overflow-y-scroll rounded border p-2 text-xs shadow-sm">
-      <pre>
-        <code
-          dangerouslySetInnerHTML={{
-            __html: hljs.highlight(JSON.stringify(data, null, 2), {
-              language: "json",
-            }).value,
-          }}
-          className="whitespace-pre-wrap break-all"
-        />
-      </pre>
-    </div>
-  );
+  return <Editor language="json" value={JSON.stringify(data, null, 2)} />;
 };
 
 export const Source: React.FC<ReqestSSEData> = ({
