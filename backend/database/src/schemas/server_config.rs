@@ -32,7 +32,7 @@ pub enum ServerConfigCategory {
 }
 
 /// Configuration entry for the server
-#[derive(Serialize, Debug, ToSchema, Default)]
+#[derive(Deserialize, Serialize, Debug, ToSchema, Default, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct ServerConfigEntry<T: Default> {
@@ -91,7 +91,7 @@ pub struct DbServerConfig {
 }
 
 /// General server configuration
-#[derive(Serialize, Debug, ToSchema)]
+#[derive(Deserialize, Serialize, Debug, ToSchema, Eq, PartialEq)]
 #[typeshare]
 
 pub struct ServerConfig {
