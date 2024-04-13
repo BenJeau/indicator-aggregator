@@ -33,11 +33,17 @@ loader.config({ monaco });
 import { SourceKind } from "@/types/backendTypes";
 import { useTheme } from "@/components/theme-provider";
 
-interface Props {
+type Props = {
   value: string;
   onChange?: (value: string) => void;
-  sourceKind: SourceKind;
-}
+} & (
+  | {
+      sourceKind: SourceKind;
+    }
+  | {
+      language: string;
+    }
+);
 
 const SourceKindLanguageMap: { [key in SourceKind]: string } = {
   [SourceKind.Python]: "python",
@@ -45,15 +51,20 @@ const SourceKindLanguageMap: { [key in SourceKind]: string } = {
   [SourceKind.JavaScript]: "javascript",
 };
 
-export const Editor: FC<Props> = ({ value, onChange, sourceKind }) => {
-  const { theme } = useTheme();
+export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
+  const { computedTheme } = useTheme();
 
   const numberOfLines = value.split("\n").length;
 
+  const language =
+    "language" in props
+      ? props.language
+      : SourceKindLanguageMap[props.sourceKind];
+
   return (
     <MonacoEditor
-      height={numberOfLines * 19}
-      language={SourceKindLanguageMap[sourceKind]}
+      height={Math.min(numberOfLines, 15) * 19}
+      language={language}
       value={value}
       onChange={(value) => {
         onChange && onChange(value ?? "");
@@ -64,9 +75,9 @@ export const Editor: FC<Props> = ({ value, onChange, sourceKind }) => {
         folding: false,
         minimap: { enabled: false },
         bracketPairColorization: { enabled: true },
-        theme: theme === "light" ? "vs" : "vs-dark",
+        theme: computedTheme === "light" ? "vs" : "vs-dark",
       }}
-      className="rounded shadow border"
+      className="shadow border"
     />
   );
 };

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { Database, Download, Hourglass, Save, ServerCrash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { SourceError } from "@/types/backendTypes";
@@ -10,6 +10,13 @@ import config from "@/config";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ReqestSSEData } from "@/api/requests";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Editor } from "@/components/editor";
 
 import { PhishTank } from "./phishtank";
 
@@ -21,53 +28,6 @@ const InnerSource = {
   PhishTank: {
     Component: PhishTank,
   },
-};
-
-import hljs from "highlight.js/lib/core";
-import json from "highlight.js/lib/languages/json";
-import darkTheme from "highlight.js/styles/github-dark.css?raw";
-import lightTheme from "highlight.js/styles/github.css?raw";
-import { useTheme } from "@/components/theme-provider";
-import { Badge } from "../ui/badge";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-
-// Then register the languages you need
-hljs.registerLanguage("json", json);
-
-const DefaultSource: React.FC<{ data: unknown }> = ({ data }) => {
-  const { computedTheme } = useTheme();
-
-  useEffect(() => {
-    const style =
-      document.querySelector("style#highlightjs-theme") ??
-      (() => {
-        const style = document.createElement("style");
-        style.setAttribute("id", "highlightjs-theme");
-        document.head.appendChild(style);
-        return style;
-      })();
-
-    if (computedTheme === "dark") {
-      style.innerHTML = darkTheme;
-    } else {
-      style.innerHTML = lightTheme;
-    }
-  }, [computedTheme]);
-
-  return (
-    <div className="bg-muted/20 max-h-[300px] flex-1 overflow-y-scroll rounded border p-2 text-xs shadow-sm">
-      <pre>
-        <code
-          dangerouslySetInnerHTML={{
-            __html: hljs.highlight(JSON.stringify(data, null, 2), {
-              language: "json",
-            }).value,
-          }}
-          className="whitespace-pre-wrap break-all"
-        />
-      </pre>
-    </div>
-  );
 };
 
 export const Source: React.FC<ReqestSSEData> = ({
@@ -83,7 +43,7 @@ export const Source: React.FC<ReqestSSEData> = ({
   const Content =
     source.name in InnerSource
       ? InnerSource[source.name as keyof typeof InnerSource].Component
-      : () => <DefaultSource data={data} />;
+      : () => <Editor language="json" value={JSON.stringify(data, null, 2)} />;
   const diff = dayjs(timing?.endedAt).diff(dayjs(timing?.startedAt));
 
   const [imgHasError, setImgHasError] = useState(true);
