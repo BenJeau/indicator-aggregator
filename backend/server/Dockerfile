@@ -1,5 +1,5 @@
-FROM rust:1.77.0-slim-bookworm as builder-chef
-RUN cargo install --version 0.1.65 cargo-chef
+FROM rust:1.77.2-slim-bookworm as builder-chef
+RUN cargo install --version 0.1.66 cargo-chef
 RUN apt-get update && apt-get install -y libpq-dev libssl-dev pkg-config protobuf-compiler python3-dev
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 RUN SQLX_OFFLINE=true cargo build --release
 
-FROM debian:bookworm-20240311-slim
+FROM debian:bookworm-20240408-slim
 RUN apt-get update && apt-get install -y libpq-dev ca-certificates
 COPY --from=builder /app/target/release/backend /
 
