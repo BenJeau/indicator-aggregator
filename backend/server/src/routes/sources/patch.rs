@@ -9,7 +9,6 @@ use database::{
     logic::sources,
     schemas::sources::{SourceKind, UpdateSource},
 };
-use uuid::Uuid;
 
 use crate::{runners::send_update_request, Result};
 
@@ -23,7 +22,7 @@ use crate::{runners::send_update_request, Result};
         (status = 404, description = "Source not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Source database ID"),
+        ("id" = String, Path, description = "Source database ID"),
     ),
     request_body(
         description = "Fields to update",
@@ -33,7 +32,7 @@ use crate::{runners::send_update_request, Result};
 )]
 pub async fn patch_source(
     State(pool): State<PgPool>,
-    Path(source_id): Path<Uuid>,
+    Path(source_id): Path<String>,
     Json(source): Json<UpdateSource>,
 ) -> Result<impl IntoResponse> {
     let num_affected = sources::update_source(&pool, &source_id, source).await?;

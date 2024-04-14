@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 /// Source provider, organization or service that provides indicators
 #[derive(FromRow, Serialize, ToSchema)]
@@ -11,7 +10,7 @@ use uuid::Uuid;
 #[typeshare]
 pub struct Provider {
     /// Database ID of the provider
-    pub id: Uuid,
+    pub id: String,
     /// Timestamp of the creation of the provider
     pub created_at: NaiveDateTime,
     /// Timestamp of the last update of the provider
@@ -36,7 +35,7 @@ pub struct Provider {
 #[typeshare]
 pub struct ProviderWithNumSources {
     /// Database ID of the provider
-    pub id: Uuid,
+    pub id: String,
     /// Timestamp of the creation of the provider
     pub created_at: NaiveDateTime,
     /// Timestamp of the last update of the provider

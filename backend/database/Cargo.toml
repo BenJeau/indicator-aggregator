@@ -12,7 +12,6 @@ strum = { workspace = true }
 tracing = { workspace = true }
 typeshare = { workspace = true }
 utoipa = { workspace = true }
-uuid = { workspace = true }
 validator = { workspace = true }
 
 shared = { path = "../shared" }

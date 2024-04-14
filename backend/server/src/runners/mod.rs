@@ -8,7 +8,6 @@ use database::{logic::server_config::get_config_with_defaults_and_db_results, Pg
 use database::{logic::sources::get_source_code_by_kind, schemas::sources::SourceKind};
 use futures_util::{Stream, StreamExt, TryStreamExt};
 use tonic::transport::Endpoint;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -40,7 +39,7 @@ pub async fn send_init_request(pool: &PgPool, source_kind: SourceKind) -> Result
 pub async fn send_delete_request(
     pool: &PgPool,
     source_kind: SourceKind,
-    source_id: &Uuid,
+    source_id: &str,
 ) -> Result<()> {
     let request = DeleteRequest {
         source: source_id.to_string(),
@@ -59,7 +58,7 @@ pub async fn send_delete_request(
 pub async fn send_update_request(
     pool: &PgPool,
     source_kind: SourceKind,
-    source_id: &Uuid,
+    source_id: &str,
     source_code: &str,
 ) -> Result<()> {
     let request = UpdateRequest {

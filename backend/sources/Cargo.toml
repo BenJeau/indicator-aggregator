@@ -21,7 +21,6 @@ tonic = { workspace = true }
 tracing = { workspace = true }
 typeshare = { workspace = true }
 utoipa = { workspace = true }
-uuid = { workspace = true }
 zip = { workspace = true }
 
 cache = { path = "../cache" }

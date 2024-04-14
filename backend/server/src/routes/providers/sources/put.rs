@@ -6,7 +6,6 @@ use axum::{
 };
 use database::logic::providers;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,18 +18,18 @@ use crate::Result;
         (status = 201, description = "Provider sources linked successfully"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Provider database ID"),
+        ("id" = String, Path, description = "Provider database ID"),
     ),
     request_body(
         description = "Source database IDs",
         content_type = "application/json",
-        content = Vec<Uuid>
+        content = Vec<String>
     )
 )]
 pub async fn put_provider_sources(
     State(pool): State<PgPool>,
-    Path(provider_id): Path<Uuid>,
-    Json(source_ids): Json<Vec<Uuid>>,
+    Path(provider_id): Path<String>,
+    Json(source_ids): Json<Vec<String>>,
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;
 

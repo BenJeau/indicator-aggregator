@@ -5,7 +5,6 @@ use axum::{
 };
 use database::logic::ignore_lists;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -18,12 +17,12 @@ use crate::Result;
         (status = 200, description = "Ignore list providers retrieved successfully", body = Vec<Provider>),
     ),
     params(
-        ("id" = Uuid, Path, description = "Ignore list database ID"),
+        ("id" = String, Path, description = "Ignore list database ID"),
     )
 )]
 pub async fn get_list_providers(
     State(pool): State<PgPool>,
-    Path(list_id): Path<Uuid>,
+    Path(list_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let providers = ignore_lists::get_list_providers(&pool, &list_id).await?;
 

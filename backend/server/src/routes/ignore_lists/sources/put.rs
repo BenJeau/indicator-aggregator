@@ -6,7 +6,6 @@ use axum::{
 };
 use database::logic::ignore_lists;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,16 +18,16 @@ use crate::Result;
         (status = 201, description = "Ignore list sources updated successfully"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Ignore list database ID"),
+        ("id" = String, Path, description = "Ignore list database ID"),
     ),
     request_body(
-        content_type = "application/json", content = Vec<Uuid>, description = "List of source database IDs"
+        content_type = "application/json", content = Vec<String>, description = "List of source database IDs"
     )
 )]
 pub async fn put_ignore_list_sources(
     State(pool): State<PgPool>,
-    Path(ignore_list_id): Path<Uuid>,
-    Json(source_ids): Json<Vec<Uuid>>,
+    Path(ignore_list_id): Path<String>,
+    Json(source_ids): Json<Vec<String>>,
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;
 

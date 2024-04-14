@@ -6,7 +6,6 @@ use axum::{
 };
 use database::logic::ignore_lists;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -35,12 +34,12 @@ pub async fn get_lists(State(pool): State<PgPool>) -> Result<impl IntoResponse> 
         (status = 404, description = "Ignore list not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Ignore list database ID"),
+        ("id" = String, Path, description = "Ignore list database ID"),
     )
 )]
 pub async fn get_list(
     State(pool): State<PgPool>,
-    Path(list_id): Path<Uuid>,
+    Path(list_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let list = ignore_lists::get_list(&pool, &list_id).await?;
 

@@ -11,7 +11,7 @@
         "Text",
         "TextArray",
         "Bool",
-        "Uuid"
+        "Text"
       ]
     },
     "nullable": []

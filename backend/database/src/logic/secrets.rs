@@ -2,7 +2,6 @@ use shared::crypto::Crypto;
 use sqlx::{PgExecutor, PgPool, Result};
 use std::collections::HashMap;
 use tracing::instrument;
-use uuid::Uuid;
 
 use crate::schemas::secrets::{
     CreateSecret, CreateSourceSecret, GetSecret, SecretWithNumSources, SourceSecret, UpdateSecret,
@@ -14,7 +13,7 @@ pub async fn create_secret(
     data: CreateSecret,
     crypto: &Crypto,
     db_secret: &str,
-) -> Result<Uuid> {
+) -> Result<String> {
     sqlx::query_scalar!(
         "INSERT INTO secrets (name, value, description, expires_at) VALUES ($1, pgp_sym_encrypt_bytea($2, $3), $4, $5) RETURNING id",
         data.name,
@@ -29,7 +28,7 @@ pub async fn create_secret(
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn delete_secret(pool: &PgPool, id: &Uuid) -> Result<u64> {
+pub async fn delete_secret(pool: &PgPool, id: &str) -> Result<u64> {
     sqlx::query!("DELETE FROM secrets WHERE id = $1", id)
         .execute(pool)
         .await
@@ -40,7 +39,7 @@ pub async fn delete_secret(pool: &PgPool, id: &Uuid) -> Result<u64> {
 #[instrument(skip_all, fields(id = %id), ret, err)]
 pub async fn patch_secret(
     pool: &PgPool,
-    id: &Uuid,
+    id: &str,
     secret: UpdateSecret,
     crypto: &Crypto,
     db_secret: &str,
@@ -70,7 +69,7 @@ pub async fn get_secrets(pool: &PgPool) -> Result<Vec<SecretWithNumSources>> {
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_source_secrets(pool: &PgPool, source_id: &Uuid) -> Result<Vec<SourceSecret>> {
+pub async fn get_source_secrets(pool: &PgPool, source_id: &str) -> Result<Vec<SourceSecret>> {
     sqlx::query_as!(
         SourceSecret,
         r#"SELECT id,
@@ -92,7 +91,7 @@ WHERE source_id = $1"#,
 #[instrument(skip_all, err)]
 pub async fn internal_get_source_secrets(
     pool: &PgPool,
-    source_id: &Uuid,
+    source_id: &str,
     crypto: &Crypto,
     db_secret: &str,
 ) -> Result<HashMap<String, String>> {
@@ -110,7 +109,7 @@ pub async fn internal_get_source_secrets(
 #[instrument(skip_all, err)]
 pub async fn get_secret_value(
     pool: &PgPool,
-    id: &Uuid,
+    id: &str,
     crypto: &Crypto,
     db_secret: &str,
 ) -> Result<String> {
@@ -124,7 +123,7 @@ pub async fn get_secret_value(
 #[instrument(skip(pool), ret, err)]
 pub async fn delete_all_source_secrets<'e>(
     pool: impl PgExecutor<'e>,
-    source_id: &Uuid,
+    source_id: &str,
 ) -> Result<u64> {
     sqlx::query!("DELETE FROM source_secrets WHERE source_id = $1", source_id)
         .execute(pool)
@@ -136,13 +135,13 @@ pub async fn delete_all_source_secrets<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn add_source_secrets<'e>(
     pool: impl PgExecutor<'e>,
-    source_id: &Uuid,
+    source_id: &str,
     data: &[CreateSourceSecret],
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO source_secrets (source_id, secret_id, name, description, required) VALUES ($1, UNNEST($2::UUID[]), UNNEST($3::TEXT[]), UNNEST($4::TEXT[]), UNNEST($5::BOOLEAN[]))",
+        "INSERT INTO source_secrets (source_id, secret_id, name, description, required) VALUES ($1, UNNEST($2::TEXT[]), UNNEST($3::TEXT[]), UNNEST($4::TEXT[]), UNNEST($5::BOOLEAN[]))",
         source_id,
-        &data.iter().map(|s| s.secret_id).collect::<Vec<_>>() as _,
+        &data.iter().map(|s| s.secret_id.as_ref().map(|id| id.as_str())).collect::<Vec<_>>() as _,
         &data.iter().map(|s| s.name.as_str()).collect::<Vec<_>>() as _,
         &data.iter().map(|s| s.description.as_ref().map(|d| d.as_str())).collect::<Vec<_>>() as _,
         &data.iter().map(|s| s.required).collect::<Vec<_>>()

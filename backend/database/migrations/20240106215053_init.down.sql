@@ -13,6 +13,6 @@ DROP TABLE "providers";
 DROP TYPE "server_config_kind";
 DROP TYPE "source_kind";
 
-DROP EXTENSION "uuid-ossp";
+DROP FUNCTION nanoid();
 DROP EXTENSION "moddatetime";
 DROP EXTENSION "pgcrypto";

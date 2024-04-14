@@ -6,7 +6,6 @@ use axum::{
 };
 use database::PgPool;
 use database::{logic::providers, schemas::providers::PatchProvider};
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -20,7 +19,7 @@ use crate::Result;
         (status = 404, description = "Provider not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Provider database ID"),
+        ("id" = String, Path, description = "Provider database ID"),
     ),
     request_body(
         description = "Fields to update",
@@ -30,7 +29,7 @@ use crate::Result;
 )]
 pub async fn patch_provider(
     State(pool): State<PgPool>,
-    Path(provider_id): Path<Uuid>,
+    Path(provider_id): Path<String>,
     Json(provider): Json<PatchProvider>,
 ) -> Result<impl IntoResponse> {
     let num_affected = providers::patch_provider(&pool, &provider_id, provider).await?;

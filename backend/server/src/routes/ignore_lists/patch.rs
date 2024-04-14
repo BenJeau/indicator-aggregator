@@ -6,7 +6,6 @@ use axum::{
 };
 use database::PgPool;
 use database::{logic::ignore_lists, schemas::ignore_lists::UpdateIgnoreList};
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -20,13 +19,13 @@ use crate::Result;
         (status = 404, description = "Ignore list not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Ignore list database ID"),
+        ("id" = String, Path, description = "Ignore list database ID"),
         UpdateIgnoreList
     )
 )]
 pub async fn patch_list(
     State(pool): State<PgPool>,
-    Path(list_id): Path<Uuid>,
+    Path(list_id): Path<String>,
     Json(data): Json<UpdateIgnoreList>,
 ) -> Result<impl IntoResponse> {
     let num_affected = ignore_lists::update_list(&pool, &list_id, data).await?;

@@ -20,7 +20,7 @@
         "Bool",
         "Int4",
         "Int4",
-        "Uuid",
+        "Text",
         {
           "Custom": {
             "name": "source_kind",
@@ -36,7 +36,7 @@
         "Text",
         "Bool",
         "Int4",
-        "Uuid"
+        "Text"
       ]
     },
     "nullable": []

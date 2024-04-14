@@ -1,12 +1,12 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\nSELECT\nsources.id as source_id,\nsources.name as source_name,\nsources.kind as \"source_kind: _\",\nsources.enabled as source_enabled,\nsources.url as source_url,\nsources.favicon as source_favicon,\nsources.supported_indicators as source_supported_indicators,\nsources.disabled_indicators as source_disabled_indicators,\nsources.cache_enabled as source_cache_enabled,\nsources.cache_interval as source_cache_interval,\nproviders.id as \"provider_id: Option<Uuid>\",\nproviders.enabled as \"provider_enabled: Option<bool>\",\nCOALESCE(array_agg(DISTINCT source_secrets.id) FILTER (WHERE source_secrets.id IS NOT NULL), '{}') AS \"missing_source_secrets!\",\nCOALESCE(array_agg(DISTINCT ignore_list_entries.ignore_list_id) FILTER (WHERE ignore_list_entries.ignore_list_id IS NOT NULL), '{}') AS \"within_ignore_lists!\"\nFROM sources\nLEFT JOIN providers ON providers.id = sources.provider_id\nLEFT JOIN source_secrets ON source_secrets.source_id = sources.id AND source_secrets.required = TRUE AND source_secrets.secret_id IS NULL\nLEFT JOIN source_ignore_lists ON source_ignore_lists.source_id = sources.id\nLEFT JOIN ignore_lists ON ignore_lists.id = source_ignore_lists.ignore_list_id OR ignore_lists.\"global\" = TRUE\nLEFT JOIN ignore_list_entries on ignore_lists.id = ignore_list_entries.ignore_list_id AND ignore_list_entries.indicator_kind = $1 AND ignore_list_entries.data LIKE '%' || $2 || '%'\nWHERE CARDINALITY($3::UUID[]) = 0 OR sources.id = ANY($3::UUID[])\nGROUP BY sources.id, providers.id;\n",
+  "query": "\nSELECT\nsources.id as source_id,\nsources.name as source_name,\nsources.kind as \"source_kind: _\",\nsources.enabled as source_enabled,\nsources.url as source_url,\nsources.favicon as source_favicon,\nsources.supported_indicators as source_supported_indicators,\nsources.disabled_indicators as source_disabled_indicators,\nsources.cache_enabled as source_cache_enabled,\nsources.cache_interval as source_cache_interval,\nproviders.id as \"provider_id: Option<String>\",\nproviders.enabled as \"provider_enabled: Option<bool>\",\nCOALESCE(array_agg(DISTINCT source_secrets.id) FILTER (WHERE source_secrets.id IS NOT NULL), '{}') AS \"missing_source_secrets!\",\nCOALESCE(array_agg(DISTINCT ignore_list_entries.ignore_list_id) FILTER (WHERE ignore_list_entries.ignore_list_id IS NOT NULL), '{}') AS \"within_ignore_lists!\"\nFROM sources\nLEFT JOIN providers ON providers.id = sources.provider_id\nLEFT JOIN source_secrets ON source_secrets.source_id = sources.id AND source_secrets.required = TRUE AND source_secrets.secret_id IS NULL\nLEFT JOIN source_ignore_lists ON source_ignore_lists.source_id = sources.id\nLEFT JOIN ignore_lists ON ignore_lists.id = source_ignore_lists.ignore_list_id OR ignore_lists.\"global\" = TRUE\nLEFT JOIN ignore_list_entries on ignore_lists.id = ignore_list_entries.ignore_list_id AND ignore_list_entries.indicator_kind = $1 AND ignore_list_entries.data LIKE '%' || $2 || '%'\nWHERE CARDINALITY($3::TEXT[]) = 0 OR sources.id = ANY($3::TEXT[])\nGROUP BY sources.id, providers.id;\n",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
         "name": "source_id",
-        "type_info": "Uuid"
+        "type_info": "Text"
       },
       {
         "ordinal": 1,
@@ -66,8 +66,8 @@
       },
       {
         "ordinal": 10,
-        "name": "provider_id: Option<Uuid>",
-        "type_info": "Uuid"
+        "name": "provider_id: Option<String>",
+        "type_info": "Text"
       },
       {
         "ordinal": 11,
@@ -77,19 +77,19 @@
       {
         "ordinal": 12,
         "name": "missing_source_secrets!",
-        "type_info": "UuidArray"
+        "type_info": "TextArray"
       },
       {
         "ordinal": 13,
         "name": "within_ignore_lists!",
-        "type_info": "UuidArray"
+        "type_info": "TextArray"
       }
     ],
     "parameters": {
       "Left": [
         "Text",
         "Text",
-        "UuidArray"
+        "TextArray"
       ]
     },
     "nullable": [
@@ -109,5 +109,5 @@
       null
     ]
   },
-  "hash": "d645b63aac8fc70bd12f60aa3f938e262d9695036b7319e40c49370622d8782f"
+  "hash": "6ef0f8ea702513d09cab3bb901af01d6bf0ed5aab15ae3fb09aa9a329cf9b3ea"
 }

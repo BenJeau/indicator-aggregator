@@ -1,12 +1,46 @@
-CREATE EXTENSION "uuid-ossp";
 CREATE EXTENSION "moddatetime";
 CREATE EXTENSION "pgcrypto";
+
+CREATE FUNCTION nanoid()
+    RETURNS text
+    LANGUAGE plpgsql
+    VOLATILE
+    LEAKPROOF
+    PARALLEL SAFE
+AS
+$$
+DECLARE
+    size           int    := 12;
+    mask           int    := 63;
+    step           int    := 37;
+    idBuilder      text   := '';
+    counter        int    := 0;
+    bytes          bytea;
+    alphabetIndex  int;
+    alphabetArray  text[] := regexp_split_to_array('0123456789abcdefghijklmnopqrstuvwxyz', '');
+    alphabetLength int    := 36;
+BEGIN
+    LOOP
+        bytes := gen_random_bytes(step);
+        FOR counter IN 0..step - 1
+            LOOP
+                alphabetIndex := (get_byte(bytes, counter) & mask) + 1;
+                IF alphabetIndex <= alphabetLength THEN
+                    idBuilder := idBuilder || alphabetArray[alphabetIndex];
+                    IF length(idBuilder) = size THEN
+                        RETURN idBuilder;
+                    END IF;
+                END IF;
+            END LOOP;
+    END LOOP;
+END
+$$;
 
 CREATE TYPE "source_kind" AS ENUM ('system', 'javascript', 'python');
 CREATE TYPE "server_config_kind" AS ENUM ('string', 'number', 'boolean', 'code');
 
 CREATE TABLE IF NOT EXISTS "providers" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
@@ -19,7 +53,7 @@ CREATE TABLE IF NOT EXISTS "providers" (
 );
 
 CREATE TABLE IF NOT EXISTS "sources" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
@@ -43,7 +77,7 @@ CREATE TABLE IF NOT EXISTS "sources" (
     "cache_enabled" BOOLEAN NOT NULL DEFAULT FALSE,
     "cache_interval" INTEGER,
 
-    "provider_id" UUID,
+    "provider_id" TEXT,
 
     FOREIGN KEY ("provider_id") REFERENCES "providers" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
 
@@ -55,7 +89,7 @@ CREATE TABLE IF NOT EXISTS "sources" (
 );
 
 CREATE TABLE IF NOT EXISTS "secrets" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
@@ -66,12 +100,12 @@ CREATE TABLE IF NOT EXISTS "secrets" (
 );
 
 CREATE TABLE IF NOT EXISTS "source_secrets" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
-    "secret_id" UUID,
-    "source_id" UUID NOT NULL,
+    "secret_id" TEXT,
+    "source_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "required" BOOLEAN NOT NULL DEFAULT FALSE,
@@ -81,7 +115,7 @@ CREATE TABLE IF NOT EXISTS "source_secrets" (
 );
 
 CREATE TABLE IF NOT EXISTS "ignore_lists" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
@@ -92,13 +126,13 @@ CREATE TABLE IF NOT EXISTS "ignore_lists" (
 );
 
 CREATE TABLE IF NOT EXISTS "ignore_list_entries" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
     "data" TEXT NOT NULL,
     "indicator_kind" TEXT NOT NULL,
-    "ignore_list_id" UUID NOT NULL,
+    "ignore_list_id" TEXT NOT NULL,
 
     FOREIGN KEY ("ignore_list_id") REFERENCES "ignore_lists" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
 
@@ -106,12 +140,12 @@ CREATE TABLE IF NOT EXISTS "ignore_list_entries" (
 );
 
 CREATE TABLE IF NOT EXISTS "source_ignore_lists" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
-    "ignore_list_id" UUID NOT NULL,
-    "source_id" UUID NOT NULL,
+    "ignore_list_id" TEXT NOT NULL,
+    "source_id" TEXT NOT NULL,
 
     FOREIGN KEY ("ignore_list_id") REFERENCES "ignore_lists" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("source_id") REFERENCES "sources" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -120,12 +154,12 @@ CREATE TABLE IF NOT EXISTS "source_ignore_lists" (
 );
 
 CREATE TABLE IF NOT EXISTS "provider_ignore_lists" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
-    "ignore_list_id" UUID NOT NULL,
-    "source_provider_id" UUID NOT NULL,
+    "ignore_list_id" TEXT NOT NULL,
+    "source_provider_id" TEXT NOT NULL,
 
     FOREIGN KEY ("ignore_list_id") REFERENCES "ignore_lists" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("source_provider_id") REFERENCES "providers" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -134,7 +168,7 @@ CREATE TABLE IF NOT EXISTS "provider_ignore_lists" (
 );
 
 CREATE TABLE IF NOT EXISTS "requests" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
@@ -144,7 +178,7 @@ CREATE TABLE IF NOT EXISTS "requests" (
 );
 
 CREATE TABLE IF NOT EXISTS "source_requests" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
@@ -157,8 +191,8 @@ CREATE TABLE IF NOT EXISTS "source_requests" (
     "cache_cached_at" TIMESTAMP(3),
     "cache_key" TEXT,
 
-    "request_id" UUID NOT NULL,
-    "source_id" UUID,
+    "request_id" TEXT NOT NULL,
+    "source_id" TEXT,
     "source_name" TEXT NOT NULL,
     "source_url" TEXT NOT NULL,
     "source_favicon" TEXT,
@@ -170,7 +204,7 @@ CREATE TABLE IF NOT EXISTS "source_requests" (
 );
 
 CREATE TABLE IF NOT EXISTS "server_config" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 

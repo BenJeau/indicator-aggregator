@@ -1,6 +1,5 @@
 use sqlx::{PgExecutor, PgPool, Result};
 use tracing::instrument;
-use uuid::Uuid;
 
 use crate::schemas::{
     ignore_lists::IgnoreList,
@@ -16,7 +15,7 @@ pub async fn get_providers(pool: &PgPool) -> Result<Vec<ProviderWithNumSources>>
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<Uuid> {
+pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<String> {
     sqlx::query_scalar!(
         "INSERT INTO providers (name, description, url, favicon, tags, enabled) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
         provider.name,
@@ -32,7 +31,7 @@ pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_provider(pool: &PgPool, id: &Uuid) -> Result<Option<ProviderWithNumSources>> {
+pub async fn get_provider(pool: &PgPool, id: &str) -> Result<Option<ProviderWithNumSources>> {
     let provider = sqlx::query_as!(ProviderWithNumSources, r#"SELECT providers.*, count(sources.id)::INT as "num_sources!" FROM providers LEFT JOIN sources ON providers.id = sources.provider_id WHERE providers.id = $1 GROUP BY providers.id"#, id)
         .fetch_optional(pool)
         .await?;
@@ -41,7 +40,7 @@ pub async fn get_provider(pool: &PgPool, id: &Uuid) -> Result<Option<ProviderWit
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn patch_provider(pool: &PgPool, id: &Uuid, provider: PatchProvider) -> Result<u64> {
+pub async fn patch_provider(pool: &PgPool, id: &str, provider: PatchProvider) -> Result<u64> {
     sqlx::query!(
         "UPDATE providers SET name = COALESCE($1, name), description = COALESCE($2, description), url = COALESCE($3, url), favicon = COALESCE($4, favicon), tags = COALESCE($5, tags), enabled = COALESCE($6, enabled) WHERE id = $7",
         provider.name,
@@ -59,7 +58,7 @@ pub async fn patch_provider(pool: &PgPool, id: &Uuid, provider: PatchProvider) -
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn delete_provider(pool: &PgPool, id: &Uuid) -> Result<u64> {
+pub async fn delete_provider(pool: &PgPool, id: &str) -> Result<u64> {
     sqlx::query!("DELETE FROM providers WHERE id = $1", id)
         .execute(pool)
         .await
@@ -70,7 +69,7 @@ pub async fn delete_provider(pool: &PgPool, id: &Uuid) -> Result<u64> {
 #[instrument(skip(pool), ret, err)]
 pub async fn get_provider_ignore_lists(
     pool: &PgPool,
-    provider_id: &Uuid,
+    provider_id: &str,
 ) -> Result<Vec<IgnoreList>> {
     sqlx::query_as!(
         IgnoreList,
@@ -85,11 +84,11 @@ pub async fn get_provider_ignore_lists(
 #[instrument(skip(pool), ret, err)]
 pub async fn add_provider_ignore_lists<'e>(
     pool: impl PgExecutor<'e>,
-    source_provider_id: &Uuid,
-    ignore_list_ids: &[Uuid],
+    source_provider_id: &str,
+    ignore_list_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO provider_ignore_lists (ignore_list_id, source_provider_id) VALUES (UNNEST($1::UUID[]), $2)",
+        "INSERT INTO provider_ignore_lists (ignore_list_id, source_provider_id) VALUES (UNNEST($1::TEXT[]), $2)",
         ignore_list_ids,
         source_provider_id
     )
@@ -102,8 +101,8 @@ pub async fn add_provider_ignore_lists<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn delete_provider_ignore_lists(
     pool: &PgPool,
-    source_provider_id: &Uuid,
-    ignore_list_ids: &[Uuid],
+    source_provider_id: &str,
+    ignore_list_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM provider_ignore_lists WHERE ignore_list_id = ANY($1) AND source_provider_id = $2",
@@ -119,7 +118,7 @@ pub async fn delete_provider_ignore_lists(
 #[instrument(skip(pool), ret, err)]
 pub async fn delete_all_provider_ignore_lists<'e>(
     pool: impl PgExecutor<'e>,
-    source_provider_id: &Uuid,
+    source_provider_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM provider_ignore_lists WHERE source_provider_id = $1",
@@ -134,7 +133,7 @@ pub async fn delete_all_provider_ignore_lists<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn unset_all_provider_sources<'e>(
     pool: impl PgExecutor<'e>,
-    source_provider_id: &Uuid,
+    source_provider_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
         "UPDATE sources SET provider_id = NULL WHERE provider_id = $1",
@@ -149,8 +148,8 @@ pub async fn unset_all_provider_sources<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn set_all_provider_sources<'e>(
     pool: impl PgExecutor<'e>,
-    source_provider_id: &Uuid,
-    source_ids: &[Uuid],
+    source_provider_id: &str,
+    source_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
         "UPDATE sources SET provider_id = $1 WHERE id = ANY($2)",

@@ -6,7 +6,6 @@ use axum::{
 };
 use database::logic::providers;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,18 +18,18 @@ use crate::Result;
         (status = 201, description = "Provider ignore lists replaced successfully"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Provider database ID"),
+        ("id" = String, Path, description = "Provider database ID"),
     ),
     request_body(
         description = "Ignore list database IDs",
         content_type = "application/json",
-        content = Vec<Uuid>
+        content = Vec<String>
     )
 )]
 pub async fn put_provider_ignore_lists(
     State(pool): State<PgPool>,
-    Path(provider_id): Path<Uuid>,
-    Json(ignore_list_ids): Json<Vec<Uuid>>,
+    Path(provider_id): Path<String>,
+    Json(ignore_list_ids): Json<Vec<String>>,
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;
 

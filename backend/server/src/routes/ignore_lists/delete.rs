@@ -5,7 +5,6 @@ use axum::{
 };
 use database::logic::ignore_lists;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,12 +18,12 @@ use crate::Result;
         (status = 404, description = "Ignore list not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Ignore list database ID"),
+        ("id" = String, Path, description = "Ignore list database ID"),
     )
 )]
 pub async fn delete_list(
     State(pool): State<PgPool>,
-    Path(list_id): Path<Uuid>,
+    Path(list_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let num_affected = ignore_lists::delete_list(&pool, &list_id).await?;
 

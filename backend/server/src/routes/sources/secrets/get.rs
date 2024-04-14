@@ -5,7 +5,6 @@ use axum::{
 };
 use database::logic::secrets;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,12 +18,12 @@ use crate::Result;
         (status = 404, description = "Source not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Source database ID"),
+        ("id" = String, Path, description = "Source database ID"),
     )
 )]
 pub async fn get_source_secrets(
     State(pool): State<PgPool>,
-    Path(source_id): Path<Uuid>,
+    Path(source_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let secrets = secrets::get_source_secrets(&pool, &source_id).await?;
 

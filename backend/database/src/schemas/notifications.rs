@@ -2,7 +2,6 @@ use serde::Serialize;
 use sqlx::FromRow;
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 /// Enum containing the different kinds of notifications and it's content
 #[derive(Serialize, ToSchema, Debug)]
@@ -19,7 +18,7 @@ pub enum NotificationKind {
 #[typeshare]
 pub struct MinimalSource {
     /// Database ID of the source
-    pub id: Uuid,
+    pub id: String,
     /// Name of the source
     pub name: String,
     /// Number of secrets needed for the source

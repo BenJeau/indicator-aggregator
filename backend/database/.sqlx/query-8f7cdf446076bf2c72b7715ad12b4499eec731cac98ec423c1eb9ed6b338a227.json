@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "UPDATE sources SET provider_id = $1 WHERE id = ANY($2)",
+  "query": "DELETE FROM ignore_list_entries WHERE ignore_list_id = $1 AND id = ANY($2::TEXT[])",
   "describe": {
     "columns": [],
     "parameters": {
@@ -11,5 +11,5 @@
     },
     "nullable": []
   },
-  "hash": "2f1c1e38532fc477ca9c40012ff6addc7618ce61bc419260192127c5e54d9204"
+  "hash": "8f7cdf446076bf2c72b7715ad12b4499eec731cac98ec423c1eb9ed6b338a227"
 }

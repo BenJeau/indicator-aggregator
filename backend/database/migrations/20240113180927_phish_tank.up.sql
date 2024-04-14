@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "phishtank" (
 );
 
 CREATE TABLE IF NOT EXISTS "phishtank_refreshes" (
-  "id" SERIAL PRIMARY KEY NOT NULL,
+  "id" INTEGER GENERATED ALWAYS AS IDENTITY,
   "refreshed_at"  TIMESTAMP(3) NOT NULL DEFAULT NOW(),
   "response_headers" TEXT NOT NULL
 );

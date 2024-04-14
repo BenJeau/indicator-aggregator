@@ -2,7 +2,6 @@ use database::schemas::sources::SourceKind;
 use serde::Serialize;
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 use crate::Error;
 
@@ -15,9 +14,9 @@ pub enum SourceError {
     DisabledIndicator,
     RunnerDisabled(SourceKind),
     SourceDisabled,
-    ProviderDisabled(Uuid),
-    WithinIgnoreList(Vec<Uuid>),
-    MissingSecret(Vec<Uuid>),
+    ProviderDisabled(String),
+    WithinIgnoreList(Vec<String>),
+    MissingSecret(Vec<String>),
     Timeout,
     NotFound,
     Unauthorized,

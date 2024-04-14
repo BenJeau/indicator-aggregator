@@ -10,7 +10,6 @@ use database::{
 use futures_util::future::{join, join_all};
 use sources::{integrations, schemas::SourceError, Source};
 use tracing::{error, instrument, warn};
-use uuid::Uuid;
 
 use crate::{
     schemas::{Data, DataCache, DataCacheAction, DataSource, DataTiming, RequestExecuteParam},
@@ -34,7 +33,7 @@ pub async fn handle_indicator_request(
 async fn get_source_data(
     indicator: &Indicator,
     state: &ServerState,
-    source_ids: &[Uuid],
+    source_ids: &[String],
 ) -> Result<Vec<Data>> {
     let (sources, request_id) = join(
         database::logic::sources::get_sources_for_internal_request(
@@ -62,11 +61,16 @@ async fn get_source_data(
     let data = join_all(
         source_integrations
             .into_iter()
-            .map(|(integration, source)| async move {
-                if let Some(integration) = integration {
-                    get_indicator(indicator, source, state, &request_id, integration.as_ref()).await
-                } else {
-                    Err(Error::MissingSourceCode)
+            .map(|(integration, source)| {
+                let request_id = request_id.clone();
+
+                async move {
+                    if let Some(integration) = integration {
+                        get_indicator(indicator, source, state, request_id, integration.as_ref())
+                            .await
+                    } else {
+                        Err(Error::MissingSourceCode)
+                    }
                 }
             }),
     )
@@ -84,7 +88,7 @@ async fn get_source_data(
             Data {
                 source: DataSource {
                     name: source.source_name.clone(),
-                    id: source.source_id,
+                    id: source.source_id.clone(),
                     url: source.source_url.clone(),
                     favicon: source.source_favicon.clone(),
                 },
@@ -176,7 +180,9 @@ async fn get_source_errors(
     }
 
     if !source.provider_enabled.unwrap_or(true) {
-        errors.push(SourceError::ProviderDisabled(source.provider_id.unwrap()));
+        errors.push(SourceError::ProviderDisabled(
+            source.provider_id.as_ref().unwrap().clone(),
+        ));
     }
 
     if source.source_kind != SourceKind::System {
@@ -211,7 +217,7 @@ pub async fn get_indicator<S: Source + ?Sized>(
     indicator: &Indicator,
     source: &InternalRequest,
     state: &ServerState,
-    request_id: &Uuid,
+    request_id: String,
     source_impl: &S,
 ) -> Result<Data> {
     let started_at = chrono::Utc::now().naive_utc();
@@ -227,7 +233,7 @@ pub async fn get_indicator<S: Source + ?Sized>(
     let data = Data {
         source: DataSource {
             name: source.source_name.clone(),
-            id: source.source_id,
+            id: source.source_id.clone(),
             url: source.source_url.clone(),
             favicon: source.source_favicon.clone(),
         },

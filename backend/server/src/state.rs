@@ -4,7 +4,6 @@ use database::PgPool;
 use shared::crypto::Crypto;
 use sources::FetchState;
 use tracing::instrument;
-use uuid::Uuid;
 
 use crate::{config::Config, Result};
 
@@ -53,7 +52,7 @@ impl ServerState {
         }
     }
 
-    pub async fn into_fetch_state(&self, source_id: &Uuid) -> Result<FetchState> {
+    pub async fn into_fetch_state(&self, source_id: &str) -> Result<FetchState> {
         let secrets = database::logic::secrets::internal_get_source_secrets(
             &self.pool,
             source_id,
@@ -62,7 +61,11 @@ impl ServerState {
         )
         .await?;
 
-        Ok(FetchState::new(self.pool.clone(), secrets, *source_id))
+        Ok(FetchState::new(
+            self.pool.clone(),
+            secrets,
+            source_id.to_string(),
+        ))
     }
 }
 

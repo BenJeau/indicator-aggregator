@@ -5,7 +5,6 @@ use axum::{
 };
 use database::PgPool;
 use database::{logic::sources, schemas::sources::SourceKind};
-use uuid::Uuid;
 
 use crate::{runners::send_delete_request, Result};
 
@@ -19,12 +18,12 @@ use crate::{runners::send_delete_request, Result};
         (status = 404, description = "Source not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Source database ID"),
+        ("id" = String, Path, description = "Source database ID"),
     )
 )]
 pub async fn delete_source(
     State(pool): State<PgPool>,
-    Path(source_id): Path<Uuid>,
+    Path(source_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let source = sources::get_source(&pool, &source_id).await?;
 

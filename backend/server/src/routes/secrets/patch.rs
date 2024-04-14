@@ -5,7 +5,6 @@ use axum::{
     Json,
 };
 use database::{logic::secrets, schemas::secrets::UpdateSecret};
-use uuid::Uuid;
 
 use crate::{Result, ServerState};
 
@@ -19,13 +18,13 @@ use crate::{Result, ServerState};
         (status = 404, description = "Secret not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Secret database ID"),
+        ("id" = String, Path, description = "Secret database ID"),
         UpdateSecret
     )
 )]
 pub async fn patch_secret(
     State(state): State<ServerState>,
-    Path(secret_id): Path<Uuid>,
+    Path(secret_id): Path<String>,
     Json(secret): Json<UpdateSecret>,
 ) -> Result<impl IntoResponse> {
     let num_affected = secrets::patch_secret(
