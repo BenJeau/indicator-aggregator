@@ -179,6 +179,7 @@ pub struct InternalRequest {
     pub source_kind: SourceKind,
     pub source_enabled: bool,
     pub source_name: String,
+    pub source_slug: String,
     pub source_url: String,
     pub source_favicon: Option<String>,
     pub source_supported_indicators: Vec<String>,

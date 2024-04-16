@@ -197,6 +197,7 @@ CREATE TABLE IF NOT EXISTS "source_requests" (
     "request_id" TEXT NOT NULL,
     "source_id" TEXT,
     "source_name" TEXT NOT NULL,
+    "source_slug" TEXT NOT NULL,
     "source_url" TEXT NOT NULL,
     "source_favicon" TEXT,
 

@@ -64,6 +64,8 @@ pub struct Data {
 pub struct DataSource {
     /// Name of the source
     pub name: String,
+    /// URL friendly name of the provider
+    pub slug: String,
     /// Database ID of the source
     pub id: String,
     /// Documentation URL of the source

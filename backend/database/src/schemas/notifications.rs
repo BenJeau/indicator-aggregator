@@ -21,6 +21,8 @@ pub struct MinimalSource {
     pub id: String,
     /// Name of the source
     pub name: String,
+    /// URL friendly name of the provider
+    pub slug: String,
     /// Number of secrets needed for the source
     pub num_missing_secrets: i32,
 }

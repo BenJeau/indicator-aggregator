@@ -75,11 +75,16 @@
       },
       {
         "ordinal": 14,
-        "name": "source_url",
+        "name": "source_slug",
         "type_info": "Text"
       },
       {
         "ordinal": 15,
+        "name": "source_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 16,
         "name": "source_favicon",
         "type_info": "Text"
       }
@@ -103,6 +108,7 @@
       true,
       false,
       true,
+      false,
       false,
       false,
       true

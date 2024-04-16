@@ -58,6 +58,7 @@ pub async fn get_sources_for_internal_request(
 SELECT
 sources.id as source_id,
 sources.name as source_name,
+sources.slug as source_slug,
 sources.kind as "source_kind: _",
 sources.enabled as source_enabled,
 sources.url as source_url,

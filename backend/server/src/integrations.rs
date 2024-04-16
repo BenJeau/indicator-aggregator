@@ -88,6 +88,7 @@ async fn get_source_data(
             Data {
                 source: DataSource {
                     name: source.source_name.clone(),
+                    slug: source.source_slug.clone(),
                     id: source.source_id.clone(),
                     url: source.source_url.clone(),
                     favicon: source.source_favicon.clone(),
@@ -233,6 +234,7 @@ pub async fn get_indicator<S: Source + ?Sized>(
     let data = Data {
         source: DataSource {
             name: source.source_name.clone(),
+            slug: source.source_slug.clone(),
             id: source.source_id.clone(),
             url: source.source_url.clone(),
             favicon: source.source_favicon.clone(),

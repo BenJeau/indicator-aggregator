@@ -34,6 +34,7 @@ pub struct SourceRequest {
     pub request_id: String,
     pub source_id: Option<String>,
     pub source_name: String,
+    pub source_slug: String,
     pub source_url: String,
     pub source_favicon: Option<String>,
 }

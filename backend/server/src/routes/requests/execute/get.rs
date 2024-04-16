@@ -101,6 +101,7 @@ pub async fn sse_handler(
             SseStartData::from_inner(
                 DataSource {
                     name: s.source_name.clone(),
+                    slug: s.source_slug.clone(),
                     id: s.source_id.clone(),
                     url: s.source_url.clone(),
                     favicon: s.source_favicon.clone(),

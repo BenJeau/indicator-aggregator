@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT sources.id,\nsources.slug,\nsources.name,\nCOUNT(source_secrets)::INT as \"num_missing_secrets!: _\"\nFROM sources\nINNER JOIN source_secrets ON sources.id = source_secrets.source_id\nWHERE source_secrets.secret_id IS NULL AND source_secrets.required = TRUE\nGROUP BY sources.id\nHAVING COUNT(source_secrets) > 0",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "slug",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "num_missing_secrets!: _",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "35d05fa0f0839bdc913372e9cc0e2ff66006b8678c371303db73614a87d3d160"
+}

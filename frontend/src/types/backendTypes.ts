@@ -157,6 +157,8 @@ export interface MinimalSource {
   id: string;
   /** Name of the source */
   name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Number of secrets needed for the source */
   numMissingSecrets: number;
 }
@@ -243,6 +245,7 @@ export interface SourceRequest {
   requestId: string;
   sourceId?: string;
   sourceName: string;
+  sourceSlug: string;
   sourceUrl: string;
   sourceFavicon?: string;
 }
@@ -557,6 +560,8 @@ export interface RequestExecuteParam {
 export interface DataSource {
   /** Name of the source */
   name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Database ID of the source */
   id: string;
   /** Documentation URL of the source */
