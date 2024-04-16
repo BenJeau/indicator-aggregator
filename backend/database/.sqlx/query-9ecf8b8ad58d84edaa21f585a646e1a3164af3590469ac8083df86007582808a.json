@@ -1,11 +1,11 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT name FROM sources WHERE NOT ($1 = ANY(supported_indicators))",
+  "query": "SELECT id FROM sources WHERE slug = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "name",
+        "name": "id",
         "type_info": "Text"
       }
     ],
@@ -18,5 +18,5 @@
       false
     ]
   },
-  "hash": "5747ac69956d8a5a62daa6731314cd01dd31c70b0ee7564f175301301a1ac310"
+  "hash": "9ecf8b8ad58d84edaa21f585a646e1a3164af3590469ac8083df86007582808a"
 }

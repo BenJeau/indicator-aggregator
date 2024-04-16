@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO ignore_lists (name, description, enabled) VALUES ($1, $2, $3) RETURNING id",
+  "query": "SELECT id FROM ignore_lists WHERE slug = $1",
   "describe": {
     "columns": [
       {
@@ -11,14 +11,12 @@
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Text",
-        "Bool"
+        "Text"
       ]
     },
     "nullable": [
       false
     ]
   },
-  "hash": "abff4791c4667770193bd70e6e8cfde0889791663d772d0832d3198ffc22f0b2"
+  "hash": "eabe11fd5f081ca141be548ba721822af464e0fa696ffef27664657377ec8120"
 }

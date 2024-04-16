@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT providers.*, count(sources.id)::INT as \"num_sources!\" FROM providers LEFT JOIN sources ON providers.id = sources.provider_id WHERE providers.id = $1 GROUP BY providers.id",
+  "query": "SELECT ignore_lists.*\nFROM ignore_lists\nINNER JOIN provider_ignore_lists ON provider_ignore_lists.ignore_list_id = ignore_lists.id\nWHERE provider_ignore_lists.source_provider_id = $1",
   "describe": {
     "columns": [
       {
@@ -25,33 +25,23 @@
       },
       {
         "ordinal": 4,
-        "name": "description",
+        "name": "slug",
         "type_info": "Text"
       },
       {
         "ordinal": 5,
-        "name": "url",
+        "name": "description",
         "type_info": "Text"
       },
       {
         "ordinal": 6,
-        "name": "favicon",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 7,
-        "name": "tags",
-        "type_info": "TextArray"
-      },
-      {
-        "ordinal": 8,
         "name": "enabled",
         "type_info": "Bool"
       },
       {
-        "ordinal": 9,
-        "name": "num_sources!",
-        "type_info": "Int4"
+        "ordinal": 7,
+        "name": "global",
+        "type_info": "Bool"
       }
     ],
     "parameters": {
@@ -66,11 +56,9 @@
       false,
       false,
       false,
-      true,
       false,
-      false,
-      null
+      false
     ]
   },
-  "hash": "0ccaf07c69feafff55b8a0cf76ad33ab9cc67ac1e3e948c4bc688005f3b8a30d"
+  "hash": "197327d259c4eb3881e3e096bfce3d6ca837c9919607b59baa382fd8b7e2cd50"
 }

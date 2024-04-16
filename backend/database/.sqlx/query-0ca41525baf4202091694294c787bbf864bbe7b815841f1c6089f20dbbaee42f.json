@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT providers.*, count(sources.id)::INT as \"num_sources!\"\nFROM providers\nINNER JOIN provider_ignore_lists ON provider_ignore_lists.source_provider_id = providers.id\nLEFT JOIN sources ON providers.id = sources.provider_id\nWHERE provider_ignore_lists.ignore_list_id = $1\nGROUP BY providers.id\nORDER BY providers.enabled DESC, providers.name",
+  "query": "SELECT providers.*,\ncount(sources.id)::INT as \"num_sources!\"\nFROM providers\nLEFT JOIN sources ON providers.id = sources.provider_id\nGROUP BY providers.id\nORDER BY providers.enabled DESC, providers.name",
   "describe": {
     "columns": [
       {
@@ -60,9 +60,7 @@
       }
     ],
     "parameters": {
-      "Left": [
-        "Text"
-      ]
+      "Left": []
     },
     "nullable": [
       false,
@@ -78,5 +76,5 @@
       null
     ]
   },
-  "hash": "92f7f3324211a5ab2569ea26ef79378118f9a94b526296ec1c214feebbc2ffb0"
+  "hash": "0ca41525baf4202091694294c787bbf864bbe7b815841f1c6089f20dbbaee42f"
 }

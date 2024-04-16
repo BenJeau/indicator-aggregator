@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT providers.*, count(sources.id)::INT as \"num_sources!\" FROM providers LEFT JOIN sources ON providers.id = sources.provider_id GROUP BY providers.id ORDER BY providers.enabled DESC, providers.name",
+  "query": "SELECT providers.*,\ncount(sources.id)::INT as \"num_sources!\"\nFROM providers\nLEFT JOIN sources ON providers.id = sources.provider_id\nWHERE providers.id = $1\nGROUP BY providers.id",
   "describe": {
     "columns": [
       {
@@ -25,39 +25,47 @@
       },
       {
         "ordinal": 4,
-        "name": "description",
+        "name": "slug",
         "type_info": "Text"
       },
       {
         "ordinal": 5,
-        "name": "url",
+        "name": "description",
         "type_info": "Text"
       },
       {
         "ordinal": 6,
-        "name": "favicon",
+        "name": "url",
         "type_info": "Text"
       },
       {
         "ordinal": 7,
+        "name": "favicon",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
         "name": "tags",
         "type_info": "TextArray"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "enabled",
         "type_info": "Bool"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "num_sources!",
         "type_info": "Int4"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,
@@ -70,5 +78,5 @@
       null
     ]
   },
-  "hash": "c26f4f043b411cb7e98bfea7b4253d411d54e47ebf299f8410bb22b0db08ed54"
+  "hash": "c883cf5342c431c8074b7239bf18f66f6f33346207656c6a92a1d4f00fc5ea5e"
 }

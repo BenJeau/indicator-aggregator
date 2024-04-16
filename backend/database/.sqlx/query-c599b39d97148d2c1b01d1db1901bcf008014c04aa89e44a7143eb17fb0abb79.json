@@ -1,11 +1,11 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT name FROM sources WHERE ($1 = ANY(disabled_indicators))",
+  "query": "SELECT id FROM providers WHERE slug = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "name",
+        "name": "id",
         "type_info": "Text"
       }
     ],
@@ -18,5 +18,5 @@
       false
     ]
   },
-  "hash": "d53db020b0ff5ddee66eb90a98e86ceec2b00d4711e3689fbe269806094ff7df"
+  "hash": "c599b39d97148d2c1b01d1db1901bcf008014c04aa89e44a7143eb17fb0abb79"
 }
