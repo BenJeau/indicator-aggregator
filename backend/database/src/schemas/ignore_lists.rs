@@ -17,6 +17,8 @@ pub struct IgnoreList {
     pub updated_at: NaiveDateTime,
     /// Name of the ignore list
     pub name: String,
+    /// URL friendly name of the ignore list
+    pub slug: String,
     /// Description of the ignore list
     pub description: String,
     /// Whether the ignore list is enabled and used to ignore certain requests

@@ -113,7 +113,7 @@ pub async fn sse_handler(
     tx.clone()
         .send(Result::Ok(
             Event::default()
-                .id(request_id.to_string())
+                .id(&request_id)
                 .event("fetching_start")
                 .json_data(start_data)
                 .unwrap(),

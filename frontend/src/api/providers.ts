@@ -3,7 +3,7 @@ import { queryOptions, useMutation } from "@tanstack/react-query";
 import { fetcher, queryClient } from "@/api";
 import {
   CreateProvider,
-  CreatedProvider,
+  IdSlug,
   IgnoreList,
   PatchProvider,
   Provider,
@@ -91,7 +91,7 @@ export const useProviderPatch = () =>
 export const useProviderCreate = () =>
   useMutation({
     mutationFn: async (data: CreateProvider) => {
-      return await fetcher.post<CreatedProvider>("/providers", { data });
+      return await fetcher.post<IdSlug>("/providers", { data });
     },
     onSettled: async () =>
       await Promise.all([

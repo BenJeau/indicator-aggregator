@@ -4,7 +4,8 @@ use tracing::instrument;
 use crate::{
     schemas::{
         ignore_lists::IgnoreList,
-        providers::{CreateProvider, CreatedProvider, PatchProvider, Provider},
+        providers::{CreateProvider, PatchProvider, Provider},
+        IdSlug,
     },
     slug::slugify,
 };
@@ -34,9 +35,9 @@ pub async fn get_provider_id_from_slug(pool: &PgPool, slug: &str) -> Result<Opti
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<CreatedProvider> {
+pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<IdSlug> {
     sqlx::query_as!(
-        CreatedProvider,
+        IdSlug,
         "INSERT INTO providers (name, slug, description, url, favicon, tags, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, slug",
         provider.name,
         slugify(&provider.name),

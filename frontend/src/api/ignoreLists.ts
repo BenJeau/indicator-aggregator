@@ -4,6 +4,7 @@ import { fetcher, queryClient } from "@/api";
 import {
   CreateIgnoreList,
   CreateIngoreListEntry,
+  IdSlug,
   IgnoreList,
   IgnoreListEntry,
   Provider,
@@ -25,6 +26,21 @@ export const globalIgnoreListsQueryOptions = queryOptions({
     return data;
   },
 });
+
+export function ignoreListSlugQueryOptions<T>(slug: T) {
+  return queryOptions({
+    queryKey: ["ignoreLists", "slugs", slug],
+    queryFn: async ({ signal }) => {
+      if (!slug) {
+        return slug;
+      }
+
+      return await fetcher.get<string>(`/ignoreLists/slugs/${slug}`, {
+        signal,
+      });
+    },
+  });
+}
 
 export const ignoreListsQueryOptions = queryOptions({
   queryKey: ["ignoreLists"],
@@ -110,7 +126,7 @@ export const useIgnoreListPatch = () =>
 export const useIgnoreListCreate = () =>
   useMutation({
     mutationFn: async (data: CreateIgnoreList) =>
-      await fetcher.post<string>("/ignoreLists", { data }),
+      await fetcher.post<IdSlug>("/ignoreLists", { data }),
     onSettled: async () =>
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["ignoreLists"] }),

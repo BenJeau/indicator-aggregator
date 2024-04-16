@@ -33,17 +33,6 @@ pub struct Provider {
     pub num_sources: i32,
 }
 
-/// Fields returned after creating a provider
-#[derive(FromRow, Serialize, Debug, ToSchema)]
-#[serde(rename_all = "camelCase")]
-#[typeshare]
-pub struct CreatedProvider {
-    /// Database ID of the provider
-    pub id: String,
-    /// URL friendly name of the provider
-    pub slug: String,
-}
-
 /// Parameters to create a provider
 #[derive(Deserialize, Debug, ToSchema)]
 #[serde(rename_all = "camelCase")]

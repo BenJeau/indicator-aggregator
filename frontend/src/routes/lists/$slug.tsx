@@ -14,6 +14,7 @@ import {
   ignoreListQueryOptions,
   ignoreListProvidersQueryOptions,
   ignoreListSourcesQueryOptions,
+  ignoreListSlugQueryOptions,
 } from "@/api/ignoreLists";
 import { SectionPanelHeader } from "@/components/section-panel-header";
 import { cn } from "@/lib/utils";
@@ -27,8 +28,9 @@ import FullBadge from "@/components/FullBadge";
 import { Separator } from "@/components/ui/separator";
 
 const ListComponent = () => {
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
 
+  const { data: id } = useSuspenseQuery(ignoreListSlugQueryOptions(slug));
   const ignoreList = useSuspenseQuery(ignoreListQueryOptions(id));
   const ignoreListEntries = useSuspenseQuery(ignoreListEntriesQueryOptions(id));
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
@@ -38,7 +40,7 @@ const ListComponent = () => {
 
   const matches = useMatches();
   const isEdit = useMemo(
-    () => matches.some((i) => i.routeId === "/lists/$id/edit"),
+    () => matches.some((i) => i.routeId === "/lists/$slug/edit"),
     [matches],
   );
 
@@ -68,7 +70,7 @@ const ListComponent = () => {
           </>
         }
         extra={
-          <Link to="/lists/$id/edit" params={{ id }}>
+          <Link to="/lists/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
               Edit
@@ -188,9 +190,17 @@ const ListComponent = () => {
   );
 };
 
-export const Route = createFileRoute("/lists/$id")({
+export const Route = createFileRoute("/lists/$slug")({
   component: ListComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const id = await queryClient.ensureQueryData(
+      ignoreListSlugQueryOptions(slug),
+    );
+
+    if (!id) {
+      return;
+    }
+
     await Promise.all([
       queryClient.ensureQueryData(ignoreListQueryOptions(id)),
       queryClient.ensureQueryData(ignoreListEntriesQueryOptions(id)),

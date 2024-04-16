@@ -64,6 +64,8 @@ export interface IgnoreList {
   updatedAt: NaiveDateTime;
   /** Name of the ignore list */
   name: string;
+  /** URL friendly name of the ignore list */
+  slug: string;
   /** Description of the ignore list */
   description: string;
   /** Whether the ignore list is enabled and used to ignore certain requests */
@@ -142,6 +144,14 @@ export interface Indicator {
   kind: IndicatorKind;
 }
 
+/** Database ID and URL friendly name */
+export interface IdSlug {
+  /** Database ID */
+  id: string;
+  /** URL friendly name */
+  slug: string;
+}
+
 export interface MinimalSource {
   /** Database ID of the source */
   id: string;
@@ -175,14 +185,6 @@ export interface Provider {
   enabled: boolean;
   /** Number of sources the provider has */
   numSources: number;
-}
-
-/** Fields returned after creating a provider */
-export interface CreatedProvider {
-  /** Database ID of the provider */
-  id: string;
-  /** URL friendly name of the provider */
-  slug: string;
 }
 
 /** Parameters to create a provider */

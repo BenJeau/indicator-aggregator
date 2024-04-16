@@ -10,7 +10,7 @@ use crate::Result;
     path = "/providers",
     tag = "providers",
     responses(
-        (status = 200, description = "Provider created successfully", body = CreatedProvider),
+        (status = 200, description = "Provider created successfully", body = IdSlug),
     ),
     request_body(
         description = "Provider to create",

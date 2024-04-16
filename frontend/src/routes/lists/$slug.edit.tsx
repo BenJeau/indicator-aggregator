@@ -13,13 +13,15 @@ import {
   useIgnoreListProvidersPut,
   useIgnoreListSourcesPut,
   useIgnoreListEntryPut,
+  ignoreListSlugQueryOptions,
 } from "@/api/ignoreLists";
 
 const ListEditComponent: React.FC = () => {
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
 
   const navigate = useNavigate();
 
+  const { data: id } = useSuspenseQuery(ignoreListSlugQueryOptions(slug));
   const ignoreList = useSuspenseQuery(ignoreListQueryOptions(id));
   const ignoreListEntries = useSuspenseQuery(ignoreListEntriesQueryOptions(id));
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
@@ -61,7 +63,7 @@ const ListEditComponent: React.FC = () => {
       }),
     ]);
     toast.success("Provider saved");
-    navigate({ to: "/lists/$id", params: { id } });
+    navigate({ to: "/lists/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
@@ -84,9 +86,17 @@ const ListEditComponent: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/lists/$id/edit")({
+export const Route = createFileRoute("/lists/$slug/edit")({
   component: ListEditComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const id = await queryClient.ensureQueryData(
+      ignoreListSlugQueryOptions(slug),
+    );
+
+    if (!id) {
+      return;
+    }
+
     await Promise.all([
       queryClient.ensureQueryData(ignoreListQueryOptions(id)),
       queryClient.ensureQueryData(ignoreListEntriesQueryOptions(id)),

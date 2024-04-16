@@ -28,11 +28,11 @@ import { Route as SourcesIdImport } from "./routes/sources/$id";
 import { Route as ProvidersNewImport } from "./routes/providers/new";
 import { Route as ProvidersSlugImport } from "./routes/providers/$slug";
 import { Route as ListsNewImport } from "./routes/lists/new";
-import { Route as ListsIdImport } from "./routes/lists/$id";
+import { Route as ListsSlugImport } from "./routes/lists/$slug";
 import { Route as HistoryIdImport } from "./routes/history/$id";
 import { Route as SourcesIdEditImport } from "./routes/sources/$id.edit";
 import { Route as ProvidersSlugEditImport } from "./routes/providers/$slug.edit";
-import { Route as ListsIdEditImport } from "./routes/lists/$id.edit";
+import { Route as ListsSlugEditImport } from "./routes/lists/$slug.edit";
 
 // Create/Update Routes
 
@@ -121,8 +121,8 @@ const ListsNewRoute = ListsNewImport.update({
   getParentRoute: () => ListsRouteRoute,
 } as any);
 
-const ListsIdRoute = ListsIdImport.update({
-  path: "/$id",
+const ListsSlugRoute = ListsSlugImport.update({
+  path: "/$slug",
   getParentRoute: () => ListsRouteRoute,
 } as any);
 
@@ -141,9 +141,9 @@ const ProvidersSlugEditRoute = ProvidersSlugEditImport.update({
   getParentRoute: () => ProvidersSlugRoute,
 } as any);
 
-const ListsIdEditRoute = ListsIdEditImport.update({
+const ListsSlugEditRoute = ListsSlugEditImport.update({
   path: "/edit",
-  getParentRoute: () => ListsIdRoute,
+  getParentRoute: () => ListsSlugRoute,
 } as any);
 
 // Populate the FileRoutesByPath interface
@@ -186,8 +186,8 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof HistoryIdImport;
       parentRoute: typeof HistoryRouteImport;
     };
-    "/lists/$id": {
-      preLoaderRoute: typeof ListsIdImport;
+    "/lists/$slug": {
+      preLoaderRoute: typeof ListsSlugImport;
       parentRoute: typeof ListsRouteImport;
     };
     "/lists/new": {
@@ -226,9 +226,9 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SourcesIndexImport;
       parentRoute: typeof SourcesRouteImport;
     };
-    "/lists/$id/edit": {
-      preLoaderRoute: typeof ListsIdEditImport;
-      parentRoute: typeof ListsIdImport;
+    "/lists/$slug/edit": {
+      preLoaderRoute: typeof ListsSlugEditImport;
+      parentRoute: typeof ListsSlugImport;
     };
     "/providers/$slug/edit": {
       preLoaderRoute: typeof ProvidersSlugEditImport;
@@ -247,7 +247,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   HistoryRouteRoute.addChildren([HistoryIdRoute, HistoryIndexRoute]),
   ListsRouteRoute.addChildren([
-    ListsIdRoute.addChildren([ListsIdEditRoute]),
+    ListsSlugRoute.addChildren([ListsSlugEditRoute]),
     ListsNewRoute,
     ListsIndexRoute,
   ]),

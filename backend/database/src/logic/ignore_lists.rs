@@ -1,19 +1,25 @@
 use sqlx::{PgExecutor, PgPool, Result};
 use tracing::instrument;
 
-use crate::schemas::{
-    ignore_lists::{
-        CreateIgnoreList, CreateIngoreListEntry, IgnoreList, IgnoreListEntry, UpdateIgnoreList,
+use crate::{
+    schemas::{
+        ignore_lists::{
+            CreateIgnoreList, CreateIngoreListEntry, IgnoreList, IgnoreListEntry, UpdateIgnoreList,
+        },
+        providers::Provider,
+        sources::Source,
+        IdSlug,
     },
-    providers::Provider,
-    sources::Source,
+    slug::slugify,
 };
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_list(pool: &PgPool, data: CreateIgnoreList) -> Result<String> {
-    sqlx::query_scalar!(
-        "INSERT INTO ignore_lists (name, description, enabled) VALUES ($1, $2, $3) RETURNING id",
+pub async fn create_list(pool: &PgPool, data: CreateIgnoreList) -> Result<IdSlug> {
+    sqlx::query_as!(
+        IdSlug,
+        "INSERT INTO ignore_lists (name, slug, description, enabled) VALUES ($1, $2, $3, $4) RETURNING id, slug",
         data.name,
+        slugify(&data.name),
         data.description,
         data.enabled
     )
@@ -25,8 +31,15 @@ pub async fn create_list(pool: &PgPool, data: CreateIgnoreList) -> Result<String
 #[instrument(skip(pool), ret, err)]
 pub async fn update_list(pool: &PgPool, id: &str, data: UpdateIgnoreList) -> Result<u64> {
     sqlx::query!(
-        "UPDATE ignore_lists SET name = COALESCE($1, name), description = COALESCE($2, description), enabled = COALESCE($3, enabled), global = COALESCE($4, global) WHERE id = $5",
+        r#"UPDATE ignore_lists SET
+name = COALESCE($1, name),
+slug = COALESCE($2, slug),
+description = COALESCE($3, description),
+enabled = COALESCE($4, enabled),
+global = COALESCE($5, global)
+WHERE id = $6"#,
         data.name,
+        data.name.as_ref().map(|n| slugify(&n)),
         data.description,
         data.enabled,
         data.global,
@@ -71,6 +84,14 @@ pub async fn get_global_lists(pool: &PgPool) -> Result<Vec<IgnoreList>> {
 pub async fn get_lists(pool: &PgPool) -> Result<Vec<IgnoreList>> {
     sqlx::query_as!(IgnoreList, "SELECT * FROM ignore_lists")
         .fetch_all(pool)
+        .await
+        .map_err(Into::into)
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_ignore_list_id_from_slug(pool: &PgPool, slug: &str) -> Result<Option<String>> {
+    sqlx::query_scalar!("SELECT id FROM ignore_lists WHERE slug = $1", slug)
+        .fetch_optional(pool)
         .await
         .map_err(Into::into)
 }
