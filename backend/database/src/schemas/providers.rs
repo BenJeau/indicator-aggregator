@@ -4,8 +4,8 @@ use sqlx::prelude::FromRow;
 use typeshare::typeshare;
 use utoipa::ToSchema;
 
-/// Source provider, organization or service that provides indicators
-#[derive(FromRow, Serialize, ToSchema)]
+/// Source provider, organization or service that provides indicators with the number of sources it has
+#[derive(FromRow, Serialize, ToSchema, Debug)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct Provider {
@@ -17,31 +17,8 @@ pub struct Provider {
     pub updated_at: NaiveDateTime,
     /// Name of the provider
     pub name: String,
-    /// Description of the provider
-    pub description: String,
-    /// Documentation URL of the provider
-    pub url: String,
-    /// Favicon of the provider in base64
-    pub favicon: Option<String>,
-    /// Tags of the provider
-    pub tags: Vec<String>,
-    /// Whether the provider is enabled
-    pub enabled: bool,
-}
-
-/// Provider with the number of sources it has
-#[derive(FromRow, Serialize, ToSchema, Debug)]
-#[serde(rename_all = "camelCase")]
-#[typeshare]
-pub struct ProviderWithNumSources {
-    /// Database ID of the provider
-    pub id: String,
-    /// Timestamp of the creation of the provider
-    pub created_at: NaiveDateTime,
-    /// Timestamp of the last update of the provider
-    pub updated_at: NaiveDateTime,
-    /// Name of the provider
-    pub name: String,
+    /// URL friendly name of the provider
+    pub slug: String,
     /// Description of the provider
     pub description: String,
     /// Documentation URL of the provider
@@ -54,6 +31,17 @@ pub struct ProviderWithNumSources {
     pub enabled: bool,
     /// Number of sources the provider has
     pub num_sources: i32,
+}
+
+/// Fields returned after creating a provider
+#[derive(FromRow, Serialize, Debug, ToSchema)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct CreatedProvider {
+    /// Database ID of the provider
+    pub id: String,
+    /// URL friendly name of the provider
+    pub slug: String,
 }
 
 /// Parameters to create a provider

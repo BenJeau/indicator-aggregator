@@ -6,7 +6,7 @@ import {
   CreateIngoreListEntry,
   IgnoreList,
   IgnoreListEntry,
-  ProviderWithNumSources,
+  Provider,
   Source,
   UpdateIgnoreList,
 } from "@/types/backendTypes";
@@ -72,12 +72,9 @@ export const ignoreListProvidersQueryOptions = (listId: string) =>
   queryOptions({
     queryKey: ["ignoreLists", listId, "providers"],
     queryFn: async ({ signal }) =>
-      await fetcher.get<ProviderWithNumSources[]>(
-        `/ignoreLists/${listId}/providers`,
-        {
-          signal,
-        },
-      ),
+      await fetcher.get<Provider[]>(`/ignoreLists/${listId}/providers`, {
+        signal,
+      }),
   });
 
 export const useIgnoreListDelete = () =>

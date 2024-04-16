@@ -5,7 +5,7 @@ use crate::schemas::{
     ignore_lists::{
         CreateIgnoreList, CreateIngoreListEntry, IgnoreList, IgnoreListEntry, UpdateIgnoreList,
     },
-    providers::ProviderWithNumSources,
+    providers::Provider,
     sources::Source,
 };
 
@@ -122,12 +122,9 @@ pub async fn get_list_entries(pool: &PgPool, list_id: &str) -> Result<Vec<Ignore
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_list_providers(
-    pool: &PgPool,
-    list_id: &str,
-) -> Result<Vec<ProviderWithNumSources>> {
+pub async fn get_list_providers(pool: &PgPool, list_id: &str) -> Result<Vec<Provider>> {
     sqlx::query_as!(
-        ProviderWithNumSources,
+        Provider,
         r#"SELECT providers.*, count(sources.id)::INT as "num_sources!"
 FROM providers
 INNER JOIN provider_ignore_lists ON provider_ignore_lists.source_provider_id = providers.id

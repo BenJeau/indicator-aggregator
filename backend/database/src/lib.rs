@@ -9,6 +9,7 @@ use tracing::info;
 pub mod hashing;
 pub mod logic;
 pub mod schemas;
+mod slug;
 mod utils;
 pub mod validators;
 

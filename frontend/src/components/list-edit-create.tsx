@@ -59,19 +59,19 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    })
+    }),
   ),
   providers: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    })
+    }),
   ),
   entries: z.array(
     z.object({
       data: z.string().min(1),
       indicatorKind: z.string().min(1),
-    })
+    }),
   ),
 });
 
@@ -129,7 +129,7 @@ export const ListEditCreate: React.FC<Props> = ({
       ...list,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   const form = useForm<FormSchema>({
@@ -169,7 +169,7 @@ export const ListEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500"
+                        field.value ? "bg-green-500" : "bg-red-500",
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -307,7 +307,7 @@ export const ListEditCreate: React.FC<Props> = ({
                   const availableSources =
                     listSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id)
+                        !field.value.some((source) => source.id === id),
                     ) || [];
 
                   return (
@@ -318,7 +318,7 @@ export const ListEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = listSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name
+                                ({ name: sourceName }) => sourceName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -347,8 +347,8 @@ export const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"
@@ -373,7 +373,7 @@ export const ListEditCreate: React.FC<Props> = ({
                   const availableProviders =
                     listProviders.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id)
+                        !field.value.some((ignoreList) => ignoreList.id === id),
                     ) || [];
 
                   return (
@@ -384,7 +384,7 @@ export const ListEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = listProviders.data?.find(
-                                ({ name: listName }) => listName === name
+                                ({ name: listName }) => listName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -413,8 +413,8 @@ export const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"
@@ -491,7 +491,7 @@ export const ListEditCreate: React.FC<Props> = ({
                                                 >
                                                   {value}
                                                 </SelectItem>
-                                              )
+                                              ),
                                             )}
                                           </SelectContent>
                                         </Select>

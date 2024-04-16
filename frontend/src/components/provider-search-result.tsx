@@ -3,22 +3,20 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { ProviderWithNumSources } from "@/types/backendTypes";
+import { Provider } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 import config from "@/config";
 
-const ProviderSearchResult: React.FC<
-  ComponentSearchResultProps<ProviderWithNumSources>
-> = ({
-  data: { id, name, description, enabled, numSources, url, favicon },
+const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
+  data: { slug, name, description, enabled, numSources, url, favicon },
 }) => {
   const [imgHasError, setImgHasError] = useState(false);
 
   return (
     <Link
-      to="/providers/$id"
-      params={{ id }}
+      to="/providers/$slug"
+      params={{ slug }}
       activeProps={{
         className: "bg-primary/10 border-primary shadow-primary/40",
       }}

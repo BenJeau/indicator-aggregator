@@ -12,21 +12,23 @@ import {
 import {
   providerIgnoreListsQueryOptions,
   providerQueryOptions,
+  providerSlugQueryOptions,
   providerSourcesQueryOptions,
   useProviderDelete,
   useProviderPatch,
   usePutProviderIgnoreListsMutation,
   usePutProviderSourcesMutation,
 } from "@/api/providers";
-import { ProviderWithNumSources } from "@/types/backendTypes";
+import { Provider } from "@/types/backendTypes";
 
 const ProviderEditComponent: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
 
+  const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
     providerQueryOptions(id),
-  ) as UseSuspenseQueryResult<ProviderWithNumSources, Error>;
+  ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
     providerIgnoreListsQueryOptions(id),
   );
@@ -60,7 +62,7 @@ const ProviderEditComponent: React.FC = () => {
       }),
     ]);
     toast.success("Provider saved");
-    navigate({ to: "/providers/$id", params: { id } });
+    navigate({ to: "/providers/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
@@ -82,9 +84,17 @@ const ProviderEditComponent: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/providers/$id/edit")({
+export const Route = createFileRoute("/providers/$slug/edit")({
   component: ProviderEditComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const id = await queryClient.ensureQueryData(
+      providerSlugQueryOptions(slug),
+    );
+
+    if (!id) {
+      return;
+    }
+
     await Promise.all([
       queryClient.ensureQueryData(providerQueryOptions(id)),
       queryClient.ensureQueryData(providerSourcesQueryOptions(id)),

@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS "providers" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
     "name" TEXT NOT NULL UNIQUE,
+    "slug" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "favicon" TEXT,

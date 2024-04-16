@@ -1,24 +1,45 @@
 use sqlx::{PgExecutor, PgPool, Result};
 use tracing::instrument;
 
-use crate::schemas::{
-    ignore_lists::IgnoreList,
-    providers::{CreateProvider, PatchProvider, ProviderWithNumSources},
+use crate::{
+    schemas::{
+        ignore_lists::IgnoreList,
+        providers::{CreateProvider, CreatedProvider, PatchProvider, Provider},
+    },
+    slug::slugify,
 };
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_providers(pool: &PgPool) -> Result<Vec<ProviderWithNumSources>> {
-    sqlx::query_as!(ProviderWithNumSources, r#"SELECT providers.*, count(sources.id)::INT as "num_sources!" FROM providers LEFT JOIN sources ON providers.id = sources.provider_id GROUP BY providers.id ORDER BY providers.enabled DESC, providers.name"#)
-        .fetch_all(pool)
+pub async fn get_providers(pool: &PgPool) -> Result<Vec<Provider>> {
+    sqlx::query_as!(
+        Provider,
+        r#"SELECT providers.*,
+count(sources.id)::INT as "num_sources!"
+FROM providers
+LEFT JOIN sources ON providers.id = sources.provider_id
+GROUP BY providers.id
+ORDER BY providers.enabled DESC, providers.name"#
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_provider_id_from_slug(pool: &PgPool, slug: &str) -> Result<Option<String>> {
+    sqlx::query_scalar!("SELECT id FROM providers WHERE slug = $1", slug)
+        .fetch_optional(pool)
         .await
         .map_err(Into::into)
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<String> {
-    sqlx::query_scalar!(
-        "INSERT INTO providers (name, description, url, favicon, tags, enabled) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<CreatedProvider> {
+    sqlx::query_as!(
+        CreatedProvider,
+        "INSERT INTO providers (name, slug, description, url, favicon, tags, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, slug",
         provider.name,
+        slugify(&provider.name),
         provider.description,
         provider.url,
         provider.favicon,
@@ -31,10 +52,19 @@ pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_provider(pool: &PgPool, id: &str) -> Result<Option<ProviderWithNumSources>> {
-    let provider = sqlx::query_as!(ProviderWithNumSources, r#"SELECT providers.*, count(sources.id)::INT as "num_sources!" FROM providers LEFT JOIN sources ON providers.id = sources.provider_id WHERE providers.id = $1 GROUP BY providers.id"#, id)
-        .fetch_optional(pool)
-        .await?;
+pub async fn get_provider(pool: &PgPool, id: &str) -> Result<Option<Provider>> {
+    let provider = sqlx::query_as!(
+        Provider,
+        r#"SELECT providers.*,
+count(sources.id)::INT as "num_sources!"
+FROM providers
+LEFT JOIN sources ON providers.id = sources.provider_id
+WHERE providers.id = $1
+GROUP BY providers.id"#,
+        id
+    )
+    .fetch_optional(pool)
+    .await?;
 
     Ok(provider)
 }
@@ -42,8 +72,17 @@ pub async fn get_provider(pool: &PgPool, id: &str) -> Result<Option<ProviderWith
 #[instrument(skip(pool), ret, err)]
 pub async fn patch_provider(pool: &PgPool, id: &str, provider: PatchProvider) -> Result<u64> {
     sqlx::query!(
-        "UPDATE providers SET name = COALESCE($1, name), description = COALESCE($2, description), url = COALESCE($3, url), favicon = COALESCE($4, favicon), tags = COALESCE($5, tags), enabled = COALESCE($6, enabled) WHERE id = $7",
+        r#"UPDATE providers SET
+name = COALESCE($1, name),
+slug = COALESCE($2, slug),
+description = COALESCE($3, description),
+url = COALESCE($4, url),
+favicon = COALESCE($5, favicon),
+tags = COALESCE($6, tags),
+enabled = COALESCE($7, enabled)
+WHERE id = $8"#,
         provider.name,
+        provider.name.as_ref().map(|n| slugify(&n)),
         provider.description,
         provider.url,
         provider.favicon,
@@ -73,7 +112,10 @@ pub async fn get_provider_ignore_lists(
 ) -> Result<Vec<IgnoreList>> {
     sqlx::query_as!(
         IgnoreList,
-        "SELECT ignore_lists.* FROM ignore_lists INNER JOIN provider_ignore_lists ON provider_ignore_lists.ignore_list_id = ignore_lists.id WHERE provider_ignore_lists.source_provider_id = $1",
+        r#"SELECT ignore_lists.*
+FROM ignore_lists
+INNER JOIN provider_ignore_lists ON provider_ignore_lists.ignore_list_id = ignore_lists.id
+WHERE provider_ignore_lists.source_provider_id = $1"#,
         provider_id
     )
     .fetch_all(pool)

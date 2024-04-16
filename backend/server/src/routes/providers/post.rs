@@ -10,7 +10,7 @@ use crate::Result;
     path = "/providers",
     tag = "providers",
     responses(
-        (status = 200, description = "Provider created successfully", body = String),
+        (status = 200, description = "Provider created successfully", body = CreatedProvider),
     ),
     request_body(
         description = "Provider to create",
@@ -22,7 +22,7 @@ pub async fn create_provider(
     State(pool): State<PgPool>,
     Json(provider): Json<CreateProvider>,
 ) -> Result<impl IntoResponse> {
-    let provider_id = providers::create_provider(&pool, provider).await?;
+    let created_provider = providers::create_provider(&pool, provider).await?;
 
-    Ok(provider_id.to_string())
+    Ok(Json(created_provider))
 }

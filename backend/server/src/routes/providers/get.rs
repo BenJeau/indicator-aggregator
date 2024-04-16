@@ -1,5 +1,6 @@
 use axum::{
     extract::{Path, State},
+    http::StatusCode,
     response::IntoResponse,
     Json,
 };
@@ -42,5 +43,9 @@ pub async fn get_provider(
 ) -> Result<impl IntoResponse> {
     let provider = providers::get_provider(&pool, &provider_id).await?;
 
-    Ok(Json(provider))
+    if let Some(provider) = provider {
+        Ok(Json(provider).into_response())
+    } else {
+        Ok(StatusCode::NOT_FOUND.into_response())
+    }
 }

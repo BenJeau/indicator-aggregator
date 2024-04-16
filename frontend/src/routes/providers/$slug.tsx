@@ -15,13 +15,14 @@ import dayjs from "dayjs";
 import {
   providerIgnoreListsQueryOptions,
   providerQueryOptions,
+  providerSlugQueryOptions,
   providerSourcesQueryOptions,
 } from "@/api/providers";
 import { Button } from "@/components/ui/button";
 import { SectionPanelHeader } from "@/components/section-panel-header";
 import { cn } from "@/lib/utils";
 import TitleEntryCount from "@/components/title-entry-count";
-import { ProviderWithNumSources } from "@/types/backendTypes";
+import { Provider } from "@/types/backendTypes";
 import ListSearchResult from "@/components/list-search-result";
 import SourceSearchResult from "@/components/source-search-result";
 import FullBadge from "@/components/FullBadge";
@@ -30,11 +31,12 @@ import { dedupeListOnId } from "@/data";
 import { Separator } from "@/components/ui/separator";
 
 const ProviderComponent: React.FC = () => {
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
 
+  const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
     providerQueryOptions(id),
-  ) as UseSuspenseQueryResult<ProviderWithNumSources, Error>;
+  ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
     providerIgnoreListsQueryOptions(id),
   );
@@ -48,7 +50,7 @@ const ProviderComponent: React.FC = () => {
 
   const matches = useMatches();
   const isEdit = useMemo(
-    () => matches.some((i) => i.routeId === "/providers/$id/edit"),
+    () => matches.some((i) => i.routeId === "/providers/$slug/edit"),
     [matches],
   );
 
@@ -81,7 +83,7 @@ const ProviderComponent: React.FC = () => {
           </>
         }
         extra={
-          <Link to="/providers/$id/edit" params={{ id }}>
+          <Link to="/providers/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
               Edit
@@ -185,9 +187,17 @@ const ProviderComponent: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/providers/$id")({
+export const Route = createFileRoute("/providers/$slug")({
   component: ProviderComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const id = await queryClient.ensureQueryData(
+      providerSlugQueryOptions(slug),
+    );
+
+    if (!id) {
+      return;
+    }
+
     await Promise.all([
       queryClient.ensureQueryData(providerQueryOptions(id)),
       queryClient.ensureQueryData(providerSourcesQueryOptions(id)),

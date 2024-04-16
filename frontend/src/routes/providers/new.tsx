@@ -13,9 +13,9 @@ const ProvidersNewComponent: React.FC = () => {
   const search = Route.useSearch();
 
   const onSubmit = async (values: FormSchema) => {
-    const id = await providerCreate.mutateAsync(values);
+    const { slug } = await providerCreate.mutateAsync(values);
     toast.success("Provider created");
-    navigate({ to: `/providers/$id`, params: { id } });
+    navigate({ to: `/providers/$slug`, params: { slug } });
   };
 
   return <ProviderEditCreate onSubmit={onSubmit} name={search.name} />;

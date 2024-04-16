@@ -108,7 +108,7 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    })
+    }),
   ),
   sourceSecrets: z.array(
     z.object({
@@ -122,7 +122,7 @@ const formSchema = z.object({
         .nullish()
         .transform((x) => x ?? undefined),
       required: z.boolean(),
-    })
+    }),
   ),
 });
 
@@ -189,7 +189,7 @@ export const SourceEditCreate: React.FC<Props> = ({
       sourceCode: cleanConfigValue(source?.sourceCode ?? ""),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [source]
+    [source],
   );
 
   const form = useForm<FormSchema>({
@@ -288,7 +288,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                         type="button"
                         className={cn(
                           "rounded-md p-2 text-white shadow",
-                          field.value ? "bg-green-500" : "bg-red-500"
+                          field.value ? "bg-green-500" : "bg-red-500",
                         )}
                         onClick={() => {
                           field.onChange(!field.value);
@@ -391,7 +391,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                               <button
                                 onClick={() => {
                                   field.onChange(
-                                    field.value.filter((_, i) => i !== index)
+                                    field.value.filter((_, i) => i !== index),
                                   );
                                 }}
                                 type="button"
@@ -478,7 +478,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",
-                            !field.value && "hidden"
+                            !field.value && "hidden",
                           )}
                         />
                         <div className="relative flex flex-1">
@@ -494,7 +494,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                                 reader.onloadend = () => {
                                   form.setValue(
                                     "favicon",
-                                    reader.result?.toString()
+                                    reader.result?.toString(),
                                   );
                                 };
                                 reader.readAsDataURL(file);
@@ -515,7 +515,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                           type="button"
                           className={cn(
                             "h-8 w-8 p-0",
-                            !field.value && "hidden"
+                            !field.value && "hidden",
                           )}
                           onClick={() => field.onChange("")}
                         >
@@ -570,13 +570,13 @@ export const SourceEditCreate: React.FC<Props> = ({
                                   if (isSupported && isDisabled) {
                                     supportedIndicatorsField.onChange(
                                       supportedIndicatorsField.value.filter(
-                                        (i) => i !== value
-                                      )
+                                        (i) => i !== value,
+                                      ),
                                     );
                                     disabledIndicatorsField.onChange(
                                       disabledIndicatorsField.value.filter(
-                                        (i) => i !== value
-                                      )
+                                        (i) => i !== value,
+                                      ),
                                     );
                                   } else if (isSupported && !isDisabled) {
                                     disabledIndicatorsField.onChange([
@@ -892,7 +892,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                                                       sources
                                                     </span>
                                                   </SelectItem>
-                                                )
+                                                ),
                                               )}
                                             </SelectContent>
                                           </Select>
@@ -913,7 +913,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                                             type="button"
                                             onClick={() =>
                                               sourceSecretFormFields.remove(
-                                                index
+                                                index,
                                               )
                                             }
                                           >
@@ -966,7 +966,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                   const availableIgnoreLists =
                     sourceIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id)
+                        !field.value.some((ignoreList) => ignoreList.id === id),
                     ) || [];
 
                   return (
@@ -977,7 +977,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = sourceIgnoreLists.data?.find(
-                                ({ name: listName }) => listName === name
+                                ({ name: listName }) => listName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -1006,8 +1006,8 @@ export const SourceEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"
@@ -1030,7 +1030,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                 name="providerId"
                 render={({ field }) => {
                   const name = providers.data?.find(
-                    (i) => field.value === i.id
+                    (i) => field.value === i.id,
                   )?.name;
 
                   return (
@@ -1040,7 +1040,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                         <Select
                           onValueChange={(name) => {
                             const id = providers.data?.find(
-                              ({ name: listName }) => listName === name
+                              ({ name: listName }) => listName === name,
                             )?.id;
                             field.onChange(id);
                           }}
@@ -1092,7 +1092,7 @@ export const SourceEditCreate: React.FC<Props> = ({
                         if (configEntry) {
                           form.setValue(
                             "sourceCode",
-                            configEntry.value ?? configEntry.defaultValue
+                            configEntry.value ?? configEntry.defaultValue,
                           );
                         }
                       }}
