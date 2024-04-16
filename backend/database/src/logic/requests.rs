@@ -1,6 +1,5 @@
 use sqlx::{PgPool, Result};
 use tracing::instrument;
-use uuid::Uuid;
 
 use crate::schemas::{
     indicators::Indicator,
@@ -8,7 +7,7 @@ use crate::schemas::{
 };
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_request(pool: &PgPool, indicator: &Indicator) -> Result<Uuid> {
+pub async fn create_request(pool: &PgPool, indicator: &Indicator) -> Result<String> {
     let trace_id = shared::telemetry::Telemetry::get_trace_id();
 
     sqlx::query_scalar!(
@@ -30,7 +29,7 @@ pub async fn create_request(pool: &PgPool, indicator: &Indicator) -> Result<Uuid
 pub async fn create_source_request(
     pool: &PgPool,
     source_request: CreateSourceRequest,
-) -> Result<Uuid> {
+) -> Result<String> {
     sqlx::query_scalar!(
         r#"
         INSERT INTO source_requests (
@@ -78,7 +77,7 @@ pub async fn get_requests(pool: &PgPool) -> Result<Vec<Request>> {
         .map_err(Into::into)
 }
 #[instrument(skip(pool), ret, err)]
-pub async fn get_request(pool: &PgPool, request_id: &Uuid) -> Result<Option<Request>> {
+pub async fn get_request(pool: &PgPool, request_id: &str) -> Result<Option<Request>> {
     sqlx::query_as!(
         Request,
         r#"
@@ -95,7 +94,7 @@ pub async fn get_request(pool: &PgPool, request_id: &Uuid) -> Result<Option<Requ
 #[instrument(skip(pool), ret, err)]
 pub async fn get_request_source_requests(
     pool: &PgPool,
-    request_id: &Uuid,
+    request_id: &str,
 ) -> Result<Vec<SourceRequest>> {
     sqlx::query_as!(
         SourceRequest,
@@ -112,7 +111,7 @@ pub async fn get_request_source_requests(
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_source_requests(pool: &PgPool, source_id: &Uuid) -> Result<Vec<Request>> {
+pub async fn get_source_requests(pool: &PgPool, source_id: &str) -> Result<Vec<Request>> {
     sqlx::query_as!(
         Request,
         r#"

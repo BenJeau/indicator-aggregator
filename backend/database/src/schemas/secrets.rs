@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use typeshare::typeshare;
 use utoipa::{IntoParams, ToSchema};
-use uuid::Uuid;
 
 /// A secret
 #[derive(FromRow, Serialize, ToSchema)]
@@ -11,7 +10,7 @@ use uuid::Uuid;
 #[typeshare]
 pub struct Secret {
     /// The database ID of the secret
-    pub id: Uuid,
+    pub id: String,
     /// The time the secret was created
     pub created_at: NaiveDateTime,
     /// The time the secret was last updated
@@ -30,13 +29,13 @@ pub struct Secret {
 #[typeshare]
 pub struct SourceSecret {
     /// Database ID of the source secret
-    pub id: Uuid,
+    pub id: String,
     /// Timestamp of the creation of the source secret
     pub created_at: NaiveDateTime,
     /// Timestamp of the last update of the source secret
     pub updated_at: NaiveDateTime,
     /// Database ID of the secret
-    pub secret_id: Option<Uuid>,
+    pub secret_id: Option<String>,
     /// Name of the source secret
     pub name: String,
     /// Description of the source secret
@@ -51,7 +50,7 @@ pub struct SourceSecret {
 #[typeshare]
 pub struct SecretWithNumSources {
     /// The database ID of the secret
-    pub id: Uuid,
+    pub id: String,
     /// The time the secret was created
     pub created_at: NaiveDateTime,
     /// The time the secret was last updated
@@ -108,7 +107,7 @@ pub struct UpdateSecret {
 #[typeshare]
 pub struct CreateSourceSecret {
     /// ID of the secret
-    pub secret_id: Option<Uuid>,
+    pub secret_id: Option<String>,
     /// Name of the source secret
     pub name: String,
     /// Description of the source secret

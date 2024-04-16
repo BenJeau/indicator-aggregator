@@ -24,15 +24,15 @@ import { Route as ProvidersIndexImport } from "./routes/providers/index";
 import { Route as ListsIndexImport } from "./routes/lists/index";
 import { Route as HistoryIndexImport } from "./routes/history/index";
 import { Route as SourcesNewImport } from "./routes/sources/new";
-import { Route as SourcesIdImport } from "./routes/sources/$id";
+import { Route as SourcesSlugImport } from "./routes/sources/$slug";
 import { Route as ProvidersNewImport } from "./routes/providers/new";
-import { Route as ProvidersIdImport } from "./routes/providers/$id";
+import { Route as ProvidersSlugImport } from "./routes/providers/$slug";
 import { Route as ListsNewImport } from "./routes/lists/new";
-import { Route as ListsIdImport } from "./routes/lists/$id";
+import { Route as ListsSlugImport } from "./routes/lists/$slug";
 import { Route as HistoryIdImport } from "./routes/history/$id";
-import { Route as SourcesIdEditImport } from "./routes/sources/$id.edit";
-import { Route as ProvidersIdEditImport } from "./routes/providers/$id.edit";
-import { Route as ListsIdEditImport } from "./routes/lists/$id.edit";
+import { Route as SourcesSlugEditImport } from "./routes/sources/$slug.edit";
+import { Route as ProvidersSlugEditImport } from "./routes/providers/$slug.edit";
+import { Route as ListsSlugEditImport } from "./routes/lists/$slug.edit";
 
 // Create/Update Routes
 
@@ -101,8 +101,8 @@ const SourcesNewRoute = SourcesNewImport.update({
   getParentRoute: () => SourcesRouteRoute,
 } as any);
 
-const SourcesIdRoute = SourcesIdImport.update({
-  path: "/$id",
+const SourcesSlugRoute = SourcesSlugImport.update({
+  path: "/$slug",
   getParentRoute: () => SourcesRouteRoute,
 } as any);
 
@@ -111,8 +111,8 @@ const ProvidersNewRoute = ProvidersNewImport.update({
   getParentRoute: () => ProvidersRouteRoute,
 } as any);
 
-const ProvidersIdRoute = ProvidersIdImport.update({
-  path: "/$id",
+const ProvidersSlugRoute = ProvidersSlugImport.update({
+  path: "/$slug",
   getParentRoute: () => ProvidersRouteRoute,
 } as any);
 
@@ -121,8 +121,8 @@ const ListsNewRoute = ListsNewImport.update({
   getParentRoute: () => ListsRouteRoute,
 } as any);
 
-const ListsIdRoute = ListsIdImport.update({
-  path: "/$id",
+const ListsSlugRoute = ListsSlugImport.update({
+  path: "/$slug",
   getParentRoute: () => ListsRouteRoute,
 } as any);
 
@@ -131,19 +131,19 @@ const HistoryIdRoute = HistoryIdImport.update({
   getParentRoute: () => HistoryRouteRoute,
 } as any);
 
-const SourcesIdEditRoute = SourcesIdEditImport.update({
+const SourcesSlugEditRoute = SourcesSlugEditImport.update({
   path: "/edit",
-  getParentRoute: () => SourcesIdRoute,
+  getParentRoute: () => SourcesSlugRoute,
 } as any);
 
-const ProvidersIdEditRoute = ProvidersIdEditImport.update({
+const ProvidersSlugEditRoute = ProvidersSlugEditImport.update({
   path: "/edit",
-  getParentRoute: () => ProvidersIdRoute,
+  getParentRoute: () => ProvidersSlugRoute,
 } as any);
 
-const ListsIdEditRoute = ListsIdEditImport.update({
+const ListsSlugEditRoute = ListsSlugEditImport.update({
   path: "/edit",
-  getParentRoute: () => ListsIdRoute,
+  getParentRoute: () => ListsSlugRoute,
 } as any);
 
 // Populate the FileRoutesByPath interface
@@ -186,24 +186,24 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof HistoryIdImport;
       parentRoute: typeof HistoryRouteImport;
     };
-    "/lists/$id": {
-      preLoaderRoute: typeof ListsIdImport;
+    "/lists/$slug": {
+      preLoaderRoute: typeof ListsSlugImport;
       parentRoute: typeof ListsRouteImport;
     };
     "/lists/new": {
       preLoaderRoute: typeof ListsNewImport;
       parentRoute: typeof ListsRouteImport;
     };
-    "/providers/$id": {
-      preLoaderRoute: typeof ProvidersIdImport;
+    "/providers/$slug": {
+      preLoaderRoute: typeof ProvidersSlugImport;
       parentRoute: typeof ProvidersRouteImport;
     };
     "/providers/new": {
       preLoaderRoute: typeof ProvidersNewImport;
       parentRoute: typeof ProvidersRouteImport;
     };
-    "/sources/$id": {
-      preLoaderRoute: typeof SourcesIdImport;
+    "/sources/$slug": {
+      preLoaderRoute: typeof SourcesSlugImport;
       parentRoute: typeof SourcesRouteImport;
     };
     "/sources/new": {
@@ -226,17 +226,17 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SourcesIndexImport;
       parentRoute: typeof SourcesRouteImport;
     };
-    "/lists/$id/edit": {
-      preLoaderRoute: typeof ListsIdEditImport;
-      parentRoute: typeof ListsIdImport;
+    "/lists/$slug/edit": {
+      preLoaderRoute: typeof ListsSlugEditImport;
+      parentRoute: typeof ListsSlugImport;
     };
-    "/providers/$id/edit": {
-      preLoaderRoute: typeof ProvidersIdEditImport;
-      parentRoute: typeof ProvidersIdImport;
+    "/providers/$slug/edit": {
+      preLoaderRoute: typeof ProvidersSlugEditImport;
+      parentRoute: typeof ProvidersSlugImport;
     };
-    "/sources/$id/edit": {
-      preLoaderRoute: typeof SourcesIdEditImport;
-      parentRoute: typeof SourcesIdImport;
+    "/sources/$slug/edit": {
+      preLoaderRoute: typeof SourcesSlugEditImport;
+      parentRoute: typeof SourcesSlugImport;
     };
   }
 }
@@ -247,17 +247,17 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   HistoryRouteRoute.addChildren([HistoryIdRoute, HistoryIndexRoute]),
   ListsRouteRoute.addChildren([
-    ListsIdRoute.addChildren([ListsIdEditRoute]),
+    ListsSlugRoute.addChildren([ListsSlugEditRoute]),
     ListsNewRoute,
     ListsIndexRoute,
   ]),
   ProvidersRouteRoute.addChildren([
-    ProvidersIdRoute.addChildren([ProvidersIdEditRoute]),
+    ProvidersSlugRoute.addChildren([ProvidersSlugEditRoute]),
     ProvidersNewRoute,
     ProvidersIndexRoute,
   ]),
   SourcesRouteRoute.addChildren([
-    SourcesIdRoute.addChildren([SourcesIdEditRoute]),
+    SourcesSlugRoute.addChildren([SourcesSlugEditRoute]),
     SourcesNewRoute,
     SourcesIndexRoute,
   ]),

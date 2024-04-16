@@ -370,8 +370,8 @@ export function Layout({ children }: MailProps) {
                             </div>
                             <PopoverClose asChild>
                               <Link
-                                to="/sources/$id/edit"
-                                params={{ id: content.id }}
+                                to="/sources/$slug/edit"
+                                params={{ slug: content.slug }}
                               >
                                 <Button variant="ghost" size="sm">
                                   <Wrench size={14} />

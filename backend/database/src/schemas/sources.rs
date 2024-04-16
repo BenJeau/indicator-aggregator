@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::{prelude::FromRow, Type};
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 /// Kind of the source, related to the language used for corelating data from the source
 #[derive(Deserialize, Serialize, Debug, Type, Clone, Eq, PartialEq, Hash, ToSchema)]
@@ -31,13 +30,15 @@ impl ToString for SourceKind {
 #[typeshare]
 pub struct Source {
     /// Database ID of the source
-    pub id: Uuid,
+    pub id: String,
     /// Timestamp of the creation of the source
     pub created_at: NaiveDateTime,
     /// Timestamp of the last update of the source
     pub updated_at: NaiveDateTime,
     /// Name of the source
     pub name: String,
+    /// URL friendly name of the provider
+    pub slug: String,
     /// Description of the source
     pub description: String,
     /// Documentation URL of the source
@@ -71,7 +72,7 @@ pub struct Source {
     /// Interval in seconds between the source's cache resets
     pub cache_interval: Option<i32>,
     /// Database ID of the linked provider of the source
-    pub provider_id: Option<Uuid>,
+    pub provider_id: Option<String>,
     /// Kind of the source, related to the language used for corelating data from the source
     pub kind: SourceKind,
     /// Source code of the source
@@ -118,7 +119,7 @@ pub struct CreateSource {
     /// Interval in seconds between the source's cache resets
     pub cache_interval: Option<i32>,
     /// Database ID of the linked provider of the source
-    pub provider_id: Option<Uuid>,
+    pub provider_id: Option<String>,
     /// Kind of the source, related to the language used for corelating data from the source
     pub kind: SourceKind,
     /// Source code of the source
@@ -165,7 +166,7 @@ pub struct UpdateSource {
     /// Interval in seconds between the source's cache resets
     pub cache_interval: Option<i32>,
     /// Database ID of the linked provider of the source
-    pub provider_id: Option<Uuid>,
+    pub provider_id: Option<String>,
     /// Kind of the source, related to the language used for corelating data from the source
     pub kind: Option<SourceKind>,
     /// Source code of the source
@@ -174,24 +175,25 @@ pub struct UpdateSource {
 
 #[derive(FromRow, Debug, Clone)]
 pub struct InternalRequest {
-    pub source_id: Uuid,
+    pub source_id: String,
     pub source_kind: SourceKind,
     pub source_enabled: bool,
     pub source_name: String,
+    pub source_slug: String,
     pub source_url: String,
     pub source_favicon: Option<String>,
     pub source_supported_indicators: Vec<String>,
     pub source_disabled_indicators: Vec<String>,
     pub source_cache_enabled: bool,
     pub source_cache_interval: Option<i32>,
-    pub provider_id: Option<Uuid>,
+    pub provider_id: Option<String>,
     pub provider_enabled: Option<bool>,
-    pub missing_source_secrets: Vec<Uuid>,
-    pub within_ignore_lists: Vec<Uuid>,
+    pub missing_source_secrets: Vec<String>,
+    pub within_ignore_lists: Vec<String>,
 }
 
 #[derive(FromRow, Debug, Clone)]
 pub struct SourceCode {
-    pub id: Uuid,
+    pub id: String,
     pub source_code: Option<String>,
 }

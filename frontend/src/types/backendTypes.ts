@@ -23,7 +23,7 @@ export enum ServerConfigCategory {
 /** Configuration entry for the server */
 export interface ServerConfigEntry<T> {
   /** Unique identifier of the server config entry */
-  id?: Uuid;
+  id?: string;
   /** Timestamp of the creation of the server config entry */
   createdAt?: NaiveDateTime;
   /** Timestamp of the last update of the server config entry */
@@ -57,13 +57,15 @@ export interface CacheEntry<T> {
 /** List of indicators to ignore when processing requests against sources */
 export interface IgnoreList {
   /** Database ID of the ignore list */
-  id: Uuid;
+  id: string;
   /** Timestamp of when the ignore list was created */
   createdAt: NaiveDateTime;
   /** Timestamp of when the ignore list was last updated */
   updatedAt: NaiveDateTime;
   /** Name of the ignore list */
   name: string;
+  /** URL friendly name of the ignore list */
+  slug: string;
   /** Description of the ignore list */
   description: string;
   /** Whether the ignore list is enabled and used to ignore certain requests */
@@ -99,7 +101,7 @@ export interface UpdateIgnoreList {
 /** Entry in an ignore list */
 export interface IgnoreListEntry {
   /** Database ID of the ignore list entry */
-  id: Uuid;
+  id: string;
   /** Timestamp of when the ignore list entry was created */
   createdAt: NaiveDateTime;
   /** Timestamp of when the ignore list entry was last updated */
@@ -109,7 +111,7 @@ export interface IgnoreListEntry {
   /** Kind of the indicator to ignore */
   indicatorKind: string;
   /** Database ID of the ignore list the entry belongs to */
-  ignoreListId: Uuid;
+  ignoreListId: string;
 }
 
 /** Parameters for creating a new ignore list entry */
@@ -142,47 +144,37 @@ export interface Indicator {
   kind: IndicatorKind;
 }
 
+/** Database ID and URL friendly name */
+export interface IdSlug {
+  /** Database ID */
+  id: string;
+  /** URL friendly name */
+  slug: string;
+}
+
 export interface MinimalSource {
   /** Database ID of the source */
-  id: Uuid;
+  id: string;
   /** Name of the source */
   name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Number of secrets needed for the source */
   numMissingSecrets: number;
 }
 
-/** Source provider, organization or service that provides indicators */
+/** Source provider, organization or service that provides indicators with the number of sources it has */
 export interface Provider {
   /** Database ID of the provider */
-  id: Uuid;
+  id: string;
   /** Timestamp of the creation of the provider */
   createdAt: NaiveDateTime;
   /** Timestamp of the last update of the provider */
   updatedAt: NaiveDateTime;
   /** Name of the provider */
   name: string;
-  /** Description of the provider */
-  description: string;
-  /** Documentation URL of the provider */
-  url: string;
-  /** Favicon of the provider in base64 */
-  favicon?: string;
-  /** Tags of the provider */
-  tags: string[];
-  /** Whether the provider is enabled */
-  enabled: boolean;
-}
-
-/** Provider with the number of sources it has */
-export interface ProviderWithNumSources {
-  /** Database ID of the provider */
-  id: Uuid;
-  /** Timestamp of the creation of the provider */
-  createdAt: NaiveDateTime;
-  /** Timestamp of the last update of the provider */
-  updatedAt: NaiveDateTime;
-  /** Name of the provider */
-  name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Description of the provider */
   description: string;
   /** Documentation URL of the provider */
@@ -230,7 +222,7 @@ export interface PatchProvider {
 }
 
 export interface Request {
-  id: Uuid;
+  id: string;
   createdAt: NaiveDateTime;
   updatedAt: NaiveDateTime;
   data: string;
@@ -239,7 +231,7 @@ export interface Request {
 }
 
 export interface SourceRequest {
-  id: Uuid;
+  id: string;
   createdAt: NaiveDateTime;
   updatedAt: NaiveDateTime;
   startedAt: NaiveDateTime;
@@ -250,9 +242,10 @@ export interface SourceRequest {
   cacheExpiresAt?: NaiveDateTime;
   cacheCachedAt?: NaiveDateTime;
   cacheKey?: string;
-  requestId: Uuid;
-  sourceId?: Uuid;
+  requestId: string;
+  sourceId?: string;
   sourceName: string;
+  sourceSlug: string;
   sourceUrl: string;
   sourceFavicon?: string;
 }
@@ -260,7 +253,7 @@ export interface SourceRequest {
 /** A secret */
 export interface Secret {
   /** The database ID of the secret */
-  id: Uuid;
+  id: string;
   /** The time the secret was created */
   createdAt: NaiveDateTime;
   /** The time the secret was last updated */
@@ -276,13 +269,13 @@ export interface Secret {
 /** Defining secrets needed for a source and the link between a source and a secret */
 export interface SourceSecret {
   /** Database ID of the source secret */
-  id: Uuid;
+  id: string;
   /** Timestamp of the creation of the source secret */
   createdAt: NaiveDateTime;
   /** Timestamp of the last update of the source secret */
   updatedAt: NaiveDateTime;
   /** Database ID of the secret */
-  secretId?: Uuid;
+  secretId?: string;
   /** Name of the source secret */
   name: string;
   /** Description of the source secret */
@@ -294,7 +287,7 @@ export interface SourceSecret {
 /** A secret with the number of sources that use it */
 export interface SecretWithNumSources {
   /** The database ID of the secret */
-  id: Uuid;
+  id: string;
   /** The time the secret was created */
   createdAt: NaiveDateTime;
   /** The time the secret was last updated */
@@ -336,7 +329,7 @@ export interface UpdateSecret {
 /** Parameters for creating a new source secret */
 export interface CreateSourceSecret {
   /** ID of the secret */
-  secretId?: Uuid;
+  secretId?: string;
   /** Name of the source secret */
   name: string;
   /** Description of the source secret */
@@ -378,13 +371,15 @@ export enum SourceKind {
 /** A place where indicator data is retrieved from */
 export interface Source {
   /** Database ID of the source */
-  id: Uuid;
+  id: string;
   /** Timestamp of the creation of the source */
   createdAt: NaiveDateTime;
   /** Timestamp of the last update of the source */
   updatedAt: NaiveDateTime;
   /** Name of the source */
   name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Description of the source */
   description: string;
   /** Documentation URL of the source */
@@ -418,7 +413,7 @@ export interface Source {
   /** Interval in seconds between the source's cache resets */
   cacheInterval?: number;
   /** Database ID of the linked provider of the source */
-  providerId?: Uuid;
+  providerId?: string;
   /** Kind of the source, related to the language used for corelating data from the source */
   kind: SourceKind;
   /** Source code of the source */
@@ -462,7 +457,7 @@ export interface CreateSource {
   /** Interval in seconds between the source's cache resets */
   cacheInterval?: number;
   /** Database ID of the linked provider of the source */
-  providerId?: Uuid;
+  providerId?: string;
   /** Kind of the source, related to the language used for corelating data from the source */
   kind: SourceKind;
   /** Source code of the source */
@@ -506,7 +501,7 @@ export interface UpdateSource {
   /** Interval in seconds between the source's cache resets */
   cacheInterval?: number;
   /** Database ID of the linked provider of the source */
-  providerId?: Uuid;
+  providerId?: string;
   /** Kind of the source, related to the language used for corelating data from the source */
   kind?: SourceKind;
   /** Source code of the source */
@@ -557,7 +552,7 @@ export interface RequestExecuteParam {
   /** Kind of the indicator */
   kind: IndicatorKind;
   /** List of sources to query, if not provided, all sources will be queried */
-  sources?: Uuid[];
+  sources?: string[];
   /** Ignore errors, will remove all sources that return an error from the response */
   ignoreErrors?: boolean;
 }
@@ -565,8 +560,10 @@ export interface RequestExecuteParam {
 export interface DataSource {
   /** Name of the source */
   name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Database ID of the source */
-  id: Uuid;
+  id: string;
   /** Documentation URL of the source */
   url: string;
   /** Favicon of the source in base64 */
@@ -602,9 +599,9 @@ export type SourceError =
   | { kind: "DISABLED_INDICATOR"; content?: undefined }
   | { kind: "RUNNER_DISABLED"; content: SourceKind }
   | { kind: "SOURCE_DISABLED"; content?: undefined }
-  | { kind: "PROVIDER_DISABLED"; content: Uuid }
-  | { kind: "WITHIN_IGNORE_LIST"; content: Uuid[] }
-  | { kind: "MISSING_SECRET"; content: Uuid[] }
+  | { kind: "PROVIDER_DISABLED"; content: string }
+  | { kind: "WITHIN_IGNORE_LIST"; content: string[] }
+  | { kind: "MISSING_SECRET"; content: string[] }
   | { kind: "TIMEOUT"; content?: undefined }
   | { kind: "NOT_FOUND"; content?: undefined }
   | { kind: "UNAUTHORIZED"; content?: undefined }

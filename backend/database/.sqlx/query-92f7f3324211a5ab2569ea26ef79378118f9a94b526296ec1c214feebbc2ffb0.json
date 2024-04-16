@@ -6,7 +6,7 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Uuid"
+        "type_info": "Text"
       },
       {
         "ordinal": 1,
@@ -25,41 +25,47 @@
       },
       {
         "ordinal": 4,
-        "name": "description",
+        "name": "slug",
         "type_info": "Text"
       },
       {
         "ordinal": 5,
-        "name": "url",
+        "name": "description",
         "type_info": "Text"
       },
       {
         "ordinal": 6,
-        "name": "favicon",
+        "name": "url",
         "type_info": "Text"
       },
       {
         "ordinal": 7,
+        "name": "favicon",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
         "name": "tags",
         "type_info": "TextArray"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "enabled",
         "type_info": "Bool"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "num_sources!",
         "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
-        "Uuid"
+        "Text"
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,

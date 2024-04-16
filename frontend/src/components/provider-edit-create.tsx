@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { ProviderWithNumSources } from "@/types/backendTypes";
+import { Provider } from "@/types/backendTypes";
 import { SectionPanelHeader } from "@/components/section-panel-header";
 import {
   Form,
@@ -52,13 +52,13 @@ const formSchema = z.object({
   enabled: z.boolean(),
   sources: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string(),
       name: z.string(),
     }),
   ),
   ignoreLists: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string(),
       name: z.string(),
     }),
   ),
@@ -67,7 +67,7 @@ const formSchema = z.object({
 export type FormSchema = z.infer<typeof formSchema>;
 
 type ExtraProviderProps = {
-  provider: ProviderWithNumSources;
+  provider: Provider;
   ignoreLists: {
     id: string;
     name: string;

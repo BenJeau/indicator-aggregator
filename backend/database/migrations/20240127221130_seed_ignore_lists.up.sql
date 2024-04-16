@@ -1,7 +1,7 @@
 INSERT INTO "ignore_lists"
-  ("name", "description", "enabled", "global")
+  ("name", "slug", "description", "enabled", "global")
 VALUES
-  ('Google', 'Google related indicators', TRUE, TRUE);
+  ('Google', 'google', 'Google related indicators', TRUE, TRUE);
 
 
 INSERT INTO "ignore_list_entries"

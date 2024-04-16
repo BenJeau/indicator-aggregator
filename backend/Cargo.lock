@@ -653,6 +653,8 @@ name = "database"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "once_cell",
+ "regex",
  "serde",
  "serde_json",
  "shared",
@@ -661,7 +663,6 @@ dependencies = [
  "tracing",
  "typeshare",
  "utoipa",
- "uuid",
  "validator",
 ]
 
@@ -2960,7 +2961,6 @@ dependencies = [
  "url",
  "utoipa",
  "utoipa-swagger-ui",
- "uuid",
 ]
 
 [[package]]
@@ -3021,7 +3021,6 @@ dependencies = [
  "tracing",
  "tracing-opentelemetry",
  "tracing-subscriber",
- "uuid",
 ]
 
 [[package]]
@@ -3084,7 +3083,6 @@ dependencies = [
  "tracing",
  "typeshare",
  "utoipa",
- "uuid",
  "zip",
 ]
 
@@ -3176,7 +3174,6 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
- "uuid",
 ]
 
 [[package]]
@@ -3258,7 +3255,6 @@ dependencies = [
  "stringprep",
  "thiserror",
  "tracing",
- "uuid",
  "whoami",
 ]
 
@@ -3298,7 +3294,6 @@ dependencies = [
  "stringprep",
  "thiserror",
  "tracing",
- "uuid",
  "whoami",
 ]
 
@@ -3324,7 +3319,6 @@ dependencies = [
  "tracing",
  "url",
  "urlencoding",
- "uuid",
 ]
 
 [[package]]
@@ -4024,7 +4018,6 @@ dependencies = [
  "quote",
  "regex",
  "syn 2.0.58",
- "uuid",
 ]
 
 [[package]]
@@ -4049,7 +4042,6 @@ version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a183cf7feeba97b4dd1c0d46788634f6221d87fa961b305bed08c851829efcc0"
 dependencies = [
- "getrandom",
  "serde",
 ]
 

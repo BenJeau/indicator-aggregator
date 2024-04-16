@@ -21,7 +21,6 @@ typeshare = { workspace = true }
 url = { workspace = true }
 utoipa = { workspace = true }
 utoipa-swagger-ui = { workspace = true }
-uuid = { workspace = true }
 
 cache = { path = "../cache" }
 common = { path = "../runners/common" }

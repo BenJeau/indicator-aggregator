@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO source_secrets (source_id, secret_id, name, description, required) VALUES ($1, UNNEST($2::TEXT[]), UNNEST($3::TEXT[]), UNNEST($4::TEXT[]), UNNEST($5::BOOLEAN[]))",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "TextArray",
+        "TextArray",
+        "TextArray",
+        "BoolArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ad2ccb43eb9845ce0c95e11c0ae5e6ba46b30c0d7a973aa7100a2a58de8b4142"
+}

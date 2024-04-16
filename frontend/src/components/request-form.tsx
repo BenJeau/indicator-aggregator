@@ -41,7 +41,7 @@ const formSchema = z.object({
   autoDetectKind: z.boolean(),
   sources: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string(),
       name: z.string(),
     }),
   ),

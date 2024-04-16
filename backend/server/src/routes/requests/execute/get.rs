@@ -101,7 +101,8 @@ pub async fn sse_handler(
             SseStartData::from_inner(
                 DataSource {
                     name: s.source_name.clone(),
-                    id: s.source_id,
+                    slug: s.source_slug.clone(),
+                    id: s.source_id.clone(),
                     url: s.source_url.clone(),
                     favicon: s.source_favicon.clone(),
                 },
@@ -113,7 +114,7 @@ pub async fn sse_handler(
     tx.clone()
         .send(Result::Ok(
             Event::default()
-                .id(request_id.to_string())
+                .id(&request_id)
                 .event("fetching_start")
                 .json_data(start_data)
                 .unwrap(),
@@ -134,6 +135,8 @@ pub async fn sse_handler(
                 source_name = source.source_name,
             );
 
+            let request_id = request_id.clone();
+
             tokio::task::spawn(
                 async move {
                     let mut encountered_error = false;
@@ -141,7 +144,7 @@ pub async fn sse_handler(
                         &indicator,
                         &source,
                         &state,
-                        &request_id,
+                        request_id,
                         integration.as_ref(),
                     )
                     .await
@@ -149,14 +152,14 @@ pub async fn sse_handler(
                         if data.errors.is_empty() {
                             Event::default()
                                 .event("fetching_data")
-                                .id(source.source_id.to_string())
+                                .id(source.source_id.clone())
                                 .json_data(SseDoneData::from(data))
                                 .unwrap()
                         } else {
                             encountered_error = true;
                             Event::default()
                                 .event("fetching_error")
-                                .id(source.source_id.to_string())
+                                .id(source.source_id.clone())
                                 .json_data(&data.errors)
                                 .unwrap()
                         }
@@ -165,7 +168,7 @@ pub async fn sse_handler(
                         encountered_error = true;
                         Event::default()
                             .event("fetching_error")
-                            .id(source.source_id.to_string())
+                            .id(source.source_id)
                             .json_data([SourceError::from(e)])
                             .unwrap()
                     });

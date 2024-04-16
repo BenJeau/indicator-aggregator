@@ -5,7 +5,6 @@ use axum::{
 };
 use database::logic::secrets;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,12 +18,12 @@ use crate::Result;
         (status = 404, description = "Secret not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Secret database ID"),
+        ("id" = String, Path, description = "Secret database ID"),
     )
 )]
 pub async fn delete_secret(
     State(pool): State<PgPool>,
-    Path(secret_id): Path<Uuid>,
+    Path(secret_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let num_affected = secrets::delete_secret(&pool, &secret_id).await?;
 

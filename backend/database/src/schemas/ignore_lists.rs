@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use typeshare::typeshare;
 use utoipa::{IntoParams, ToSchema};
-use uuid::Uuid;
 
 /// List of indicators to ignore when processing requests against sources
 #[derive(FromRow, Serialize, ToSchema, Debug)]
@@ -11,13 +10,15 @@ use uuid::Uuid;
 #[typeshare]
 pub struct IgnoreList {
     /// Database ID of the ignore list
-    pub id: Uuid,
+    pub id: String,
     /// Timestamp of when the ignore list was created
     pub created_at: NaiveDateTime,
     /// Timestamp of when the ignore list was last updated
     pub updated_at: NaiveDateTime,
     /// Name of the ignore list
     pub name: String,
+    /// URL friendly name of the ignore list
+    pub slug: String,
     /// Description of the ignore list
     pub description: String,
     /// Whether the ignore list is enabled and used to ignore certain requests
@@ -62,7 +63,7 @@ pub struct UpdateIgnoreList {
 #[typeshare]
 pub struct IgnoreListEntry {
     /// Database ID of the ignore list entry
-    pub id: Uuid,
+    pub id: String,
     /// Timestamp of when the ignore list entry was created
     pub created_at: NaiveDateTime,
     /// Timestamp of when the ignore list entry was last updated
@@ -72,7 +73,7 @@ pub struct IgnoreListEntry {
     /// Kind of the indicator to ignore
     pub indicator_kind: String,
     /// Database ID of the ignore list the entry belongs to
-    pub ignore_list_id: Uuid,
+    pub ignore_list_id: String,
 }
 
 /// Parameters for creating a new ignore list entry

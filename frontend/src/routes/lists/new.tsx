@@ -19,7 +19,7 @@ const ListsNewComponent: React.FC = () => {
   const putIgnoreListEntries = useIgnoreListEntryPut();
 
   const onSubmit = async (values: FormSchema) => {
-    const id = await ignoreListCreate.mutateAsync(values);
+    const { id, slug } = await ignoreListCreate.mutateAsync(values);
     await Promise.all([
       putIgnoreListProviders.mutateAsync({
         listId: id,
@@ -38,7 +38,7 @@ const ListsNewComponent: React.FC = () => {
       }),
     ]);
     toast.success("Ignore list created");
-    navigate({ to: `/lists/$id`, params: { id } });
+    navigate({ to: `/lists/$slug`, params: { slug } });
   };
 
   return <ListEditCreate onSubmit={onSubmit} name={search.name} />;

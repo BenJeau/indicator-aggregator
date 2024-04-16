@@ -1,21 +1,25 @@
 use sqlx::{PgExecutor, PgPool, Result};
 use tracing::instrument;
-use uuid::Uuid;
 
-use crate::schemas::{
-    ignore_lists::IgnoreList,
-    indicators::Indicator,
-    sources::{CreateSource, InternalRequest, Source, SourceCode, SourceKind, UpdateSource},
+use crate::{
+    schemas::{
+        ignore_lists::IgnoreList,
+        indicators::Indicator,
+        sources::{CreateSource, InternalRequest, Source, SourceCode, SourceKind, UpdateSource},
+        IdSlug,
+    },
+    slug::slugify,
 };
 
 #[instrument(skip(pool), err)]
-pub async fn get_provider_sources(pool: &PgPool, provider_id: &Uuid) -> Result<Vec<Source>> {
+pub async fn get_provider_sources(pool: &PgPool, provider_id: &str) -> Result<Vec<Source>> {
     sqlx::query_as!(
         Source,
         r#"SELECT id,
 created_at,
 updated_at,
 name,
+slug,
 description,
 url,
 favicon,
@@ -46,7 +50,7 @@ source_code FROM sources WHERE provider_id = $1 ORDER BY name"#,
 pub async fn get_sources_for_internal_request(
     pool: &PgPool,
     indicator: &Indicator,
-    source_ids: &[Uuid],
+    source_ids: &[String],
 ) -> Result<Vec<InternalRequest>> {
     sqlx::query_as!(
         InternalRequest,
@@ -54,6 +58,7 @@ pub async fn get_sources_for_internal_request(
 SELECT
 sources.id as source_id,
 sources.name as source_name,
+sources.slug as source_slug,
 sources.kind as "source_kind: _",
 sources.enabled as source_enabled,
 sources.url as source_url,
@@ -62,7 +67,7 @@ sources.supported_indicators as source_supported_indicators,
 sources.disabled_indicators as source_disabled_indicators,
 sources.cache_enabled as source_cache_enabled,
 sources.cache_interval as source_cache_interval,
-providers.id as "provider_id: Option<Uuid>",
+providers.id as "provider_id: Option<String>",
 providers.enabled as "provider_enabled: Option<bool>",
 COALESCE(array_agg(DISTINCT source_secrets.id) FILTER (WHERE source_secrets.id IS NOT NULL), '{}') AS "missing_source_secrets!",
 COALESCE(array_agg(DISTINCT ignore_list_entries.ignore_list_id) FILTER (WHERE ignore_list_entries.ignore_list_id IS NOT NULL), '{}') AS "within_ignore_lists!"
@@ -72,7 +77,7 @@ LEFT JOIN source_secrets ON source_secrets.source_id = sources.id AND source_sec
 LEFT JOIN source_ignore_lists ON source_ignore_lists.source_id = sources.id
 LEFT JOIN ignore_lists ON ignore_lists.id = source_ignore_lists.ignore_list_id OR ignore_lists."global" = TRUE
 LEFT JOIN ignore_list_entries on ignore_lists.id = ignore_list_entries.ignore_list_id AND ignore_list_entries.indicator_kind = $1 AND ignore_list_entries.data LIKE '%' || $2 || '%'
-WHERE CARDINALITY($3::UUID[]) = 0 OR sources.id = ANY($3::UUID[])
+WHERE CARDINALITY($3::TEXT[]) = 0 OR sources.id = ANY($3::TEXT[])
 GROUP BY sources.id, providers.id;
 "#,
         indicator.db_kind(),
@@ -92,6 +97,7 @@ pub async fn get_sources(pool: &PgPool) -> Result<Vec<Source>> {
 created_at,
 updated_at,
 name,
+slug,
 description,
 url,
 favicon,
@@ -128,6 +134,7 @@ pub async fn get_supported_enabled_sources(
 sources.created_at,
 sources.updated_at,
 sources.name,
+sources.slug,
 sources.description,
 sources.url,
 sources.favicon,
@@ -159,51 +166,14 @@ ORDER BY name"#,
 }
 
 #[instrument(skip(pool), err)]
-pub async fn get_unsupported_indicator_sources(
-    pool: &PgPool,
-    indicator_kind: &str,
-) -> Result<Vec<String>> {
-    sqlx::query_scalar!(
-        r#"SELECT name FROM sources WHERE NOT ($1 = ANY(supported_indicators))"#,
-        indicator_kind
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(Into::into)
-}
-
-#[instrument(skip(pool), err)]
-pub async fn get_disabled_sources(pool: &PgPool) -> Result<Vec<String>> {
-    sqlx::query_scalar!(
-        r#"SELECT sources.name FROM sources LEFT JOIN providers ON providers.id = sources.provider_id WHERE sources.enabled = FALSE OR (providers IS NULL OR providers.enabled = FALSE) GROUP BY sources.name"#,
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(Into::into)
-}
-
-#[instrument(skip(pool), err)]
-pub async fn get_disabled_indicator_sources(
-    pool: &PgPool,
-    indicator_kind: &str,
-) -> Result<Vec<String>> {
-    sqlx::query_scalar!(
-        r#"SELECT name FROM sources WHERE ($1 = ANY(disabled_indicators))"#,
-        indicator_kind
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(Into::into)
-}
-
-#[instrument(skip(pool), err)]
-pub async fn get_source(pool: &PgPool, id: &Uuid) -> Result<Source> {
+pub async fn get_source(pool: &PgPool, id: &str) -> Result<Source> {
     sqlx::query_as!(
         Source,
         r#"SELECT id,
 created_at,
 updated_at,
 name,
+slug,
 description,
 url,
 favicon,
@@ -232,7 +202,7 @@ FROM sources WHERE id = $1"#,
 }
 
 #[instrument(skip(pool), err)]
-pub async fn get_source_ignore_lists(pool: &PgPool, source_id: &Uuid) -> Result<Vec<IgnoreList>> {
+pub async fn get_source_ignore_lists(pool: &PgPool, source_id: &str) -> Result<Vec<IgnoreList>> {
     sqlx::query_as!(
         IgnoreList,
         "SELECT ignore_lists.* FROM ignore_lists INNER JOIN source_ignore_lists ON source_ignore_lists.ignore_list_id = ignore_lists.id WHERE source_ignore_lists.source_id = $1",
@@ -246,11 +216,11 @@ pub async fn get_source_ignore_lists(pool: &PgPool, source_id: &Uuid) -> Result<
 #[instrument(skip(pool), err, ret)]
 pub async fn add_source_ignore_lists<'e>(
     pool: impl PgExecutor<'e>,
-    source_id: &Uuid,
-    ignore_list_ids: &[Uuid],
+    source_id: &str,
+    ignore_list_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO source_ignore_lists (ignore_list_id, source_id) VALUES (UNNEST($1::UUID[]), $2)",
+        "INSERT INTO source_ignore_lists (ignore_list_id, source_id) VALUES (UNNEST($1::TEXT[]), $2)",
         ignore_list_ids,
         source_id
     )
@@ -263,8 +233,8 @@ pub async fn add_source_ignore_lists<'e>(
 #[instrument(skip(pool), err, ret)]
 pub async fn delete_source_ignore_lists(
     pool: &PgPool,
-    source_id: &Uuid,
-    ignore_list_ids: &[Uuid],
+    source_id: &str,
+    ignore_list_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM source_ignore_lists WHERE ignore_list_id = ANY($1) AND source_id = $2",
@@ -280,7 +250,7 @@ pub async fn delete_source_ignore_lists(
 #[instrument(skip(pool), err, ret)]
 pub async fn delete_all_source_ignore_lists<'e>(
     pool: impl PgExecutor<'e>,
-    source_id: &Uuid,
+    source_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM source_ignore_lists WHERE source_id = $1",
@@ -292,7 +262,7 @@ pub async fn delete_all_source_ignore_lists<'e>(
     .map_err(Into::into)
 }
 #[instrument(skip(pool), err, ret)]
-pub async fn delete_source(pool: &PgPool, id: &Uuid) -> Result<u64> {
+pub async fn delete_source(pool: &PgPool, id: &str) -> Result<u64> {
     sqlx::query!("DELETE FROM sources WHERE id = $1", id)
         .execute(pool)
         .await
@@ -300,14 +270,24 @@ pub async fn delete_source(pool: &PgPool, id: &Uuid) -> Result<u64> {
         .map_err(Into::into)
 }
 
+#[instrument(skip(pool), ret, err)]
+pub async fn get_source_id_from_slug(pool: &PgPool, slug: &str) -> Result<Option<String>> {
+    sqlx::query_scalar!("SELECT id FROM sources WHERE slug = $1", slug)
+        .fetch_optional(pool)
+        .await
+        .map_err(Into::into)
+}
+
 #[instrument(skip(pool), err, ret)]
-pub async fn create_source(pool: &PgPool, data: &CreateSource) -> Result<Uuid> {
-    sqlx::query_scalar!(
+pub async fn create_source(pool: &PgPool, data: &CreateSource) -> Result<IdSlug> {
+    sqlx::query_as!(
+        IdSlug,
         r#"
-INSERT INTO sources (name, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
-RETURNING id"#,
+INSERT INTO sources (name, slug, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+RETURNING id, slug"#,
         data.name,
+        slugify(&data.name),
         data.description,
         data.url,
         data.favicon,
@@ -333,31 +313,33 @@ RETURNING id"#,
 }
 
 #[instrument(skip(pool), err, ret)]
-pub async fn update_source(pool: &PgPool, id: &Uuid, data: UpdateSource) -> Result<u64> {
+pub async fn update_source(pool: &PgPool, id: &str, data: UpdateSource) -> Result<u64> {
     sqlx::query!(
         r#"UPDATE sources SET
 name = COALESCE($1, name),
-description = COALESCE($2, description),
-url = COALESCE($3, url),
-favicon = COALESCE($4, favicon),
-tags = COALESCE($5, tags),
-enabled = COALESCE($6, enabled),
-supported_indicators = COALESCE($7, supported_indicators),
-disabled_indicators = COALESCE($8, disabled_indicators),
-task_enabled = COALESCE($9, task_enabled),
-task_interval = COALESCE($10, task_interval),
-config = COALESCE($11, config),
-config_values = COALESCE($12, config_values),
-limit_enabled = COALESCE($13, limit_enabled),
-limit_count = COALESCE($14, limit_count),
-limit_interval = COALESCE($15, limit_interval),
-provider_id = COALESCE($16, provider_id),
-kind = COALESCE($17, kind),
-source_code = COALESCE($18, source_code),
-cache_enabled = COALESCE($19, cache_enabled),
-cache_interval = COALESCE($20, cache_interval)
-WHERE id = $21"#,
+slug = COALESCE($2, slug),
+description = COALESCE($3, description),
+url = COALESCE($4, url),
+favicon = COALESCE($5, favicon),
+tags = COALESCE($6, tags),
+enabled = COALESCE($7, enabled),
+supported_indicators = COALESCE($8, supported_indicators),
+disabled_indicators = COALESCE($9, disabled_indicators),
+task_enabled = COALESCE($10, task_enabled),
+task_interval = COALESCE($11, task_interval),
+config = COALESCE($12, config),
+config_values = COALESCE($13, config_values),
+limit_enabled = COALESCE($14, limit_enabled),
+limit_count = COALESCE($15, limit_count),
+limit_interval = COALESCE($16, limit_interval),
+provider_id = COALESCE($17, provider_id),
+kind = COALESCE($18, kind),
+source_code = COALESCE($19, source_code),
+cache_enabled = COALESCE($20, cache_enabled),
+cache_interval = COALESCE($21, cache_interval)
+WHERE id = $22"#,
         data.name,
+        data.name.as_ref().map(|n| slugify(&n)),
         data.description,
         data.url,
         data.favicon,

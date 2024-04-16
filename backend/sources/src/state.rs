@@ -2,18 +2,21 @@ use database::{
     logic::server_config::get_config_with_defaults_and_db_results, schemas::server_config,
 };
 use std::collections::HashMap;
-use uuid::Uuid;
 
 use crate::Result;
 
 pub struct FetchState {
     pub pool: database::PgPool,
     pub secrets: HashMap<String, String>,
-    pub source_id: Uuid,
+    pub source_id: String,
 }
 
 impl FetchState {
-    pub fn new(pool: database::PgPool, secrets: HashMap<String, String>, source_id: Uuid) -> Self {
+    pub fn new(
+        pool: database::PgPool,
+        secrets: HashMap<String, String>,
+        source_id: String,
+    ) -> Self {
         Self {
             pool,
             secrets,

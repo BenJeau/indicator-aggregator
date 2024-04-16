@@ -78,7 +78,7 @@ export const Source: React.FC<ReqestSSEData> = ({
             <Database size={16} className={cn(!imgHasError && "hidden")} />
           </a>
           <div className="flex flex-wrap items-baseline gap-2 gap-y-0 font-medium">
-            <Link to="/sources/$id" params={{ id: source.id }}>
+            <Link to="/sources/$slug" params={{ slug: source.slug }}>
               {source.name}
             </Link>
             {shouldHaveData && <TitleEntryCount count={entryCount} />}

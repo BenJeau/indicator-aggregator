@@ -97,7 +97,6 @@ const formSchema = z.object({
     .transform((x) => x ?? undefined),
   providerId: z.coerce
     .string()
-    .uuid()
     .nullish()
     .transform((x) => x ?? undefined),
   kind: z.string(),
@@ -107,7 +106,7 @@ const formSchema = z.object({
     .transform((x) => x ?? undefined),
   ignoreLists: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string(),
       name: z.string(),
     }),
   ),
@@ -115,7 +114,6 @@ const formSchema = z.object({
     z.object({
       secretId: z.coerce
         .string()
-        .uuid()
         .nullish()
         .transform((x) => x ?? undefined),
       name: z.string(),

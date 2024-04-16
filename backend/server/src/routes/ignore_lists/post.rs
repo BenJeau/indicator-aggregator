@@ -10,7 +10,7 @@ use crate::Result;
     path = "/ignoreLists",
     tag = "ignoreLists",
     responses(
-        (status = 200, description = "Ignore list created successfully", body = String),
+        (status = 200, description = "Ignore list created successfully", body = IdSlug),
     ),
     params(CreateIgnoreList),
 )]
@@ -18,7 +18,7 @@ pub async fn create_list(
     State(pool): State<PgPool>,
     Json(list): Json<CreateIgnoreList>,
 ) -> Result<impl IntoResponse> {
-    let list_id = ignore_lists::create_list(&pool, list).await?;
+    let created_list = ignore_lists::create_list(&pool, list).await?;
 
-    Ok(list_id.to_string())
+    Ok(Json(created_list))
 }

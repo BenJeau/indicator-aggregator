@@ -54,6 +54,7 @@ const HistoryComponent: React.FC = () => {
             acc[data.id] = {
               source: {
                 id: data.sourceId || "",
+                slug: data.sourceSlug,
                 name: data.sourceName,
                 url: data.sourceUrl,
                 favicon: data.sourceFavicon,

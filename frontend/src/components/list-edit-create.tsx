@@ -57,13 +57,13 @@ const formSchema = z.object({
   global: z.boolean(),
   sources: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string(),
       name: z.string(),
     }),
   ),
   providers: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string(),
       name: z.string(),
     }),
   ),

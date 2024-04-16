@@ -5,6 +5,8 @@ version = "0.1.0"
 
 [dependencies]
 chrono = { workspace = true }
+once_cell = { workspace = true }
+regex = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sqlx = { workspace = true }
@@ -12,7 +14,6 @@ strum = { workspace = true }
 tracing = { workspace = true }
 typeshare = { workspace = true }
 utoipa = { workspace = true }
-uuid = { workspace = true }
 validator = { workspace = true }
 
 shared = { path = "../shared" }

@@ -28,3 +28,4 @@ Indicator Aggregator is composed of multiple services where the main parts are t
 To know more about the decisions made, please view related docs:
 - [Frontend/Backend REST API communication](./rest-api.md)
 - [gRPC inter-microservice communication](./grpc-microservice-communication.md)
+- [Database IDs](./database-ids.md)

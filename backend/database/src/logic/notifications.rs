@@ -8,6 +8,7 @@ pub async fn get_sources_without_secrets_set(pool: &PgPool) -> Result<Vec<Notifi
     sqlx::query_as!(
         MinimalSource,
         r#"SELECT sources.id,
+sources.slug,
 sources.name,
 COUNT(source_secrets)::INT as "num_missing_secrets!: _"
 FROM sources

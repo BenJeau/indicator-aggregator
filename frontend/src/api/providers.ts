@@ -3,16 +3,17 @@ import { queryOptions, useMutation } from "@tanstack/react-query";
 import { fetcher, queryClient } from "@/api";
 import {
   CreateProvider,
+  IdSlug,
   IgnoreList,
   PatchProvider,
-  ProviderWithNumSources,
+  Provider,
   Source,
 } from "@/types/backendTypes";
 
 export const providersQueryOptions = queryOptions({
   queryKey: ["providers"],
   queryFn: async ({ signal }) => {
-    const data = await fetcher.get<ProviderWithNumSources[]>("/providers", {
+    const data = await fetcher.get<Provider[]>("/providers", {
       signal,
     });
 
@@ -24,22 +25,35 @@ export const providersQueryOptions = queryOptions({
   },
 });
 
-export const providerQueryOptions = (providerId?: string) =>
-  queryOptions({
+export function providerSlugQueryOptions<T>(slug: T) {
+  return queryOptions({
+    queryKey: ["providers", "slugs", slug],
+    queryFn: async ({ signal }) => {
+      if (!slug) {
+        return slug;
+      }
+
+      return await fetcher.get<string>(`/providers/slugs/${slug}`, {
+        signal,
+      });
+    },
+  });
+}
+
+export function providerQueryOptions<T>(providerId: T) {
+  return queryOptions({
     queryKey: ["providers", providerId],
     queryFn: async ({ signal }) => {
-      if (!providerId) {
+      if (providerId == undefined) {
         return null;
       }
 
-      return await fetcher.get<ProviderWithNumSources>(
-        `/providers/${providerId}`,
-        {
-          signal,
-        },
-      );
+      return await fetcher.get<Provider>(`/providers/${providerId}`, {
+        signal,
+      });
     },
   });
+}
 
 export const providerIgnoreListsQueryOptions = (providerId: string) =>
   queryOptions({
@@ -82,7 +96,7 @@ export const useProviderPatch = () =>
 export const useProviderCreate = () =>
   useMutation({
     mutationFn: async (data: CreateProvider) => {
-      return await fetcher.post<string>("/providers", { data });
+      return await fetcher.post<IdSlug>("/providers", { data });
     },
     onSettled: async () =>
       await Promise.all([

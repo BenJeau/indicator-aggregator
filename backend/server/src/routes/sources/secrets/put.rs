@@ -6,7 +6,6 @@ use axum::{
 };
 use database::PgPool;
 use database::{logic::secrets, schemas::secrets::CreateSourceSecret};
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -20,7 +19,7 @@ use crate::Result;
         (status = 404, description = "Source not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Source database ID"),
+        ("id" = String, Path, description = "Source database ID"),
     ),
     request_body(
         description = "The source secrets to set",
@@ -30,7 +29,7 @@ use crate::Result;
 )]
 pub async fn put_source_sources(
     State(pool): State<PgPool>,
-    Path(source_id): Path<Uuid>,
+    Path(source_id): Path<String>,
     Json(source_secrets): Json<Vec<CreateSourceSecret>>,
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;

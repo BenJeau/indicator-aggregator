@@ -1,11 +1,11 @@
 use axum::{
     extract::{Path, State},
+    http::StatusCode,
     response::IntoResponse,
     Json,
 };
 use database::logic::providers;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -34,14 +34,18 @@ pub async fn get_providers(State(pool): State<PgPool>) -> Result<impl IntoRespon
         (status = 404, description = "Provider not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Provider database ID"),
+        ("id" = String, Path, description = "Provider database ID"),
     )
 )]
 pub async fn get_provider(
     State(pool): State<PgPool>,
-    Path(provider_id): Path<Uuid>,
+    Path(provider_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let provider = providers::get_provider(&pool, &provider_id).await?;
 
-    Ok(Json(provider))
+    if let Some(provider) = provider {
+        Ok(Json(provider).into_response())
+    } else {
+        Ok(StatusCode::NOT_FOUND.into_response())
+    }
 }

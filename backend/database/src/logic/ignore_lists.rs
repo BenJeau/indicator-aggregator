@@ -1,20 +1,25 @@
 use sqlx::{PgExecutor, PgPool, Result};
 use tracing::instrument;
-use uuid::Uuid;
 
-use crate::schemas::{
-    ignore_lists::{
-        CreateIgnoreList, CreateIngoreListEntry, IgnoreList, IgnoreListEntry, UpdateIgnoreList,
+use crate::{
+    schemas::{
+        ignore_lists::{
+            CreateIgnoreList, CreateIngoreListEntry, IgnoreList, IgnoreListEntry, UpdateIgnoreList,
+        },
+        providers::Provider,
+        sources::Source,
+        IdSlug,
     },
-    providers::ProviderWithNumSources,
-    sources::Source,
+    slug::slugify,
 };
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_list(pool: &PgPool, data: CreateIgnoreList) -> Result<Uuid> {
-    sqlx::query_scalar!(
-        "INSERT INTO ignore_lists (name, description, enabled) VALUES ($1, $2, $3) RETURNING id",
+pub async fn create_list(pool: &PgPool, data: CreateIgnoreList) -> Result<IdSlug> {
+    sqlx::query_as!(
+        IdSlug,
+        "INSERT INTO ignore_lists (name, slug, description, enabled) VALUES ($1, $2, $3, $4) RETURNING id, slug",
         data.name,
+        slugify(&data.name),
         data.description,
         data.enabled
     )
@@ -24,10 +29,17 @@ pub async fn create_list(pool: &PgPool, data: CreateIgnoreList) -> Result<Uuid> 
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn update_list(pool: &PgPool, id: &Uuid, data: UpdateIgnoreList) -> Result<u64> {
+pub async fn update_list(pool: &PgPool, id: &str, data: UpdateIgnoreList) -> Result<u64> {
     sqlx::query!(
-        "UPDATE ignore_lists SET name = COALESCE($1, name), description = COALESCE($2, description), enabled = COALESCE($3, enabled), global = COALESCE($4, global) WHERE id = $5",
+        r#"UPDATE ignore_lists SET
+name = COALESCE($1, name),
+slug = COALESCE($2, slug),
+description = COALESCE($3, description),
+enabled = COALESCE($4, enabled),
+global = COALESCE($5, global)
+WHERE id = $6"#,
         data.name,
+        data.name.as_ref().map(|n| slugify(&n)),
         data.description,
         data.enabled,
         data.global,
@@ -40,7 +52,7 @@ pub async fn update_list(pool: &PgPool, id: &Uuid, data: UpdateIgnoreList) -> Re
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn delete_list(pool: &PgPool, list_id: &Uuid) -> Result<u64> {
+pub async fn delete_list(pool: &PgPool, list_id: &str) -> Result<u64> {
     sqlx::query!("DELETE FROM ignore_lists WHERE id = $1", list_id)
         .execute(pool)
         .await
@@ -49,7 +61,7 @@ pub async fn delete_list(pool: &PgPool, list_id: &Uuid) -> Result<u64> {
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_list(pool: &PgPool, list_id: &Uuid) -> Result<Option<IgnoreList>> {
+pub async fn get_list(pool: &PgPool, list_id: &str) -> Result<Option<IgnoreList>> {
     sqlx::query_as!(
         IgnoreList,
         "SELECT * FROM ignore_lists WHERE id = $1",
@@ -77,9 +89,21 @@ pub async fn get_lists(pool: &PgPool) -> Result<Vec<IgnoreList>> {
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn bulk_delete_entries(pool: &PgPool, list_id: &Uuid, entry_ids: &[Uuid]) -> Result<u64> {
+pub async fn get_ignore_list_id_from_slug(pool: &PgPool, slug: &str) -> Result<Option<String>> {
+    sqlx::query_scalar!("SELECT id FROM ignore_lists WHERE slug = $1", slug)
+        .fetch_optional(pool)
+        .await
+        .map_err(Into::into)
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn bulk_delete_entries(
+    pool: &PgPool,
+    list_id: &str,
+    entry_ids: &[String],
+) -> Result<u64> {
     sqlx::query!(
-        "DELETE FROM ignore_list_entries WHERE ignore_list_id = $1 AND id = ANY($2::UUID[])",
+        "DELETE FROM ignore_list_entries WHERE ignore_list_id = $1 AND id = ANY($2::TEXT[])",
         list_id,
         entry_ids
     )
@@ -92,9 +116,9 @@ pub async fn bulk_delete_entries(pool: &PgPool, list_id: &Uuid, entry_ids: &[Uui
 #[instrument(skip(pool), ret, err)]
 pub async fn add_entries_to_list<'e>(
     pool: impl PgExecutor<'e>,
-    list_id: &Uuid,
+    list_id: &str,
     data: Vec<CreateIngoreListEntry>,
-) -> Result<Vec<Uuid>> {
+) -> Result<Vec<String>> {
     sqlx::query_scalar!(
         r#"INSERT INTO ignore_list_entries (data, indicator_kind, ignore_list_id) VALUES (UNNEST($1::TEXT[]), UNNEST($2::TEXT[]), $3) RETURNING id"#,
         &data.iter().map(|i| i.data.clone()).collect::<Vec<_>>(),
@@ -107,7 +131,7 @@ pub async fn add_entries_to_list<'e>(
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_list_entries(pool: &PgPool, list_id: &Uuid) -> Result<Vec<IgnoreListEntry>> {
+pub async fn get_list_entries(pool: &PgPool, list_id: &str) -> Result<Vec<IgnoreListEntry>> {
     sqlx::query_as!(
         IgnoreListEntry,
         "SELECT * FROM ignore_list_entries WHERE ignore_list_id = $1",
@@ -119,12 +143,9 @@ pub async fn get_list_entries(pool: &PgPool, list_id: &Uuid) -> Result<Vec<Ignor
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_list_providers(
-    pool: &PgPool,
-    list_id: &Uuid,
-) -> Result<Vec<ProviderWithNumSources>> {
+pub async fn get_list_providers(pool: &PgPool, list_id: &str) -> Result<Vec<Provider>> {
     sqlx::query_as!(
-        ProviderWithNumSources,
+        Provider,
         r#"SELECT providers.*, count(sources.id)::INT as "num_sources!"
 FROM providers
 INNER JOIN provider_ignore_lists ON provider_ignore_lists.source_provider_id = providers.id
@@ -140,13 +161,14 @@ ORDER BY providers.enabled DESC, providers.name"#,
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_list_sources(pool: &PgPool, list_id: &Uuid) -> Result<Vec<Source>> {
+pub async fn get_list_sources(pool: &PgPool, list_id: &str) -> Result<Vec<Source>> {
     sqlx::query_as!(
         Source,
         r#"SELECT sources.id,
 sources.created_at,
 sources.updated_at,
 sources.name,
+sources.slug,
 sources.description,
 sources.url,
 sources.favicon,
@@ -179,7 +201,7 @@ WHERE source_ignore_lists.ignore_list_id = $1"#,
 #[instrument(skip(pool), ret, err)]
 pub async fn delete_all_ignore_list_sources<'e>(
     pool: impl PgExecutor<'e>,
-    ignore_list_id: &Uuid,
+    ignore_list_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM source_ignore_lists WHERE ignore_list_id = $1",
@@ -194,11 +216,11 @@ pub async fn delete_all_ignore_list_sources<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn add_ignore_list_sources<'e>(
     pool: impl PgExecutor<'e>,
-    ignore_list_id: &Uuid,
-    source_ids: &[Uuid],
+    ignore_list_id: &str,
+    source_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO source_ignore_lists (ignore_list_id, source_id) VALUES ($1, UNNEST($2::UUID[]))",
+        "INSERT INTO source_ignore_lists (ignore_list_id, source_id) VALUES ($1, UNNEST($2::TEXT[]))",
         ignore_list_id,
         source_ids
     )
@@ -211,7 +233,7 @@ pub async fn add_ignore_list_sources<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn delete_all_ignore_list_providers<'e>(
     pool: impl PgExecutor<'e>,
-    ignore_list_id: &Uuid,
+    ignore_list_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM provider_ignore_lists WHERE ignore_list_id = $1",
@@ -226,11 +248,11 @@ pub async fn delete_all_ignore_list_providers<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn add_ignore_list_providers<'e>(
     pool: impl PgExecutor<'e>,
-    ignore_list_id: &Uuid,
-    provider_ids: &[Uuid],
+    ignore_list_id: &str,
+    provider_ids: &[String],
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO provider_ignore_lists (ignore_list_id, source_provider_id) VALUES ($1, UNNEST($2::UUID[]))",
+        "INSERT INTO provider_ignore_lists (ignore_list_id, source_provider_id) VALUES ($1, UNNEST($2::TEXT[]))",
         ignore_list_id,
         provider_ids
     )
@@ -243,7 +265,7 @@ pub async fn add_ignore_list_providers<'e>(
 #[instrument(skip(pool), ret, err)]
 pub async fn delete_all_ignore_list_entries<'e>(
     pool: impl PgExecutor<'e>,
-    list_id: &Uuid,
+    list_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
         "DELETE FROM ignore_list_entries WHERE ignore_list_id = $1",

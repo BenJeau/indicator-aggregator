@@ -6,7 +6,6 @@ use axum::{
 };
 use database::PgPool;
 use database::{logic::ignore_lists, schemas::ignore_lists::CreateIngoreListEntry};
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -19,7 +18,7 @@ use crate::Result;
         (status = 201, description = "Ignore list entries replaced successfully"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Ignore list database ID"),
+        ("id" = String, Path, description = "Ignore list database ID"),
     ),
     request_body(
         content_type = "application/json", content = Vec<CreateIngoreListEntry>, description = "List of ignore list entries"
@@ -27,7 +26,7 @@ use crate::Result;
 )]
 pub async fn put_ignore_list_entries(
     State(pool): State<PgPool>,
-    Path(list_id): Path<Uuid>,
+    Path(list_id): Path<String>,
     Json(data): Json<Vec<CreateIngoreListEntry>>,
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;

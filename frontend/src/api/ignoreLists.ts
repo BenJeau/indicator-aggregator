@@ -4,9 +4,10 @@ import { fetcher, queryClient } from "@/api";
 import {
   CreateIgnoreList,
   CreateIngoreListEntry,
+  IdSlug,
   IgnoreList,
   IgnoreListEntry,
-  ProviderWithNumSources,
+  Provider,
   Source,
   UpdateIgnoreList,
 } from "@/types/backendTypes";
@@ -25,6 +26,21 @@ export const globalIgnoreListsQueryOptions = queryOptions({
     return data;
   },
 });
+
+export function ignoreListSlugQueryOptions<T>(slug: T) {
+  return queryOptions({
+    queryKey: ["ignoreLists", "slugs", slug],
+    queryFn: async ({ signal }) => {
+      if (!slug) {
+        return slug;
+      }
+
+      return await fetcher.get<string>(`/ignoreLists/slugs/${slug}`, {
+        signal,
+      });
+    },
+  });
+}
 
 export const ignoreListsQueryOptions = queryOptions({
   queryKey: ["ignoreLists"],
@@ -72,12 +88,9 @@ export const ignoreListProvidersQueryOptions = (listId: string) =>
   queryOptions({
     queryKey: ["ignoreLists", listId, "providers"],
     queryFn: async ({ signal }) =>
-      await fetcher.get<ProviderWithNumSources[]>(
-        `/ignoreLists/${listId}/providers`,
-        {
-          signal,
-        },
-      ),
+      await fetcher.get<Provider[]>(`/ignoreLists/${listId}/providers`, {
+        signal,
+      }),
   });
 
 export const useIgnoreListDelete = () =>
@@ -113,7 +126,7 @@ export const useIgnoreListPatch = () =>
 export const useIgnoreListCreate = () =>
   useMutation({
     mutationFn: async (data: CreateIgnoreList) =>
-      await fetcher.post<string>("/ignoreLists", { data }),
+      await fetcher.post<IdSlug>("/ignoreLists", { data }),
     onSettled: async () =>
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["ignoreLists"] }),

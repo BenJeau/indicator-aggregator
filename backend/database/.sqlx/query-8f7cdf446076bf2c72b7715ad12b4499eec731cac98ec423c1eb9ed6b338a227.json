@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM ignore_list_entries WHERE ignore_list_id = $1 AND id = ANY($2::TEXT[])",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8f7cdf446076bf2c72b7715ad12b4499eec731cac98ec423c1eb9ed6b338a227"
+}

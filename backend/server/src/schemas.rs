@@ -10,7 +10,6 @@ use database::schemas::{
 use serde::Serialize;
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 #[derive(Deserialize, IntoParams)]
 pub struct GetFaviconParams {
@@ -29,7 +28,7 @@ pub struct RequestExecuteParam {
     pub kind: IndicatorKind,
     /// List of sources to query, if not provided, all sources will be queried
     #[serde(default)]
-    pub sources: Vec<Uuid>,
+    pub sources: Vec<String>,
     /// Ignore errors, will remove all sources that return an error from the response
     #[serde(default)]
     pub ignore_errors: bool,
@@ -65,8 +64,10 @@ pub struct Data {
 pub struct DataSource {
     /// Name of the source
     pub name: String,
+    /// URL friendly name of the provider
+    pub slug: String,
     /// Database ID of the source
-    pub id: Uuid,
+    pub id: String,
     /// Documentation URL of the source
     pub url: String,
     /// Favicon of the source in base64
@@ -176,7 +177,7 @@ impl SseStartData {
 }
 
 impl Data {
-    pub fn into_create_source_request(self, request_id: Uuid) -> CreateSourceRequest {
+    pub fn into_create_source_request(self, request_id: String) -> CreateSourceRequest {
         CreateSourceRequest {
             started_at: self.timing.started_at,
             ended_at: self.timing.ended_at,

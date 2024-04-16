@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "./generic-panel-search";
 
 const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
-  data: { id, name, description, enabled, global },
+  data: { slug, name, description, enabled, global },
 }) => (
   <Link
-    to="/lists/$id"
-    params={{ id }}
+    to="/lists/$slug"
+    params={{ slug }}
     activeProps={{
       className: "bg-primary/10 border-primary shadow-primary/40",
     }}

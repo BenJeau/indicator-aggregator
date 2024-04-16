@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use typeshare::typeshare;
 use utoipa::ToSchema;
-use uuid::Uuid;
 
 use crate::schemas::sources::SourceKind;
 
@@ -37,7 +36,7 @@ pub enum ServerConfigCategory {
 #[typeshare]
 pub struct ServerConfigEntry<T: Default> {
     /// Unique identifier of the server config entry
-    pub id: Option<Uuid>,
+    pub id: Option<String>,
     /// Timestamp of the creation of the server config entry
     pub created_at: Option<NaiveDateTime>,
     /// Timestamp of the last update of the server config entry
@@ -83,7 +82,7 @@ pub struct UpdateServerConfig {
 
 #[derive(Serialize, Debug, ToSchema, FromRow)]
 pub struct DbServerConfig {
-    pub id: Uuid,
+    pub id: String,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub key: String,

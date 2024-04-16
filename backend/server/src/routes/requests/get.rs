@@ -6,7 +6,6 @@ use axum::{
 };
 use database::logic::requests;
 use database::PgPool;
-use uuid::Uuid;
 
 use crate::Result;
 
@@ -35,12 +34,12 @@ pub async fn get_requests(State(pool): State<PgPool>) -> Result<impl IntoRespons
         (status = 404, description = "Request not found"),
     ),
     params(
-        ("id" = Uuid, Path, description = "Request ID"),
+        ("id" = String, Path, description = "Request ID"),
     )
 )]
 pub async fn get_request(
     State(pool): State<PgPool>,
-    Path(request_id): Path<Uuid>,
+    Path(request_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let request = requests::get_request(&pool, &request_id).await?;
 
@@ -60,12 +59,12 @@ pub async fn get_request(
         (status = 200, description = "Request data", body = Vec<SourceRequest>),
     ),
     params(
-        ("id" = Uuid, Path, description = "Request ID"),
+        ("id" = String, Path, description = "Request ID"),
     )
 )]
 pub async fn get_request_data(
     State(pool): State<PgPool>,
-    Path(request_id): Path<Uuid>,
+    Path(request_id): Path<String>,
 ) -> Result<impl IntoResponse> {
     let request_data = requests::get_request_source_requests(&pool, &request_id).await?;
 
