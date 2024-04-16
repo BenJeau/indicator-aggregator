@@ -1,10 +1,14 @@
 use sqlx::{PgExecutor, PgPool, Result};
 use tracing::instrument;
 
-use crate::schemas::{
-    ignore_lists::IgnoreList,
-    indicators::Indicator,
-    sources::{CreateSource, InternalRequest, Source, SourceCode, SourceKind, UpdateSource},
+use crate::{
+    schemas::{
+        ignore_lists::IgnoreList,
+        indicators::Indicator,
+        sources::{CreateSource, InternalRequest, Source, SourceCode, SourceKind, UpdateSource},
+        IdSlug,
+    },
+    slug::slugify,
 };
 
 #[instrument(skip(pool), err)]
@@ -15,6 +19,7 @@ pub async fn get_provider_sources(pool: &PgPool, provider_id: &str) -> Result<Ve
 created_at,
 updated_at,
 name,
+slug,
 description,
 url,
 favicon,
@@ -91,6 +96,7 @@ pub async fn get_sources(pool: &PgPool) -> Result<Vec<Source>> {
 created_at,
 updated_at,
 name,
+slug,
 description,
 url,
 favicon,
@@ -127,6 +133,7 @@ pub async fn get_supported_enabled_sources(
 sources.created_at,
 sources.updated_at,
 sources.name,
+sources.slug,
 sources.description,
 sources.url,
 sources.favicon,
@@ -158,44 +165,6 @@ ORDER BY name"#,
 }
 
 #[instrument(skip(pool), err)]
-pub async fn get_unsupported_indicator_sources(
-    pool: &PgPool,
-    indicator_kind: &str,
-) -> Result<Vec<String>> {
-    sqlx::query_scalar!(
-        r#"SELECT name FROM sources WHERE NOT ($1 = ANY(supported_indicators))"#,
-        indicator_kind
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(Into::into)
-}
-
-#[instrument(skip(pool), err)]
-pub async fn get_disabled_sources(pool: &PgPool) -> Result<Vec<String>> {
-    sqlx::query_scalar!(
-        r#"SELECT sources.name FROM sources LEFT JOIN providers ON providers.id = sources.provider_id WHERE sources.enabled = FALSE OR (providers IS NULL OR providers.enabled = FALSE) GROUP BY sources.name"#,
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(Into::into)
-}
-
-#[instrument(skip(pool), err)]
-pub async fn get_disabled_indicator_sources(
-    pool: &PgPool,
-    indicator_kind: &str,
-) -> Result<Vec<String>> {
-    sqlx::query_scalar!(
-        r#"SELECT name FROM sources WHERE ($1 = ANY(disabled_indicators))"#,
-        indicator_kind
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(Into::into)
-}
-
-#[instrument(skip(pool), err)]
 pub async fn get_source(pool: &PgPool, id: &str) -> Result<Source> {
     sqlx::query_as!(
         Source,
@@ -203,6 +172,7 @@ pub async fn get_source(pool: &PgPool, id: &str) -> Result<Source> {
 created_at,
 updated_at,
 name,
+slug,
 description,
 url,
 favicon,
@@ -299,14 +269,24 @@ pub async fn delete_source(pool: &PgPool, id: &str) -> Result<u64> {
         .map_err(Into::into)
 }
 
+#[instrument(skip(pool), ret, err)]
+pub async fn get_source_id_from_slug(pool: &PgPool, slug: &str) -> Result<Option<String>> {
+    sqlx::query_scalar!("SELECT id FROM sources WHERE slug = $1", slug)
+        .fetch_optional(pool)
+        .await
+        .map_err(Into::into)
+}
+
 #[instrument(skip(pool), err, ret)]
-pub async fn create_source(pool: &PgPool, data: &CreateSource) -> Result<String> {
-    sqlx::query_scalar!(
+pub async fn create_source(pool: &PgPool, data: &CreateSource) -> Result<IdSlug> {
+    sqlx::query_as!(
+        IdSlug,
         r#"
-INSERT INTO sources (name, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
-RETURNING id"#,
+INSERT INTO sources (name, slug, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+RETURNING id, slug"#,
         data.name,
+        slugify(&data.name),
         data.description,
         data.url,
         data.favicon,
@@ -336,27 +316,29 @@ pub async fn update_source(pool: &PgPool, id: &str, data: UpdateSource) -> Resul
     sqlx::query!(
         r#"UPDATE sources SET
 name = COALESCE($1, name),
-description = COALESCE($2, description),
-url = COALESCE($3, url),
-favicon = COALESCE($4, favicon),
-tags = COALESCE($5, tags),
-enabled = COALESCE($6, enabled),
-supported_indicators = COALESCE($7, supported_indicators),
-disabled_indicators = COALESCE($8, disabled_indicators),
-task_enabled = COALESCE($9, task_enabled),
-task_interval = COALESCE($10, task_interval),
-config = COALESCE($11, config),
-config_values = COALESCE($12, config_values),
-limit_enabled = COALESCE($13, limit_enabled),
-limit_count = COALESCE($14, limit_count),
-limit_interval = COALESCE($15, limit_interval),
-provider_id = COALESCE($16, provider_id),
-kind = COALESCE($17, kind),
-source_code = COALESCE($18, source_code),
-cache_enabled = COALESCE($19, cache_enabled),
-cache_interval = COALESCE($20, cache_interval)
-WHERE id = $21"#,
+slug = COALESCE($2, slug),
+description = COALESCE($3, description),
+url = COALESCE($4, url),
+favicon = COALESCE($5, favicon),
+tags = COALESCE($6, tags),
+enabled = COALESCE($7, enabled),
+supported_indicators = COALESCE($8, supported_indicators),
+disabled_indicators = COALESCE($9, disabled_indicators),
+task_enabled = COALESCE($10, task_enabled),
+task_interval = COALESCE($11, task_interval),
+config = COALESCE($12, config),
+config_values = COALESCE($13, config_values),
+limit_enabled = COALESCE($14, limit_enabled),
+limit_count = COALESCE($15, limit_count),
+limit_interval = COALESCE($16, limit_interval),
+provider_id = COALESCE($17, provider_id),
+kind = COALESCE($18, kind),
+source_code = COALESCE($19, source_code),
+cache_enabled = COALESCE($20, cache_enabled),
+cache_interval = COALESCE($21, cache_interval)
+WHERE id = $22"#,
         data.name,
+        data.name.as_ref().map(|n| slugify(&n)),
         data.description,
         data.url,
         data.favicon,

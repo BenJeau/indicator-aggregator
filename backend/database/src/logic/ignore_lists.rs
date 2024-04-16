@@ -168,6 +168,7 @@ pub async fn get_list_sources(pool: &PgPool, list_id: &str) -> Result<Vec<Source
 sources.created_at,
 sources.updated_at,
 sources.name,
+sources.slug,
 sources.description,
 sources.url,
 sources.favicon,

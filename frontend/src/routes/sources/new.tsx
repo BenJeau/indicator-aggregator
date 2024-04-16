@@ -18,7 +18,7 @@ const SourceNewComponent: React.FC = () => {
   const createSourceSecrets = usePutSourceSecretsMutation();
 
   const onSubmit = async (values: FormSchema) => {
-    const id = await createSource.mutateAsync({
+    const { id, slug } = await createSource.mutateAsync({
       ...values,
       kind: values.kind as SourceKind,
       config: [],
@@ -37,7 +37,7 @@ const SourceNewComponent: React.FC = () => {
     ]);
 
     toast.success("Source created");
-    navigate({ to: `/sources/$id`, params: { id } });
+    navigate({ to: `/sources/$slug`, params: { slug } });
   };
 
   return <SourceEditCreate onSubmit={onSubmit} name={search.name} />;

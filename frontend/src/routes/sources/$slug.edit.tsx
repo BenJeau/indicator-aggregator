@@ -7,6 +7,7 @@ import {
   sourceIgnoreListsQueryOptions,
   sourceQueryOptions,
   sourceSecretsQueryOptions,
+  sourceSlugQueryOptions,
   useDeleteSourceMutation,
   usePutSourceIgnoreListMutation,
   usePutSourceSecretsMutation,
@@ -16,8 +17,9 @@ import { SourceKind } from "@/types/backendTypes";
 
 const SourceEditComponent: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
 
+  const { data: id } = useSuspenseQuery(sourceSlugQueryOptions(slug));
   const source = useSuspenseQuery(sourceQueryOptions(id));
   const sourceIgnoreLists = useSuspenseQuery(sourceIgnoreListsQueryOptions(id));
   const sourceSecrets = useSuspenseQuery(sourceSecretsQueryOptions(id));
@@ -55,7 +57,7 @@ const SourceEditComponent: React.FC = () => {
       }),
     ]);
     toast.success("Source saved");
-    navigate({ to: "/sources/$id", params: { id } });
+    navigate({ to: "/sources/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
@@ -77,9 +79,15 @@ const SourceEditComponent: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/sources/$id/edit")({
+export const Route = createFileRoute("/sources/$slug/edit")({
   component: SourceEditComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const id = await queryClient.ensureQueryData(sourceSlugQueryOptions(slug));
+
+    if (!id) {
+      return;
+    }
+
     await Promise.all([
       queryClient.ensureQueryData(sourceQueryOptions(id)),
       queryClient.ensureQueryData(sourceIgnoreListsQueryOptions(id)),

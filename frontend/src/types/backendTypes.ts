@@ -375,6 +375,8 @@ export interface Source {
   updatedAt: NaiveDateTime;
   /** Name of the source */
   name: string;
+  /** URL friendly name of the provider */
+  slug: string;
   /** Description of the source */
   description: string;
   /** Documentation URL of the source */

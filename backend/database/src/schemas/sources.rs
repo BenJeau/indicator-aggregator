@@ -37,6 +37,8 @@ pub struct Source {
     pub updated_at: NaiveDateTime,
     /// Name of the source
     pub name: String,
+    /// URL friendly name of the provider
+    pub slug: String,
     /// Description of the source
     pub description: String,
     /// Documentation URL of the source

@@ -24,13 +24,13 @@ import { Route as ProvidersIndexImport } from "./routes/providers/index";
 import { Route as ListsIndexImport } from "./routes/lists/index";
 import { Route as HistoryIndexImport } from "./routes/history/index";
 import { Route as SourcesNewImport } from "./routes/sources/new";
-import { Route as SourcesIdImport } from "./routes/sources/$id";
+import { Route as SourcesSlugImport } from "./routes/sources/$slug";
 import { Route as ProvidersNewImport } from "./routes/providers/new";
 import { Route as ProvidersSlugImport } from "./routes/providers/$slug";
 import { Route as ListsNewImport } from "./routes/lists/new";
 import { Route as ListsSlugImport } from "./routes/lists/$slug";
 import { Route as HistoryIdImport } from "./routes/history/$id";
-import { Route as SourcesIdEditImport } from "./routes/sources/$id.edit";
+import { Route as SourcesSlugEditImport } from "./routes/sources/$slug.edit";
 import { Route as ProvidersSlugEditImport } from "./routes/providers/$slug.edit";
 import { Route as ListsSlugEditImport } from "./routes/lists/$slug.edit";
 
@@ -101,8 +101,8 @@ const SourcesNewRoute = SourcesNewImport.update({
   getParentRoute: () => SourcesRouteRoute,
 } as any);
 
-const SourcesIdRoute = SourcesIdImport.update({
-  path: "/$id",
+const SourcesSlugRoute = SourcesSlugImport.update({
+  path: "/$slug",
   getParentRoute: () => SourcesRouteRoute,
 } as any);
 
@@ -131,9 +131,9 @@ const HistoryIdRoute = HistoryIdImport.update({
   getParentRoute: () => HistoryRouteRoute,
 } as any);
 
-const SourcesIdEditRoute = SourcesIdEditImport.update({
+const SourcesSlugEditRoute = SourcesSlugEditImport.update({
   path: "/edit",
-  getParentRoute: () => SourcesIdRoute,
+  getParentRoute: () => SourcesSlugRoute,
 } as any);
 
 const ProvidersSlugEditRoute = ProvidersSlugEditImport.update({
@@ -202,8 +202,8 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ProvidersNewImport;
       parentRoute: typeof ProvidersRouteImport;
     };
-    "/sources/$id": {
-      preLoaderRoute: typeof SourcesIdImport;
+    "/sources/$slug": {
+      preLoaderRoute: typeof SourcesSlugImport;
       parentRoute: typeof SourcesRouteImport;
     };
     "/sources/new": {
@@ -234,9 +234,9 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ProvidersSlugEditImport;
       parentRoute: typeof ProvidersSlugImport;
     };
-    "/sources/$id/edit": {
-      preLoaderRoute: typeof SourcesIdEditImport;
-      parentRoute: typeof SourcesIdImport;
+    "/sources/$slug/edit": {
+      preLoaderRoute: typeof SourcesSlugEditImport;
+      parentRoute: typeof SourcesSlugImport;
     };
   }
 }
@@ -257,7 +257,7 @@ export const routeTree = rootRoute.addChildren([
     ProvidersIndexRoute,
   ]),
   SourcesRouteRoute.addChildren([
-    SourcesIdRoute.addChildren([SourcesIdEditRoute]),
+    SourcesSlugRoute.addChildren([SourcesSlugEditRoute]),
     SourcesNewRoute,
     SourcesIndexRoute,
   ]),

@@ -4,6 +4,7 @@ import { fetcher, queryClient } from "@/api";
 import {
   CreateSource,
   CreateSourceSecret,
+  IdSlug,
   IgnoreList,
   Request,
   Source,
@@ -25,6 +26,21 @@ export const sourcesQueryOptions = queryOptions({
     return data;
   },
 });
+
+export function sourceSlugQueryOptions<T>(slug: T) {
+  return queryOptions({
+    queryKey: ["sources", "slugs", slug],
+    queryFn: async ({ signal }) => {
+      if (!slug) {
+        return slug;
+      }
+
+      return await fetcher.get<string>(`/sources/slugs/${slug}`, {
+        signal,
+      });
+    },
+  });
+}
 
 export const sourceQueryOptions = (sourceId: string) =>
   queryOptions({
@@ -95,7 +111,7 @@ export const usePutSourceSecretsMutation = () =>
 export const useCreateSourceMutation = () =>
   useMutation({
     mutationFn: async (data: CreateSource) =>
-      await fetcher.post<string>("/sources", { data }),
+      await fetcher.post<IdSlug>("/sources", { data }),
     onSettled: async () =>
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["sources"] }),

@@ -10,7 +10,7 @@ import config from "@/config";
 import { sourceKindIconMapping } from "@/data";
 
 const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
-  data: { id, name, description, enabled, providerId, url, favicon, kind },
+  data: { slug, name, description, enabled, providerId, url, favicon, kind },
 }) => {
   const [imgHasError, setImgHasError] = useState(true);
 
@@ -18,8 +18,8 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
 
   return (
     <Link
-      to="/sources/$id"
-      params={{ id }}
+      to="/sources/$slug"
+      params={{ slug }}
       activeProps={{
         className: "bg-primary/10 border-primary shadow-primary/40",
       }}

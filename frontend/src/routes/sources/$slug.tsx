@@ -30,6 +30,7 @@ import {
   sourceQueryOptions,
   sourceRequestsQueryOptions,
   sourceSecretsQueryOptions,
+  sourceSlugQueryOptions,
 } from "@/api/sources";
 import { SectionPanelHeader } from "@/components/section-panel-header";
 import { Button } from "@/components/ui/button";
@@ -49,8 +50,9 @@ import { Editor } from "@/components/editor";
 import { cleanConfigValue } from "@/api/config";
 
 const SourceComponent: React.FC = () => {
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
 
+  const { data: id } = useSuspenseQuery(sourceSlugQueryOptions(slug));
   const source = useSuspenseQuery(sourceQueryOptions(id));
   const sourceIgnoreLists = useSuspenseQuery(sourceIgnoreListsQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
@@ -69,7 +71,7 @@ const SourceComponent: React.FC = () => {
 
   const matches = useMatches();
   const isEdit = useMemo(
-    () => matches.some((i) => i.routeId === "/sources/$id/edit"),
+    () => matches.some((i) => i.routeId === "/sources/$slug/edit"),
     [matches],
   );
 
@@ -105,7 +107,7 @@ const SourceComponent: React.FC = () => {
           </>
         }
         extra={
-          <Link to="/sources/$id/edit" params={{ id }}>
+          <Link to="/sources/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
               Edit
@@ -436,9 +438,15 @@ const SecretBadge: React.FC<SourceSecret> = ({ id, name, secretId }) => {
   );
 };
 
-export const Route = createFileRoute("/sources/$id")({
+export const Route = createFileRoute("/sources/$slug")({
   component: SourceComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
+  loader: async ({ context: { queryClient }, params: { slug } }) => {
+    const id = await queryClient.ensureQueryData(sourceSlugQueryOptions(slug));
+
+    if (!id) {
+      return;
+    }
+
     await Promise.all([
       async () => {
         const { providerId } = await queryClient.ensureQueryData(
