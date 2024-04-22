@@ -5,8 +5,8 @@ import { useState } from "react";
 import { secretsQueryOptions } from "@/api/secrets";
 import { configQueryOptions } from "@/api/config";
 import { Separator } from "@/components/ui/separator";
-import SecretsTable from "@/components/secrets-table";
-import GeneralServerConfig from "@/components/general-server-config";
+import { SecretsTable, GeneralServerConfig } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ConfigComponent: React.FC = () => {
   const secrets = useSuspenseQuery(secretsQueryOptions);
@@ -29,6 +29,7 @@ const ConfigComponent: React.FC = () => {
 
 export const Route = createFileRoute("/config")({
   component: ConfigComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient } }) =>
     await Promise.all([
       queryClient.ensureQueryData(secretsQueryOptions),

@@ -1,4 +1,3 @@
-import { FC } from "react";
 import MonacoEditor from "@monaco-editor/react";
 
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -47,7 +46,7 @@ const SourceKindLanguageMap: { [key in SourceKind]: string } = {
   [SourceKind.JavaScript]: "javascript",
 };
 
-export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
+const Editor: React.FC<Props> = ({ value, onChange, ...props }) => {
   const { computedTheme } = useTheme();
 
   const numberOfLines = value.split("\n").length;
@@ -77,3 +76,5 @@ export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
     />
   );
 };
+
+export default Editor;

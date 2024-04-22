@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 
-export const Empty: React.FC<Props> = ({
+const Empty: React.FC<Props> = ({
   title,
   description,
   image,
@@ -20,7 +20,7 @@ export const Empty: React.FC<Props> = ({
   <div
     className={cn(
       "flex flex-col gap-2 items-center justify-center flex-1 self-center justify-self-center p-4",
-      className,
+      className
     )}
   >
     {image && <img src={image} width={imageWidth} />}
@@ -31,3 +31,5 @@ export const Empty: React.FC<Props> = ({
     {extra}
   </div>
 );
+
+export default Empty;

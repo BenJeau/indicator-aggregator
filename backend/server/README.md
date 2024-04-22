@@ -45,7 +45,7 @@ make reset_db
 
 ## Configuration
 
-[Figment](https://docs.rs/figment/latest/figment/) is used to define the configuration of the service. Default values are set within the [config.toml](./config.toml) file and all fields can be overwritten using environment variables starting with `INDICATOR_AGGREGATOR__` and have sections in uppercase and separated with double underscores `__`. For example, to change the server port to `7890` via an environment variable, you would use `INDICATOR_AGGREGATOR__SERVER__HTTP__PORT=7890` as variable.
+[Figment](https://docs.rs/figment/latest/figment/) is used to define the configuration of the service. Default values are set within the [config.toml](./config.toml) file and all fields can be overwritten using environment variables starting with `IOCAGG_` and have sections in uppercase and separated with double underscores `__`. For example, to change the server port to `7890` via an environment variable, you would use `IOCAGG_SERVER_HTTP_PORT=7890` as variable.
 
 ### Sentry
 

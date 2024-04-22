@@ -1,3 +1,4 @@
+use std::net::SocketAddr;
 use tracing::info;
 
 use crate::{routes, ServerState};
@@ -17,7 +18,7 @@ impl RestServer {
 
         axum::serve(
             tokio::net::TcpListener::bind(addr).await?,
-            routes::router(self.0.clone()),
+            routes::router(self.0.clone()).into_make_service_with_connect_info::<SocketAddr>(),
         )
         .await?;
 

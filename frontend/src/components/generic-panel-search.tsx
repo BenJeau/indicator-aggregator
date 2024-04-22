@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/resizable";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Empty } from "@/components/empty";
+import { Empty } from "@/components";
 
 export interface ComponentSearchResultProps<T> {
   data: T;
@@ -60,7 +60,7 @@ function GenericPanelSearch<T>({
         minSize={30}
         className={cn(
           "shadow-md flex-1 flex-col h-full flex md:flex",
-          isDetailsView && "hidden",
+          isDetailsView && "hidden"
         )}
       >
         <div className="h-14 shadow bg-muted/25">

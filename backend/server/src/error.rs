@@ -21,6 +21,7 @@ pub enum Error {
     Unauthorized,
     Timeout,
     InternalError,
+    BadRequest,
     MissingSourceCode,
     RateLimited,
     FigmentError(figment::Error),
@@ -83,6 +84,23 @@ impl From<tonic::transport::Error> for Error {
 impl From<tonic::Status> for Error {
     fn from(error: tonic::Status) -> Self {
         Self::TonicStatus(error)
+    }
+}
+
+impl From<auth::error::Error> for Error {
+    fn from(error: auth::error::Error) -> Self {
+        error!(error=?error);
+        // TODO: do a better mapping
+
+        match error {
+            auth::error::Error::Database(err) => Self::SqlxError(err),
+            auth::error::Error::Unauthorized(_) => Self::Unauthorized,
+            auth::error::Error::MissingRoles(_) => Self::Unauthorized,
+            auth::error::Error::BadRequest(_) => Self::BadRequest,
+            auth::error::Error::SerdeJson(_) => Self::InternalError,
+            auth::error::Error::Reqwest(err) => Self::Reqwest(err),
+            auth::error::Error::Jsonwebtoken(_) => Self::InternalError,
+        }
     }
 }
 

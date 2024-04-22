@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { providersQueryOptions } from "@/api/providers";
-import ProviderSearchResult from "@/components/provider-search-result";
-import GenericPanelSearch from "@/components/generic-panel-search";
+import { GenericPanelSearch, SearchResults } from "@/components";
 
 const ProvidersComponent: React.FC = () => {
   const providers = useSuspenseQuery(providersQueryOptions);
@@ -16,7 +15,7 @@ const ProvidersComponent: React.FC = () => {
       }
       searchPlaceholder="Search providers..."
       createLinkTo="/providers/new"
-      Item={ProviderSearchResult}
+      Item={SearchResults.Provider}
       empty={{
         title: "No providers",
         description: "Create a new provider to get started",

@@ -39,6 +39,60 @@ $$;
 CREATE TYPE "source_kind" AS ENUM ('system', 'javascript', 'python');
 CREATE TYPE "server_config_kind" AS ENUM ('string', 'number', 'boolean', 'code');
 
+
+CREATE TABLE IF NOT EXISTS "users" (
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+
+    "auth_id" TEXT NOT NULL UNIQUE,
+    "provider" TEXT NOT NULL,
+    "enabled" BOOLEAN NOT NULL DEFAULT TRUE,
+    "email" TEXT NOT NULL,
+    "verified" BOOLEAN NOT NULL DEFAULT FALSE,
+    "name" TEXT NOT NULL,
+    "given_name" TEXT,
+    "family_name" TEXT,
+    "locale" TEXT,
+    "picture" BYTEA,
+    "roles" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+
+    CHECK (LENGTH("email") <= 1000),
+    UNIQUE ("email", "provider")
+);
+
+CREATE TABLE IF NOT EXISTS "user_logs" (
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+
+    "user_id" TEXT NOT NULL,
+    "ip_address" TEXT NOT NULL,
+    "user_agent" TEXT NOT NULL,
+    "uri" TEXT NOT NULL,
+    "method" TEXT NOT NULL,
+
+    FOREIGN KEY ("user_id") REFERENCES "users" ("auth_id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "login_requests" (
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+
+    "user_id" TEXT,
+
+    "nonce" TEXT NOT NULL,
+    "state_nonce" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "ip_address" TEXT NOT NULL,
+    "user_agent" TEXT NOT NULL,
+    "browser_state" TEXT,
+    "redirect_uri" TEXT NOT NULL,
+
+    FOREIGN KEY ("user_id") REFERENCES "users" ("auth_id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS "providers" (
     "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),

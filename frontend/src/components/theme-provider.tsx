@@ -1,3 +1,4 @@
+import { Computer, LucideIcon, Moon, Sun } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -11,12 +12,14 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
   computedTheme: "dark" | "light";
 };
 
 const initialState: ThemeProviderState = {
   theme: "system",
   setTheme: () => null,
+  toggleTheme: () => null,
   computedTheme: "dark",
 };
 
@@ -29,12 +32,10 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
+    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   );
   const [systemTheme, setSystemTheme] = useState<"light" | "dark">(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light",
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
   );
 
   window
@@ -67,6 +68,9 @@ export function ThemeProvider({
       setTheme(theme);
     },
     computedTheme: theme === "system" ? systemTheme : theme,
+    toggleTheme: () => {
+      setTheme(ThemeCycle[theme]);
+    },
   };
 
   return (
@@ -83,4 +87,16 @@ export const useTheme = () => {
     throw new Error("useTheme must be used within a ThemeProvider");
 
   return context;
+};
+
+export const ThemeCycle: { [key in Theme]: Theme } = {
+  dark: "light",
+  light: "system",
+  system: "dark",
+};
+
+export const ThemeIcon: { [key in Theme]: LucideIcon } = {
+  dark: Moon,
+  light: Sun,
+  system: Computer,
 };

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { SourceEditCreate, FormSchema } from "@/components/source-edit-create";
+import { Forms } from "@/components";
 import {
   useCreateSourceMutation,
   usePutSourceIgnoreListMutation,
@@ -17,7 +17,7 @@ const SourceNewComponent: React.FC = () => {
   const createSourceIgnoreList = usePutSourceIgnoreListMutation();
   const createSourceSecrets = usePutSourceSecretsMutation();
 
-  const onSubmit = async (values: FormSchema) => {
+  const onSubmit = async (values: Forms.SourceEditCreate.FormSchema) => {
     const { id, slug } = await createSource.mutateAsync({
       ...values,
       kind: values.kind as SourceKind,
@@ -40,7 +40,9 @@ const SourceNewComponent: React.FC = () => {
     navigate({ to: `/sources/$slug`, params: { slug } });
   };
 
-  return <SourceEditCreate onSubmit={onSubmit} name={search.name} />;
+  return (
+    <Forms.SourceEditCreate.default onSubmit={onSubmit} name={search.name} />
+  );
 };
 
 type SourceSearch = {

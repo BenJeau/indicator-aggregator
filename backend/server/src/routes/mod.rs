@@ -1,12 +1,14 @@
-use axum::Router;
+use axum::{middleware::from_fn_with_state, Router};
 use shared::tower::CommonTowerLayerBuilder;
 
 use crate::ServerState;
 
+pub mod auth;
 pub mod config;
 pub mod favicon;
 pub mod health;
 pub mod ignore_lists;
+mod middleware;
 pub mod notifications;
 mod openapi;
 pub mod providers;
@@ -16,6 +18,7 @@ pub mod secrets;
 pub mod server;
 pub mod sources;
 pub mod stats;
+pub mod users;
 
 pub fn router(state: ServerState) -> Router {
     let layers = CommonTowerLayerBuilder::new().build();
@@ -34,6 +37,12 @@ pub fn router(state: ServerState) -> Router {
             .nest("/secrets", secrets::router())
             .nest("/sources", sources::router())
             .nest("/stats", stats::router())
+            .nest("/users", users::router())
+            .route_layer(from_fn_with_state(
+                state.clone(),
+                middleware::auth_middleware,
+            ))
+            .nest("/auth", auth::router())
             .with_state(state),
     );
 

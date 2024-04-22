@@ -1,9 +1,9 @@
 [database]
-username = "admin"
-password = "admin"
 host = "localhost"
-port = 5432
 name = "indicator_aggregator"
+password = "admin"
+port = 5432
+username = "admin"
 
 [server.http]
 enabled = true
@@ -11,8 +11,25 @@ host = "0.0.0.0"
 port = 3456
 
 [encryption]
-server_key = "Wz=Z0!XUh%Ynp2B-L8_E#kDct+G3GC!$"
 db_key = "tj@e7uh--k.QCYdd!py7z3W_UERXEM3XDJrHeQLUuq-73.u4tRzo2cH9!JMx!GwnHPBDTorfjuYcJGir9q4.7CtYyRiYQ2X9-Ty3"
+server_key = "Wz=Z0!XUh%Ynp2B-L8_E#kDct+G3GC!$"
 
 [cache]
 # redis_url = "" # defaults to in memory if url not set
+
+[auth]
+frontend_redirect_hosts = ["127.0.0.1", "localhost"]
+frontend_redirect_path = "/auth"
+
+[auth.jwt]
+audience = "http://localhost:5173"
+expiration = 3600
+issuer = "http://localhost:3456"
+secret = "totally_super_secure_encrypted_password"
+
+[auth.google]
+openid_url = "https://accounts.google.com/.well-known/openid-configuration"
+redirect_uri = "http://localhost:3456/api/v1/auth/google/redirect"
+
+[auth.microsoft]
+redirect_uri = "http://localhost:3456/api/v1/auth/microsoft/redirect"

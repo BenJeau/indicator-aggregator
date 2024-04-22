@@ -4,7 +4,8 @@ import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { IgnoreList } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
-import { ComponentSearchResultProps } from "./generic-panel-search";
+
+import { ComponentSearchResultProps } from "../generic-panel-search";
 
 const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
   data: { slug, name, description, enabled, global },
@@ -40,7 +41,7 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
             "p-1",
             enabled
               ? "bg-green-500/20 hover:bg-green-500/20"
-              : "bg-red-500/20 hover:bg-red-500/20",
+              : "bg-red-500/20 hover:bg-red-500/20"
           )}
           variant="secondary"
         >

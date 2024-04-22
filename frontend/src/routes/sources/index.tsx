@@ -2,8 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { DatabaseZap, Plus } from "lucide-react";
 
 import EmptyImage from "@/assets/hiking-two-color-e83a0.svg";
-import { Empty } from "@/components/empty";
-import { SectionPanelHeader } from "@/components/section-panel-header";
+import { Empty, SectionPanelHeader } from "@/components";
 import { Button } from "@/components/ui/button";
 
 const SourceHomeComponent: React.FC = () => (

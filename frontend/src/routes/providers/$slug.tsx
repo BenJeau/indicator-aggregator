@@ -18,27 +18,28 @@ import {
   providerSlugQueryOptions,
   providerSourcesQueryOptions,
 } from "@/api/providers";
-import { Button } from "@/components/ui/button";
-import { SectionPanelHeader } from "@/components/section-panel-header";
-import { cn } from "@/lib/utils";
-import TitleEntryCount from "@/components/title-entry-count";
-import { Provider } from "@/types/backendTypes";
-import ListSearchResult from "@/components/list-search-result";
-import SourceSearchResult from "@/components/source-search-result";
-import FullBadge from "@/components/FullBadge";
 import { globalIgnoreListsQueryOptions } from "@/api/ignoreLists";
-import { dedupeListOnId } from "@/data";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  SectionPanelHeader,
+  SearchResults,
+  FullBadge,
+  TitleEntryCount,
+} from "@/components";
+import { cn } from "@/lib/utils";
+import { Provider } from "@/types/backendTypes";
+import { dedupeListOnId } from "@/data";
 
 const ProviderComponent: React.FC = () => {
   const { slug } = Route.useParams();
 
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
-    providerQueryOptions(id),
+    providerQueryOptions(id)
   ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
-    providerIgnoreListsQueryOptions(id),
+    providerIgnoreListsQueryOptions(id)
   );
   const providerSources = useSuspenseQuery(providerSourcesQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
@@ -51,7 +52,7 @@ const ProviderComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/providers/$slug/edit"),
-    [matches],
+    [matches]
   );
 
   const firstTag = provider.data.tags[0];
@@ -61,13 +62,13 @@ const ProviderComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "blur-sm pointer-events-none select-none opacity-20"
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              provider.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
+              provider.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -96,7 +97,7 @@ const ProviderComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
             )}
           >
             <div className="flex flex-wrap gap-2">
@@ -158,7 +159,7 @@ const ProviderComponent: React.FC = () => {
             </h2>
             <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
               {providerSources.data.map((source) => (
-                <SourceSearchResult key={source.id} data={source} />
+                <SearchResults.Source key={source.id} data={source} />
               ))}
             </div>
             {providerSources.data.length === 0 && (
@@ -170,7 +171,7 @@ const ProviderComponent: React.FC = () => {
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
-              <ListSearchResult key={ignoreList.id} data={ignoreList} />
+              <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
               <div className="text-xs italic opacity-50">
@@ -191,7 +192,7 @@ export const Route = createFileRoute("/providers/$slug")({
   component: ProviderComponent,
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      providerSlugQueryOptions(slug),
+      providerSlugQueryOptions(slug)
     );
 
     if (!id) {

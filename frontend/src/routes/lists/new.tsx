@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { FormSchema, ListEditCreate } from "@/components/list-edit-create";
+import { Forms } from "@/components";
 import {
   useIgnoreListCreate,
   useIgnoreListProvidersPut,
@@ -18,7 +18,7 @@ const ListsNewComponent: React.FC = () => {
   const putIgnoreListSources = useIgnoreListSourcesPut();
   const putIgnoreListEntries = useIgnoreListEntryPut();
 
-  const onSubmit = async (values: FormSchema) => {
+  const onSubmit = async (values: Forms.ListEditCreate.FormSchema) => {
     const { id, slug } = await ignoreListCreate.mutateAsync(values);
     await Promise.all([
       putIgnoreListProviders.mutateAsync({
@@ -41,7 +41,9 @@ const ListsNewComponent: React.FC = () => {
     navigate({ to: `/lists/$slug`, params: { slug } });
   };
 
-  return <ListEditCreate onSubmit={onSubmit} name={search.name} />;
+  return (
+    <Forms.ListEditCreate.default onSubmit={onSubmit} name={search.name} />
+  );
 };
 
 type IgnoreListSearch = {

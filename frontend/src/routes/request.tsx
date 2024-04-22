@@ -4,20 +4,20 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { IndicatorKind } from "@/types/backendTypes";
 import { sourcesQueryOptions } from "@/api/sources";
-import RequestDataView from "@/components/request-data-view";
-import RequestForm, { RequestFormRef } from "@/components/request-form";
+import { RequestDataView, Forms } from "@/components";
 import { ModifiedRequest, useRequest } from "@/api/requests";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const RequestComponent: React.FC = () => {
   const search = Route.useSearch();
   const navigate = useNavigate();
 
-  const ref = useRef<RequestFormRef>(null);
+  const ref = useRef<Forms.RequestForm.Ref>(null);
 
   const sources = useSuspenseQuery(sourcesQueryOptions);
 
   const [mutationData, setMutationData] = useState<ModifiedRequest | undefined>(
-    undefined,
+    undefined
   );
 
   const request = useRequest(mutationData);
@@ -34,7 +34,7 @@ const RequestComponent: React.FC = () => {
     if (search.kind !== undefined && search.kind in IndicatorKind) {
       ref.current?.form?.setValue(
         "indicatorKind",
-        search.kind as IndicatorKind,
+        search.kind as IndicatorKind
       );
     } else {
       ref.current?.form?.resetField("indicatorKind");
@@ -57,7 +57,7 @@ const RequestComponent: React.FC = () => {
       if (search.kind in IndicatorKind) {
         ref.current?.form?.setValue(
           "indicatorKind",
-          search.kind as IndicatorKind,
+          search.kind as IndicatorKind
         );
       }
 
@@ -85,7 +85,7 @@ const RequestComponent: React.FC = () => {
 
   return (
     <div className="relative flex flex-1 flex-col">
-      <RequestForm
+      <Forms.RequestForm.default
         ref={ref}
         sources={sources.data}
         canSubmit={!request.isFetching}
@@ -107,6 +107,7 @@ type IndicatorRequest = {
 
 export const Route = createFileRoute("/request")({
   component: RequestComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: IndicatorRequest): IndicatorRequest => search,
   loader: async ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(sourcesQueryOptions),

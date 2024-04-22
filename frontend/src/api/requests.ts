@@ -1,4 +1,8 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { QueryKey, queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  fetchEventSource,
+  EventSourceMessage,
+} from "@microsoft/fetch-event-source";
 
 import { fetcher, queryClient } from "@/api";
 import {
@@ -13,6 +17,8 @@ import {
   DataCache,
 } from "@/types/backendTypes";
 import config from "@/config";
+import { store } from "@/atoms";
+import { userAtom } from "@/atoms/auth";
 
 export interface ReqestSSEData {
   source: DataSource;
@@ -45,9 +51,6 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
           resolve({});
         }
 
-        const url = new URL(
-          `${config.rest_server_base_url}/requests/execute/sse`,
-        );
         const searchParamParts: string[] = [
           `data=${request!.data}`,
           `kind=${request!.kind}`,
@@ -55,70 +58,32 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
         for (const source of request?.sources ?? []) {
           searchParamParts.push(`sources=${source.id}`);
         }
-        url.search = searchParamParts.join("&");
 
-        const sse = new EventSource(url);
+        const token = store.get(userAtom)!.token;
 
-        sse.onerror = (event) => {
-          sse.close();
-          reject(event);
-        };
-
-        sse.onopen = () => {
-          queryClient.invalidateQueries({ queryKey: ["stats", "count"] });
-        };
-
-        sse.addEventListener("fetching_start", (event) => {
-          const data = JSON.parse(event.data) as SseStartData[];
-
-          const newData = data.reduce(
-            (acc, { source, hasSourceCode }) => ({
-              ...acc,
-              requestId: event.lastEventId,
-              data: {
-                ...(acc?.data ?? {}),
-                [source.id]: {
-                  source,
-                  hasSourceCode,
-                  errors: [],
-                },
-              },
-            }),
-            {} as RequestData,
-          );
-
-          queryClient.setQueryData<RequestData>(queryKey, () => newData);
-        });
-
-        sse.addEventListener("fetching_error", (event) => {
-          const errors = JSON.parse(event.data) as SourceError[];
-
-          queryClient.setQueryData<RequestData>(queryKey, (oldData) => ({
-            ...(oldData ?? {}),
-            data: {
-              ...(oldData?.data ?? {}),
-              [event.lastEventId]: {
-                ...(oldData?.data ?? {})[event.lastEventId],
-                errors,
-              },
+        fetchEventSource(
+          `${config.rest_server_base_url}/requests/execute/sse?${searchParamParts.join("&")}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-          }));
-        });
-
-        sse.addEventListener("fetching_data", (event) => {
-          const doneData = JSON.parse(event.data) as SseDoneData;
-
-          queryClient.setQueryData<RequestData>(queryKey, (oldData) => ({
-            ...(oldData ?? {}),
-            data: {
-              ...(oldData?.data ?? {}),
-              [event.lastEventId]: {
-                ...(oldData?.data ?? {})[event.lastEventId],
-                ...doneData,
-              },
+            onerror: (event) => {
+              reject(event);
             },
-          }));
-        });
+            onopen: async () => {
+              queryClient.invalidateQueries({ queryKey: ["stats", "count"] });
+            },
+            onmessage: async (event) => {
+              if (event.event === "fetching_start") {
+                handleFetchingStart(event, queryKey);
+              } else if (event.event === "fetching_error") {
+                handleFetchingError(event, queryKey);
+              } else if (event.event === "fetching_data") {
+                handleFetchingData(event, queryKey);
+              }
+            },
+          }
+        );
       }),
   });
 
@@ -154,3 +119,55 @@ export const requestDataQueryOptions = (requestId: string) =>
         signal,
       }),
   });
+
+const handleFetchingData = (event: EventSourceMessage, queryKey: QueryKey) => {
+  const doneData = JSON.parse(event.data) as SseDoneData;
+
+  queryClient.setQueryData<RequestData>(queryKey, (oldData) => ({
+    ...(oldData ?? {}),
+    data: {
+      ...(oldData?.data ?? {}),
+      [event.id]: {
+        ...(oldData?.data ?? {})[event.id],
+        ...doneData,
+      },
+    },
+  }));
+};
+
+const handleFetchingError = (event: EventSourceMessage, queryKey: QueryKey) => {
+  const errors = JSON.parse(event.data) as SourceError[];
+
+  queryClient.setQueryData<RequestData>(queryKey, (oldData) => ({
+    ...(oldData ?? {}),
+    data: {
+      ...(oldData?.data ?? {}),
+      [event.id]: {
+        ...(oldData?.data ?? {})[event.id],
+        errors,
+      },
+    },
+  }));
+};
+
+const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
+  const data = JSON.parse(event.data) as SseStartData[];
+
+  const newData = data.reduce(
+    (acc, { source, hasSourceCode }) => ({
+      ...acc,
+      requestId: event.id,
+      data: {
+        ...(acc?.data ?? {}),
+        [source.id]: {
+          source,
+          hasSourceCode,
+          errors: [],
+        },
+      },
+    }),
+    {} as RequestData
+  );
+
+  queryClient.setQueryData<RequestData>(queryKey, () => newData);
+};

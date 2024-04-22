@@ -96,12 +96,12 @@ const rainbowColors = [
 
 const numSeparations = 3;
 const areaColors = Array.from({ length: numSeparations }, (_, i) =>
-  rainbowColors.filter((_, j) => j % numSeparations === i),
+  rainbowColors.filter((_, j) => j % numSeparations === i)
 )
   .flat()
   .reverse();
 
-const ChartDynamic: React.FC<ChartDynamicProps> = ({
+const StackedAreaChart: React.FC<ChartDynamicProps> = ({
   data,
   title,
   className,
@@ -111,7 +111,7 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
     return data.reduce((acc, curr) => {
       const ids = curr.data.reduce(
         (acc, i) => ({ ...acc, [i.id ?? "null"]: i.name ?? "no provider" }),
-        {},
+        {}
       );
       return {
         ...acc,
@@ -124,7 +124,7 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
     original: i,
     data: Object.entries(areas).reduce((acc, [id, name]) => {
       const found = i.data.find(
-        (j) => j.id === id || (j.id === null && id === "null"),
+        (j) => j.id === id || (j.id === null && id === "null")
       );
       return {
         ...acc,
@@ -136,7 +136,7 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
 
   const [hideAreas, setHideAreas] = useState(new Set<string>());
   const [hoveredAread, setHoveredArea] = useState<string | undefined>(
-    undefined,
+    undefined
   );
 
   const selectLegend = (e: Payload) => {
@@ -159,7 +159,7 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
     <div
       className={cn(
         "border rounded-xl shadow-sm p-4 w-full text-sm gap-4 flex flex-col",
-        className,
+        className
       )}
     >
       <div className="flex justify-between gap-2">
@@ -178,7 +178,7 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
           <Button
             onClick={() =>
               setHideAreas(
-                new Set(Object.keys(areas).map((i) => `data.${i}.count`)),
+                new Set(Object.keys(areas).map((i) => `data.${i}.count`))
               )
             }
             className="gap-2"
@@ -250,4 +250,4 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
   );
 };
 
-export default ChartDynamic;
+export default StackedAreaChart;

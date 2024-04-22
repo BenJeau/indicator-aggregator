@@ -2,6 +2,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import config from "@/config";
+import { store } from "@/atoms";
+import { userAtom } from "@/atoms/auth";
 
 type GenericOptions = {
   params?: unknown;
@@ -17,11 +19,14 @@ type DataOptions = GenericOptions & {
 const axiosKiller = async <T>(
   endpoint: string,
   method: "POST" | "GET" | "PATCH" | "DELETE" | "PUT",
-  options?: DataOptions,
+  options?: DataOptions
 ) => {
+  const token = store.get(userAtom)?.token;
+
   const headers = {
     ...(options?.data ? { "Content-Type": "application/json" } : {}),
     ...(options?.headers ?? {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   const body = options?.data

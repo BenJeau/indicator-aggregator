@@ -8,8 +8,7 @@ import {
   requestDataQueryOptions,
   requestQueryOptions,
 } from "@/api/requests";
-import RequestDataView from "@/components/request-data-view";
-import { SectionPanelHeader } from "@/components/section-panel-header";
+import { SectionPanelHeader, RequestDataView } from "@/components";
 import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Badge } from "@/components/ui/badge";
@@ -75,7 +74,7 @@ const HistoryComponent: React.FC = () => {
             };
             return acc;
           },
-          {} as { [key: string]: ReqestSSEData },
+          {} as { [key: string]: ReqestSSEData }
         )}
       />
     </>

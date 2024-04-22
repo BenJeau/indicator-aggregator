@@ -43,17 +43,17 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;
 
-export interface RequestFormRef {
+export interface Ref {
   form: ReturnType<typeof useForm<FormSchema>> | null;
 }
 
-const RequestForm = forwardRef<RequestFormRef, Props>(
+const RequestForm = forwardRef<Ref, Props>(
   ({ sources = [], canSubmit = true }, ref) => {
     const navigate = useNavigate();
 
@@ -128,7 +128,7 @@ const RequestForm = forwardRef<RequestFormRef, Props>(
                   const availableSources =
                     sources.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id),
+                        !field.value.some((source) => source.id === id)
                     ) || [];
 
                   return (
@@ -139,7 +139,7 @@ const RequestForm = forwardRef<RequestFormRef, Props>(
                           <Select
                             onValueChange={(name) => {
                               const id = sources.find(
-                                ({ name: sourceName }) => sourceName === name,
+                                ({ name: sourceName }) => sourceName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -168,8 +168,8 @@ const RequestForm = forwardRef<RequestFormRef, Props>(
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -263,7 +263,7 @@ const RequestForm = forwardRef<RequestFormRef, Props>(
         </form>
       </Form>
     );
-  },
+  }
 );
 
 export default RequestForm;

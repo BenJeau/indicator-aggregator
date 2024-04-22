@@ -15,7 +15,7 @@ interface Props extends Omit<CalendarProps, "selected" | "mode"> {
   buttonClassName?: string;
 }
 
-export const DatePicker: React.FC<Props> = (props) => (
+const DatePicker: React.FC<Props> = (props) => (
   <Popover>
     <PopoverTrigger asChild>
       <Button
@@ -23,7 +23,7 @@ export const DatePicker: React.FC<Props> = (props) => (
         className={cn(
           "w-full justify-start text-left font-normal relative",
           !props.selected && "text-muted-foreground",
-          props.buttonClassName,
+          props.buttonClassName
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -53,3 +53,5 @@ export const DatePicker: React.FC<Props> = (props) => (
     </PopoverContent>
   </Popover>
 );
+
+export default DatePicker;

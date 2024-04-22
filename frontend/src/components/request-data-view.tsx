@@ -6,9 +6,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ReqestSSEData } from "@/api/requests";
-import { Empty } from "@/components/empty";
+import { Empty, TitleEntryCount } from "@/components";
 import { Source } from "@/components/sources";
-import TitleEntryCount from "@/components/title-entry-count";
 import WaitingImage from "@/assets/day-dreaming-two-color.svg";
 import LoadingImage from "@/assets/waiter-two-color.svg";
 import { Badge } from "@/components/ui/badge";
@@ -24,15 +23,15 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
       const allSources = Object.values(data ?? {});
 
       const missingSourceCode = allSources.filter(
-        (data) => !data.hasSourceCode,
+        (data) => !data.hasSourceCode
       );
       const withSourceCode = allSources.filter((data) => data.hasSourceCode);
 
       const sourceWithErrors = withSourceCode.filter(
-        (data) => data.errors.length > 0,
+        (data) => data.errors.length > 0
       );
       const sourceWithoutErrors = withSourceCode.filter(
-        (data) => data.errors.length === 0,
+        (data) => data.errors.length === 0
       );
 
       const sortSoures = (a: ReqestSSEData, b: ReqestSSEData) =>
@@ -67,22 +66,22 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
   ];
 
   const disabledIndicator = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "DISABLED_INDICATOR"),
+    data.errors.some((error) => error.kind === "DISABLED_INDICATOR")
   );
   const disabledSource = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "SOURCE_DISABLED"),
+    data.errors.some((error) => error.kind === "SOURCE_DISABLED")
   );
   const disabledProvider = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "PROVIDER_DISABLED"),
+    data.errors.some((error) => error.kind === "PROVIDER_DISABLED")
   );
   const unsupportedIndicator = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "UNSUPPORTED_INDICATOR"),
+    data.errors.some((error) => error.kind === "UNSUPPORTED_INDICATOR")
   );
   const whitelistedIndicator = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "WITHIN_IGNORE_LIST"),
+    data.errors.some((error) => error.kind === "WITHIN_IGNORE_LIST")
   );
   const missingSecrets = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "MISSING_SECRET"),
+    data.errors.some((error) => error.kind === "MISSING_SECRET")
   );
 
   return (

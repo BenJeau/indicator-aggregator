@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { DataTable } from "@/components/data-table";
+import { DataTable } from "@/components";
 import { SourceProps } from "@/components/sources";
 import { Button } from "@/components/ui/button";
 

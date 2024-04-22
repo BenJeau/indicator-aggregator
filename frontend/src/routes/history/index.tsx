@@ -2,8 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Send } from "lucide-react";
 
 import EmptyImage from "@/assets/network-two-color-c4988.svg";
-import { SectionPanelHeader } from "@/components/section-panel-header";
-import { Empty } from "@/components/empty";
+import { SectionPanelHeader, Empty } from "@/components";
 import { Button } from "@/components/ui/button";
 
 const HistoryHomeComponent: React.FC = () => (

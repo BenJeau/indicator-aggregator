@@ -32,7 +32,7 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "w-6 h-6 rounded border shadow",
-                imgHasError && "hidden",
+                imgHasError && "hidden"
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
@@ -62,7 +62,7 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
               "p-1",
               enabled
                 ? "bg-green-500/20 hover:bg-green-500/20"
-                : "bg-red-500/20 hover:bg-red-500/20",
+                : "bg-red-500/20 hover:bg-red-500/20"
             )}
             variant="secondary"
           >

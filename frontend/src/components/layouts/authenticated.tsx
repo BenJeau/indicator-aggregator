@@ -5,12 +5,9 @@ import {
   ChevronsRight,
   Database,
   LogOut,
-  Moon,
   ScrollText,
   Send,
   TrainFront,
-  Sun,
-  Computer,
   Cog,
   Globe,
   HelpCircle,
@@ -19,15 +16,15 @@ import {
   GanttChart,
   History,
 } from "lucide-react";
-import { useRouterState, Link } from "@tanstack/react-router";
+import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
+import { useAtomValue } from "jotai";
 
-import { Nav } from "@/components/nav";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTheme } from "@/components/theme-provider";
+import { ThemeCycle, ThemeIcon, useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { statsCountQueryOptions } from "@/api/stats";
 import {
@@ -38,12 +35,11 @@ import {
 } from "@/components/ui/popover";
 import TitleEntryCount from "@/components/title-entry-count";
 import { notificationsQueryOptions } from "@/api/notifications";
-import { Empty } from "@/components/empty";
+import { Empty, Nav } from "@/components";
 import NotifcationEmpty from "@/assets/resting-two-color.svg";
 import config from "@/config";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
-
-interface MailProps extends React.PropsWithChildren {}
+import { userAtom } from "@/atoms/auth";
 
 type Page =
   | "home"
@@ -78,11 +74,12 @@ const PageTitle: { [key in Page]: string } = {
   lists: "Ignore lists",
 };
 
-export function Layout({ children }: MailProps) {
+export const Layout: React.FC = () => {
   const [isButtonCollapsed, setIsButtonCollapsed] = useState(false);
   const { location } = useRouterState();
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const windowWidth = useWindowWidth();
+  const auth = useAtomValue(userAtom);
 
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const notifications = useSuspenseQuery(notificationsQueryOptions);
@@ -117,7 +114,7 @@ export function Layout({ children }: MailProps) {
       <div
         className={cn(
           "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out",
-          isCollapsed && "w-14 min-w-14",
+          isCollapsed && "w-14 min-w-14"
         )}
       >
         <div>
@@ -127,7 +124,7 @@ export function Layout({ children }: MailProps) {
               "bg-primary/20 text-primary hover:bg-primary/10 flex h-[52px] items-center gap-2 whitespace-nowrap font-medium transition-all",
               isCollapsed ? "justify-center" : "px-4",
               page === "home" &&
-                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white",
+                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white"
             )}
             disabled={page === "home"}
           >
@@ -251,22 +248,14 @@ export function Layout({ children }: MailProps) {
                     : theme === "light"
                       ? "System theme"
                       : "Dark theme",
-                icon:
-                  theme === "dark" ? Sun : theme === "light" ? Computer : Moon,
-                onClick: () => {
-                  if (theme === "dark") {
-                    setTheme("light");
-                  } else if (theme === "light") {
-                    setTheme("system");
-                  } else {
-                    setTheme("dark");
-                  }
-                },
+                icon: ThemeIcon[ThemeCycle[theme]],
+                onClick: toggleTheme,
               },
               {
                 title: "Logout",
                 icon: LogOut,
-                to: ".",
+                to: "/logout",
+                preload: false,
               },
             ]}
           />
@@ -274,20 +263,20 @@ export function Layout({ children }: MailProps) {
           <div
             className={cn(
               "bg-muted/50 flex  items-center gap-2 py-4",
-              isCollapsed ? "justify-center" : "px-4",
+              isCollapsed ? "justify-center" : "px-4"
             )}
           >
             <Avatar className="border">
               <AvatarImage alt="@shadcn" />
-              <AvatarFallback>BJ</AvatarFallback>
+              <AvatarFallback>
+                {auth!.givenName[0] + auth!.familyName[0]}
+              </AvatarFallback>
             </Avatar>
             <div className={cn("flex flex-col", isCollapsed && "hidden")}>
               <span className="block whitespace-nowrap font-semibold">
-                John Doe
+                {auth?.name}
               </span>
-              <span className="block text-xs opacity-70">
-                john.doe@example.com
-              </span>
+              <span className="block text-xs opacity-70">{auth?.email}</span>
             </div>
           </div>
         </div>
@@ -296,7 +285,7 @@ export function Layout({ children }: MailProps) {
       <div
         className={cn(
           "flex h-full flex-col",
-          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]",
+          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]"
         )}
       >
         <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">
@@ -400,9 +389,9 @@ export function Layout({ children }: MailProps) {
         </div>
         <Separator />
         <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
-          {children}
+          <Outlet />
         </div>
       </div>
     </div>
   );
-}
+};

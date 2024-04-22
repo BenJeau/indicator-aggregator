@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import GenericPanelSearch from "@/components/generic-panel-search";
+import { GenericPanelSearch, SearchResults } from "@/components";
 import { ignoreListsQueryOptions } from "@/api/ignoreLists";
-import ListSearchResult from "@/components/list-search-result";
 
 const ListsComponent: React.FC = () => {
   const sources = useSuspenseQuery(ignoreListsQueryOptions);
@@ -16,7 +15,7 @@ const ListsComponent: React.FC = () => {
       }
       searchPlaceholder="Search ignore lists..."
       createLinkTo="/lists/new"
-      Item={ListSearchResult}
+      Item={SearchResults.List}
       empty={{
         title: "No ignore lists",
         description: "Create a new ignore list to get started",

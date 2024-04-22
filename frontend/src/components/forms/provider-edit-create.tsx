@@ -1,13 +1,14 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Plus, Power, Save, Trash, Trash2 } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { Plus, Power, Save, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { IgnoreList, IndicatorKind } from "@/types/backendTypes";
-import { SectionPanelHeader } from "@/components/section-panel-header";
+import { Provider } from "@/types/backendTypes";
+import { SectionPanelHeader } from "@/components";
 import {
   Form,
   FormControl,
@@ -37,117 +38,98 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { sourcesQueryOptions } from "@/api/sources";
-import { Link } from "@tanstack/react-router";
-import { providersQueryOptions } from "@/api/providers";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import {
-  TableHeader,
-  Table,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
+import { ignoreListsQueryOptions } from "@/api/ignoreLists";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   description: z.string().max(500),
+  url: z.string().url(),
+  favicon: z
+    .string()
+    .nullish()
+    .transform((x) => x ?? undefined),
+  tags: z.array(z.string()),
   enabled: z.boolean(),
-  global: z.boolean(),
   sources: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
-  providers: z.array(
+  ignoreLists: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
-  ),
-  entries: z.array(
-    z.object({
-      data: z.string().min(1),
-      indicatorKind: z.string().min(1),
-    }),
+    })
   ),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;
 
-type ExtraListProps = {
-  list: IgnoreList;
+type ExtraProviderProps = {
+  provider: Provider;
+  ignoreLists: {
+    id: string;
+    name: string;
+  }[];
   sources: {
     id: string;
     name: string;
-  }[];
-  providers: {
-    id: string;
-    name: string;
-  }[];
-  entries: {
-    data: string;
-    indicatorKind: string;
   }[];
   onDelete: () => void;
   name?: undefined;
 };
 
-type WithoutListProps = {
-  list?: undefined;
+type WithoutProviderProps = {
+  provider?: undefined;
+  ignoreLists?: undefined;
   sources?: undefined;
-  providers?: undefined;
-  entries?: undefined;
   onDelete?: undefined;
   name?: string;
 };
 
 type Props = {
   onSubmit: (data: FormSchema) => void;
-} & (ExtraListProps | WithoutListProps);
+} & (ExtraProviderProps | WithoutProviderProps);
 
-export const ListEditCreate: React.FC<Props> = ({
-  list,
+const ProviderEditCreate: React.FC<Props> = ({
+  provider,
+  ignoreLists = [],
   sources = [],
-  providers = [],
-  entries = [{ data: "", indicatorKind: "" }],
   onSubmit,
   onDelete,
   ...props
 }) => {
-  const defaultValues = useCallback(
-    () => ({
-      name: props.name ?? "",
-      description: "",
-      enabled: true,
-      global: false,
-      sources,
-      providers,
-      entries: [...entries],
-      ...list,
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: defaultValues(),
+    defaultValues: {
+      name: props.name ?? "",
+      description: "",
+      url: "",
+      tags: [],
+      enabled: true,
+      ignoreLists,
+      sources,
+      ...provider,
+    },
   });
 
   useEffect(() => {
-    form.reset(defaultValues());
-  }, [form, defaultValues]);
+    if (props.name) {
+      form.setValue("name", props.name);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.name]);
 
-  const entryFormFields = useFieldArray({
-    control: form.control,
-    name: "entries",
-  });
+  useEffect(() => {
+    form.reset(provider);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider]);
 
-  const listSources = useQuery(sourcesQueryOptions);
-  const listProviders = useQuery(providersQueryOptions);
+  const [newTag, setNewTag] = useState("");
+
+  const providerSources = useQuery(sourcesQueryOptions);
+  const providerIgnoreLists = useQuery(ignoreListsQueryOptions);
 
   return (
     <Form {...form}>
@@ -169,7 +151,7 @@ export const ListEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
+                        field.value ? "bg-green-500" : "bg-red-500"
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -235,7 +217,7 @@ export const ListEditCreate: React.FC<Props> = ({
                   Cancel
                 </Button>
               </Link>
-              {list && (
+              {provider && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm" className="gap-2">
@@ -247,8 +229,9 @@ export const ListEditCreate: React.FC<Props> = ({
                       <DialogTitle>Are you absolutely sure?</DialogTitle>
                       <DialogDescription>
                         This action cannot be undone. This will permanently{" "}
-                        <span className="font-semibold">{list.name}</span> as an
-                        ignore list.
+                        <span className="font-semibold">{provider.name}</span>{" "}
+                        as a provider, linked sources will simple not have a
+                        provider anymore.
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -277,37 +260,153 @@ export const ListEditCreate: React.FC<Props> = ({
           <div className="flex flex-col gap-2 p-4">
             <FormField
               control={form.control}
-              name="global"
+              name="tags"
               render={({ field }) => (
                 <FormItem className="text-sm">
+                  <FormLabel className="text-xs">Tags</FormLabel>
                   <FormControl>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        ref={field.ref}
-                        id={field.name}
-                        onBlur={field.onBlur}
-                        name={field.name}
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                      <Label htmlFor={field.name} className="text-xs">
-                        Enable ignore list globally for all sources
-                      </Label>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <Input
+                          className="h-8 flex-1"
+                          placeholder="e.g. threat-intelligence"
+                          value={newTag}
+                          onChange={(e) => setNewTag(e.target.value)}
+                        />
+                        <Button
+                          className="gap-2"
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            if (newTag.length > 0) {
+                              field.onChange([...field.value, newTag]);
+                              setNewTag("");
+                            }
+                          }}
+                        >
+                          <Plus size={16} />
+                          Add tag
+                        </Button>
+                      </div>
+                      <div className="flex gap-2">
+                        {field.value.map((tag, index) => (
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="gap-2"
+                          >
+                            <button
+                              onClick={() => {
+                                field.onChange(
+                                  field.value.filter((_, i) => i !== index)
+                                );
+                              }}
+                              type="button"
+                            >
+                              <Trash size={12} strokeWidth={2.5} />
+                            </button>
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="mt-2 flex gap-2">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem className="text-sm">
+                    <FormLabel className="text-xs">URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-8"
+                        placeholder="e.g. https://abuse.ch"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="favicon"
+                render={({ field }) => (
+                  <FormItem className="text-sm">
+                    <FormLabel className="text-xs">Favicon</FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2">
+                        <img
+                          src={field.value ?? undefined}
+                          alt="favicon"
+                          style={{ imageRendering: "pixelated" }}
+                          className={cn(
+                            "h-8 w-8 rounded border shadow",
+                            !field.value && "hidden"
+                          )}
+                        />
+                        <div className="relative flex flex-1">
+                          <Input
+                            className="absolute bottom-0 left-0 right-0 top-0 h-8 opacity-0"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+
+                              if (file && file.size < 1024 * 1024) {
+                                const reader = new FileReader();
+                                reader.onloadend = () => {
+                                  form.setValue(
+                                    "favicon",
+                                    reader.result?.toString()
+                                  );
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                          <Input
+                            className="h-8 flex-1"
+                            placeholder={
+                              field.value
+                                ? "Change favicon"
+                                : "Upload a favicon image, will use URL's favicon if not provided"
+                            }
+                          />
+                        </div>
+                        <Button
+                          variant="destructive"
+                          type="button"
+                          className={cn(
+                            "h-8 w-8 p-0",
+                            !field.value && "hidden"
+                          )}
+                          onClick={() => field.onChange("")}
+                        >
+                          <Trash size={16} />
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="sources"
                 render={({ field }) => {
                   const availableSources =
-                    listSources.data?.filter(
+                    providerSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id),
+                        !field.value.some((source) => source.id === id)
                     ) || [];
 
                   return (
@@ -317,8 +416,8 @@ export const ListEditCreate: React.FC<Props> = ({
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
-                              const id = listSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name,
+                              const id = providerSources.data?.find(
+                                ({ name: sourceName }) => sourceName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -347,8 +446,8 @@ export const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -368,34 +467,34 @@ export const ListEditCreate: React.FC<Props> = ({
               />
               <FormField
                 control={form.control}
-                name="providers"
+                name="ignoreLists"
                 render={({ field }) => {
-                  const availableProviders =
-                    listProviders.data?.filter(
+                  const availableIgnoreLists =
+                    providerIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Providers</FormLabel>
+                      <FormLabel className="text-xs">Ignore lists</FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
-                              const id = listProviders.data?.find(
-                                ({ name: listName }) => listName === name,
+                              const id = providerIgnoreLists.data?.find(
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
                             value=""
-                            disabled={availableProviders.length === 0}
+                            disabled={availableIgnoreLists.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a provider" />
+                              <SelectValue placeholder="Select an ignore list" />
                             </SelectTrigger>
                             <SelectContent>
-                              {availableProviders.map(({ id, name }) => (
+                              {availableIgnoreLists.map(({ id, name }) => (
                                 <SelectItem key={id} value={name}>
                                   {name}
                                 </SelectItem>
@@ -413,8 +512,8 @@ export const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -433,115 +532,11 @@ export const ListEditCreate: React.FC<Props> = ({
                 }}
               />
             </div>
-
-            <FormItem className="text-sm">
-              <FormLabel className="text-xs">Entries</FormLabel>
-              <FormControl>
-                <div className="flex flex-col gap-2">
-                  <div className="rounded-md border">
-                    <Table className="table-fixed">
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Data</TableHead>
-                          <TableHead>Kind</TableHead>
-                          <TableHead style={{ width: 50 }}></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {entryFormFields.fields.length ? (
-                          entryFormFields.fields.map((row, index) => (
-                            <TableRow key={row.id}>
-                              <TableCell>
-                                <FormField
-                                  control={form.control}
-                                  name={`entries.${index}.data`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input
-                                          className="bg-foreground/10 h-7 rounded-sm text-xs"
-                                          {...field}
-                                        />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </TableCell>
-                              <TableCell>
-                                <FormField
-                                  control={form.control}
-                                  name={`entries.${index}.indicatorKind`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Select
-                                          onValueChange={field.onChange}
-                                          value={field.value}
-                                        >
-                                          <SelectTrigger className="bg-primary/10 h-7 rounded-sm text-xs">
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            {Object.values(IndicatorKind).map(
-                                              (value) => (
-                                                <SelectItem
-                                                  key={value}
-                                                  value={value}
-                                                >
-                                                  {value}
-                                                </SelectItem>
-                                              ),
-                                            )}
-                                          </SelectContent>
-                                        </Select>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </TableCell>
-                              <TableCell>
-                                <Button
-                                  className="h-6 w-6 p-0"
-                                  variant="destructive"
-                                  onClick={() => entryFormFields.remove(index)}
-                                  disabled={entryFormFields.fields.length === 1}
-                                >
-                                  <Trash2 size={14} />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={3} className="h-24 text-center">
-                              No results.
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  <Button
-                    className="gap-2"
-                    size="sm"
-                    variant="secondary"
-                    type="button"
-                    onClick={() =>
-                      entryFormFields.append({ data: "", indicatorKind: "" })
-                    }
-                  >
-                    <Plus size={16} />
-                    Add entry
-                  </Button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
           </div>
         </div>
       </form>
     </Form>
   );
 };
+
+export default ProviderEditCreate;

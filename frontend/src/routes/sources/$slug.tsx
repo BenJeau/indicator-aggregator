@@ -32,21 +32,21 @@ import {
   sourceSecretsQueryOptions,
   sourceSlugQueryOptions,
 } from "@/api/sources";
-import { SectionPanelHeader } from "@/components/section-panel-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { providerQueryOptions } from "@/api/providers";
-import ProviderSearchResult from "@/components/provider-search-result";
-import FullBadge from "@/components/FullBadge";
-import TitleEntryCount from "@/components/title-entry-count";
-import ListSearchResult from "@/components/list-search-result";
 import { globalIgnoreListsQueryOptions } from "@/api/ignoreLists";
 import { dedupeListOnId, sourceKindIconMapping } from "@/data";
 import { Separator } from "@/components/ui/separator";
 import { IndicatorKind, SourceKind, SourceSecret } from "@/types/backendTypes";
-import HistorySearchResult from "@/components/history-search-result";
-import { Editor } from "@/components/editor";
+import {
+  SectionPanelHeader,
+  Editor,
+  FullBadge,
+  SearchResults,
+  TitleEntryCount,
+} from "@/components";
 import { cleanConfigValue } from "@/api/config";
 
 const SourceComponent: React.FC = () => {
@@ -57,7 +57,7 @@ const SourceComponent: React.FC = () => {
   const sourceIgnoreLists = useSuspenseQuery(sourceIgnoreListsQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
   const provider = useSuspenseQuery(
-    providerQueryOptions(source.data.providerId),
+    providerQueryOptions(source.data.providerId)
   );
   const sourceSecrets = useSuspenseQuery(sourceSecretsQueryOptions(id));
   const sourceRequests = useSuspenseQuery(sourceRequestsQueryOptions(id));
@@ -72,7 +72,7 @@ const SourceComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/sources/$slug/edit"),
-    [matches],
+    [matches]
   );
 
   const requiredSecret = sourceSecrets.data.filter((i) => i.required);
@@ -85,13 +85,13 @@ const SourceComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "blur-sm pointer-events-none select-none opacity-20"
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              source.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
+              source.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -120,7 +120,7 @@ const SourceComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
             )}
           >
             <div className="flex flex-wrap gap-2">
@@ -368,7 +368,7 @@ const SourceComponent: React.FC = () => {
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
               Linked provider
             </h2>
-            {provider.data && <ProviderSearchResult data={provider.data} />}
+            {provider.data && <SearchResults.Provider data={provider.data} />}
             {!provider.data && (
               <span className="text-xs italic opacity-50">
                 no linked provider
@@ -380,7 +380,7 @@ const SourceComponent: React.FC = () => {
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
-              <ListSearchResult key={ignoreList.id} data={ignoreList} />
+              <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
               <div className="text-xs italic opacity-50">
@@ -410,7 +410,7 @@ const SourceComponent: React.FC = () => {
             )}
             <div className="grid grid-cols-3 gap-2">
               {sourceRequests.data.map((request) => (
-                <HistorySearchResult key={request.id} data={request} />
+                <SearchResults.History key={request.id} data={request} />
               ))}
             </div>
           </div>
@@ -450,7 +450,7 @@ export const Route = createFileRoute("/sources/$slug")({
     await Promise.all([
       async () => {
         const { providerId } = await queryClient.ensureQueryData(
-          sourceQueryOptions(id),
+          sourceQueryOptions(id)
         );
         await queryClient.ensureQueryData(providerQueryOptions(providerId));
       },

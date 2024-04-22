@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM user_logs WHERE user_id = $1;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "updated_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "ip_address",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "user_agent",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "uri",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "method",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "b72bf8c6998fd77a3386f2baf1243fe6920ec627dc113e7190b6230027dd4517"
+}
