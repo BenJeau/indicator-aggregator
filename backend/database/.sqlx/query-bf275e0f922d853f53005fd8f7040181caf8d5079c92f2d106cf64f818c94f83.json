@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n    SELECT users.*, count(DISTINCT user_logs.id)::int as \"num_logs!\" FROM users\n    LEFT JOIN user_logs ON user_logs.user_id = users.id\n    GROUP BY users.id\n            ",
+  "query": "SELECT * FROM users WHERE id = $1;",
   "describe": {
     "columns": [
       {
@@ -72,15 +72,12 @@
         "ordinal": 13,
         "name": "roles",
         "type_info": "TextArray"
-      },
-      {
-        "ordinal": 14,
-        "name": "num_logs!",
-        "type_info": "Int4"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
       false,
@@ -96,9 +93,8 @@
       true,
       true,
       true,
-      false,
-      null
+      false
     ]
   },
-  "hash": "a9a89aa4206111efdeb12d254026a0f73056bb090d05f7ea9cfbf5ee3afadafa"
+  "hash": "bf275e0f922d853f53005fd8f7040181caf8d5079c92f2d106cf64f818c94f83"
 }

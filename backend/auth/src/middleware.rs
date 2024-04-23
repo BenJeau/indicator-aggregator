@@ -22,7 +22,7 @@ pub async fn auth_middleware(
 
     Span::current().record("user_id", &claims.data.sub);
 
-    let user = users::get_user(&pool, &claims.data.sub).await?;
+    let user = users::get_user_by_auth_id(&pool, &claims.data.sub).await?;
 
     let Some(user) = user else {
         return Err(Error::Unauthorized("User does not exist".to_string()));

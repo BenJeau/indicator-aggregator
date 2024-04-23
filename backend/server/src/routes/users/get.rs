@@ -30,6 +30,9 @@ pub async fn get_users(State(pool): State<PgPool>) -> Result<impl IntoResponse> 
     tag = "users",
     responses(
         (status = 200, description = "List of logs", body = [DbUserLog])
+    ),
+    params(
+        ("id" = String, Path, description = "User database ID"),
     )
 )]
 pub async fn get_user_logs(

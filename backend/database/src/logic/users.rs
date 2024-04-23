@@ -52,7 +52,14 @@ VALUES ($1, $2, $3, $4, $5);
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_user(pool: &PgPool, user_auth_id: &str) -> Result<Option<User>> {
+pub async fn get_user(pool: &PgPool, user_id: &str) -> Result<Option<User>> {
+    sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1;", user_id)
+        .fetch_optional(pool)
+        .await
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_by_auth_id(pool: &PgPool, user_auth_id: &str) -> Result<Option<User>> {
     sqlx::query_as!(
         User,
         "SELECT * FROM users WHERE auth_id = $1;",
@@ -68,7 +75,7 @@ pub async fn get_users(pool: &PgPool) -> Result<Vec<UserWithNumLogs>> {
         UserWithNumLogs,
         r#"
     SELECT users.*, count(DISTINCT user_logs.id)::int as "num_logs!" FROM users
-    LEFT JOIN user_logs ON user_logs.user_id = users.id
+    LEFT JOIN user_logs ON user_logs.user_id = users.auth_id
     GROUP BY users.id
             "#,
     )
@@ -80,7 +87,7 @@ pub async fn get_users(pool: &PgPool) -> Result<Vec<UserWithNumLogs>> {
 pub async fn get_user_logs(pool: &PgPool, user_id: &str) -> Result<Vec<DbUserLog>> {
     sqlx::query_as!(
         DbUserLog,
-        "SELECT * FROM user_logs WHERE user_id = $1;",
+        "SELECT user_logs.* FROM user_logs INNER JOIN users ON users.auth_id = user_logs.user_id AND users.id = $1;",
         user_id
     )
     .fetch_all(pool)

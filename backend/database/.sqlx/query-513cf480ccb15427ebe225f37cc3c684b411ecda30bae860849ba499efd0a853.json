@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM user_logs WHERE user_id = $1;",
+  "query": "SELECT user_logs.* FROM user_logs INNER JOIN users ON users.auth_id = user_logs.user_id AND users.id = $1;",
   "describe": {
     "columns": [
       {
@@ -60,5 +60,5 @@
       false
     ]
   },
-  "hash": "b72bf8c6998fd77a3386f2baf1243fe6920ec627dc113e7190b6230027dd4517"
+  "hash": "513cf480ccb15427ebe225f37cc3c684b411ecda30bae860849ba499efd0a853"
 }

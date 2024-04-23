@@ -194,6 +194,7 @@ impl Data {
             request_id,
             source_id: self.source.id,
             source_name: self.source.name,
+            source_slug: self.source.slug,
             source_url: self.source.url,
             source_favicon: self.source.favicon,
         }
