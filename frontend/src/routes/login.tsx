@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { TrainFrontTunnel } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,16 +14,17 @@ const Login: React.FC = () => {
   return (
     <div className="relative grid h-[800px] flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="hidden h-full flex-col gap-6 lg:flex">
-        <div className="bg-muted relative flex h-full flex-grow  flex-col rounded-xl text-white ring-2 ring-black ring-offset-2  dark:ring-800  dark:ring-offset-950">
+        <div className="bg-muted relative flex h-full flex-grow flex-col rounded-xl text-white border">
           <div
-            className="absolute inset-0 rounded-xl bg-cover"
+            className="absolute inset-0 bg-cover rounded-xl"
             style={{
               backgroundImage:
                 "url(https://images.unsplash.com/photo-1545987796-b199d6abb1b4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&auto=format&fit=crop&w=1376&q=80)",
             }}
           />
-          <div className="relative z-20 flex items-center rounded-xl p-10 text-5xl font-semibold text-white ">
-            <span className="me-2 text-yellow-500">Indicator</span> Aggregator
+          <div className="relative z-20 flex items-center rounded-xl p-10 text-5xl font-semibold gap-4">
+            <TrainFrontTunnel size={48} className="text-yellow-300" />
+            <span className="text-yellow-300">Indicator</span> Aggregator
           </div>
           <div className="relative z-20 mt-auto p-10">
             <p className="text-lg">
@@ -37,8 +39,9 @@ const Login: React.FC = () => {
         </div>
       </div>
       <div className="absolute left-4 top-4 lg:hidden">
-        <div className="relative z-20 flex items-center font-serif text-4xl font-semibold text-black dark:text-white">
-          <span className="me-1 text-500">Email</span> Thing
+        <div className="relative z-20 flex items-center text-4xl font-semibold text-black dark:text-white gap-4">
+          <TrainFrontTunnel size={48} className="text-yellow-300" />
+          <span className="text-yellow-300">Indicator</span> Aggregator
         </div>
       </div>
       <div className="lg:p-8">
@@ -70,7 +73,7 @@ const Login: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-4 left-4 right-4 flex flex-wrap justify-between gap-4 lg:hidden">
+      <div className="absolute bottom-4 left-4 right-4 flex flex-wrap justify-between gap-4 items-center lg:hidden">
         <Layouts.Public.Footer />
       </div>
       <div className="absolute right-0 top-0 -z-10 -mx-6 select-none">

@@ -21,3 +21,4 @@ export { default as StackedAreaChart } from "./stacked-area-chart";
 export { default as StatsCounter } from "./stats-counter";
 export { default as TitleEntryCount } from "./title-entry-count";
 export { default as Trans } from "./trans";
+export { default as UserLogTable } from "./user-log-table";

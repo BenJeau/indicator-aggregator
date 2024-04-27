@@ -15,6 +15,7 @@ import {
   Bell,
   GanttChart,
   History,
+  Users,
 } from "lucide-react";
 import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -49,7 +50,8 @@ type Page =
   | "docs"
   | "providers"
   | "config"
-  | "lists";
+  | "lists"
+  | "users";
 
 const PageDescription: { [key in Page]: string } = {
   home: "Overview of the Indicator Aggregator",
@@ -61,6 +63,7 @@ const PageDescription: { [key in Page]: string } = {
   providers: "Organisations that provides data for the different sources",
   config: "Global server configuration",
   lists: "Set of lists of indicators to ignore",
+  users: "Manage users and their roles",
 };
 
 const PageTitle: { [key in Page]: string } = {
@@ -72,6 +75,7 @@ const PageTitle: { [key in Page]: string } = {
   providers: "Providers",
   config: "Configuration",
   lists: "Ignore lists",
+  users: "Users",
 };
 
 export const Layout: React.FC = () => {
@@ -92,6 +96,7 @@ export const Layout: React.FC = () => {
     if (location.pathname.startsWith("/lists")) return "lists";
     if (location.pathname.startsWith("/config")) return "config";
     if (location.pathname.startsWith("/docs")) return "docs";
+    if (location.pathname.startsWith("/users")) return "users";
     if (location.pathname === "/") return "home";
     return undefined;
   }, [location.pathname]);
@@ -196,6 +201,12 @@ export const Layout: React.FC = () => {
                 to: "/config",
                 variant: page === "config" ? "default" : "ghost",
                 icon: Cog,
+              },
+              {
+                title: "Users",
+                to: "/users",
+                variant: page === "users" ? "default" : "ghost",
+                icon: Users,
               },
             ]}
           />

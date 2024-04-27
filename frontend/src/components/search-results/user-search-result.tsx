@@ -2,16 +2,16 @@ import { Power } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
-import { IgnoreList } from "@/types/backendTypes";
+import { UserWithNumLogs } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 
-const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
-  data: { slug, name, description, enabled, global },
-}) => (
+const UserSearchResult: React.FC<
+  ComponentSearchResultProps<UserWithNumLogs>
+> = ({ data: { id, name, enabled, numLogs, email } }) => (
   <Link
-    to="/lists/$slug"
-    params={{ slug }}
+    to="/users/$id"
+    params={{ id }}
     activeProps={{
       className: "bg-primary/10 border-primary shadow-primary/40",
     }}
@@ -22,17 +22,10 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
         <div className="flex gap-2 items-baseline">
           <div className="font-semibold">{name}</div>
           <div className="text-xs opacity-70">
-            {global && "is global"}
-            {!global && "is not global"}
+            {numLogs} log{numLogs > 1 && "s"}
           </div>
         </div>
-        <div className="text-sm">
-          {description}
-
-          {description.length === 0 && (
-            <div className="opacity-50 italic">no description</div>
-          )}
-        </div>
+        <div className="text-sm">{email}</div>
       </div>
       <div className="flex flex-col">
         <Badge
@@ -51,4 +44,4 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
   </Link>
 );
 
-export default ListSearchResult;
+export default UserSearchResult;

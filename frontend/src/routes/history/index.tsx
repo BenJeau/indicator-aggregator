@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 const HistoryHomeComponent: React.FC = () => (
   <>
     <SectionPanelHeader
-      title="Source selection"
+      title="Request selection"
       titleIcon={
         <div className="rounded-lg p-2 bg-black/10 dark:bg-black/50">
           <Clock size={16} strokeWidth={2.54} />

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import config from "@/config";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
+import { router } from "@/main";
 
 type GenericOptions = {
   params?: unknown;
@@ -24,9 +25,9 @@ const axiosKiller = async <T>(
   const token = store.get(userAtom)?.token;
 
   const headers = {
+    Authorization: `Bearer ${token}`,
     ...(options?.data ? { "Content-Type": "application/json" } : {}),
     ...(options?.headers ?? {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   const body = options?.data
@@ -55,12 +56,29 @@ const axiosKiller = async <T>(
 
   if (!response.ok) {
     const text = await response.text();
-    toast.error("API response error", {
-      description: `${response.status} - ${response.statusText}${
-        text && `: ${text}`
-      }`,
-    });
-    throw new Error(text);
+
+    const message = `${response.status} - ${response.statusText}${
+      text && `: ${text}`
+    }`;
+
+    if (response.status === 401) {
+      store.set(userAtom, undefined);
+      toast("Authentication expired", {
+        description: "Please login again",
+      });
+      router.navigate({
+        to: "/login",
+        search: {
+          next: location.pathname,
+        },
+      });
+    } else {
+      toast.error("API response error", {
+        description: message,
+      });
+    }
+
+    throw new Error(message);
   }
 
   const contentType = response.headers.get("Content-Type");

@@ -37,7 +37,13 @@ const SectionPanelHeader: React.FC<Props> = ({
         className
       )}
     >
-      <div className={cn("flex gap-2", titleIconClassName)}>
+      <div
+        className={cn(
+          "flex gap-2",
+          !titleIcon && "md:hidden",
+          titleIconClassName
+        )}
+      >
         <Link to=".." className="md:hidden">
           <Button className="p-0 w-8 h-8" variant="outline">
             <ChevronLeft size={16} />

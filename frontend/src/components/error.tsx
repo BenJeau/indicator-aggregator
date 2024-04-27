@@ -103,7 +103,7 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
             <AccordionContent className="mt-4 pb-2">
               <Tabs
                 defaultValue="error"
-                className="flex flex-col gap-2 rounded-xl border border-black bg-200 p-4 shadow-md dark:border-800 dark:bg-950"
+                className="flex flex-col gap-2 rounded border bg-background p-4 shadow-md dark:border-800 dark:bg-950"
               >
                 <div className="flex justify-between">
                   <h3 className="flex gap-2 text-2xl font-medium text-800 dark:text-white">
