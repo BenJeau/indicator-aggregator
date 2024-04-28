@@ -1,22 +1,29 @@
-use crate::routes;
-use crate::state::test::create_state;
+use axum::extract::connect_info::MockConnectInfo;
 pub use axum::{
     body::Body,
     http::{self, Method, Request, StatusCode},
 };
 pub use http_body_util::BodyExt;
+use reqwest::header::{AUTHORIZATION, USER_AGENT};
 pub use serde_json::{json, Value};
 pub use sqlx::PgPool;
+use std::net::SocketAddr;
 pub use tower::ServiceExt;
+
+use crate::routes;
+use crate::state::test::create_state;
 
 fn router(pool: PgPool) -> axum::Router {
     routes::router(create_state(pool))
+        .layer(MockConnectInfo(SocketAddr::from(([0, 0, 0, 0], 1337))))
 }
 
 async fn create_request(method: Method, uri: &str) -> http::Result<Request<Body>> {
     Request::builder()
         .method(method)
         .uri(uri)
+        .header(AUTHORIZATION, "Bearer test")
+        .header(USER_AGENT, "test")
         .body(Body::empty())
 }
 
