@@ -16,11 +16,12 @@ import {
   GanttChart,
   History,
   Users,
+  Languages,
 } from "lucide-react";
 import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -41,6 +42,7 @@ import NotifcationEmpty from "@/assets/resting-two-color.svg";
 import config from "@/config";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { userAtom } from "@/atoms/auth";
+import { languageAtom } from "@/atoms/language";
 
 type Page =
   | "home"
@@ -84,6 +86,7 @@ export const Layout: React.FC = () => {
   const [theme, setTheme] = useAtom(themeAtom);
   const windowWidth = useWindowWidth();
   const auth = useAtomValue(userAtom);
+  const setLanguage = useSetAtom(languageAtom);
 
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const notifications = useSuspenseQuery(notificationsQueryOptions);
@@ -119,7 +122,7 @@ export const Layout: React.FC = () => {
       <div
         className={cn(
           "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out",
-          isCollapsed && "w-14 min-w-14",
+          isCollapsed && "w-14 min-w-14"
         )}
       >
         <div>
@@ -129,7 +132,7 @@ export const Layout: React.FC = () => {
               "bg-primary/20 text-primary hover:bg-primary/10 flex h-[52px] items-center gap-2 whitespace-nowrap font-medium transition-all",
               isCollapsed ? "justify-center" : "px-4",
               page === "home" &&
-                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white",
+                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white"
             )}
             disabled={page === "home"}
           >
@@ -253,6 +256,12 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
+                title: "Change language",
+                icon: Languages,
+                onClick: () =>
+                  setLanguage((prev) => (prev === "en_CA" ? "fr_CA" : "en_CA")),
+              },
+              {
                 title:
                   theme === "dark"
                     ? "Light theme"
@@ -274,7 +283,7 @@ export const Layout: React.FC = () => {
           <div
             className={cn(
               "bg-muted/50 flex  items-center gap-2 py-4",
-              isCollapsed ? "justify-center" : "px-4",
+              isCollapsed ? "justify-center" : "px-4"
             )}
           >
             <Avatar className="border">
@@ -296,7 +305,7 @@ export const Layout: React.FC = () => {
       <div
         className={cn(
           "flex h-full flex-col",
-          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]",
+          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]"
         )}
       >
         <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">
