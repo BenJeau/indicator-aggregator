@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 
-export const Empty: React.FC<Props> = ({
+const Empty: React.FC<Props> = ({
   title,
   description,
   image,
@@ -31,3 +31,5 @@ export const Empty: React.FC<Props> = ({
     {extra}
   </div>
 );
+
+export default Empty;

@@ -5,10 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import {
-  FormSchema,
-  ProviderEditCreate,
-} from "@/components/provider-edit-create";
+import { Forms } from "@/components";
 import {
   providerIgnoreListsQueryOptions,
   providerQueryOptions,
@@ -39,7 +36,7 @@ const ProviderEditComponent: React.FC = () => {
   const putProviderIgnoreLists = usePutProviderIgnoreListsMutation();
   const putProviderSources = usePutProviderSourcesMutation();
 
-  const onSubmit = async (values: FormSchema) => {
+  const onSubmit = async (values: Forms.ProviderEditCreate.FormSchema) => {
     await Promise.all([
       patchProvider.mutateAsync({
         id: provider.data.id,
@@ -74,7 +71,7 @@ const ProviderEditComponent: React.FC = () => {
   };
 
   return (
-    <ProviderEditCreate
+    <Forms.ProviderEditCreate.default
       provider={provider.data}
       sources={providerSources.data}
       ignoreLists={providerIgnoreLists.data}

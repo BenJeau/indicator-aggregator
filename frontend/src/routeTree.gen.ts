@@ -12,17 +12,23 @@
 
 import { Route as rootRoute } from "./routes/__root";
 import { Route as RequestImport } from "./routes/request";
+import { Route as LogoutImport } from "./routes/logout";
+import { Route as LoginImport } from "./routes/login";
 import { Route as DocsImport } from "./routes/docs";
 import { Route as ConfigImport } from "./routes/config";
+import { Route as AuthImport } from "./routes/auth";
+import { Route as UsersRouteImport } from "./routes/users/route";
 import { Route as SourcesRouteImport } from "./routes/sources/route";
 import { Route as ProvidersRouteImport } from "./routes/providers/route";
 import { Route as ListsRouteImport } from "./routes/lists/route";
 import { Route as HistoryRouteImport } from "./routes/history/route";
 import { Route as IndexImport } from "./routes/index";
+import { Route as UsersIndexImport } from "./routes/users/index";
 import { Route as SourcesIndexImport } from "./routes/sources/index";
 import { Route as ProvidersIndexImport } from "./routes/providers/index";
 import { Route as ListsIndexImport } from "./routes/lists/index";
 import { Route as HistoryIndexImport } from "./routes/history/index";
+import { Route as UsersIdImport } from "./routes/users/$id";
 import { Route as SourcesNewImport } from "./routes/sources/new";
 import { Route as SourcesSlugImport } from "./routes/sources/$slug";
 import { Route as ProvidersNewImport } from "./routes/providers/new";
@@ -30,6 +36,7 @@ import { Route as ProvidersSlugImport } from "./routes/providers/$slug";
 import { Route as ListsNewImport } from "./routes/lists/new";
 import { Route as ListsSlugImport } from "./routes/lists/$slug";
 import { Route as HistoryIdImport } from "./routes/history/$id";
+import { Route as UsersIdEditImport } from "./routes/users/$id.edit";
 import { Route as SourcesSlugEditImport } from "./routes/sources/$slug.edit";
 import { Route as ProvidersSlugEditImport } from "./routes/providers/$slug.edit";
 import { Route as ListsSlugEditImport } from "./routes/lists/$slug.edit";
@@ -41,6 +48,16 @@ const RequestRoute = RequestImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
+const LogoutRoute = LogoutImport.update({
+  path: "/logout",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const LoginRoute = LoginImport.update({
+  path: "/login",
+  getParentRoute: () => rootRoute,
+} as any);
+
 const DocsRoute = DocsImport.update({
   path: "/docs",
   getParentRoute: () => rootRoute,
@@ -48,6 +65,16 @@ const DocsRoute = DocsImport.update({
 
 const ConfigRoute = ConfigImport.update({
   path: "/config",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const AuthRoute = AuthImport.update({
+  path: "/auth",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const UsersRouteRoute = UsersRouteImport.update({
+  path: "/users",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -76,6 +103,11 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
+const UsersIndexRoute = UsersIndexImport.update({
+  path: "/",
+  getParentRoute: () => UsersRouteRoute,
+} as any);
+
 const SourcesIndexRoute = SourcesIndexImport.update({
   path: "/",
   getParentRoute: () => SourcesRouteRoute,
@@ -94,6 +126,11 @@ const ListsIndexRoute = ListsIndexImport.update({
 const HistoryIndexRoute = HistoryIndexImport.update({
   path: "/",
   getParentRoute: () => HistoryRouteRoute,
+} as any);
+
+const UsersIdRoute = UsersIdImport.update({
+  path: "/$id",
+  getParentRoute: () => UsersRouteRoute,
 } as any);
 
 const SourcesNewRoute = SourcesNewImport.update({
@@ -129,6 +166,11 @@ const ListsSlugRoute = ListsSlugImport.update({
 const HistoryIdRoute = HistoryIdImport.update({
   path: "/$id",
   getParentRoute: () => HistoryRouteRoute,
+} as any);
+
+const UsersIdEditRoute = UsersIdEditImport.update({
+  path: "/edit",
+  getParentRoute: () => UsersIdRoute,
 } as any);
 
 const SourcesSlugEditRoute = SourcesSlugEditImport.update({
@@ -170,12 +212,28 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SourcesRouteImport;
       parentRoute: typeof rootRoute;
     };
+    "/users": {
+      preLoaderRoute: typeof UsersRouteImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth": {
+      preLoaderRoute: typeof AuthImport;
+      parentRoute: typeof rootRoute;
+    };
     "/config": {
       preLoaderRoute: typeof ConfigImport;
       parentRoute: typeof rootRoute;
     };
     "/docs": {
       preLoaderRoute: typeof DocsImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/login": {
+      preLoaderRoute: typeof LoginImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/logout": {
+      preLoaderRoute: typeof LogoutImport;
       parentRoute: typeof rootRoute;
     };
     "/request": {
@@ -210,6 +268,10 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SourcesNewImport;
       parentRoute: typeof SourcesRouteImport;
     };
+    "/users/$id": {
+      preLoaderRoute: typeof UsersIdImport;
+      parentRoute: typeof UsersRouteImport;
+    };
     "/history/": {
       preLoaderRoute: typeof HistoryIndexImport;
       parentRoute: typeof HistoryRouteImport;
@@ -226,6 +288,10 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SourcesIndexImport;
       parentRoute: typeof SourcesRouteImport;
     };
+    "/users/": {
+      preLoaderRoute: typeof UsersIndexImport;
+      parentRoute: typeof UsersRouteImport;
+    };
     "/lists/$slug/edit": {
       preLoaderRoute: typeof ListsSlugEditImport;
       parentRoute: typeof ListsSlugImport;
@@ -237,6 +303,10 @@ declare module "@tanstack/react-router" {
     "/sources/$slug/edit": {
       preLoaderRoute: typeof SourcesSlugEditImport;
       parentRoute: typeof SourcesSlugImport;
+    };
+    "/users/$id/edit": {
+      preLoaderRoute: typeof UsersIdEditImport;
+      parentRoute: typeof UsersIdImport;
     };
   }
 }
@@ -261,8 +331,15 @@ export const routeTree = rootRoute.addChildren([
     SourcesNewRoute,
     SourcesIndexRoute,
   ]),
+  UsersRouteRoute.addChildren([
+    UsersIdRoute.addChildren([UsersIdEditRoute]),
+    UsersIndexRoute,
+  ]),
+  AuthRoute,
   ConfigRoute,
   DocsRoute,
+  LoginRoute,
+  LogoutRoute,
   RequestRoute,
 ]);
 

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/resizable";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Empty } from "@/components/empty";
+import { Empty } from "@/components";
 
 export interface ComponentSearchResultProps<T> {
   data: T;
@@ -21,13 +21,13 @@ interface Props<T> {
   data: T[];
   onFilter: (data: T, seachValue: string) => boolean;
   searchPlaceholder: string;
-  createLinkTo: string;
+  createLinkTo?: string;
   CreateLinkIcon?: LucideIcon;
   Item: React.FC<ComponentSearchResultProps<T>>;
   empty: {
     title: string;
     description: string;
-    extra: React.ReactNode;
+    extra?: React.ReactNode;
   };
 }
 
@@ -76,11 +76,13 @@ function GenericPanelSearch<T>({
               className="h-8 bg-background"
               onChange={(e) => setSearchValue(e.target.value)}
             />
-            <Link to={createLinkTo}>
-              <Button className="p-0 w-8 h-8">
-                <CreateLinkIcon size={16} />
-              </Button>
-            </Link>
+            {createLinkTo && (
+              <Link to={createLinkTo}>
+                <Button className="p-0 w-8 h-8">
+                  <CreateLinkIcon size={16} />
+                </Button>
+              </Link>
+            )}
           </div>
           <Separator />
         </div>
@@ -90,12 +92,14 @@ function GenericPanelSearch<T>({
               title={empty.title}
               description={empty.description}
               extra={
-                <Link to={createLinkTo} search={{ name: searchValue }}>
-                  <Button variant="secondary" size="sm" className="gap-2">
-                    <CreateLinkIcon size={16} />
-                    {empty.extra}
-                  </Button>
-                </Link>
+                createLinkTo && (
+                  <Link to={createLinkTo} search={{ name: searchValue }}>
+                    <Button variant="secondary" size="sm" className="gap-2">
+                      <CreateLinkIcon size={16} />
+                      {empty.extra}
+                    </Button>
+                  </Link>
+                )
               }
             />
           </div>

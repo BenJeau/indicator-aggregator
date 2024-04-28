@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Braces, ExternalLink } from "lucide-react";
 
 import config from "@/config";
-import { Braces, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const DocsComponents: React.FC = () => (
   <div className="p-4 flex gap-2 flex-col">
@@ -66,4 +67,5 @@ const DocsComponents: React.FC = () => (
 
 export const Route = createFileRoute("/docs")({
   component: DocsComponents,
+  beforeLoad: beforeLoadAuthenticated(),
 });

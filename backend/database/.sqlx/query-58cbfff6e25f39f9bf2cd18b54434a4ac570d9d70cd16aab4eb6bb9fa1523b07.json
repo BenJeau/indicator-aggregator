@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO login_requests (nonce, state_nonce, provider, ip_address, user_agent, browser_state, redirect_uri)\nVALUES ($1, $2, $3, $4, $5, $6, $7)\nRETURNING id;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "58cbfff6e25f39f9bf2cd18b54434a4ac570d9d70cd16aab4eb6bb9fa1523b07"
+}

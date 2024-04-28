@@ -9,8 +9,8 @@ import {
   Send,
   Server,
 } from "lucide-react";
+import { useAtomValue } from "jotai";
 
-import RequestForm from "@/components/request-form";
 import { sourcesQueryOptions } from "@/api/sources";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -21,14 +21,19 @@ import {
   statsCountRequestsBySourcesQueryOptions,
 } from "@/api/stats";
 import { requestsQueryOptions } from "@/api/requests";
-import HistorySearchResult from "@/components/history-search-result";
 import { useRunnersStatus } from "@/api/runners";
 import { SourceKind } from "@/types/backendTypes";
 import { indicatorKindMapping } from "@/data";
 import { configQueryOptions } from "@/api/config";
-import StackedAreaChart from "@/components/stacked-area-chart";
-import RunnerStatus from "@/components/runner-status";
-import StatsCounter from "@/components/stats-counter";
+import {
+  RunnerStatus,
+  StatsCounter,
+  StackedAreaChart,
+  SearchResults,
+  Forms,
+} from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
+import { userAtom } from "@/atoms/auth";
 
 const IndexComponent: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
@@ -46,6 +51,7 @@ const IndexComponent: React.FC = () => {
   const statsCountRequestsByKinds = useSuspenseQuery(
     statsCountRequestsByKindsQueryOptions,
   );
+  const user = useAtomValue(userAtom);
 
   const config = useQuery(configQueryOptions);
 
@@ -54,7 +60,7 @@ const IndexComponent: React.FC = () => {
   return (
     <>
       <div className="p-4">
-        <h3 className="text-xl font-semibold">Welcome John Doe!</h3>
+        <h3 className="text-xl font-semibold">Welcome {user?.name}!</h3>
         <p>
           Start requesting data from our various sources below or take a sneak
           peak at the various stats of the system
@@ -66,14 +72,14 @@ const IndexComponent: React.FC = () => {
       <h4 className="mx-4 font-medium -mb-4 z-20 flex gap-2 items-center">
         <Send size={16} /> Get data from sources
       </h4>
-      <RequestForm sources={sources.data} />
+      <Forms.RequestForm.default sources={sources.data} />
       <div>
         <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
           <History size={16} /> Latest requests
         </h4>
         <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
           {requests.data.slice(0, 4).map((request) => (
-            <HistorySearchResult key={request.id} data={request} />
+            <SearchResults.History key={request.id} data={request} />
           ))}
         </div>
       </div>
@@ -192,6 +198,7 @@ const IndexComponent: React.FC = () => {
 
 export const Route = createFileRoute("/")({
   component: IndexComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient } }) =>
     await Promise.all([
       queryClient.ensureQueryData(sourcesQueryOptions),

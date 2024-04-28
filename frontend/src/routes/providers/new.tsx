@@ -1,10 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import {
-  FormSchema,
-  ProviderEditCreate,
-} from "@/components/provider-edit-create";
+import { Forms } from "@/components";
 import { useProviderCreate } from "@/api/providers";
 
 const ProvidersNewComponent: React.FC = () => {
@@ -12,13 +9,15 @@ const ProvidersNewComponent: React.FC = () => {
   const providerCreate = useProviderCreate();
   const search = Route.useSearch();
 
-  const onSubmit = async (values: FormSchema) => {
+  const onSubmit = async (values: Forms.ProviderEditCreate.FormSchema) => {
     const { slug } = await providerCreate.mutateAsync(values);
     toast.success("Provider created");
     navigate({ to: `/providers/$slug`, params: { slug } });
   };
 
-  return <ProviderEditCreate onSubmit={onSubmit} name={search.name} />;
+  return (
+    <Forms.ProviderEditCreate.default onSubmit={onSubmit} name={search.name} />
+  );
 };
 
 type ProviderSearch = {

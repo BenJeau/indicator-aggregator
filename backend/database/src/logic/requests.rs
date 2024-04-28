@@ -44,10 +44,11 @@ pub async fn create_source_request(
             request_id,
             source_id,
             source_name,
+            source_slug,
             source_url,
             source_favicon
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING id
         "#,
         source_request.started_at,
@@ -61,6 +62,7 @@ pub async fn create_source_request(
         source_request.request_id,
         source_request.source_id,
         source_request.source_name,
+        source_request.source_slug,
         source_request.source_url,
         source_request.source_favicon
     )

@@ -16,15 +16,16 @@ import {
   ignoreListSourcesQueryOptions,
   ignoreListSlugQueryOptions,
 } from "@/api/ignoreLists";
-import { SectionPanelHeader } from "@/components/section-panel-header";
+import {
+  SectionPanelHeader,
+  DataTable,
+  SearchResults,
+  TitleEntryCount,
+  FullBadge,
+} from "@/components";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DataTable } from "@/components/data-table";
-import SourceSearchResult from "@/components/source-search-result";
-import ProviderSearchResult from "@/components/provider-search-result";
-import TitleEntryCount from "@/components/title-entry-count";
-import FullBadge from "@/components/FullBadge";
 import { Separator } from "@/components/ui/separator";
 
 const ListComponent = () => {
@@ -127,7 +128,7 @@ const ListComponent = () => {
               </div>
             )}
             {ignoreListSources.data.map((source) => (
-              <SourceSearchResult key={source.id} data={source} />
+              <SearchResults.Source key={source.id} data={source} />
             ))}
             {ignoreListSources.data.length === 0 && (
               <div className="text-xs italic opacity-50">no linked sources</div>
@@ -143,7 +144,7 @@ const ListComponent = () => {
               </div>
             )}
             {ignoreListProviders.data.map((provider) => (
-              <ProviderSearchResult key={provider.id} data={provider} />
+              <SearchResults.Provider key={provider.id} data={provider} />
             ))}
             {ignoreListProviders.data.length === 0 && (
               <div className="text-xs italic opacity-50">

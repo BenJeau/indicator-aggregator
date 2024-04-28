@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { FormSchema, ListEditCreate } from "@/components/list-edit-create";
+import { Forms } from "@/components";
 import {
   ignoreListQueryOptions,
   ignoreListEntriesQueryOptions,
@@ -35,7 +35,7 @@ const ListEditComponent: React.FC = () => {
   const putIgnoreListSources = useIgnoreListSourcesPut();
   const putIgnoreListEntries = useIgnoreListEntryPut();
 
-  const onSubmit = async (values: FormSchema) => {
+  const onSubmit = async (values: Forms.ListEditCreate.FormSchema) => {
     await Promise.all([
       patchIgnoreList.mutateAsync({
         id,
@@ -75,7 +75,7 @@ const ListEditComponent: React.FC = () => {
   };
 
   return (
-    <ListEditCreate
+    <Forms.ListEditCreate.default
       list={ignoreList.data}
       sources={ignoreListSources.data}
       providers={ignoreListProviders.data}

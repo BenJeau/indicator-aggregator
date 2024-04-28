@@ -15,7 +15,7 @@ interface Props extends Omit<CalendarProps, "selected" | "mode"> {
   buttonClassName?: string;
 }
 
-export const DatePicker: React.FC<Props> = (props) => (
+const DatePicker: React.FC<Props> = (props) => (
   <Popover>
     <PopoverTrigger asChild>
       <Button
@@ -53,3 +53,5 @@ export const DatePicker: React.FC<Props> = (props) => (
     </PopoverContent>
   </Popover>
 );
+
+export default DatePicker;

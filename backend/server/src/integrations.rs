@@ -9,7 +9,7 @@ use database::{
 };
 use futures_util::future::{join, join_all};
 use sources::{integrations, schemas::SourceError, Source};
-use tracing::{error, instrument, warn};
+use tracing::{error, info_span, instrument, warn, Instrument};
 
 use crate::{
     schemas::{Data, DataCache, DataCacheAction, DataSource, DataTiming, RequestExecuteParam},
@@ -252,13 +252,18 @@ pub async fn get_indicator<S: Source + ?Sized>(
         .clone()
         .into_create_source_request(request_id.to_owned());
     let pool = state.pool.clone();
-    tokio::task::spawn(async move {
-        let _ = database::logic::requests::create_source_request(&pool, source_request)
-            .await
-            .map_err(|e| {
-                error!(error = ?e, "error creating source request");
-            });
-    });
+
+    let info_span = info_span!("save_source_request");
+    tokio::task::spawn(
+        async move {
+            let _ = database::logic::requests::create_source_request(&pool, source_request)
+                .await
+                .map_err(|e| {
+                    error!(error = ?e, "error creating source request");
+                });
+        }
+        .instrument(info_span),
+    );
 
     Ok(data)
 }

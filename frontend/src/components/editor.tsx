@@ -1,5 +1,5 @@
-import { FC } from "react";
 import MonacoEditor from "@monaco-editor/react";
+import { useAtomValue } from "jotai";
 
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
@@ -27,7 +27,7 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 loader.config({ monaco });
 
 import { SourceKind } from "@/types/backendTypes";
-import { useTheme } from "@/components/theme-provider";
+import { computedTheme } from "@/atoms/theme";
 
 type Props = {
   value: string;
@@ -47,8 +47,8 @@ const SourceKindLanguageMap: { [key in SourceKind]: string } = {
   [SourceKind.JavaScript]: "javascript",
 };
 
-export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
-  const { computedTheme } = useTheme();
+const Editor: React.FC<Props> = ({ value, onChange, ...props }) => {
+  const theme = useAtomValue(computedTheme);
 
   const numberOfLines = value.split("\n").length;
 
@@ -71,9 +71,11 @@ export const Editor: FC<Props> = ({ value, onChange, ...props }) => {
         folding: false,
         minimap: { enabled: false },
         bracketPairColorization: { enabled: true },
-        theme: computedTheme === "light" ? "vs" : "vs-dark",
+        theme: theme === "light" ? "vs" : "vs-dark",
       }}
       className="shadow border"
     />
   );
 };
+
+export default Editor;

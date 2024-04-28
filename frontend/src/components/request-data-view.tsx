@@ -6,9 +6,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ReqestSSEData } from "@/api/requests";
-import { Empty } from "@/components/empty";
+import { Empty, TitleEntryCount } from "@/components";
 import { Source } from "@/components/sources";
-import TitleEntryCount from "@/components/title-entry-count";
 import WaitingImage from "@/assets/day-dreaming-two-color.svg";
 import LoadingImage from "@/assets/waiter-two-color.svg";
 import { Badge } from "@/components/ui/badge";

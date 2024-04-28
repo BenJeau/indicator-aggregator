@@ -1,10 +1,10 @@
-use std::net::{AddrParseError, SocketAddr};
-
+use auth::config::Auth;
 use figment::{
     providers::{Env, Format, Toml},
     Figment,
 };
 use serde::Deserialize;
+use std::net::{AddrParseError, SocketAddr};
 use tracing::info;
 
 #[derive(Deserialize, Clone)]
@@ -60,6 +60,7 @@ pub struct Config {
     pub server: Server,
     pub encryption: Encryption,
     pub cache: Cache,
+    pub auth: Auth,
 }
 
 impl Config {
@@ -68,13 +69,15 @@ impl Config {
 
         Figment::new()
             .merge(Toml::string(include_str!("../config.toml")))
-            .merge(Env::prefixed("INDICATOR_AGGREGATOR__").split("__"))
+            .merge(Env::prefixed("IOCAGG__").split("__"))
             .extract()
     }
 }
 
 #[cfg(test)]
 pub mod test {
+    use auth::config::{Jwt, OpenId};
+
     use super::*;
 
     pub fn create_config() -> Config {
@@ -98,6 +101,28 @@ pub mod test {
                 server_key: "AsuKXKermWGsAPo3e9XnEHMzt*7svap#".to_string(), 
             },
             cache: Cache { redis_url: None },
+            auth: Auth {
+                frontend_redirect_path: "/auth".to_string(),
+                frontend_redirect_hosts: vec!["localhost".to_string()],
+                jwt: Jwt {
+                    secret: "tqQxsKu7z2".to_string(),
+                    issuer: "test".to_string(),
+                    audience: "test".to_string(),
+                    expiration: 3600,
+                },
+                google: OpenId {
+                    redirect_uri: "http://localhost:8080/auth/google/callback".to_string(),
+                    openid_url: "https://accounts.google.com".to_string(),
+                    client_id: "test".to_string(),
+                    client_secret: "test".to_string(),
+                },
+                microsoft: OpenId {
+                    redirect_uri: "http://localhost:8080/auth/microsoft/callback".to_string(),
+                    openid_url: "https://login.microsoftonline.com".to_string(),
+                    client_id: "test".to_string(),
+                    client_secret: "test".to_string(),
+                },
+            }
         }
     }
 }

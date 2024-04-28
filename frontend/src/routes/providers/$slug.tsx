@@ -18,17 +18,18 @@ import {
   providerSlugQueryOptions,
   providerSourcesQueryOptions,
 } from "@/api/providers";
-import { Button } from "@/components/ui/button";
-import { SectionPanelHeader } from "@/components/section-panel-header";
-import { cn } from "@/lib/utils";
-import TitleEntryCount from "@/components/title-entry-count";
-import { Provider } from "@/types/backendTypes";
-import ListSearchResult from "@/components/list-search-result";
-import SourceSearchResult from "@/components/source-search-result";
-import FullBadge from "@/components/FullBadge";
 import { globalIgnoreListsQueryOptions } from "@/api/ignoreLists";
-import { dedupeListOnId } from "@/data";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  SectionPanelHeader,
+  SearchResults,
+  FullBadge,
+  TitleEntryCount,
+} from "@/components";
+import { cn } from "@/lib/utils";
+import { Provider } from "@/types/backendTypes";
+import { dedupeListOnId } from "@/data";
 
 const ProviderComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -158,7 +159,7 @@ const ProviderComponent: React.FC = () => {
             </h2>
             <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
               {providerSources.data.map((source) => (
-                <SourceSearchResult key={source.id} data={source} />
+                <SearchResults.Source key={source.id} data={source} />
               ))}
             </div>
             {providerSources.data.length === 0 && (
@@ -170,7 +171,7 @@ const ProviderComponent: React.FC = () => {
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
-              <ListSearchResult key={ignoreList.id} data={ignoreList} />
+              <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
               <div className="text-xs italic opacity-50">

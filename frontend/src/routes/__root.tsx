@@ -1,14 +1,13 @@
-import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import { createRootRouteWithContext } from "@tanstack/react-router";
 import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { lazy } from "react";
+import { Provider } from "jotai";
 
-import { Layout } from "@/components/layout";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { statsCountQueryOptions } from "@/api/stats";
-import { notificationsQueryOptions } from "@/api/notifications";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Error, Layouts } from "@/components";
+import { store } from "@/atoms";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -19,26 +18,20 @@ const TanStackRouterDevtools =
         })),
       );
 
-const RootComponent = () => (
-  <ThemeProvider defaultTheme="dark" storageKey="indicator-aggretgator-theme">
-    <TooltipProvider delayDuration={0}>
-      <Layout>
-        <Outlet />
-      </Layout>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
-      <TanStackRouterDevtools position="bottom-right" />
-      <Toaster />
-    </TooltipProvider>
-  </ThemeProvider>
+const RootComponent: React.FC = () => (
+  <TooltipProvider delayDuration={0}>
+    <Provider store={store}>
+      <Layouts.default />
+    </Provider>
+    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+    <TanStackRouterDevtools position="bottom-right" />
+    <Toaster />
+  </TooltipProvider>
 );
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     component: RootComponent,
-    loader: async ({ context: { queryClient } }) =>
-      await Promise.all([
-        queryClient.ensureQueryData(statsCountQueryOptions),
-        queryClient.ensureQueryData(notificationsQueryOptions),
-      ]),
+    errorComponent: ({ error, info }) => <Error error={error} info={info} />,
   },
 );

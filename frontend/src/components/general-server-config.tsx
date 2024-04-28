@@ -14,7 +14,7 @@ import {
   ServerConfigKind,
   SourceKind,
 } from "@/types/backendTypes";
-import { Editor } from "@/components/editor";
+import { Editor } from "@/components";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,

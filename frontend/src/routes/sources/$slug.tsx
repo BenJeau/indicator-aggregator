@@ -32,21 +32,21 @@ import {
   sourceSecretsQueryOptions,
   sourceSlugQueryOptions,
 } from "@/api/sources";
-import { SectionPanelHeader } from "@/components/section-panel-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { providerQueryOptions } from "@/api/providers";
-import ProviderSearchResult from "@/components/provider-search-result";
-import FullBadge from "@/components/FullBadge";
-import TitleEntryCount from "@/components/title-entry-count";
-import ListSearchResult from "@/components/list-search-result";
 import { globalIgnoreListsQueryOptions } from "@/api/ignoreLists";
 import { dedupeListOnId, sourceKindIconMapping } from "@/data";
 import { Separator } from "@/components/ui/separator";
 import { IndicatorKind, SourceKind, SourceSecret } from "@/types/backendTypes";
-import HistorySearchResult from "@/components/history-search-result";
-import { Editor } from "@/components/editor";
+import {
+  SectionPanelHeader,
+  Editor,
+  FullBadge,
+  SearchResults,
+  TitleEntryCount,
+} from "@/components";
 import { cleanConfigValue } from "@/api/config";
 
 const SourceComponent: React.FC = () => {
@@ -368,7 +368,7 @@ const SourceComponent: React.FC = () => {
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
               Linked provider
             </h2>
-            {provider.data && <ProviderSearchResult data={provider.data} />}
+            {provider.data && <SearchResults.Provider data={provider.data} />}
             {!provider.data && (
               <span className="text-xs italic opacity-50">
                 no linked provider
@@ -380,7 +380,7 @@ const SourceComponent: React.FC = () => {
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
-              <ListSearchResult key={ignoreList.id} data={ignoreList} />
+              <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
               <div className="text-xs italic opacity-50">
@@ -410,7 +410,7 @@ const SourceComponent: React.FC = () => {
             )}
             <div className="grid grid-cols-3 gap-2">
               {sourceRequests.data.map((request) => (
-                <HistorySearchResult key={request.id} data={request} />
+                <SearchResults.History key={request.id} data={request} />
               ))}
             </div>
           </div>

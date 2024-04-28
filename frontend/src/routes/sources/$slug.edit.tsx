@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { FormSchema, SourceEditCreate } from "@/components/source-edit-create";
+import { Forms } from "@/components";
 import {
   sourceIgnoreListsQueryOptions,
   sourceQueryOptions,
@@ -29,7 +29,7 @@ const SourceEditComponent: React.FC = () => {
   const putSourceIgnoreLists = usePutSourceIgnoreListMutation();
   const putSourceSecrets = usePutSourceSecretsMutation();
 
-  const onSubmit = async (values: FormSchema) => {
+  const onSubmit = async (values: Forms.SourceEditCreate.FormSchema) => {
     const updateData = {
       ...values,
       config: [],
@@ -69,7 +69,7 @@ const SourceEditComponent: React.FC = () => {
   };
 
   return (
-    <SourceEditCreate
+    <Forms.SourceEditCreate.default
       source={source.data}
       ignoreLists={sourceIgnoreLists.data}
       sourceSecrets={sourceSecrets.data}

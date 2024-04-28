@@ -2,14 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Send } from "lucide-react";
 
 import EmptyImage from "@/assets/network-two-color-c4988.svg";
-import { SectionPanelHeader } from "@/components/section-panel-header";
-import { Empty } from "@/components/empty";
+import { SectionPanelHeader, Empty } from "@/components";
 import { Button } from "@/components/ui/button";
 
 const HistoryHomeComponent: React.FC = () => (
   <>
     <SectionPanelHeader
-      title="Source selection"
+      title="Request selection"
       titleIcon={
         <div className="rounded-lg p-2 bg-black/10 dark:bg-black/50">
           <Clock size={16} strokeWidth={2.54} />

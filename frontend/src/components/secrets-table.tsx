@@ -39,7 +39,7 @@ import {
   TableCell,
   Table,
 } from "@/components/ui/table";
-import { DatePicker } from "@/components/date-picker";
+import { DatePicker } from "@/components";
 import { SecretWithNumSources } from "@/types/backendTypes";
 
 const formSchema = z.object({

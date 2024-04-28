@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { SourceError } from "@/types/backendTypes";
-import FullBadge from "@/components/FullBadge";
+import FullBadge from "@/components/full-badge";
 import TitleEntryCount from "@/components/title-entry-count";
 import config from "@/config";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Editor } from "@/components/editor";
+import { Editor } from "@/components";
 
 import { PhishTank } from "./phishtank";
 

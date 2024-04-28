@@ -9,6 +9,9 @@ DROP TABLE "source_secrets";
 DROP TABLE "secrets";
 DROP TABLE "sources";
 DROP TABLE "providers";
+DROP TABLE "login_requests";
+DROP TABLE "user_logs";
+DROP TABLE "users";
 
 DROP TYPE "server_config_kind";
 DROP TYPE "source_kind";

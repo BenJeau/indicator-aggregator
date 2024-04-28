@@ -101,7 +101,7 @@ const areaColors = Array.from({ length: numSeparations }, (_, i) =>
   .flat()
   .reverse();
 
-const ChartDynamic: React.FC<ChartDynamicProps> = ({
+const StackedAreaChart: React.FC<ChartDynamicProps> = ({
   data,
   title,
   className,
@@ -250,4 +250,4 @@ const ChartDynamic: React.FC<ChartDynamicProps> = ({
   );
 };
 
-export default ChartDynamic;
+export default StackedAreaChart;

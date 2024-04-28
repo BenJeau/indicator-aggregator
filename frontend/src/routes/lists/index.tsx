@@ -2,8 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus, Scroll } from "lucide-react";
 
 import EmptyImage from "@/assets/files-and-folder-two-color.svg";
-import { Empty } from "@/components/empty";
-import { SectionPanelHeader } from "@/components/section-panel-header";
+import { Empty, SectionPanelHeader } from "@/components";
 import { Button } from "@/components/ui/button";
 
 const ListHomeComponent: React.FC = () => (

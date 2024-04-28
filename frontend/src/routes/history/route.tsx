@@ -3,8 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Send } from "lucide-react";
 
 import { requestsQueryOptions } from "@/api/requests";
-import GenericPanelSearch from "@/components/generic-panel-search";
-import HistorySearchResult from "@/components/history-search-result";
+import { GenericPanelSearch, SearchResults } from "@/components";
 
 const SourcesComponents: React.FC = () => {
   const requests = useSuspenseQuery(requestsQueryOptions);
@@ -19,7 +18,7 @@ const SourcesComponents: React.FC = () => {
       searchPlaceholder="Search past requests..."
       createLinkTo="/request"
       CreateLinkIcon={Send}
-      Item={HistorySearchResult}
+      Item={SearchResults.History}
       empty={{
         title: "No past request",
         description: "Create a request to see it here",

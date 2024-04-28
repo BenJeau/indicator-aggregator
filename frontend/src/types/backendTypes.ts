@@ -545,6 +545,57 @@ export interface CountPerHour {
   timeWindow: DateTime<Utc>;
 }
 
+export interface User {
+  id: string;
+  createdAt: NaiveDateTime;
+  updatedAt: NaiveDateTime;
+  authId: string;
+  provider: string;
+  enabled: boolean;
+  email: string;
+  verified: boolean;
+  name: string;
+  givenName?: string;
+  familyName?: string;
+  locale?: string;
+  picture?: number[];
+  roles: string[];
+}
+
+export interface UpdateUser {
+  enabled?: boolean;
+  roles?: HashSet<string>;
+}
+
+export interface UserWithNumLogs {
+  id: string;
+  createdAt: NaiveDateTime;
+  updatedAt: NaiveDateTime;
+  authId: string;
+  provider: string;
+  enabled: boolean;
+  email: string;
+  verified: boolean;
+  name: string;
+  givenName?: string;
+  familyName?: string;
+  locale?: string;
+  picture?: number[];
+  roles: string[];
+  numLogs: number;
+}
+
+export interface DbUserLog {
+  id: string;
+  createdAt: NaiveDateTime;
+  updatedAt: NaiveDateTime;
+  userId: string;
+  ipAddress: string;
+  userAgent: string;
+  uri: string;
+  method: string;
+}
+
 /** Request to get the data for a specific indicator from enabled sources supporting the indicator kind */
 export interface RequestExecuteParam {
   /** Data of the indicator */

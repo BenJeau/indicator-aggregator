@@ -1,3 +1,4 @@
+pub mod auth;
 pub mod ignore_lists;
 pub mod notifications;
 pub mod phish_tank;
@@ -8,3 +9,4 @@ pub mod server_config;
 pub mod sources;
 pub mod stats;
 pub mod url_haus;
+pub mod users;

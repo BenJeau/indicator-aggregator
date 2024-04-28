@@ -22,6 +22,7 @@ url = { workspace = true }
 utoipa = { workspace = true }
 utoipa-swagger-ui = { workspace = true }
 
+auth = { path = "../auth" }
 cache = { path = "../cache" }
 common = { path = "../runners/common" }
 database = { path = "../database" }

@@ -8,8 +8,7 @@ import {
   requestDataQueryOptions,
   requestQueryOptions,
 } from "@/api/requests";
-import RequestDataView from "@/components/request-data-view";
-import { SectionPanelHeader } from "@/components/section-panel-header";
+import { SectionPanelHeader, RequestDataView } from "@/components";
 import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Badge } from "@/components/ui/badge";
@@ -48,36 +47,38 @@ const HistoryComponent: React.FC = () => {
           </a>
         }
       />
-      <RequestDataView
-        data={requestData.data.reduce(
-          (acc, data) => {
-            acc[data.id] = {
-              source: {
-                id: data.sourceId || "",
-                slug: data.sourceSlug,
-                name: data.sourceName,
-                url: data.sourceUrl,
-                favicon: data.sourceFavicon,
-              },
-              timing: {
-                startedAt: data.startedAt,
-                endedAt: data.endedAt,
-              },
-              cache: {
-                action: data.cacheAction as DataCacheAction,
-                cachedAt: data.cacheCachedAt,
-                expiresAt: data.cacheExpiresAt,
-                cacheKey: data.cacheKey,
-              },
-              hasSourceCode: true,
-              errors: data.errors as SourceError[],
-              data: data.data,
-            };
-            return acc;
-          },
-          {} as { [key: string]: ReqestSSEData },
-        )}
-      />
+      <div className="overflow-y-auto">
+        <RequestDataView
+          data={requestData.data.reduce(
+            (acc, data) => {
+              acc[data.id] = {
+                source: {
+                  id: data.sourceId || "",
+                  slug: data.sourceSlug,
+                  name: data.sourceName,
+                  url: data.sourceUrl,
+                  favicon: data.sourceFavicon,
+                },
+                timing: {
+                  startedAt: data.startedAt,
+                  endedAt: data.endedAt,
+                },
+                cache: {
+                  action: data.cacheAction as DataCacheAction,
+                  cachedAt: data.cacheCachedAt,
+                  expiresAt: data.cacheExpiresAt,
+                  cacheKey: data.cacheKey,
+                },
+                hasSourceCode: true,
+                errors: data.errors as SourceError[],
+                data: data.data,
+              };
+              return acc;
+            },
+            {} as { [key: string]: ReqestSSEData },
+          )}
+        />
+      </div>
     </>
   );
 };
