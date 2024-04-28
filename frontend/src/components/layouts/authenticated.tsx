@@ -97,7 +97,7 @@ export const Layout: React.FC = () => {
       <div
         className={cn(
           "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out z-20",
-          isCollapsed && "w-14 min-w-14",
+          isCollapsed && "w-14 min-w-14"
         )}
       >
         <div>
@@ -107,7 +107,7 @@ export const Layout: React.FC = () => {
               "bg-primary/20 text-primary hover:bg-primary/10 flex h-[52px] items-center gap-2 whitespace-nowrap font-medium transition-all",
               isCollapsed ? "justify-center" : "px-4",
               page === "home" &&
-                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white",
+                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white"
             )}
             disabled={page === "home"}
           >
@@ -124,14 +124,14 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: <Trans id="requests" />,
+                title: t("requests"),
                 icon: Send,
                 to: "/request",
                 variant: page === "requests" ? "default" : "ghost",
                 preload: false,
               },
               {
-                title: <Trans id="history" />,
+                title: t("history"),
                 label: statsCount.data.history,
                 icon: History,
                 to: "/history",
@@ -146,21 +146,21 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: <Trans id="sources" />,
+                title: t("sources"),
                 label: statsCount.data.sources,
                 to: "/sources",
                 variant: page === "sources" ? "default" : "ghost",
                 icon: Database,
               },
               {
-                title: <Trans id="providers" />,
+                title: t("providers"),
                 label: statsCount.data.providers,
                 to: "/providers",
                 variant: page === "providers" ? "default" : "ghost",
                 icon: Globe,
               },
               {
-                title: <Trans id="ignore.lists" />,
+                title: t("ignore.lists"),
                 label: statsCount.data.ignoreLists,
                 to: "/lists",
                 variant: page === "ignore.lists" ? "default" : "ghost",
@@ -175,13 +175,13 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: <Trans id="config" />,
+                title: t("config"),
                 to: "/config",
                 variant: page === "config" ? "default" : "ghost",
                 icon: Cog,
               },
               {
-                title: <Trans id="users" />,
+                title: t("users"),
                 to: "/users",
                 variant: page === "users" ? "default" : "ghost",
                 icon: Users,
@@ -194,13 +194,13 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: <Trans id="tracing" />,
+                title: t("tracing"),
                 href: config.opentel_url,
                 variant: "ghost",
                 icon: GanttChart,
               },
               {
-                title: <Trans id="docs" />,
+                title: t("docs"),
                 to: "/docs",
                 variant: page === "docs" ? "default" : "ghost",
                 icon: BookOpenText,
@@ -231,28 +231,17 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: (
-                  <>
-                    <Trans id="change.to" /> {otherLang.lang.lang}
-                  </>
-                ),
+                title: t("change.to") + " " + otherLang.lang.lang,
                 icon: Languages,
                 onClick: toggle,
               },
               {
-                title:
-                  theme === "dark" ? (
-                    <Trans id="theme.light" />
-                  ) : theme === "light" ? (
-                    <Trans id="theme.dark" />
-                  ) : (
-                    <Trans id="theme.system" />
-                  ),
+                title: t(`theme.${theme}`),
                 icon: ThemeIcon[ThemeCycle[theme]],
                 onClick: () => setTheme((prev) => ThemeCycle[prev]),
               },
               {
-                title: <Trans id="logout" />,
+                title: t("logout"),
                 icon: LogOut,
                 to: "/logout",
                 preload: false,
@@ -263,7 +252,7 @@ export const Layout: React.FC = () => {
           <div
             className={cn(
               "bg-muted/50 flex  items-center gap-2 py-4",
-              isCollapsed ? "justify-center" : "px-4",
+              isCollapsed ? "justify-center" : "px-4"
             )}
           >
             <Avatar className="border">
@@ -285,7 +274,7 @@ export const Layout: React.FC = () => {
       <div
         className={cn(
           "flex h-full flex-col",
-          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]",
+          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]"
         )}
       >
         <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">

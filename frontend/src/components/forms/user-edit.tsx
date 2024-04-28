@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Power, Save } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
-import { SectionPanelHeader } from "@/components";
+import { SectionPanelHeader, Trans } from "@/components";
 import {
   Form,
   FormControl,
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { User } from "@/types/backendTypes";
 import { ArrayField } from "@/components/forms/inputs";
+import { useTranslation } from "@/i18n";
 
 const formSchema = z.object({
   enabled: z.boolean(),
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const UserEdit: React.FC<Props> = ({ user, onSubmit }) => {
+  const { t } = useTranslation();
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: { enabled: user.enabled, roles: user.roles },
@@ -61,7 +63,7 @@ const UserEdit: React.FC<Props> = ({ user, onSubmit }) => {
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
+                        field.value ? "bg-green-500" : "bg-red-500"
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -86,12 +88,12 @@ const UserEdit: React.FC<Props> = ({ user, onSubmit }) => {
                     form.reset();
                   }}
                 >
-                  Cancel
+                  <Trans id="cancel" />
                 </Button>
               </Link>
               <Button className="gap-2" size="sm" type="submit">
                 <Save size={16} />
-                Save
+                <Trans id="save" />
               </Button>
             </>
           }
@@ -101,9 +103,9 @@ const UserEdit: React.FC<Props> = ({ user, onSubmit }) => {
             // @ts-expect-error Lazy to fix - complains about the form not having the right type - unsure how to properly type it...
             control={form.control}
             name="roles"
-            label="Roles"
-            placeholder="E.g. admin"
-            addLabel="Add role"
+            label={t("roles")}
+            placeholder={`${t("e.g.")} admin`}
+            addLabel={t("roles.add")}
           />
         </div>
       </form>

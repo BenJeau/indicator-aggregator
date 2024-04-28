@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 import config from "@/config";
 import { sourceKindIconMapping } from "@/data";
+import { Trans } from "@/components";
 
 const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
   data: { slug, name, description, enabled, providerId, url, favicon, kind },
@@ -35,7 +36,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "w-8 h-8 rounded shadow border hidden",
-                !imgHasError && "xl:block",
+                !imgHasError && "xl:block"
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
@@ -59,7 +60,9 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
           <div className="text-sm">
             {description}
             {description.length === 0 && (
-              <div className="opacity-50 italic">no description</div>
+              <div className="opacity-50 italic lowercase">
+                <Trans id="no.description" />
+              </div>
             )}
           </div>
         </div>
@@ -69,7 +72,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               "p-1",
               enabled
                 ? "bg-green-500/20 hover:bg-green-500/20"
-                : "bg-red-500/20 hover:bg-red-500/20",
+                : "bg-red-500/20 hover:bg-red-500/20"
             )}
             variant="secondary"
           >

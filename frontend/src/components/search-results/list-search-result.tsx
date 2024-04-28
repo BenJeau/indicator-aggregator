@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { IgnoreList } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
+import { Trans } from "@/components";
 
 const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
   data: { slug, name, description, enabled, global },
@@ -30,7 +31,9 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
           {description}
 
           {description.length === 0 && (
-            <div className="opacity-50 italic">no description</div>
+            <div className="opacity-50 italic lowercase">
+              <Trans id="no.description" />
+            </div>
           )}
         </div>
       </div>
@@ -40,7 +43,7 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
             "p-1",
             enabled
               ? "bg-green-500/20 hover:bg-green-500/20"
-              : "bg-red-500/20 hover:bg-red-500/20",
+              : "bg-red-500/20 hover:bg-red-500/20"
           )}
           variant="secondary"
         >

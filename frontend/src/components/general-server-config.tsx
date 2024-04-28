@@ -14,7 +14,7 @@ import {
   ServerConfigKind,
   SourceKind,
 } from "@/types/backendTypes";
-import { Editor } from "@/components";
+import { Editor, Trans } from "@/components";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,
@@ -29,6 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useConfigUpdate } from "@/api/config";
+import { useTranslation } from "@/i18n";
 
 interface Props {
   config: ServerConfig;
@@ -39,7 +40,7 @@ const formSchema = z.object({
     z.object({
       key: z.string(),
       value: z.coerce.string().optional(),
-    }),
+    })
   ),
 });
 
@@ -48,6 +49,8 @@ export type FormSchema = z.infer<typeof formSchema>;
 type ServerConfigWithKey = ServerConfigEntry<unknown> & { key: string };
 
 const GeneralServerConfig: React.FC<Props> = ({ config }) => {
+  const { t } = useTranslation();
+
   const groupedConfig = useMemo(() => {
     return Object.entries(config).reduce(
       (acc, [key, curr], index) => {
@@ -57,7 +60,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
         acc[curr.category].push({ data: { ...curr, key }, index });
         return acc;
       },
-      {} as { [key: string]: { data: ServerConfigWithKey; index: number }[] },
+      {} as { [key: string]: { data: ServerConfigWithKey; index: number }[] }
     );
   }, [config]);
 
@@ -76,7 +79,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
   const handleOnSubmit = async (values: FormSchema) => {
     const changedValues = values.config.filter((value) => {
       const foundEntry = Object.entries(config).find(
-        ([key]) => key === value.key,
+        ([key]) => key === value.key
       );
 
       if (!foundEntry) {
@@ -87,7 +90,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
     });
 
     await configMutate.mutateAsync(changedValues);
-    toast.success("Config updated");
+    toast.success(t("config.updated"));
 
     form.reset(values);
   };
@@ -112,7 +115,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
         key,
         value: defaultValue,
       })),
-      { shouldDirty: true },
+      { shouldDirty: true }
     );
   };
 
@@ -150,7 +153,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
               type="button"
               onClick={revertToDefault}
             >
-              <Eraser size={16} /> Reset all to defaults
+              <Eraser size={16} /> <Trans id="reset.all.to.defaults" />
             </Button>
             <Button
               variant="secondary"
@@ -159,11 +162,11 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
               type="button"
               onClick={() => form.reset()}
             >
-              <Undo size={16} /> Undo changes
+              <Undo size={16} /> <Trans id="undo.changes" />
             </Button>
           </div>
           <Button variant="success" className="gap-2" disabled={!isFormDirty}>
-            <Save size={16} /> Save changes
+            <Save size={16} /> <Trans id="save.changes" />
           </Button>
         </div>
       </form>
@@ -193,7 +196,7 @@ const numberToGridCols = {
 };
 
 const calulcatorOfCols = (
-  data: ServerConfigWithKey[],
+  data: ServerConfigWithKey[]
 ): keyof typeof numberToGridCols => {
   const colCount = data.reduce((acc, curr) => {
     return acc + configGridColMapping[curr.kind];
@@ -239,7 +242,9 @@ const ConfigEntry: React.FC<{
                 </TooltipTrigger>
                 <TooltipContent>
                   <div>
-                    <strong>Last Updated</strong>
+                    <strong>
+                      <Trans id="last.updated" />
+                    </strong>
                   </div>
                   {dayjs.utc(updatedAt).local().format("LLL")}
                 </TooltipContent>
@@ -253,7 +258,9 @@ const ConfigEntry: React.FC<{
                 </TooltipTrigger>
                 <TooltipContent>
                   <div>
-                    <strong>Config Key</strong>
+                    <strong>
+                      <Trans id="config.key" />
+                    </strong>
                   </div>
                   <code>{key}</code>
                 </TooltipContent>
@@ -269,7 +276,7 @@ const ConfigEntry: React.FC<{
                   field.onChange(defaultValue);
                 }}
               >
-                <Eraser size={16} /> Reset to default
+                <Eraser size={16} /> <Trans id="reset.all.to.defaults" />
               </Button>
             )}
           </div>
