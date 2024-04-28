@@ -15,7 +15,7 @@ const TanStackRouterDevtools =
     : lazy(() =>
         import("@tanstack/router-devtools").then((res) => ({
           default: res.TanStackRouterDevtools,
-        }))
+        })),
       );
 
 const RootComponent: React.FC = () => (
@@ -33,5 +33,5 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     component: RootComponent,
     errorComponent: ({ error, info }) => <Error error={error} info={info} />,
-  }
+  },
 );

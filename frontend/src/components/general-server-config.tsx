@@ -39,7 +39,7 @@ const formSchema = z.object({
     z.object({
       key: z.string(),
       value: z.coerce.string().optional(),
-    })
+    }),
   ),
 });
 
@@ -57,7 +57,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
         acc[curr.category].push({ data: { ...curr, key }, index });
         return acc;
       },
-      {} as { [key: string]: { data: ServerConfigWithKey; index: number }[] }
+      {} as { [key: string]: { data: ServerConfigWithKey; index: number }[] },
     );
   }, [config]);
 
@@ -76,7 +76,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
   const handleOnSubmit = async (values: FormSchema) => {
     const changedValues = values.config.filter((value) => {
       const foundEntry = Object.entries(config).find(
-        ([key]) => key === value.key
+        ([key]) => key === value.key,
       );
 
       if (!foundEntry) {
@@ -112,7 +112,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
         key,
         value: defaultValue,
       })),
-      { shouldDirty: true }
+      { shouldDirty: true },
     );
   };
 
@@ -193,7 +193,7 @@ const numberToGridCols = {
 };
 
 const calulcatorOfCols = (
-  data: ServerConfigWithKey[]
+  data: ServerConfigWithKey[],
 ): keyof typeof numberToGridCols => {
   const colCount = data.reduce((acc, curr) => {
     return acc + configGridColMapping[curr.kind];

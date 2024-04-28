@@ -4,7 +4,7 @@ import { userAtom } from "@/atoms/auth";
 import { store } from "@/atoms";
 
 export type BeforeLoadFn = (
-  roles?: string[]
+  roles?: string[],
 ) => (opts: { location: ParsedLocation }) => void;
 
 export const beforeLoadAuthenticated: BeforeLoadFn =
@@ -35,7 +35,7 @@ export const parseJwt = (token: string) => {
       .map(function (c) {
         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       })
-      .join("")
+      .join(""),
   );
 
   return JSON.parse(jsonPayload);

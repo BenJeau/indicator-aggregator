@@ -57,7 +57,7 @@ const SourceComponent: React.FC = () => {
   const sourceIgnoreLists = useSuspenseQuery(sourceIgnoreListsQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
   const provider = useSuspenseQuery(
-    providerQueryOptions(source.data.providerId)
+    providerQueryOptions(source.data.providerId),
   );
   const sourceSecrets = useSuspenseQuery(sourceSecretsQueryOptions(id));
   const sourceRequests = useSuspenseQuery(sourceRequestsQueryOptions(id));
@@ -72,7 +72,7 @@ const SourceComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/sources/$slug/edit"),
-    [matches]
+    [matches],
   );
 
   const requiredSecret = sourceSecrets.data.filter((i) => i.required);
@@ -85,13 +85,13 @@ const SourceComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20"
+          isEdit && "blur-sm pointer-events-none select-none opacity-20",
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              source.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
+              source.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -120,7 +120,7 @@ const SourceComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
             )}
           >
             <div className="flex flex-wrap gap-2">
@@ -450,7 +450,7 @@ export const Route = createFileRoute("/sources/$slug")({
     await Promise.all([
       async () => {
         const { providerId } = await queryClient.ensureQueryData(
-          sourceQueryOptions(id)
+          sourceQueryOptions(id),
         );
         await queryClient.ensureQueryData(providerQueryOptions(providerId));
       },

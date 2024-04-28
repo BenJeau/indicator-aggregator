@@ -20,7 +20,7 @@ type DataOptions = GenericOptions & {
 const axiosKiller = async <T>(
   endpoint: string,
   method: "POST" | "GET" | "PATCH" | "DELETE" | "PUT",
-  options?: DataOptions
+  options?: DataOptions,
 ) => {
   const token = store.get(userAtom)?.token;
 

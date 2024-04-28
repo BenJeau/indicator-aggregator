@@ -77,8 +77,8 @@ function ArrayField<
                       onClick={() => {
                         field.onChange(
                           (field.value as string[]).filter(
-                            (_, i) => i !== index
-                          )
+                            (_, i) => i !== index,
+                          ),
                         );
                       }}
                       type="button"

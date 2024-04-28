@@ -17,7 +17,7 @@ const RequestComponent: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
 
   const [mutationData, setMutationData] = useState<ModifiedRequest | undefined>(
-    undefined
+    undefined,
   );
 
   const request = useRequest(mutationData);
@@ -34,7 +34,7 @@ const RequestComponent: React.FC = () => {
     if (search.kind !== undefined && search.kind in IndicatorKind) {
       ref.current?.form?.setValue(
         "indicatorKind",
-        search.kind as IndicatorKind
+        search.kind as IndicatorKind,
       );
     } else {
       ref.current?.form?.resetField("indicatorKind");
@@ -57,7 +57,7 @@ const RequestComponent: React.FC = () => {
       if (search.kind in IndicatorKind) {
         ref.current?.form?.setValue(
           "indicatorKind",
-          search.kind as IndicatorKind
+          search.kind as IndicatorKind,
         );
       }
 

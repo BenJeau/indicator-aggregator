@@ -24,10 +24,10 @@ const ProviderEditComponent: React.FC = () => {
 
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
-    providerQueryOptions(id)
+    providerQueryOptions(id),
   ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
-    providerIgnoreListsQueryOptions(id)
+    providerIgnoreListsQueryOptions(id),
   );
   const providerSources = useSuspenseQuery(providerSourcesQueryOptions(id));
 
@@ -85,7 +85,7 @@ export const Route = createFileRoute("/providers/$slug/edit")({
   component: ProviderEditComponent,
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      providerSlugQueryOptions(slug)
+      providerSlugQueryOptions(slug),
     );
 
     if (!id) {

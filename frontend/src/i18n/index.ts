@@ -15,7 +15,7 @@ export const useTranslation = () => {
   const t = useCallback((id: TransId) => languages[lang].file[id], [lang]);
   const toggle = useCallback(
     () => setLang((prev) => languages[prev].other),
-    [setLang]
+    [setLang],
   );
 
   return { lang: languages[lang], t, toggle, otherLang };

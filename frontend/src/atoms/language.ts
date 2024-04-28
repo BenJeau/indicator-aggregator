@@ -3,5 +3,5 @@ import { atomWithLocalStorage } from "@/atoms";
 
 export const languageAtom = atomWithLocalStorage<LanguageKeys>(
   "language",
-  "en_CA"
+  "en_CA",
 );

@@ -33,7 +33,7 @@ const UserSearchResult: React.FC<
             "p-1",
             enabled
               ? "bg-green-500/20 hover:bg-green-500/20"
-              : "bg-red-500/20 hover:bg-red-500/20"
+              : "bg-red-500/20 hover:bg-red-500/20",
           )}
           variant="secondary"
         >

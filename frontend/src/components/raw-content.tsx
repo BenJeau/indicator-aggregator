@@ -21,7 +21,7 @@ const RawContent: React.FC<{
     <div
       className={cn(
         "relative flex h-full w-full flex-1 overflow-hidden rounded border bg-muted shadow-md ring-white dark:border-800 dark:bg-950",
-        className
+        className,
       )}
     >
       <div className="flex h-full max-h-[400px] min-h-[1.5rem] flex-1 text-xs dark:bg-black/50">

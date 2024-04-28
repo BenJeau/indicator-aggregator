@@ -30,7 +30,7 @@ const CopyButton: React.FC<Props> = ({
       className={cn(
         "dark:bg-black-50 bg-white/50 backdrop-blur-md",
         copied ? "bg-green-300/50 text-green-700" : "",
-        className
+        className,
       )}
       size="sm"
       disabled={!text}

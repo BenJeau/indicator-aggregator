@@ -61,7 +61,7 @@ const UserEdit: React.FC<Props> = ({ user, onSubmit }) => {
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500"
+                        field.value ? "bg-green-500" : "bg-red-500",
                       )}
                       onClick={() => {
                         field.onChange(!field.value);

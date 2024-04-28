@@ -12,5 +12,5 @@ interface User {
 
 export const userAtom = atomWithLocalStorage<User | undefined>(
   "user",
-  undefined
+  undefined,
 );

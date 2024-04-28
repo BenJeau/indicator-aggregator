@@ -26,7 +26,7 @@ const ListEditComponent: React.FC = () => {
   const ignoreListEntries = useSuspenseQuery(ignoreListEntriesQueryOptions(id));
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
   const ignoreListProviders = useSuspenseQuery(
-    ignoreListProvidersQueryOptions(id)
+    ignoreListProvidersQueryOptions(id),
   );
 
   const patchIgnoreList = useIgnoreListPatch();
@@ -90,7 +90,7 @@ export const Route = createFileRoute("/lists/$slug/edit")({
   component: ListEditComponent,
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      ignoreListSlugQueryOptions(slug)
+      ignoreListSlugQueryOptions(slug),
     );
 
     if (!id) {
