@@ -56,7 +56,7 @@ export const Source: React.FC<ReqestSSEData> = ({
         "col-span-12 flex flex-col gap-2 2xl:col-span-6",
         !shouldHaveData &&
           "border-destructive justify-center rounded-md border bg-red-500/20 px-2 py-1 md:col-span-6 2xl:col-span-4",
-        !hasSourceCode && "opacity-50 grayscale",
+        !hasSourceCode && "opacity-50 grayscale"
       )}
     >
       <div className="flex items-center justify-between">
@@ -70,7 +70,7 @@ export const Source: React.FC<ReqestSSEData> = ({
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "min-h-4 w-4 min-w-4 rounded border shadow",
-                imgHasError && "hidden",
+                imgHasError && "hidden"
               )}
               onError={() => setImgHasError(true)}
               onLoad={() => setImgHasError(false)}
@@ -156,7 +156,7 @@ export const Source: React.FC<ReqestSSEData> = ({
                     Icon={Hourglass}
                     label="Elapsed"
                     valueBadgeProps={{
-                      variant: diff > 500 ? "destructive" : "success",
+                      variant: diff > 1000 ? "destructive" : "success",
                     }}
                     value={getElapsedTime(diff)}
                   />
