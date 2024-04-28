@@ -81,5 +81,13 @@
   "theme.system": "System theme",
   "change.to": "Changer au",
   "entry": "Entry",
-  "welcome": "Welcome"
+  "welcome": "Welcome",
+  "table.pagination.rows.per.page": "Rows per page",
+  "table.pagination.page.counter": "Page {page} of {total}",
+  "table.pagination.go.to.first.page": "Go to first page",
+  "table.pagination.go.to.previous.page": "Go to previous page",
+  "table.pagination.go.to.next.page": "Go to next page",
+  "table.pagination.go.to.last.page": "Go to last page",
+  "pick.a.date": "Pick a date",
+  "unknown.error": "Unknown error"
 }

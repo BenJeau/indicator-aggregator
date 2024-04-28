@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { TrainFrontTunnel } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Icons, Layouts, Trans } from "@/components";
 import { getRandomBackground } from "@/assets";
+import { store } from "@/atoms";
+import { userAtom } from "@/atoms/auth";
 
 const Login: React.FC = () => {
   const { next } = Route.useSearch();
@@ -89,5 +91,12 @@ type SearchParams = {
 
 export const Route = createFileRoute("/login")({
   component: Login,
+  beforeLoad: () => {
+    const user = store.get(userAtom);
+
+    if (user) {
+      throw redirect({ to: "/" });
+    }
+  },
   validateSearch: (search: SearchParams): SearchParams => search,
 });

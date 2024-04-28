@@ -81,5 +81,13 @@
   "theme.system": "Thème système",
   "change.to": "Change to",
   "entry": "Entrée",
-  "welcome": "Bienvenue"
+  "welcome": "Bienvenue",
+  "table.pagination.rows.per.page": "Rangées par page",
+  "table.pagination.page.counter": "Page {page} de {total}",
+  "table.pagination.go.to.first.page": "Aller à la première page",
+  "table.pagination.go.to.previous.page": "Aller à la page précédente",
+  "table.pagination.go.to.next.page": "Aller à la page suivante",
+  "table.pagination.go.to.last.page": "Aller à la dernière page",
+  "pick.a.date": "Choisissez une date",
+  "unknown.error": "Erreur inconnue"
 }

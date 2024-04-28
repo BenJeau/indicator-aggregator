@@ -1,5 +1,6 @@
 import { Computer, LucideIcon, Moon, Sun } from "lucide-react";
-import { atom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
 
 import { atomWithLocalStorage } from "@/atoms";
 
@@ -35,4 +36,31 @@ export const ThemeIcon: { [key in Theme]: LucideIcon } = {
   dark: Moon,
   light: Sun,
   system: Computer,
+};
+
+export const useUpdateTheme = () => {
+  const rawTheme = useAtomValue(themeAtom);
+  const theme = useAtomValue(computedTheme);
+  const setSystemTheme = useSetAtom(systemThemeAtom);
+
+  useEffect(() => {
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", ({ matches }) => {
+        if (rawTheme !== "system") return;
+        if (matches) {
+          setSystemTheme("dark");
+        } else {
+          setSystemTheme("light");
+        }
+      });
+  }, [setSystemTheme, rawTheme]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+  }, [theme]);
+
+  return null;
 };

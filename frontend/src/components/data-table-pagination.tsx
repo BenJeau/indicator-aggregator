@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Trans } from "@/components";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -24,7 +25,9 @@ const DataTablePagination = <TData,>({
 }: DataTablePaginationProps<TData>) => (
   <div className="px-2 flex items-center self-end space-x-6 lg:space-x-8">
     <div className="flex items-center space-x-2">
-      <p className="text-sm font-medium">Rows per page</p>
+      <p className="text-sm font-medium">
+        <Trans id="table.pagination.rows.per.page" />
+      </p>
       <Select
         value={`${table.getState().pagination.pageSize}`}
         onValueChange={(value) => {
@@ -44,7 +47,11 @@ const DataTablePagination = <TData,>({
       </Select>
     </div>
     <div className="flex min-w-[100px] items-center justify-center text-sm font-medium">
-      Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+      <Trans
+        id="table.pagination.page.counter"
+        page={table.getState().pagination.pageIndex + 1}
+        total={table.getPageCount()}
+      />
     </div>
     <div className="flex items-center space-x-2">
       <Button
@@ -53,7 +60,9 @@ const DataTablePagination = <TData,>({
         onClick={() => table.setPageIndex(0)}
         disabled={!table.getCanPreviousPage()}
       >
-        <span className="sr-only">Go to first page</span>
+        <span className="sr-only">
+          <Trans id="table.pagination.go.to.first.page" />
+        </span>
         <DoubleArrowLeftIcon className="h-4 w-4" />
       </Button>
       <Button
@@ -62,7 +71,9 @@ const DataTablePagination = <TData,>({
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
       >
-        <span className="sr-only">Go to previous page</span>
+        <span className="sr-only">
+          <Trans id="table.pagination.go.to.previous.page" />
+        </span>
         <ChevronLeftIcon className="h-4 w-4" />
       </Button>
       <Button
@@ -71,7 +82,9 @@ const DataTablePagination = <TData,>({
         onClick={() => table.nextPage()}
         disabled={!table.getCanNextPage()}
       >
-        <span className="sr-only">Go to next page</span>
+        <span className="sr-only">
+          <Trans id="table.pagination.go.to.next.page" />
+        </span>
         <ChevronRightIcon className="h-4 w-4" />
       </Button>
       <Button
@@ -80,7 +93,9 @@ const DataTablePagination = <TData,>({
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
         disabled={!table.getCanNextPage()}
       >
-        <span className="sr-only">Go to last page</span>
+        <span className="sr-only">
+          <Trans id="table.pagination.go.to.last.page" />
+        </span>
         <DoubleArrowRightIcon className="h-4 w-4" />
       </Button>
     </div>
