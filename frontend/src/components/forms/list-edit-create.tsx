@@ -536,6 +536,7 @@ const ListEditCreate: React.FC<Props> = ({
                                   variant="destructive"
                                   onClick={() => entryFormFields.remove(index)}
                                   disabled={entryFormFields.fields.length === 1}
+                                  type="button"
                                 >
                                   <Trash2 size={14} />
                                 </Button>
