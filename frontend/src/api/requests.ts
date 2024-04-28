@@ -82,7 +82,10 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
                 handleFetchingData(event, queryKey);
               }
             },
-          },
+            onclose: () => {
+              resolve(queryClient.getQueryData(queryKey) ?? {});
+            },
+          }
         );
       }),
   });
@@ -166,7 +169,7 @@ const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
         },
       },
     }),
-    {} as RequestData,
+    {} as RequestData
   );
 
   queryClient.setQueryData<RequestData>(queryKey, () => newData);
