@@ -22,5 +22,22 @@
   "logout": "Déconnexion",
   "or": "ou",
   "refresh": "Rafraîchir",
-  "toggle.theme": "Changer de thème"
+  "toggle.theme": "Changer de thème",
+  "name": "Nom",
+  "description": "Description",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "save": "Sauvegarder",
+  "sources": "Sources",
+  "sources.select.placeholder": "Sélectionner une source",
+  "providers": "Fournisseurs",
+  "providers.select.placeholder": "Sélectionner un fournisseur",
+  "entries": "Entrées",
+  "data": "Data",
+  "kind": "Type",
+  "no.results": "Aucun résultat",
+  "add.entry": "Ajouter une entrée",
+  "delete.confirmation.title": "Êtes-vous certain?",
+  "ignore.list.delete.confirmation.description": "Cette action est irrévesible. Cela fera de {name} une liste d'ignorés de façon permanente.",
+  "ignore.list.global.checkbox.label": "Activer la liste d'ignorés globalement pour toutes les sources"
 }

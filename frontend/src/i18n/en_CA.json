@@ -22,5 +22,22 @@
   "logout": "Logout",
   "or": "or",
   "refresh": "Refresh",
-  "toggle.theme": "Toggle theme"
+  "toggle.theme": "Toggle theme",
+  "name": "Name",
+  "description": "Description",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "save": "Save",
+  "sources": "Sources",
+  "sources.select.placeholder": "Select a source",
+  "providers": "Providers",
+  "providers.select.placeholder": "Select a provider",
+  "entries": "Entries",
+  "data": "Data",
+  "kind": "Kind",
+  "no.results": "No results",
+  "add.entry": "Add entry",
+  "delete.confirmation.title": "Are you absolutely sure?",
+  "ignore.list.delete.confirmation.description": "This action cannot be undone. This will permanently {name} as an ignore list.",
+  "ignore.list.global.checkbox.label": "Enable ignore list globally for all sources"
 }

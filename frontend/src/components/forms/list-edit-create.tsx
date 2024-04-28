@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
 import { IgnoreList, IndicatorKind } from "@/types/backendTypes";
-import { SectionPanelHeader } from "@/components";
+import { SectionPanelHeader, Trans } from "@/components";
 import {
   Form,
   FormControl,
@@ -59,19 +59,19 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   providers: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   entries: z.array(
     z.object({
       data: z.string().min(1),
       indicatorKind: z.string().min(1),
-    }),
+    })
   ),
 });
 
@@ -129,7 +129,7 @@ const ListEditCreate: React.FC<Props> = ({
       ...list,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    []
   );
 
   const form = useForm<FormSchema>({
@@ -169,7 +169,7 @@ const ListEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
+                        field.value ? "bg-green-500" : "bg-red-500"
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -189,7 +189,9 @@ const ListEditCreate: React.FC<Props> = ({
               name="name"
               render={({ field }) => (
                 <FormItem className="text-sm">
-                  <FormLabel className="text-xs">Name</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="name" />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="h-8"
@@ -208,7 +210,9 @@ const ListEditCreate: React.FC<Props> = ({
               name="description"
               render={({ field }) => (
                 <FormItem className="flex-1 text-sm">
-                  <FormLabel className="text-xs">Description</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="description" />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="h-8"
@@ -232,35 +236,44 @@ const ListEditCreate: React.FC<Props> = ({
                     form.reset();
                   }}
                 >
-                  Cancel
+                  <Trans id="cancel" />
                 </Button>
               </Link>
               {list && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm" className="gap-2">
-                      <Trash size={16} /> Delete
+                      <Trash size={16} />
+                      <Trans id="delete" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogTitle>
+                        <Trans id="delete.confirmation.title" />
+                      </DialogTitle>
                       <DialogDescription>
-                        This action cannot be undone. This will permanently{" "}
-                        <span className="font-semibold">{list.name}</span> as an
-                        ignore list.
+                        <Trans
+                          id="ignore.list.delete.confirmation.description"
+                          name={
+                            <span className="font-semibold">{list.name}</span>
+                          }
+                        />
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <DialogPrimitive.Close asChild>
-                        <Button variant="secondary">Cancel</Button>
+                        <Button variant="secondary">
+                          <Trans id="cancel" />
+                        </Button>
                       </DialogPrimitive.Close>
                       <Button
                         variant="destructive"
                         className="gap-2"
                         onClick={onDelete}
                       >
-                        <Trash size={16} /> Delete
+                        <Trash size={16} />
+                        <Trans id="delete" />
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -268,7 +281,7 @@ const ListEditCreate: React.FC<Props> = ({
               )}
               <Button className="gap-2" size="sm" type="submit">
                 <Save size={16} />
-                Save
+                <Trans id="save" />
               </Button>
             </>
           }
@@ -291,7 +304,7 @@ const ListEditCreate: React.FC<Props> = ({
                         onCheckedChange={field.onChange}
                       />
                       <Label htmlFor={field.name} className="text-xs">
-                        Enable ignore list globally for all sources
+                        <Trans id="ignore.list.global.checkbox.label" />
                       </Label>
                     </div>
                   </FormControl>
@@ -307,7 +320,7 @@ const ListEditCreate: React.FC<Props> = ({
                   const availableSources =
                     listSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id),
+                        !field.value.some((source) => source.id === id)
                     ) || [];
 
                   return (
@@ -318,7 +331,7 @@ const ListEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = listSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name,
+                                ({ name: sourceName }) => sourceName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -326,7 +339,11 @@ const ListEditCreate: React.FC<Props> = ({
                             disabled={availableSources.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a source" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="sources.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableSources.map((source) => (
@@ -347,8 +364,8 @@ const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -373,18 +390,20 @@ const ListEditCreate: React.FC<Props> = ({
                   const availableProviders =
                     listProviders.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Providers</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="providers" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
                               const id = listProviders.data?.find(
-                                ({ name: listName }) => listName === name,
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -392,7 +411,11 @@ const ListEditCreate: React.FC<Props> = ({
                             disabled={availableProviders.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a provider" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="providers.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableProviders.map(({ id, name }) => (
@@ -413,8 +436,8 @@ const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -435,15 +458,21 @@ const ListEditCreate: React.FC<Props> = ({
             </div>
 
             <FormItem className="text-sm">
-              <FormLabel className="text-xs">Entries</FormLabel>
+              <FormLabel className="text-xs">
+                <Trans id="entries" />
+              </FormLabel>
               <FormControl>
                 <div className="flex flex-col gap-2">
                   <div className="rounded-md border">
                     <Table className="table-fixed">
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Data</TableHead>
-                          <TableHead>Kind</TableHead>
+                          <TableHead>
+                            <Trans id="data" />
+                          </TableHead>
+                          <TableHead>
+                            <Trans id="kind" />
+                          </TableHead>
                           <TableHead style={{ width: 50 }}></TableHead>
                         </TableRow>
                       </TableHeader>
@@ -491,7 +520,7 @@ const ListEditCreate: React.FC<Props> = ({
                                                 >
                                                   {value}
                                                 </SelectItem>
-                                              ),
+                                              )
                                             )}
                                           </SelectContent>
                                         </Select>
@@ -516,7 +545,7 @@ const ListEditCreate: React.FC<Props> = ({
                         ) : (
                           <TableRow>
                             <TableCell colSpan={3} className="h-24 text-center">
-                              No results.
+                              <Trans id="no.results" />
                             </TableCell>
                           </TableRow>
                         )}
@@ -533,7 +562,7 @@ const ListEditCreate: React.FC<Props> = ({
                     }
                   >
                     <Plus size={16} />
-                    Add entry
+                    <Trans id="add.entry" />
                   </Button>
                 </div>
               </FormControl>
