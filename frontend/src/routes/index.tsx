@@ -31,6 +31,7 @@ import {
   StackedAreaChart,
   SearchResults,
   Forms,
+  Trans,
 } from "@/components";
 import { beforeLoadAuthenticated } from "@/auth";
 import { userAtom } from "@/atoms/auth";
@@ -40,16 +41,16 @@ const IndexComponent: React.FC = () => {
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const requests = useSuspenseQuery(requestsQueryOptions);
   const statsCountRequestsBySources = useSuspenseQuery(
-    statsCountRequestsBySourcesQueryOptions,
+    statsCountRequestsBySourcesQueryOptions
   );
   const statsCountRequestsByProviders = useSuspenseQuery(
-    statsCountRequestsByProvidersQueryOptions,
+    statsCountRequestsByProvidersQueryOptions
   );
   const statsCountRequestsByHour = useSuspenseQuery(
-    statsCountRequestsByHourQueryOptions,
+    statsCountRequestsByHourQueryOptions
   );
   const statsCountRequestsByKinds = useSuspenseQuery(
-    statsCountRequestsByKindsQueryOptions,
+    statsCountRequestsByKindsQueryOptions
   );
   const user = useAtomValue(userAtom);
 
@@ -60,7 +61,9 @@ const IndexComponent: React.FC = () => {
   return (
     <>
       <div className="p-4">
-        <h3 className="text-xl font-semibold">Welcome {user?.name}!</h3>
+        <h3 className="text-xl font-semibold">
+          <Trans id="welcome" /> {user?.name}!
+        </h3>
         <p>
           Start requesting data from our various sources below or take a sneak
           peak at the various stats of the system

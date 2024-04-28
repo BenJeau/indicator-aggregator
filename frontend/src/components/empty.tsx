@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 
 interface Props {
-  title: string;
-  description: string;
+  title: React.ReactNode;
+  description: React.ReactNode;
   image?: React.ImgHTMLAttributes<HTMLImageElement>["src"];
   imageWidth?: number;
   extra?: React.ReactNode;
@@ -20,7 +20,7 @@ const Empty: React.FC<Props> = ({
   <div
     className={cn(
       "flex flex-col gap-2 items-center justify-center flex-1 self-center justify-self-center p-4",
-      className,
+      className
     )}
   >
     {image && <img src={image} width={imageWidth} />}

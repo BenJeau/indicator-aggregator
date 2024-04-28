@@ -21,7 +21,7 @@ import {
 import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -37,48 +37,23 @@ import {
 } from "@/components/ui/popover";
 import TitleEntryCount from "@/components/title-entry-count";
 import { notificationsQueryOptions } from "@/api/notifications";
-import { Empty, Nav } from "@/components";
+import { Empty, Nav, Trans } from "@/components";
 import NotifcationEmpty from "@/assets/resting-two-color.svg";
 import config from "@/config";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { userAtom } from "@/atoms/auth";
-import { languageAtom } from "@/atoms/language";
+import { useTranslation } from "@/i18n";
 
 type Page =
   | "home"
-  | "request"
+  | "requests"
   | "sources"
   | "history"
   | "docs"
   | "providers"
   | "config"
-  | "lists"
+  | "ignore.lists"
   | "users";
-
-const PageDescription: { [key in Page]: string } = {
-  home: "Overview of the Indicator Aggregator",
-  request:
-    "Make requests against all available sources for the specified indicator and it's kind",
-  history: "View the history of all the requests made",
-  sources: "Providing a variety of data for the different indicators",
-  docs: "View the documentation about the Indicator Aggregator REST and gRPC APIs, alongside how to configure and create sources",
-  providers: "Organisations that provides data for the different sources",
-  config: "Global server configuration",
-  lists: "Set of lists of indicators to ignore",
-  users: "Manage users and their roles",
-};
-
-const PageTitle: { [key in Page]: string } = {
-  home: "Home",
-  request: "Request",
-  history: "History",
-  sources: "Sources",
-  docs: "Documentation",
-  providers: "Providers",
-  config: "Configuration",
-  lists: "Ignore lists",
-  users: "Users",
-};
 
 export const Layout: React.FC = () => {
   const [isButtonCollapsed, setIsButtonCollapsed] = useState(false);
@@ -86,17 +61,17 @@ export const Layout: React.FC = () => {
   const [theme, setTheme] = useAtom(themeAtom);
   const windowWidth = useWindowWidth();
   const auth = useAtomValue(userAtom);
-  const setLanguage = useSetAtom(languageAtom);
+  const { t, toggle, otherLang } = useTranslation();
 
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const notifications = useSuspenseQuery(notificationsQueryOptions);
 
   const page: Page | undefined = useMemo(() => {
-    if (location.pathname.startsWith("/request")) return "request";
+    if (location.pathname.startsWith("/request")) return "requests";
     if (location.pathname.startsWith("/history")) return "history";
     if (location.pathname.startsWith("/sources")) return "sources";
     if (location.pathname.startsWith("/providers")) return "providers";
-    if (location.pathname.startsWith("/lists")) return "lists";
+    if (location.pathname.startsWith("/lists")) return "ignore.lists";
     if (location.pathname.startsWith("/config")) return "config";
     if (location.pathname.startsWith("/docs")) return "docs";
     if (location.pathname.startsWith("/users")) return "users";
@@ -106,7 +81,7 @@ export const Layout: React.FC = () => {
 
   useEffect(() => {
     document.title = page
-      ? `${PageTitle[page]} - Indicator Aggregator`
+      ? `${t(page)} - Indicator Aggregator`
       : "Indicator Aggregator";
   }, [page]);
 
@@ -149,14 +124,14 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: "Request",
+                title: <Trans id="requests" />,
                 icon: Send,
                 to: "/request",
-                variant: page === "request" ? "default" : "ghost",
+                variant: page === "requests" ? "default" : "ghost",
                 preload: false,
               },
               {
-                title: "History",
+                title: <Trans id="history" />,
                 label: statsCount.data.history,
                 icon: History,
                 to: "/history",
@@ -171,24 +146,24 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: "Sources",
+                title: <Trans id="sources" />,
                 label: statsCount.data.sources,
                 to: "/sources",
                 variant: page === "sources" ? "default" : "ghost",
                 icon: Database,
               },
               {
-                title: "Providers",
+                title: <Trans id="providers" />,
                 label: statsCount.data.providers,
                 to: "/providers",
                 variant: page === "providers" ? "default" : "ghost",
                 icon: Globe,
               },
               {
-                title: "Ignore lists",
+                title: <Trans id="ignore.lists" />,
                 label: statsCount.data.ignoreLists,
                 to: "/lists",
-                variant: page === "lists" ? "default" : "ghost",
+                variant: page === "ignore.lists" ? "default" : "ghost",
                 icon: ScrollText,
               },
             ]}
@@ -200,13 +175,13 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: "Server config",
+                title: <Trans id="config" />,
                 to: "/config",
                 variant: page === "config" ? "default" : "ghost",
                 icon: Cog,
               },
               {
-                title: "Users",
+                title: <Trans id="users" />,
                 to: "/users",
                 variant: page === "users" ? "default" : "ghost",
                 icon: Users,
@@ -219,13 +194,13 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: "Tracing",
+                title: <Trans id="tracing" />,
                 href: config.opentel_url,
                 variant: "ghost",
                 icon: GanttChart,
               },
               {
-                title: "Documentation",
+                title: <Trans id="docs" />,
                 to: "/docs",
                 variant: page === "docs" ? "default" : "ghost",
                 icon: BookOpenText,
@@ -240,9 +215,9 @@ export const Layout: React.FC = () => {
             links={[
               {
                 title:
-                  (isCollapsed ? "Expand" : "Collapse") +
+                  t(isCollapsed ? "expand" : "collapse") +
                   " nav" +
-                  (shouldBeCollapsed ? " (screen too small)" : ""),
+                  (shouldBeCollapsed ? " (" + t("screen.too.small") + ")" : ""),
                 icon: isCollapsed ? ChevronsRight : ChevronsLeft,
                 onClick: togglePanel,
                 disabled: shouldBeCollapsed,
@@ -256,23 +231,28 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
-                title: "Change language",
+                title: (
+                  <>
+                    <Trans id="change.to" /> {otherLang.lang.lang}
+                  </>
+                ),
                 icon: Languages,
-                onClick: () =>
-                  setLanguage((prev) => (prev === "en_CA" ? "fr_CA" : "en_CA")),
+                onClick: toggle,
               },
               {
                 title:
-                  theme === "dark"
-                    ? "Light theme"
-                    : theme === "light"
-                      ? "System theme"
-                      : "Dark theme",
+                  theme === "dark" ? (
+                    <Trans id="theme.light" />
+                  ) : theme === "light" ? (
+                    <Trans id="theme.dark" />
+                  ) : (
+                    <Trans id="theme.system" />
+                  ),
                 icon: ThemeIcon[ThemeCycle[theme]],
                 onClick: () => setTheme((prev) => ThemeCycle[prev]),
               },
               {
-                title: "Logout",
+                title: <Trans id="logout" />,
                 icon: LogOut,
                 to: "/logout",
                 preload: false,
@@ -311,13 +291,13 @@ export const Layout: React.FC = () => {
         <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">
           <div className="flex items-baseline gap-2 overflow-hidden">
             <h1 className="whitespace-nowrap text-xl font-bold">
-              {page && PageTitle[page]}
+              {page && t(page)}
             </h1>
             <p
               className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs opacity-70"
-              title={page && PageDescription[page]}
+              title={page && t(`layout.${page}.description`)}
             >
-              {page && PageDescription[page]}
+              {page && t(`layout.${page}.description`)}
             </p>
           </div>
           <div className="flex gap-2">
@@ -348,7 +328,7 @@ export const Layout: React.FC = () => {
                 className="min-w-96 overflow-hidden p-0"
               >
                 <h2 className="bg-background flex items-baseline gap-2 border-b p-2 font-semibold">
-                  Notifications
+                  <Trans id="notifications" />
                   <TitleEntryCount
                     count={notifications.data.length}
                     className="font-normal"
@@ -363,18 +343,22 @@ export const Layout: React.FC = () => {
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex flex-col">
                               <h3 className="text-sm">
-                                Missing required source secret
+                                <Trans id="notification.missing.secrets.title" />
                               </h3>
                               <p className="text-xs opacity-50">
-                                Need to link{" "}
-                                <span className="font-semibold">
-                                  {content.name}
-                                </span>{" "}
-                                with{" "}
-                                <span className="font-semibold">
-                                  {content.numMissingSecrets}
-                                </span>{" "}
-                                secrets
+                                <Trans
+                                  id="notification.missing.secrets.description"
+                                  name={
+                                    <span className="font-semibold">
+                                      {content.name}
+                                    </span>
+                                  }
+                                  number={
+                                    <span className="font-semibold">
+                                      {content.numMissingSecrets}
+                                    </span>
+                                  }
+                                />
                               </p>
                             </div>
                             <PopoverClose asChild>
@@ -397,8 +381,8 @@ export const Layout: React.FC = () => {
                     <Empty
                       image={NotifcationEmpty}
                       imageWidth={150}
-                      title="No notifications"
-                      description="Everything is smooth sailing"
+                      title={<Trans id="no.notifications.title" />}
+                      description={<Trans id="no.notifications.description" />}
                       className="my-8"
                     />
                   )}

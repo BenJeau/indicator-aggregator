@@ -15,18 +15,12 @@ const Text: React.FC<Props> = ({ id, ...props }) => {
     return text;
   }
 
-  return Object.keys(props).reduce((prev, key) => {
-    return prev.split(`{${key}}`).map((part, i, arr) => {
-      return i < arr.length - 1 ? (
-        <>
-          {part}
-          {props[key]}
-        </>
-      ) : (
-        part
-      );
-    });
-  }, text);
+  return text.split(valueRegex).map((part) => {
+    if (part in props) {
+      return props[part];
+    }
+    return part;
+  });
 };
 
 export default Text;
