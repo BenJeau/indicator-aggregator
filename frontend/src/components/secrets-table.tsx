@@ -186,7 +186,7 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                               <Input
                                 {...field}
                                 placeholder={t(
-                                  "secrets.table.description.placholder"
+                                  "secrets.table.description.placholder",
                                 )}
                                 className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                               />
