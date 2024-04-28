@@ -1,8 +1,9 @@
 import { Home, Languages } from "lucide-react";
 import { Link, Outlet } from "@tanstack/react-router";
+import { useAtom } from "jotai";
 
 import { Button } from "@/components/ui/button";
-import { ThemeCycle, ThemeIcon, useTheme } from "@/components/theme-provider";
+import { ThemeCycle, ThemeIcon, themeAtom } from "@/atoms/theme";
 import Trans from "@/components/trans";
 import { useTranslation } from "@/i18n";
 
@@ -13,7 +14,7 @@ export const Layout: React.FC = () => (
 );
 
 export const Footer: React.FC<{ showHome?: boolean }> = ({ showHome }) => {
-  const { toggleTheme, theme } = useTheme();
+  const [theme, setTheme] = useAtom(themeAtom);
   const { toggle, otherLang } = useTranslation();
 
   const Icon = ThemeIcon[ThemeCycle[theme]];
@@ -35,7 +36,7 @@ export const Footer: React.FC<{ showHome?: boolean }> = ({ showHome }) => {
         <Button
           variant="link"
           className="gap-2 lowercase"
-          onClick={toggleTheme}
+          onClick={() => setTheme((prev) => ThemeCycle[prev])}
         >
           <Icon size={16} />
           <span>

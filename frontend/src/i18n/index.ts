@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useAtom } from "jotai";
 
-import { languageAtom } from "@/atoms/user";
+import { languageAtom } from "@/atoms/language";
 
 import { Language, languages, TransId } from "./lang";
 

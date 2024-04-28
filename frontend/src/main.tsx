@@ -2,7 +2,7 @@ import React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
-import { Loader } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import * as Sentry from "@sentry/react";
 
 import "./index.css";
@@ -41,7 +41,7 @@ export function Spinner({
           : "duration-500 opacity-0 delay-0"
       }`}
     >
-      <Loader />
+      <LoaderCircle />
     </div>
   );
 }
@@ -50,9 +50,7 @@ export function Spinner({
 export const router = createRouter({
   routeTree,
   defaultPendingComponent: () => (
-    <div className={`p-2 text-2xl`}>
-      <Spinner />
-    </div>
+    <div className="p-2 text-2xl mx-auto">{/* <Spinner /> */}</div>
   ),
   context: {
     queryClient,

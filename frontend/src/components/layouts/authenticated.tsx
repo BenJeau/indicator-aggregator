@@ -20,12 +20,12 @@ import {
 import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ThemeCycle, ThemeIcon, useTheme } from "@/components/theme-provider";
+import { ThemeCycle, ThemeIcon, themeAtom } from "@/atoms/theme";
 import { Button } from "@/components/ui/button";
 import { statsCountQueryOptions } from "@/api/stats";
 import {
@@ -81,7 +81,7 @@ const PageTitle: { [key in Page]: string } = {
 export const Layout: React.FC = () => {
   const [isButtonCollapsed, setIsButtonCollapsed] = useState(false);
   const { location } = useRouterState();
-  const { theme, toggleTheme } = useTheme();
+  const [theme, setTheme] = useAtom(themeAtom);
   const windowWidth = useWindowWidth();
   const auth = useAtomValue(userAtom);
 
@@ -260,7 +260,7 @@ export const Layout: React.FC = () => {
                       ? "System theme"
                       : "Dark theme",
                 icon: ThemeIcon[ThemeCycle[theme]],
-                onClick: toggleTheme,
+                onClick: () => setTheme((prev) => ThemeCycle[prev]),
               },
               {
                 title: "Logout",
