@@ -6,11 +6,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ReqestSSEData } from "@/api/requests";
-import { Empty, TitleEntryCount } from "@/components";
+import { AutoAnimate, Empty, TitleEntryCount } from "@/components";
 import { Source } from "@/components/sources";
 import WaitingImage from "@/assets/day-dreaming-two-color.svg";
 import LoadingImage from "@/assets/waiter-two-color.svg";
 import { Badge } from "@/components/ui/badge";
+import { LoaderCircle } from "lucide-react";
 
 interface Props {
   data?: { [key: string]: ReqestSSEData };
@@ -23,15 +24,15 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
       const allSources = Object.values(data ?? {});
 
       const missingSourceCode = allSources.filter(
-        (data) => !data.hasSourceCode,
+        (data) => !data.hasSourceCode
       );
       const withSourceCode = allSources.filter((data) => data.hasSourceCode);
 
       const sourceWithErrors = withSourceCode.filter(
-        (data) => data.errors.length > 0,
+        (data) => data.errors.length > 0
       );
       const sourceWithoutErrors = withSourceCode.filter(
-        (data) => data.errors.length === 0,
+        (data) => data.errors.length === 0
       );
 
       const sortSoures = (a: ReqestSSEData, b: ReqestSSEData) =>
@@ -66,22 +67,22 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
   ];
 
   const disabledIndicator = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "DISABLED_INDICATOR"),
+    data.errors.some((error) => error.kind === "DISABLED_INDICATOR")
   );
   const disabledSource = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "SOURCE_DISABLED"),
+    data.errors.some((error) => error.kind === "SOURCE_DISABLED")
   );
   const disabledProvider = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "PROVIDER_DISABLED"),
+    data.errors.some((error) => error.kind === "PROVIDER_DISABLED")
   );
   const unsupportedIndicator = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "UNSUPPORTED_INDICATOR"),
+    data.errors.some((error) => error.kind === "UNSUPPORTED_INDICATOR")
   );
   const whitelistedIndicator = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "WITHIN_IGNORE_LIST"),
+    data.errors.some((error) => error.kind === "WITHIN_IGNORE_LIST")
   );
   const missingSecrets = sourceWithErrors.filter((data) =>
-    data.errors.some((error) => error.kind === "MISSING_SECRET"),
+    data.errors.some((error) => error.kind === "MISSING_SECRET")
   );
 
   return (
@@ -91,6 +92,11 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
           <div className="flex flex-wrap items-baseline gap-2 gap-y-0 text-lg font-semibold">
             <span className="whitespace-nowrap">Source data</span>
             <TitleEntryCount count={sourcesOrdered.length} />
+            {isFetching && (
+              <div className="mt-1 self-center">
+                <LoaderCircle size={16} className="animate-spin" />
+              </div>
+            )}
           </div>
         )}
         <div className="flex flex-wrap justify-end gap-2 gap-y-1">
@@ -122,21 +128,21 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
           className="flex-1"
         />
       )}
-      <div className="grid grid-cols-12 gap-2">
+      <AutoAnimate className="grid grid-cols-12 gap-2">
         {sourceWithoutErrors.map((source) => (
           <Source key={source.source.id} {...source} />
         ))}
-      </div>
-      <div className="my-4 grid grid-cols-12 gap-2">
+      </AutoAnimate>
+      <AutoAnimate className="my-4 grid grid-cols-12 gap-2">
         {sourceWithErrors.map((source) => (
           <Source key={source.source.id} {...source} />
         ))}
-      </div>
-      <div className="grid grid-cols-12 gap-2">
+      </AutoAnimate>
+      <AutoAnimate className="grid grid-cols-12 gap-2">
         {missingSourceCode.map((source) => (
           <Source key={source.source.id} {...source} />
         ))}
-      </div>
+      </AutoAnimate>
     </div>
   );
 };
