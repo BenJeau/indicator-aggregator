@@ -15,6 +15,7 @@ import {
   useIgnoreListEntryPut,
   ignoreListSlugQueryOptions,
 } from "@/api/ignoreLists";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListEditComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -88,6 +89,7 @@ const ListEditComponent: React.FC = () => {
 
 export const Route = createFileRoute("/lists/$slug/edit")({
   component: ListEditComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
       ignoreListSlugQueryOptions(slug),

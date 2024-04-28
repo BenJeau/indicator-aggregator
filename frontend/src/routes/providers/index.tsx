@@ -4,6 +4,7 @@ import { Globe2, Plus } from "lucide-react";
 import EmptyImage from "@/assets/surfing-two-color-6c783.svg";
 import { Empty, SectionPanelHeader } from "@/components";
 import { Button } from "@/components/ui/button";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProviderHomeComponent: React.FC = () => (
   <>
@@ -34,4 +35,5 @@ const ProviderHomeComponent: React.FC = () => (
 
 export const Route = createFileRoute("/providers/")({
   component: ProviderHomeComponent,
+  beforeLoad: beforeLoadAuthenticated(),
 });

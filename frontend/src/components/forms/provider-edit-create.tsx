@@ -55,13 +55,13 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    })
+    }),
   ),
   ignoreLists: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    })
+    }),
   ),
 });
 
@@ -154,7 +154,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500"
+                        field.value ? "bg-green-500" : "bg-red-500",
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -318,7 +318,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                             <button
                               onClick={() => {
                                 field.onChange(
-                                  field.value.filter((_, i) => i !== index)
+                                  field.value.filter((_, i) => i !== index),
                                 );
                               }}
                               type="button"
@@ -369,7 +369,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",
-                            !field.value && "hidden"
+                            !field.value && "hidden",
                           )}
                         />
                         <div className="relative flex flex-1">
@@ -385,7 +385,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                                 reader.onloadend = () => {
                                   form.setValue(
                                     "favicon",
-                                    reader.result?.toString()
+                                    reader.result?.toString(),
                                   );
                                 };
                                 reader.readAsDataURL(file);
@@ -406,7 +406,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                           type="button"
                           className={cn(
                             "h-8 w-8 p-0",
-                            !field.value && "hidden"
+                            !field.value && "hidden",
                           )}
                           onClick={() => field.onChange("")}
                         >
@@ -427,7 +427,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                   const availableSources =
                     providerSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id)
+                        !field.value.some((source) => source.id === id),
                     ) || [];
 
                   return (
@@ -440,7 +440,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = providerSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name
+                                ({ name: sourceName }) => sourceName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -473,8 +473,8 @@ const ProviderEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"
@@ -499,7 +499,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                   const availableIgnoreLists =
                     providerIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id)
+                        !field.value.some((ignoreList) => ignoreList.id === id),
                     ) || [];
 
                   return (
@@ -512,7 +512,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = providerIgnoreLists.data?.find(
-                                ({ name: listName }) => listName === name
+                                ({ name: listName }) => listName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -545,8 +545,8 @@ const ProviderEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"

@@ -4,6 +4,7 @@ import { Plus, Scroll } from "lucide-react";
 import EmptyImage from "@/assets/files-and-folder-two-color.svg";
 import { Empty, SectionPanelHeader } from "@/components";
 import { Button } from "@/components/ui/button";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListHomeComponent: React.FC = () => (
   <>
@@ -34,4 +35,5 @@ const ListHomeComponent: React.FC = () => (
 
 export const Route = createFileRoute("/lists/")({
   component: ListHomeComponent,
+  beforeLoad: beforeLoadAuthenticated(),
 });

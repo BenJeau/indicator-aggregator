@@ -4,6 +4,7 @@ import { DatabaseZap, Plus } from "lucide-react";
 import EmptyImage from "@/assets/hiking-two-color-e83a0.svg";
 import { Empty, SectionPanelHeader } from "@/components";
 import { Button } from "@/components/ui/button";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourceHomeComponent: React.FC = () => (
   <>
@@ -34,4 +35,5 @@ const SourceHomeComponent: React.FC = () => (
 
 export const Route = createFileRoute("/sources/")({
   component: SourceHomeComponent,
+  beforeLoad: beforeLoadAuthenticated(),
 });

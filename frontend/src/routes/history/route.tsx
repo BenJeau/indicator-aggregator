@@ -4,6 +4,7 @@ import { Send } from "lucide-react";
 
 import { requestsQueryOptions } from "@/api/requests";
 import { GenericPanelSearch, SearchResults } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourcesComponents: React.FC = () => {
   const requests = useSuspenseQuery(requestsQueryOptions);
@@ -30,6 +31,7 @@ const SourcesComponents: React.FC = () => {
 
 export const Route = createFileRoute("/history")({
   component: SourcesComponents,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(requestsQueryOptions),
 });

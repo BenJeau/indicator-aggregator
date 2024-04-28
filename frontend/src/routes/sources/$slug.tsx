@@ -48,6 +48,7 @@ import {
   TitleEntryCount,
 } from "@/components";
 import { cleanConfigValue } from "@/api/config";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourceComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -440,6 +441,7 @@ const SecretBadge: React.FC<SourceSecret> = ({ id, name, secretId }) => {
 
 export const Route = createFileRoute("/sources/$slug")({
   component: SourceComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(sourceSlugQueryOptions(slug));
 

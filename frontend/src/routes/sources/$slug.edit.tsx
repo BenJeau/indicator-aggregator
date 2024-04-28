@@ -14,6 +14,7 @@ import {
   useUpdateSourceMutation,
 } from "@/api/sources";
 import { SourceKind } from "@/types/backendTypes";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourceEditComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -81,6 +82,7 @@ const SourceEditComponent: React.FC = () => {
 
 export const Route = createFileRoute("/sources/$slug/edit")({
   component: SourceEditComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(sourceSlugQueryOptions(slug));
 

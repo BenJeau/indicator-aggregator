@@ -45,7 +45,7 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    })
+    }),
   ),
 });
 
@@ -133,7 +133,7 @@ const RequestForm = forwardRef<Ref, Props>(
                   const availableSources =
                     sources.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id)
+                        !field.value.some((source) => source.id === id),
                     ) || [];
 
                   return (
@@ -146,7 +146,7 @@ const RequestForm = forwardRef<Ref, Props>(
                           <Select
                             onValueChange={(name) => {
                               const id = sources.find(
-                                ({ name: sourceName }) => sourceName === name
+                                ({ name: sourceName }) => sourceName === name,
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -179,8 +179,8 @@ const RequestForm = forwardRef<Ref, Props>(
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id
-                                      )
+                                        (value) => value.id !== id,
+                                      ),
                                     );
                                   }}
                                   type="button"
@@ -280,7 +280,7 @@ const RequestForm = forwardRef<Ref, Props>(
         </form>
       </Form>
     );
-  }
+  },
 );
 
 export default RequestForm;

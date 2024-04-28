@@ -3,6 +3,7 @@ import { UserCircle } from "lucide-react";
 
 import EmptyImage from "@/assets/diversity-29.svg";
 import { Empty, SectionPanelHeader } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UserHomeComponent: React.FC = () => (
   <>
@@ -26,4 +27,5 @@ const UserHomeComponent: React.FC = () => (
 
 export const Route = createFileRoute("/users/")({
   component: UserHomeComponent,
+  beforeLoad: beforeLoadAuthenticated(),
 });

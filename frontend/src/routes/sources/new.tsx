@@ -8,6 +8,7 @@ import {
   usePutSourceSecretsMutation,
 } from "@/api/sources";
 import { SourceKind } from "@/types/backendTypes";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourceNewComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -51,5 +52,6 @@ type SourceSearch = {
 
 export const Route = createFileRoute("/sources/new")({
   component: SourceNewComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: SourceSearch): SourceSearch => search,
 });

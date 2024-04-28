@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { Forms } from "@/components";
 import { useProviderCreate } from "@/api/providers";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProvidersNewComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ type ProviderSearch = {
 
 export const Route = createFileRoute("/providers/new")({
   component: ProvidersNewComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: Record<string, unknown>): ProviderSearch => {
     return {
       name: search.name as string,

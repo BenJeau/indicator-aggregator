@@ -85,7 +85,7 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
             onclose: () => {
               resolve(queryClient.getQueryData(queryKey) ?? {});
             },
-          }
+          },
         );
       }),
   });
@@ -169,7 +169,7 @@ const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
         },
       },
     }),
-    {} as RequestData
+    {} as RequestData,
   );
 
   queryClient.setQueryData<RequestData>(queryKey, () => newData);

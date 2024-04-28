@@ -17,6 +17,7 @@ import {
   usePutProviderSourcesMutation,
 } from "@/api/providers";
 import { Provider } from "@/types/backendTypes";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProviderEditComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -83,6 +84,7 @@ const ProviderEditComponent: React.FC = () => {
 
 export const Route = createFileRoute("/providers/$slug/edit")({
   component: ProviderEditComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
       providerSlugQueryOptions(slug),

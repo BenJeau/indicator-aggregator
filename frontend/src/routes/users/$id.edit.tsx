@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { useUserPatch, userQueryOptions } from "@/api/users";
 import { Forms } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UserEditComponent: React.FC = () => {
   const { id } = Route.useParams();
@@ -27,6 +28,7 @@ const UserEditComponent: React.FC = () => {
 
 export const Route = createFileRoute("/users/$id/edit")({
   component: UserEditComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     await queryClient.ensureQueryData(userQueryOptions(id));
   },

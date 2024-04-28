@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GenericPanelSearch, SearchResults } from "@/components";
 import { ignoreListsQueryOptions } from "@/api/ignoreLists";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListsComponent: React.FC = () => {
   const sources = useSuspenseQuery(ignoreListsQueryOptions);
@@ -27,6 +28,7 @@ const ListsComponent: React.FC = () => {
 
 export const Route = createFileRoute("/lists")({
   component: ListsComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: (opts) =>
     opts.context.queryClient.ensureQueryData(ignoreListsQueryOptions),
 });

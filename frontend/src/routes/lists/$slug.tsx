@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListComponent = () => {
   const { slug } = Route.useParams();
@@ -193,6 +194,7 @@ const ListComponent = () => {
 
 export const Route = createFileRoute("/lists/$slug")({
   component: ListComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
       ignoreListSlugQueryOptions(slug),

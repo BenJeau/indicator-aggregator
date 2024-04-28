@@ -27,6 +27,7 @@ import { userLogsQueryOptions, userQueryOptions } from "@/api/users";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UserComponent: React.FC = () => {
   const { id } = Route.useParams();
@@ -160,6 +161,7 @@ const UserComponent: React.FC = () => {
 
 export const Route = createFileRoute("/users/$id")({
   component: UserComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     await Promise.all([
       queryClient.ensureQueryData(userQueryOptions(id)),

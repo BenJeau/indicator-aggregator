@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { providersQueryOptions } from "@/api/providers";
 import { GenericPanelSearch, SearchResults } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProvidersComponent: React.FC = () => {
   const providers = useSuspenseQuery(providersQueryOptions);
@@ -27,6 +28,7 @@ const ProvidersComponent: React.FC = () => {
 
 export const Route = createFileRoute("/providers")({
   component: ProvidersComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: (opts) =>
     opts.context.queryClient.ensureQueryData(providersQueryOptions),
 });

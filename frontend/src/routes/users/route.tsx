@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GenericPanelSearch, SearchResults } from "@/components";
 import { usersQueryOptions } from "@/api/users";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UsersComponent: React.FC = () => {
   const users = useSuspenseQuery(usersQueryOptions);
@@ -25,5 +26,6 @@ const UsersComponent: React.FC = () => {
 
 export const Route = createFileRoute("/users")({
   component: UsersComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: (opts) => opts.context.queryClient.ensureQueryData(usersQueryOptions),
 });

@@ -1,5 +1,5 @@
 import { useSetAtom } from "jotai";
-import { Loader } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
@@ -45,7 +45,7 @@ const SaveUserData: React.FC = () => {
 
   return (
     <div className="absolute bottom-0 left-0 right-0 top-0 flex h-screen w-screen flex-col items-center">
-      <Loader className="animate-spin" /> <Trans id="authenticating" />
+      <LoaderCircle className="animate-spin" /> <Trans id="authenticating" />
       ...
     </div>
   );

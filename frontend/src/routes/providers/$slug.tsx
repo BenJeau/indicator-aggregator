@@ -30,6 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types/backendTypes";
 import { dedupeListOnId } from "@/data";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProviderComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -190,6 +191,7 @@ const ProviderComponent: React.FC = () => {
 
 export const Route = createFileRoute("/providers/$slug")({
   component: ProviderComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
       providerSlugQueryOptions(slug),

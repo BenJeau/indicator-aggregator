@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { sourcesQueryOptions } from "@/api/sources";
 import { GenericPanelSearch, SearchResults } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourcesComponents: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
@@ -27,6 +28,7 @@ const SourcesComponents: React.FC = () => {
 
 export const Route = createFileRoute("/sources")({
   component: SourcesComponents,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(sourcesQueryOptions),
 });

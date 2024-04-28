@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Badge } from "@/components/ui/badge";
 import { DataCacheAction, SourceError } from "@/types/backendTypes";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const HistoryComponent: React.FC = () => {
   const { id } = Route.useParams();
@@ -85,6 +86,7 @@ const HistoryComponent: React.FC = () => {
 
 export const Route = createFileRoute("/history/$id")({
   component: HistoryComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     await Promise.all([
       queryClient.ensureQueryData(requestQueryOptions(id)),

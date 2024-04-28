@@ -8,6 +8,7 @@ import {
   useIgnoreListSourcesPut,
   useIgnoreListEntryPut,
 } from "@/api/ignoreLists";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListsNewComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ type IgnoreListSearch = {
 
 export const Route = createFileRoute("/lists/new")({
   component: ListsNewComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: Record<string, unknown>): IgnoreListSearch => {
     return {
       name: search.name as string,
