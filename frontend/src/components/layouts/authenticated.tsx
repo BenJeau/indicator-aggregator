@@ -121,7 +121,7 @@ export const Layout: React.FC = () => {
     <div className="relative flex h-full w-screen overflow-hidden">
       <div
         className={cn(
-          "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out",
+          "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out z-20",
           isCollapsed && "w-14 min-w-14"
         )}
       >
