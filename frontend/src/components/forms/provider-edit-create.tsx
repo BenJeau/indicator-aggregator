@@ -8,7 +8,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { Provider } from "@/types/backendTypes";
-import { SectionPanelHeader } from "@/components";
+import { SectionPanelHeader, Trans } from "@/components";
 import {
   Form,
   FormControl,
@@ -39,6 +39,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { sourcesQueryOptions } from "@/api/sources";
 import { ignoreListsQueryOptions } from "@/api/ignoreLists";
+import { useTranslation } from "../../i18n";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -54,13 +55,13 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   ignoreLists: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
 });
 
@@ -114,6 +115,8 @@ const ProviderEditCreate: React.FC<Props> = ({
     },
   });
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (props.name) {
       form.setValue("name", props.name);
@@ -151,7 +154,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
+                        field.value ? "bg-green-500" : "bg-red-500"
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -171,7 +174,9 @@ const ProviderEditCreate: React.FC<Props> = ({
               name="name"
               render={({ field }) => (
                 <FormItem className="text-sm">
-                  <FormLabel className="text-xs">Name</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="name" />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="h-8"
@@ -190,7 +195,9 @@ const ProviderEditCreate: React.FC<Props> = ({
               name="description"
               render={({ field }) => (
                 <FormItem className="flex-1 text-sm">
-                  <FormLabel className="text-xs">Description</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="description" />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="h-8"
@@ -214,36 +221,46 @@ const ProviderEditCreate: React.FC<Props> = ({
                     form.reset();
                   }}
                 >
-                  Cancel
+                  <Trans id="cancel" />
                 </Button>
               </Link>
               {provider && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm" className="gap-2">
-                      <Trash size={16} /> Delete
+                      <Trash size={16} />
+                      <Trans id="delete" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogTitle>
+                        <Trans id="delete.confirmation.title" />
+                      </DialogTitle>
                       <DialogDescription>
-                        This action cannot be undone. This will permanently{" "}
-                        <span className="font-semibold">{provider.name}</span>{" "}
-                        as a provider, linked sources will simple not have a
-                        provider anymore.
+                        <Trans
+                          id="provider.delete.confirmation.description"
+                          name={
+                            <span className="font-semibold">
+                              {provider.name}
+                            </span>
+                          }
+                        />
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <DialogPrimitive.Close asChild>
-                        <Button variant="secondary">Cancel</Button>
+                        <Button variant="secondary">
+                          <Trans id="cancel" />
+                        </Button>
                       </DialogPrimitive.Close>
                       <Button
                         variant="destructive"
                         className="gap-2"
                         onClick={onDelete}
                       >
-                        <Trash size={16} /> Delete
+                        <Trash size={16} />
+                        <Trans id="delete" />
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -251,7 +268,7 @@ const ProviderEditCreate: React.FC<Props> = ({
               )}
               <Button className="gap-2" size="sm" type="submit">
                 <Save size={16} />
-                Save
+                <Trans id="save" />
               </Button>
             </>
           }
@@ -263,13 +280,15 @@ const ProviderEditCreate: React.FC<Props> = ({
               name="tags"
               render={({ field }) => (
                 <FormItem className="text-sm">
-                  <FormLabel className="text-xs">Tags</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="tags" />
+                  </FormLabel>
                   <FormControl>
                     <div className="flex flex-col gap-2">
                       <div className="flex gap-2">
                         <Input
                           className="h-8 flex-1"
-                          placeholder="e.g. threat-intelligence"
+                          placeholder={`${t("e.g.")} threat-intelligence`}
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
                         />
@@ -286,7 +305,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                           }}
                         >
                           <Plus size={16} />
-                          Add tag
+                          <Trans id="add.tag" />
                         </Button>
                       </div>
                       <div className="flex gap-2">
@@ -299,7 +318,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                             <button
                               onClick={() => {
                                 field.onChange(
-                                  field.value.filter((_, i) => i !== index),
+                                  field.value.filter((_, i) => i !== index)
                                 );
                               }}
                               type="button"
@@ -326,7 +345,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                     <FormControl>
                       <Input
                         className="h-8"
-                        placeholder="e.g. https://abuse.ch"
+                        placeholder={`${t("e.g.")} https://abuse.ch`}
                         {...field}
                       />
                     </FormControl>
@@ -339,16 +358,18 @@ const ProviderEditCreate: React.FC<Props> = ({
                 name="favicon"
                 render={({ field }) => (
                   <FormItem className="text-sm">
-                    <FormLabel className="text-xs">Favicon</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="favicon" />
+                    </FormLabel>
                     <FormControl>
                       <div className="flex gap-2">
                         <img
                           src={field.value ?? undefined}
-                          alt="favicon"
+                          alt={t("favicon")}
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                         />
                         <div className="relative flex flex-1">
@@ -364,7 +385,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                                 reader.onloadend = () => {
                                   form.setValue(
                                     "favicon",
-                                    reader.result?.toString(),
+                                    reader.result?.toString()
                                   );
                                 };
                                 reader.readAsDataURL(file);
@@ -375,8 +396,8 @@ const ProviderEditCreate: React.FC<Props> = ({
                             className="h-8 flex-1"
                             placeholder={
                               field.value
-                                ? "Change favicon"
-                                : "Upload a favicon image, will use URL's favicon if not provided"
+                                ? t("favicon.change")
+                                : t("favicon.upload")
                             }
                           />
                         </div>
@@ -385,7 +406,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                           type="button"
                           className={cn(
                             "h-8 w-8 p-0",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                           onClick={() => field.onChange("")}
                         >
@@ -406,18 +427,20 @@ const ProviderEditCreate: React.FC<Props> = ({
                   const availableSources =
                     providerSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id),
+                        !field.value.some((source) => source.id === id)
                     ) || [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Sources</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="sources" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
                               const id = providerSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name,
+                                ({ name: sourceName }) => sourceName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -425,7 +448,11 @@ const ProviderEditCreate: React.FC<Props> = ({
                             disabled={availableSources.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a source" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="sources.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableSources.map((source) => (
@@ -446,8 +473,8 @@ const ProviderEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -472,18 +499,20 @@ const ProviderEditCreate: React.FC<Props> = ({
                   const availableIgnoreLists =
                     providerIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Ignore lists</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="ignore.lists" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
                               const id = providerIgnoreLists.data?.find(
-                                ({ name: listName }) => listName === name,
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -491,7 +520,11 @@ const ProviderEditCreate: React.FC<Props> = ({
                             disabled={availableIgnoreLists.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select an ignore list" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="ignore.list.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableIgnoreLists.map(({ id, name }) => (
@@ -512,8 +545,8 @@ const ProviderEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"

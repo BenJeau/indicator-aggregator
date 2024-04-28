@@ -38,6 +38,15 @@
   "no.results": "Aucun résultat",
   "add.entry": "Ajouter une entrée",
   "delete.confirmation.title": "Êtes-vous certain?",
-  "ignore.list.delete.confirmation.description": "Cette action est irrévesible. Cela fera de {name} une liste d'ignorés de façon permanente.",
-  "ignore.list.global.checkbox.label": "Activer la liste d'ignorés globalement pour toutes les sources"
+  "ignore.list.delete.confirmation.description": "Cette action est irrévesible. Cela supprimera la liste {name} de façon permanente.",
+  "ignore.list.global.checkbox.label": "Activer la liste d'ignorés globalement pour toutes les sources",
+  "provider.delete.confirmation.description": "Cette action est irrévesible. Cela supprimera le fournisseur {name} de façon permanente, les sources liées n'auront simplement plus de fournisseur.",
+  "tags": "Étiquettes",
+  "e.g.": "par ex.",
+  "add.tag": "Ajoouter une étiquette",
+  "favicon": "Favicône",
+  "favicon.change": "Changer la favicône",
+  "favicon.upload": "Télécharger une favicône, utilisera la favicône de l'URL si elle n'est pas fournie",
+  "ignore.lists": "Listes ignorées",
+  "ignore.list.select.placeholder": "Sélectionner une liste ignorée"
 }

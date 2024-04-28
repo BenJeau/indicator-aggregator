@@ -39,5 +39,14 @@
   "add.entry": "Add entry",
   "delete.confirmation.title": "Are you absolutely sure?",
   "ignore.list.delete.confirmation.description": "This action cannot be undone. This will permanently {name} as an ignore list.",
-  "ignore.list.global.checkbox.label": "Enable ignore list globally for all sources"
+  "ignore.list.global.checkbox.label": "Enable ignore list globally for all sources",
+  "provider.delete.confirmation.description": "This action cannot be undone. This will permanently {name} as a provider, linked sources will simple not have a provider anymore.",
+  "tags": "Tags",
+  "e.g.": "e.g.",
+  "add.tag": "Add tag",
+  "favicon": "Favicon",
+  "favicon.change": "Change favicon",
+  "favicon.upload": "Upload a favicon image, will use URL's favicon if not provided",
+  "ignore.lists": "Ignore lists",
+  "ignore.list.select.placeholder": "Select an ignore list"
 }
