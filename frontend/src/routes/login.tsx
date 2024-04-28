@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Icons, Layouts, Trans } from "@/components";
+import { getRandomBackground } from "@/assets";
 
 const Login: React.FC = () => {
   const { next } = Route.useSearch();
@@ -16,10 +17,9 @@ const Login: React.FC = () => {
       <div className="hidden h-full flex-col gap-6 lg:flex">
         <div className="bg-muted relative flex h-full flex-grow flex-col rounded-xl text-white border">
           <div
-            className="absolute inset-0 bg-cover rounded-xl"
+            className="absolute inset-0 bg-cover rounded-xl bg-black"
             style={{
-              backgroundImage:
-                "url(https://images.unsplash.com/photo-1545987796-b199d6abb1b4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&auto=format&fit=crop&w=1376&q=80)",
+              backgroundImage: `url(${getRandomBackground()})`,
             }}
           />
           <div className="relative z-20 flex items-center rounded-xl p-10 text-5xl font-semibold gap-4">
