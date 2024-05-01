@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -28,7 +29,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { detectIndicatorKind } from "@/validation";
-import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "@/i18n";
+import { Trans } from "@/components";
 
 interface Props {
   sources?: Source[];
@@ -56,6 +58,7 @@ export interface Ref {
 const RequestForm = forwardRef<Ref, Props>(
   ({ sources = [], canSubmit = true }, ref) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const form = useForm<FormSchema>({
       resolver: zodResolver(formSchema),
@@ -108,11 +111,13 @@ const RequestForm = forwardRef<Ref, Props>(
                 name="indicator"
                 render={({ field }) => (
                   <FormItem className="min-w-40 flex-1 text-sm">
-                    <FormLabel className="text-xs">Value</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="value" />
+                    </FormLabel>
                     <FormControl>
                       <Input
                         className="h-8"
-                        placeholder="e.g. https://abuse.ch"
+                        placeholder={`${t("e.g.")} https://abuse.ch`}
                         {...field}
                       />
                     </FormControl>
@@ -133,7 +138,9 @@ const RequestForm = forwardRef<Ref, Props>(
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Sources</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="sources" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
@@ -147,7 +154,11 @@ const RequestForm = forwardRef<Ref, Props>(
                             disabled={availableSources.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a source" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="sources.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableSources.map((source) => (
@@ -194,14 +205,20 @@ const RequestForm = forwardRef<Ref, Props>(
                   name="indicatorKind"
                   render={({ field }) => (
                     <FormItem className="text-sm">
-                      <FormLabel className="text-xs">Kind</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="kind" />
+                      </FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select kind" />
+                            <SelectValue
+                              placeholder={
+                                <Trans id="kind.select.placeholder" />
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {Object.values(IndicatorKind).map((value) => {
@@ -239,7 +256,7 @@ const RequestForm = forwardRef<Ref, Props>(
                             onCheckedChange={field.onChange}
                           />
                           <Label htmlFor={field.name} className="text-xs">
-                            Automatically detect indicator kind
+                            <Trans id="kind.autodetect.label" />
                           </Label>
                         </div>
                       </FormControl>
@@ -255,7 +272,7 @@ const RequestForm = forwardRef<Ref, Props>(
               disabled={!canSubmit}
               className="h-auto gap-4 rounded-2xl px-6 text-lg font-semibold"
             >
-              Submit
+              <Trans id="submit" />
               <SendHorizonal size={20} strokeWidth={2.5} />
             </Button>
           </div>

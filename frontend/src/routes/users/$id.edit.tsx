@@ -3,7 +3,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { useUserPatch, userQueryOptions } from "@/api/users";
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UserEditComponent: React.FC = () => {
   const { id } = Route.useParams();
@@ -18,7 +19,7 @@ const UserEditComponent: React.FC = () => {
       id,
       data: values,
     });
-    toast.success("User updated");
+    toast.success(<Trans id="user.updated" />);
     navigate({ to: "/users/$id", params: { id } });
   };
 
@@ -27,6 +28,7 @@ const UserEditComponent: React.FC = () => {
 
 export const Route = createFileRoute("/users/$id/edit")({
   component: UserEditComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     await queryClient.ensureQueryData(userQueryOptions(id));
   },

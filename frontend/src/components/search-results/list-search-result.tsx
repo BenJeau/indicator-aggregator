@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { IgnoreList } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
+import { Trans } from "@/components";
 
 const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
   data: { slug, name, description, enabled, global },
@@ -21,16 +22,17 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-baseline">
           <div className="font-semibold">{name}</div>
-          <div className="text-xs opacity-70">
-            {global && "is global"}
-            {!global && "is not global"}
+          <div className="text-xs opacity-70 lowercase">
+            <Trans id={global ? "is.global" : "is.not.global"} />
           </div>
         </div>
         <div className="text-sm">
           {description}
 
           {description.length === 0 && (
-            <div className="opacity-50 italic">no description</div>
+            <div className="opacity-50 italic lowercase">
+              <Trans id="no.description" />
+            </div>
           )}
         </div>
       </div>

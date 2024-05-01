@@ -1,0 +1,14 @@
+[
+  "layout.config.description",
+  "layout.docs.description",
+  "layout.history.description",
+  "layout.home.description",
+  "layout.ignore.lists.description",
+  "layout.providers.description",
+  "layout.requests.description",
+  "layout.sources.description",
+  "layout.users.description",
+  "theme.dark",
+  "theme.light",
+  "theme.system"
+]

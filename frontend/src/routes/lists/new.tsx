@@ -1,13 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   useIgnoreListCreate,
   useIgnoreListProvidersPut,
   useIgnoreListSourcesPut,
   useIgnoreListEntryPut,
 } from "@/api/ignoreLists";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListsNewComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const ListsNewComponent: React.FC = () => {
         })),
       }),
     ]);
-    toast.success("Ignore list created");
+    toast.success(<Trans id="ignore.list.created" />);
     navigate({ to: `/lists/$slug`, params: { slug } });
   };
 
@@ -52,6 +53,7 @@ type IgnoreListSearch = {
 
 export const Route = createFileRoute("/lists/new")({
   component: ListsNewComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: Record<string, unknown>): IgnoreListSearch => {
     return {
       name: search.name as string,

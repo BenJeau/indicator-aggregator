@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Trans } from "@/components";
 
 interface Props extends Omit<CalendarProps, "selected" | "mode"> {
   selected: Date;
@@ -30,7 +31,9 @@ const DatePicker: React.FC<Props> = (props) => (
         {props.selected ? (
           format(props.selected, "PPP")
         ) : (
-          <span>Pick a date</span>
+          <span>
+            <Trans id="pick.a.date" />
+          </span>
         )}
         {props.selected && (
           <Button

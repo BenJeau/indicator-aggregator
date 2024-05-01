@@ -39,8 +39,9 @@ import {
   TableCell,
   Table,
 } from "@/components/ui/table";
-import { DatePicker } from "@/components";
+import { DatePicker, Trans } from "@/components";
 import { SecretWithNumSources } from "@/types/backendTypes";
+import { useTranslation } from "@/i18n";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -59,6 +60,7 @@ interface Props {
 
 const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
   const createSecretMutation = useCreateSecretMutation();
+  const { t } = useTranslation();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -86,15 +88,15 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
       <div className="flex flex-wrap justify-between gap-2">
         <div>
           <h2 className="flex items-baseline gap-2">
-            <span className="font-semibold text-lg">Secrets</span>
+            <span className="font-semibold text-lg">
+              <Trans id="secrets" />
+            </span>
             <TitleEntryCount count={secrets.length} />
           </h2>
           <p className="text-xs">
-            Secrets are used to store sensitive information such as API keys,
-            passwords, and other credentials.{" "}
+            <Trans id="secrets.table.description.1" />
             <span className="font-semibold">
-              Data is encrypted in transit, encrypted at the application level,
-              and doubly encrypted at rest.
+              <Trans id="secrets.table.description.2" />
             </span>
           </p>
         </div>
@@ -106,7 +108,7 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
           variant="secondary"
         >
           <Plus size={16} />
-          Add new secret
+          <Trans id="add.new.secret" />
         </Button>
       </div>
 
@@ -116,13 +118,29 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
             <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead style={{ width: 180 }}>Created At</TableHead>
-                  <TableHead style={{ width: 180 }}>Updated At</TableHead>
-                  <TableHead>Name{showForm && " *"}</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Value{showForm && " *"}</TableHead>
-                  <TableHead>Expires At</TableHead>
-                  <TableHead style={{ width: 100 }}>Sources</TableHead>
+                  <TableHead style={{ width: 180 }}>
+                    <Trans id="created.at" />
+                  </TableHead>
+                  <TableHead style={{ width: 180 }}>
+                    <Trans id="updated.at" />
+                  </TableHead>
+                  <TableHead>
+                    <Trans id="name" />
+                    {showForm && " *"}
+                  </TableHead>
+                  <TableHead>
+                    <Trans id="description" />
+                  </TableHead>
+                  <TableHead>
+                    <Trans id="value" />
+                    {showForm && " *"}
+                  </TableHead>
+                  <TableHead>
+                    <Trans id="expires.at" />
+                  </TableHead>
+                  <TableHead style={{ width: 100 }}>
+                    <Trans id="sources" />
+                  </TableHead>
                   <TableHead style={{ width: 80 }}></TableHead>
                 </TableRow>
               </TableHeader>
@@ -134,8 +152,12 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
 
                 {showForm && (
                   <TableRow>
-                    <TableCell className="italic opacity-50">Now</TableCell>
-                    <TableCell className="italic opacity-50">Now</TableCell>
+                    <TableCell className="italic opacity-50">
+                      <Trans id="now" />
+                    </TableCell>
+                    <TableCell className="italic opacity-50">
+                      <Trans id="now" />
+                    </TableCell>
                     <TableCell>
                       <FormField
                         control={form.control}
@@ -145,7 +167,7 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                             <FormControl>
                               <Input
                                 {...field}
-                                placeholder="e.g. SOURCE_API_KEY"
+                                placeholder={`${t("e.g.")} SOURCE_API_KEY`}
                                 className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                               />
                             </FormControl>
@@ -163,7 +185,9 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                             <FormControl>
                               <Input
                                 {...field}
-                                placeholder="e.g. used to authenticate for X service"
+                                placeholder={t(
+                                  "secrets.table.description.placholder",
+                                )}
                                 className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                               />
                             </FormControl>
@@ -181,7 +205,7 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                             <FormControl>
                               <Input
                                 {...field}
-                                placeholder="e.g. ABCDEFGHIJKLMNOP"
+                                placeholder={`${t("e.g.")} ABCDEFGHIJKLMNOP`}
                                 className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                               />
                             </FormControl>
@@ -237,7 +261,7 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                 {secrets.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} className="h-24 text-center">
-                      No results.
+                      <Trans id="no.results" />
                     </TableCell>
                   </TableRow>
                 )}
@@ -257,8 +281,9 @@ interface TableRowWithDataProps {
 const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
   const secretValue = useQuery(secretValueQueryOptions(row.id));
   const deleteSecretMutation = useDeleteSecretMutation();
-
   const patchSecretMutation = usePatchSecretMutation();
+
+  const { t } = useTranslation();
 
   const [showValue, setShowValue] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -289,7 +314,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. SOURCE_API_KEY"
+                    placeholder={`${t("e.g.")} SOURCE_API_KEY`}
                     className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                   />
                 </FormControl>
@@ -313,7 +338,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. used to authenticate for X service"
+                    placeholder={t("secrets.table.description.placholder")}
                     className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                   />
                 </FormControl>
@@ -323,7 +348,9 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
           />
         ) : (
           row.description ?? (
-            <span className="italic opacity-50">no description</span>
+            <span className="italic opacity-50 lowercase">
+              <Trans id="no.description" />
+            </span>
           )
         )}
       </TableCell>
@@ -337,7 +364,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. ABCDEFGHIJKLMNOP"
+                    placeholder={`${t("e.g.")} ABCDEFGHIJKLMNOP`}
                     className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                   />
                 </FormControl>
@@ -411,7 +438,9 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
         ) : row.expiresAt ? (
           dayjs.utc(row.expiresAt).local().format("LL")
         ) : (
-          <span className="italic opacity-50">no expiration</span>
+          <span className="italic opacity-50 lowercase">
+            <Trans id="no.expiration" />
+          </span>
         )}
       </TableCell>
       <TableCell>{row.numSources}</TableCell>

@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
 import { IgnoreList, IndicatorKind } from "@/types/backendTypes";
-import { SectionPanelHeader } from "@/components";
+import { SectionPanelHeader, Trans } from "@/components";
 import {
   Form,
   FormControl,
@@ -49,6 +49,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { useTranslation } from "@/i18n";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -149,6 +150,8 @@ const ListEditCreate: React.FC<Props> = ({
   const listSources = useQuery(sourcesQueryOptions);
   const listProviders = useQuery(providersQueryOptions);
 
+  const { t } = useTranslation();
+
   return (
     <Form {...form}>
       <form
@@ -189,11 +192,13 @@ const ListEditCreate: React.FC<Props> = ({
               name="name"
               render={({ field }) => (
                 <FormItem className="text-sm">
-                  <FormLabel className="text-xs">Name</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="name" />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="h-8"
-                      placeholder="e.g. Abuse.ch"
+                      placeholder={t("e.g.") + " Abuse.ch"}
                       {...field}
                     />
                   </FormControl>
@@ -208,11 +213,15 @@ const ListEditCreate: React.FC<Props> = ({
               name="description"
               render={({ field }) => (
                 <FormItem className="flex-1 text-sm">
-                  <FormLabel className="text-xs">Description</FormLabel>
+                  <FormLabel className="text-xs">
+                    <Trans id="description" />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="h-8"
-                      placeholder="e.g. Reputable provider of threat intelligence"
+                      placeholder={
+                        t("e.g.") + " " + t("example.ignore.list.description")
+                      }
                       {...field}
                     />
                   </FormControl>
@@ -232,35 +241,44 @@ const ListEditCreate: React.FC<Props> = ({
                     form.reset();
                   }}
                 >
-                  Cancel
+                  <Trans id="cancel" />
                 </Button>
               </Link>
               {list && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm" className="gap-2">
-                      <Trash size={16} /> Delete
+                      <Trash size={16} />
+                      <Trans id="delete" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogTitle>
+                        <Trans id="delete.confirmation.title" />
+                      </DialogTitle>
                       <DialogDescription>
-                        This action cannot be undone. This will permanently{" "}
-                        <span className="font-semibold">{list.name}</span> as an
-                        ignore list.
+                        <Trans
+                          id="ignore.list.delete.confirmation.description"
+                          name={
+                            <span className="font-semibold">{list.name}</span>
+                          }
+                        />
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <DialogPrimitive.Close asChild>
-                        <Button variant="secondary">Cancel</Button>
+                        <Button variant="secondary">
+                          <Trans id="cancel" />
+                        </Button>
                       </DialogPrimitive.Close>
                       <Button
                         variant="destructive"
                         className="gap-2"
                         onClick={onDelete}
                       >
-                        <Trash size={16} /> Delete
+                        <Trash size={16} />
+                        <Trans id="delete" />
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -268,7 +286,7 @@ const ListEditCreate: React.FC<Props> = ({
               )}
               <Button className="gap-2" size="sm" type="submit">
                 <Save size={16} />
-                Save
+                <Trans id="save" />
               </Button>
             </>
           }
@@ -291,7 +309,7 @@ const ListEditCreate: React.FC<Props> = ({
                         onCheckedChange={field.onChange}
                       />
                       <Label htmlFor={field.name} className="text-xs">
-                        Enable ignore list globally for all sources
+                        <Trans id="ignore.list.global.checkbox.label" />
                       </Label>
                     </div>
                   </FormControl>
@@ -312,7 +330,9 @@ const ListEditCreate: React.FC<Props> = ({
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Sources</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="source" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
@@ -326,7 +346,11 @@ const ListEditCreate: React.FC<Props> = ({
                             disabled={availableSources.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a source" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="sources.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableSources.map((source) => (
@@ -378,7 +402,9 @@ const ListEditCreate: React.FC<Props> = ({
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Providers</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="providers" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
@@ -392,7 +418,11 @@ const ListEditCreate: React.FC<Props> = ({
                             disabled={availableProviders.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a provider" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="providers.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableProviders.map(({ id, name }) => (
@@ -435,15 +465,21 @@ const ListEditCreate: React.FC<Props> = ({
             </div>
 
             <FormItem className="text-sm">
-              <FormLabel className="text-xs">Entries</FormLabel>
+              <FormLabel className="text-xs">
+                <Trans id="entries" />
+              </FormLabel>
               <FormControl>
                 <div className="flex flex-col gap-2">
                   <div className="rounded-md border">
                     <Table className="table-fixed">
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Data</TableHead>
-                          <TableHead>Kind</TableHead>
+                          <TableHead>
+                            <Trans id="data" />
+                          </TableHead>
+                          <TableHead>
+                            <Trans id="kind" />
+                          </TableHead>
                           <TableHead style={{ width: 50 }}></TableHead>
                         </TableRow>
                       </TableHeader>
@@ -507,6 +543,7 @@ const ListEditCreate: React.FC<Props> = ({
                                   variant="destructive"
                                   onClick={() => entryFormFields.remove(index)}
                                   disabled={entryFormFields.fields.length === 1}
+                                  type="button"
                                 >
                                   <Trash2 size={14} />
                                 </Button>
@@ -516,7 +553,7 @@ const ListEditCreate: React.FC<Props> = ({
                         ) : (
                           <TableRow>
                             <TableCell colSpan={3} className="h-24 text-center">
-                              No results.
+                              <Trans id="no.results" />
                             </TableCell>
                           </TableRow>
                         )}
@@ -533,7 +570,7 @@ const ListEditCreate: React.FC<Props> = ({
                     }
                   >
                     <Plus size={16} />
-                    Add entry
+                    <Trans id="add.entry" />
                   </Button>
                 </div>
               </FormControl>

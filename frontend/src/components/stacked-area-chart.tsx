@@ -22,6 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CountPerIdWrapper } from "@/types/backendTypes";
+import { TransId, useTranslation } from "@/i18n";
+import { Trans } from "@/components";
 
 function DynamicCustomTooltip({
   payload,
@@ -69,9 +71,10 @@ function DynamicCustomTooltip({
 
 interface ChartDynamicProps {
   data: CountPerIdWrapper[];
-  title: string;
+  title: TransId;
   className?: string;
   chartContainerClassName?: string;
+  emptyDataLabel?: TransId;
 }
 
 const rainbowColors = [
@@ -106,11 +109,16 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
   title,
   className,
   chartContainerClassName,
+  emptyDataLabel,
 }) => {
+  const { t } = useTranslation();
   const areas = useMemo(() => {
     return data.reduce((acc, curr) => {
       const ids = curr.data.reduce(
-        (acc, i) => ({ ...acc, [i.id ?? "null"]: i.name ?? "no provider" }),
+        (acc, i) => ({
+          ...acc,
+          [i.id ?? "null"]: i.name ?? t(emptyDataLabel ?? "no.results"),
+        }),
         {},
       );
       return {
@@ -118,7 +126,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
         ...ids,
       };
     }, {});
-  }, [data]);
+  }, [data, emptyDataLabel, t]);
 
   const chartData = data.map((i) => ({
     original: i,
@@ -163,7 +171,9 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
       )}
     >
       <div className="flex justify-between gap-2">
-        <h3 className="text-lg font-bold">{title}</h3>
+        <h3 className="text-lg font-bold">
+          <Trans id={title} />
+        </h3>
         <div className="flex gap-2">
           <Button
             onClick={() => setHideAreas(new Set())}
@@ -173,7 +183,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
             disabled={hideAreas.size === 0}
           >
             <Eye size={16} />
-            Show all
+            <Trans id="show.all" />
           </Button>
           <Button
             onClick={() =>
@@ -187,7 +197,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
             disabled={hideAreas.size === Object.keys(areas).length}
           >
             <EyeOff size={16} />
-            Hide all
+            <Trans id="hide.all" />
           </Button>
         </div>
       </div>
@@ -206,7 +216,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
                 dx={-10}
                 className="fill-black dark:fill-white"
               >
-                Number of requests
+                <Trans id="number.of.requests" />
               </Label>
             </YAxis>
             <Legend

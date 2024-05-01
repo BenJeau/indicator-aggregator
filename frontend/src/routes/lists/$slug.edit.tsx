@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   ignoreListQueryOptions,
   ignoreListEntriesQueryOptions,
@@ -15,6 +15,7 @@ import {
   useIgnoreListEntryPut,
   ignoreListSlugQueryOptions,
 } from "@/api/ignoreLists";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ListEditComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -62,14 +63,19 @@ const ListEditComponent: React.FC = () => {
         })),
       }),
     ]);
-    toast.success("Provider saved");
+    toast.success(<Trans id="ignore.list.saved" />);
     navigate({ to: "/lists/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
     await deleteIgnoreList.mutateAsync(id);
-    toast.success("Ignore list deleted", {
-      description: `Ignore list ${ignoreList.data.name} was deleted successfully and is no longer linked to any sources or providers.`,
+    toast.success(<Trans id="ignore.list.deleted.title" />, {
+      description: (
+        <Trans
+          id="ignore.list.deleted.description"
+          name={ignoreList.data.name}
+        />
+      ),
     });
     navigate({ to: "/lists" });
   };
@@ -88,6 +94,7 @@ const ListEditComponent: React.FC = () => {
 
 export const Route = createFileRoute("/lists/$slug/edit")({
   component: ListEditComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
       ignoreListSlugQueryOptions(slug),

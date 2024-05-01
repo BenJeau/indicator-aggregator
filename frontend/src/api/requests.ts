@@ -82,6 +82,9 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
                 handleFetchingData(event, queryKey);
               }
             },
+            onclose: () => {
+              resolve(queryClient.getQueryData(queryKey) ?? {});
+            },
           },
         );
       }),

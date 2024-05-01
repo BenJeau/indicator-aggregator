@@ -4,32 +4,35 @@ import { Braces, ExternalLink } from "lucide-react";
 import config from "@/config";
 import { Button } from "@/components/ui/button";
 import { beforeLoadAuthenticated } from "@/auth";
+import { Trans } from "@/components";
 
 const DocsComponents: React.FC = () => (
   <div className="p-4 flex gap-2 flex-col">
-    <h1 id="sources" className="font-semibold text-lg">
-      Definitions
+    <h1 className="font-semibold text-lg">
+      <Trans id="definitions" />
     </h1>
     <h1 id="sources" className="font-semibold">
-      Sources
+      <Trans id="sources" />
     </h1>
     <h1 id="providers" className="font-semibold">
-      Providers
+      <Trans id="providers" />
     </h1>
     <h1 id="lists" className="font-semibold">
-      Ignore lists
+      <Trans id="ignore.lists" />
     </h1>
     <h1 id="requests" className="font-semibold">
-      Requests
+      <Trans id="requests" />
     </h1>
     <h1 id="config" className="font-semibold">
-      Server config
+      <Trans id="config" />
     </h1>
     <div className="flex justify-between items-center">
       <div>
-        <h1 className="font-semibold text-lg">REST API documentation</h1>
+        <h1 className="font-semibold text-lg">
+          <Trans id="docs.rest.api.doc.title" />
+        </h1>
         <p className="text-sm">
-          Swagger API documentation following OpenAPI specs
+          <Trans id="docs.rest.api.doc.description" />
         </p>
       </div>
       <div className="flex gap-2">
@@ -50,7 +53,7 @@ const DocsComponents: React.FC = () => (
         >
           <Button variant="secondary" size="sm" className="gap-2">
             <ExternalLink size={16} />
-            Swagger UI
+            <Trans id="docs.swagger.ui" />
           </Button>
         </a>
       </div>

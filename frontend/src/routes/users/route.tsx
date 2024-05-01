@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GenericPanelSearch, SearchResults } from "@/components";
 import { usersQueryOptions } from "@/api/users";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UsersComponent: React.FC = () => {
   const users = useSuspenseQuery(usersQueryOptions);
@@ -13,11 +14,11 @@ const UsersComponent: React.FC = () => {
       onFilter={(data, searchValue) =>
         data.name.toLowerCase().includes(searchValue.toLowerCase())
       }
-      searchPlaceholder="Search users..."
+      searchPlaceholder="users.search.palceholder"
       Item={SearchResults.User}
       empty={{
-        title: "No users",
-        description: "Broaden your search criteria or create a new user",
+        title: "users.search.empty.title",
+        description: "users.search.empty.description",
       }}
     />
   );
@@ -25,5 +26,6 @@ const UsersComponent: React.FC = () => {
 
 export const Route = createFileRoute("/users")({
   component: UsersComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: (opts) => opts.context.queryClient.ensureQueryData(usersQueryOptions),
 });

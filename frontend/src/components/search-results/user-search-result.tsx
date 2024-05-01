@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { UserWithNumLogs } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
+import { Trans } from "@/components";
 
 const UserSearchResult: React.FC<
   ComponentSearchResultProps<UserWithNumLogs>
@@ -21,8 +22,8 @@ const UserSearchResult: React.FC<
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-baseline">
           <div className="font-semibold">{name}</div>
-          <div className="text-xs opacity-70">
-            {numLogs} log{numLogs > 1 && "s"}
+          <div className="text-xs opacity-70 lowercase">
+            {numLogs} <Trans id={numLogs > 1 ? "logs" : "log"} />
           </div>
         </div>
         <div className="text-sm">{email}</div>

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { TrainFrontTunnel } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Icons, Layouts, Trans } from "@/components";
 import { getRandomBackground } from "@/assets";
+import { store } from "@/atoms";
+import { userAtom } from "@/atoms/auth";
 
 const Login: React.FC = () => {
   const { next } = Route.useSearch();
@@ -54,10 +56,11 @@ const Login: React.FC = () => {
               <Trans id="authentication" />
             </h1>
             <p className="text-muted-foreground text-sm">
-              <Trans id="authentication.description.1" />{" "}
-              <span className="font-medium">Google</span> <Trans id="or" />{" "}
-              <span className="font-medium">Microsoft</span>{" "}
-              <Trans id="authentication.description.2" />
+              <Trans
+                id="authentication.description"
+                google={<span className="font-medium">Google</span>}
+                microsoft={<span className="font-medium">Microsoft</span>}
+              />
             </p>
           </div>
           <div className={cn("grid gap-2")}>
@@ -89,5 +92,12 @@ type SearchParams = {
 
 export const Route = createFileRoute("/login")({
   component: Login,
+  beforeLoad: () => {
+    const user = store.get(userAtom);
+
+    if (user) {
+      throw redirect({ to: "/" });
+    }
+  },
   validateSearch: (search: SearchParams): SearchParams => search,
 });

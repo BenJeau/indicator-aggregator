@@ -46,8 +46,10 @@ import {
   FullBadge,
   SearchResults,
   TitleEntryCount,
+  Trans,
 } from "@/components";
 import { cleanConfigValue } from "@/api/config";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourceComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -102,7 +104,9 @@ const SourceComponent: React.FC = () => {
           <>
             {source.data.description}
             {source.data.description.length === 0 && (
-              <span className="italic opacity-50">no description</span>
+              <span className="italic opacity-50 lowercase">
+                <Trans id="no.description" />
+              </span>
             )}
           </>
         }
@@ -110,7 +114,7 @@ const SourceComponent: React.FC = () => {
           <Link to="/sources/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
-              Edit
+              <Trans id="edit" />
             </Button>
           </Link>
         }
@@ -126,12 +130,12 @@ const SourceComponent: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <FullBadge
                 Icon={CalendarClock}
-                label="Created date"
+                label="created.date"
                 value={dayjs.utc(source.data.createdAt).local().format("LLL")}
               />
               <FullBadge
                 Icon={CalendarClock}
-                label="Updated date"
+                label="updated.date"
                 value={dayjs.utc(source.data.updatedAt).local().format("LLL")}
               />
             </div>
@@ -139,7 +143,7 @@ const SourceComponent: React.FC = () => {
             <div className="mt-2 flex flex-wrap gap-2">
               <FullBadge
                 Icon={Code2}
-                label="Kind"
+                label="kind"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -152,7 +156,7 @@ const SourceComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Book}
-                label="Documentation"
+                label="documentation"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -170,7 +174,7 @@ const SourceComponent: React.FC = () => {
               {firstTag && (
                 <FullBadge
                   Icon={Tags}
-                  label="Tags"
+                  label="tags"
                   valueBadgeProps={{
                     variant: "secondary",
                   }}
@@ -196,33 +200,35 @@ const SourceComponent: React.FC = () => {
                   variant={source.data.limitEnabled ? "success" : "destructive"}
                 >
                   <Power size={14} strokeWidth={3} />
-                  {source.data.limitEnabled ? "Enabled" : "Disabled"}
+                  <Trans
+                    id={source.data.limitEnabled ? "enabled" : "disabled"}
+                  />
                 </Badge>
-                Limit
+                <Trans id="limit" />
               </h2>
               <div className="flex flex-wrap justify-end gap-2 self-end">
                 {source.data.limitCount && (
                   <FullBadge
                     Icon={Hash}
-                    label="Limit of request per interval"
+                    label="source.interval.limit"
                     value={source.data.limitCount}
                   />
                 )}
                 {source.data.limitInterval && (
                   <FullBadge
                     Icon={TimerReset}
-                    label="Reset interval"
+                    label="source.interval.reset"
                     value={source.data.limitInterval}
                   />
                 )}
                 <FullBadge
                   Icon={BarChart2}
-                  label="Number of request during interval"
+                  label="source.interval.number.request"
                   value={0}
                 />
                 <FullBadge
                   Icon={Sigma}
-                  label="Total number of request"
+                  label="source.number.request"
                   value={0}
                 />
               </div>
@@ -230,7 +236,9 @@ const SourceComponent: React.FC = () => {
 
             <div className="text-sm">
               {!source.data.limitEnabled && (
-                <span className="text-xs italic opacity-50">no limit set</span>
+                <span className="text-xs italic opacity-50 lowercase">
+                  <Trans id="no.limit.set" />
+                </span>
               )}
             </div>
 
@@ -241,15 +249,17 @@ const SourceComponent: React.FC = () => {
                   variant={source.data.taskEnabled ? "success" : "destructive"}
                 >
                   <Power size={14} strokeWidth={3} />
-                  {source.data.taskEnabled ? "Enabled" : "Disabled"}
+                  <Trans
+                    id={source.data.taskEnabled ? "enabled" : "disabled"}
+                  />
                 </Badge>
-                Background task
+                <Trans id="background.task" />
               </h2>
               <div className="flex gap-2">
                 {source.data.taskInterval && (
                   <FullBadge
                     Icon={TimerReset}
-                    label="Interval"
+                    label="interval"
                     value={source.data.taskInterval + "s"}
                   />
                 )}
@@ -258,8 +268,8 @@ const SourceComponent: React.FC = () => {
 
             <div className="text-sm">
               {!source.data.taskEnabled && (
-                <span className="text-xs italic opacity-50">
-                  no background task set
+                <span className="text-xs italic opacity-50 lowercase">
+                  <Trans id="no.background.task.set" />
                 </span>
               )}
             </div>
@@ -271,15 +281,17 @@ const SourceComponent: React.FC = () => {
                   variant={source.data.cacheEnabled ? "success" : "destructive"}
                 >
                   <Power size={14} strokeWidth={3} />
-                  {source.data.cacheEnabled ? "Enabled" : "Disabled"}
+                  <Trans
+                    id={source.data.cacheEnabled ? "enabled" : "disabled"}
+                  />
                 </Badge>
-                Caching
+                <Trans id="caching" />
               </h2>
               <div className="flex gap-2">
                 {source.data.cacheInterval && (
                   <FullBadge
                     Icon={TimerReset}
-                    label="Interval"
+                    label="interval"
                     value={source.data.cacheInterval + "s"}
                   />
                 )}
@@ -288,14 +300,16 @@ const SourceComponent: React.FC = () => {
 
             <div className="text-sm">
               {!source.data.cacheEnabled && (
-                <span className="text-xs italic opacity-50">no cache set</span>
+                <span className="text-xs italic opacity-50 lowercase">
+                  <Trans id="no.cache.set" />
+                </span>
               )}
             </div>
             <Separator />
 
             <div className="mt-2 flex flex-col justify-between gap-2">
               <h2 className="flex items-baseline gap-2 font-medium">
-                Supported indicator kinds
+                <Trans id="supported.indicator.kinds" />
               </h2>
 
               <div className="flex flex-wrap gap-2">
@@ -329,34 +343,34 @@ const SourceComponent: React.FC = () => {
             </div>
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Secrets
+              <Trans id="secrets" />
             </h2>
             <div className="grid grid-cols-2 text-sm">
               <div>
                 <h3 className="flex items-baseline gap-2">
-                  Required
+                  <Trans id="required" />
                   <TitleEntryCount count={requiredSecret.length} />
                 </h3>
                 <div className="mt-1">
                   {requiredSecret.map(SecretBadge)}
 
                   {requiredSecret.length === 0 && (
-                    <span className="text-xs italic opacity-50">
-                      no required env
+                    <span className="text-xs italic opacity-50 lowercase">
+                      <Trans id="no.required.secrets" />
                     </span>
                   )}
                 </div>
               </div>
               <div>
                 <h3 className="flex items-baseline gap-2">
-                  Optional
+                  <Trans id="optional" />
                   <TitleEntryCount count={optionalSecret.length} />
                 </h3>
                 <div className="mt-1">
                   {optionalSecret.map(SecretBadge)}
                   {optionalSecret.length === 0 && (
-                    <span className="text-xs italic opacity-50">
-                      no optional env
+                    <span className="text-xs italic opacity-50 lowercase">
+                      <Trans id="no.optional.secrets" />
                     </span>
                   )}
                 </div>
@@ -366,25 +380,25 @@ const SourceComponent: React.FC = () => {
             <Separator className="mt-2" />
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Linked provider
+              <Trans id="linked.provider" />
             </h2>
             {provider.data && <SearchResults.Provider data={provider.data} />}
             {!provider.data && (
-              <span className="text-xs italic opacity-50">
-                no linked provider
+              <span className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.provider" />
               </span>
             )}
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Ignore list
+              <Trans id="ignore.list" />
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
               <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
-              <div className="text-xs italic opacity-50">
-                no linked ignore lists
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.ignore.lists" />
               </div>
             )}
 
@@ -392,7 +406,7 @@ const SourceComponent: React.FC = () => {
               <>
                 <Separator className="mt-2" />
                 <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-                  Source Code
+                  <Trans id="source.code" />
                 </h2>
                 <Editor
                   sourceKind={source.data.kind}
@@ -402,11 +416,13 @@ const SourceComponent: React.FC = () => {
             )}
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Requests
+              <Trans id="requests" />
               <TitleEntryCount count={sourceRequests.data.length} />
             </h2>
             {sourceRequests.data.length === 0 && (
-              <div className="text-xs italic opacity-50">no requests</div>
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.requests" />
+              </div>
             )}
             <div className="grid grid-cols-3 gap-2">
               {sourceRequests.data.map((request) => (
@@ -440,6 +456,7 @@ const SecretBadge: React.FC<SourceSecret> = ({ id, name, secretId }) => {
 
 export const Route = createFileRoute("/sources/$slug")({
   component: SourceComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(sourceSlugQueryOptions(slug));
 

@@ -7,6 +7,7 @@ import { Provider } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 import config from "@/config";
+import { Trans } from "@/components";
 
 const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
   data: { slug, name, description, enabled, numSources, url, favicon },
@@ -43,8 +44,9 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
             />
             <div className="flex gap-2 items-baseline flex-wrap gap-y-0">
               <div className="font-semibold">{name}</div>
-              <div className="text-xs opacity-70 whitespace-nowrap">
-                {numSources} source{numSources > 1 && "s"}
+              <div className="text-xs opacity-70 whitespace-nowrap lowercase">
+                {numSources} <Trans id="source" />
+                {numSources > 1 && "s"}
               </div>
             </div>
           </div>
@@ -52,7 +54,9 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
             {description}
 
             {description.length === 0 && (
-              <div className="opacity-50 italic">no description</div>
+              <div className="opacity-50 italic lowercase">
+                <Trans id="no.description" />
+              </div>
             )}
           </div>
         </div>
@@ -70,24 +74,6 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
           </Badge>
         </div>
       </div>
-      {/* <div className="flex justify-between items-end">
-        <div>
-          {tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="mr-2">
-              {tag}
-            </Badge>
-          ))}
-          {tags.length === 0 && (
-            <div className="text-xs opacity-50 italic">no tags</div>
-          )}
-        </div>
-        <Button variant="link" asChild className="text-sm p-0 h-auto">
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            {url}
-          </a>
-        </Button>
-      </div> */}
-      {/* <div>{dayjs(updatedAt).format("LLL")}</div> */}
     </Link>
   );
 };

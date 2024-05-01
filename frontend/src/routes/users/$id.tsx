@@ -21,12 +21,14 @@ import {
   FullBadge,
   SectionPanelHeader,
   TitleEntryCount,
+  Trans,
   UserLogTable,
 } from "@/components";
 import { userLogsQueryOptions, userQueryOptions } from "@/api/users";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const UserComponent: React.FC = () => {
   const { id } = Route.useParams();
@@ -62,7 +64,7 @@ const UserComponent: React.FC = () => {
           <Link to="/users/$id/edit" params={{ id }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
-              Edit
+              <Trans id="edit" />
             </Button>
           </Link>
         }
@@ -78,12 +80,12 @@ const UserComponent: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <FullBadge
                 Icon={CalendarClock}
-                label="Created date"
+                label="created.date"
                 value={dayjs.utc(user.data.createdAt).local().format("LLL")}
               />
               <FullBadge
                 Icon={CalendarClock}
-                label="Updated date"
+                label="updated.date"
                 value={dayjs.utc(user.data.updatedAt).local().format("LLL")}
               />
             </div>
@@ -91,7 +93,7 @@ const UserComponent: React.FC = () => {
             <div className="mt-2 flex flex-wrap gap-2">
               <FullBadge
                 Icon={UserCheck}
-                label="Verified"
+                label="verified"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -99,7 +101,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Mail}
-                label="Email"
+                label="email"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -107,7 +109,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Database}
-                label="Provider"
+                label="provider"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -115,7 +117,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Database}
-                label="Provider user ID"
+                label="provider.user.id"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -123,7 +125,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Network}
-                label="Roles"
+                label="roles"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -144,7 +146,7 @@ const UserComponent: React.FC = () => {
             <Separator className="mt-2" />
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Logs
+              <Trans id="logs" />
               <TitleEntryCount count={userLogs.data.length} />
             </h2>
             <UserLogTable data={userLogs.data} />
@@ -160,6 +162,7 @@ const UserComponent: React.FC = () => {
 
 export const Route = createFileRoute("/users/$id")({
   component: UserComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     await Promise.all([
       queryClient.ensureQueryData(userQueryOptions(id)),

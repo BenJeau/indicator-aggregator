@@ -1,13 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   useCreateSourceMutation,
   usePutSourceIgnoreListMutation,
   usePutSourceSecretsMutation,
 } from "@/api/sources";
 import { SourceKind } from "@/types/backendTypes";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const SourceNewComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const SourceNewComponent: React.FC = () => {
       }),
     ]);
 
-    toast.success("Source created");
+    toast.success(<Trans id="source.created" />);
     navigate({ to: `/sources/$slug`, params: { slug } });
   };
 
@@ -51,5 +52,6 @@ type SourceSearch = {
 
 export const Route = createFileRoute("/sources/new")({
   component: SourceNewComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: SourceSearch): SourceSearch => search,
 });

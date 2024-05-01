@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/components";
+import { DataTablePagination, Trans } from "@/components";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -82,7 +82,7 @@ const DataTable = <TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  <Trans id="no.results" />
                 </TableCell>
               </TableRow>
             )}

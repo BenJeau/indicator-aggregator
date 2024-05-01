@@ -1,4 +1,4 @@
-name: React CI - Typescript compilation
+name: React CI - I18n checks
 
 on: 
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   fmt:
-    name: Typescript compilation
+    name: I18n checks
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,5 +39,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Run typescript compilation
-        run: pnpm build
+      - name: Run i18n sort
+        run: pnpm i18n:sort
+      - name: Check if files changed
+        run: git diff --exit-code
+      - name: Run i18n unused
+        run: pnpm i18n:unused

@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Empty } from "@/components";
+import { TransId, useTranslation } from "@/i18n";
 
 export interface ComponentSearchResultProps<T> {
   data: T;
@@ -20,13 +21,13 @@ export interface ComponentSearchResultProps<T> {
 interface Props<T> {
   data: T[];
   onFilter: (data: T, seachValue: string) => boolean;
-  searchPlaceholder: string;
+  searchPlaceholder: TransId;
   createLinkTo?: string;
   CreateLinkIcon?: LucideIcon;
   Item: React.FC<ComponentSearchResultProps<T>>;
   empty: {
-    title: string;
-    description: string;
+    title: TransId;
+    description: TransId;
     extra?: React.ReactNode;
   };
 }
@@ -41,6 +42,7 @@ function GenericPanelSearch<T>({
   empty,
 }: Props<T>) {
   const [searchValue, setSearchValue] = useState("");
+  const { t } = useTranslation();
 
   const filteredData = data.filter((data) => onFilter(data, searchValue));
 
@@ -71,7 +73,7 @@ function GenericPanelSearch<T>({
               </Button>
             </Link>
             <Input
-              placeholder={searchPlaceholder}
+              placeholder={t(searchPlaceholder) + "..."}
               value={searchValue}
               className="h-8 bg-background"
               onChange={(e) => setSearchValue(e.target.value)}

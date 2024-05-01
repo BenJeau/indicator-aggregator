@@ -18,7 +18,9 @@ import {
 } from "@/components/ui/accordion";
 import config from "@/config";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RawContent, Trans, Layouts } from ".";
+import { RawContent, Trans, Layouts } from "@/components";
+import { useTranslation } from "@/i18n";
+import { useUpdateTheme } from "@/atoms/theme";
 
 interface Props {
   info?: ErrorInfo;
@@ -26,29 +28,33 @@ interface Props {
 }
 
 const ErrorComponent: React.FC<Props> = ({ info, error }) => {
-  const errorMessage = error instanceof Error ? error.message : "Unknown error";
-  const errorName = error instanceof Error ? error.name : "Unknown error";
-  const errorStack = error instanceof Error ? error.stack : "Unknown error";
+  const { t } = useTranslation();
+  useUpdateTheme();
+
+  const errorMessage =
+    error instanceof Error ? error.message : t("unknown.error");
+  const errorName = error instanceof Error ? error.name : t("unknown.error");
+  const errorStack = error instanceof Error ? error.stack : t("unknown.error");
 
   return (
     <div className="container relative mx-auto flex min-h-screen items-center justify-center gap-8 p-4 dark:text-white">
       <div className="hidden h-[20rem] w-[20rem] flex-col gap-6 lg:flex xl:h-[30rem] xl:w-[30rem] ">
         <img
           src={Image}
-          className="h-fit w-fit rounded-xl object-cover  text-white shadow-xl ring-2 ring-black  ring-offset-2  dark:ring-800 dark:ring-offset-950"
+          className="h-fit w-fit rounded-xl object-cover  text-white shadow-xl border border-black dark:border-border"
         />
 
-        <div className=" hidden flex-wrap justify-between gap-4 xl:flex">
+        <div className="items-center hidden flex-wrap justify-between gap-4 xl:flex">
           <Layouts.Public.Footer />
         </div>
       </div>
 
       <div className="relative flex flex-1 flex-col gap-2">
-        <div className="font-serif text-5xl font-bold leading-[1] text-500 sm:text-7xl lg:text-8xl xl:text-9xl">
+        <div className="font-serif text-5xl font-bold leading-[1] text-500 sm:text-7xl lg:text-8xl xl:text-9xl z-10">
           <Trans id="error.unexpected.title" />
         </div>
 
-        <div className="absolute -right-5 -top-10 -z-10 ms-4 font-serif text-7xl font-bold leading-5 text-yellow-200 dark:text-800 sm:text-7xl md:text-9xl xl:top-10 xl:text-[10rem]">
+        <div className="absolute -right-5 -top-10 ms-4 font-serif text-7xl font-bold leading-5 text-primary/30 dark:text-800 sm:text-7xl md:text-9xl xl:top-10 xl:text-[10rem] select-none">
           x⸑x
         </div>
         <div className="mb-2 text-sm">
@@ -130,7 +136,7 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
           </AccordionItem>
         </Accordion>
 
-        <div className="mt-6 flex flex-wrap justify-between gap-4 xl:hidden">
+        <div className="mt-6 flex flex-wrap justify-between gap-4 xl:hidden items-center">
           <Layouts.Public.Footer />
         </div>
       </div>

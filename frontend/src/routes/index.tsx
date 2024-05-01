@@ -31,9 +31,11 @@ import {
   StackedAreaChart,
   SearchResults,
   Forms,
+  Trans,
 } from "@/components";
 import { beforeLoadAuthenticated } from "@/auth";
 import { userAtom } from "@/atoms/auth";
+import { useTranslation } from "@/i18n";
 
 const IndexComponent: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);
@@ -53,6 +55,8 @@ const IndexComponent: React.FC = () => {
   );
   const user = useAtomValue(userAtom);
 
+  const { t } = useTranslation();
+
   const config = useQuery(configQueryOptions);
 
   const runnersStatus = useRunnersStatus();
@@ -60,22 +64,23 @@ const IndexComponent: React.FC = () => {
   return (
     <>
       <div className="p-4">
-        <h3 className="text-xl font-semibold">Welcome {user?.name}!</h3>
+        <h3 className="text-xl font-semibold">
+          <Trans id="welcome" /> {user?.name}!
+        </h3>
         <p>
-          Start requesting data from our various sources below or take a sneak
-          peak at the various stats of the system
+          <Trans id="home.welcome.description" />
         </p>
       </div>
       <div className="mx-4">
         <Separator />
       </div>
       <h4 className="mx-4 font-medium -mb-4 z-20 flex gap-2 items-center">
-        <Send size={16} /> Get data from sources
+        <Send size={16} /> <Trans id="home.perform.request.title" />
       </h4>
       <Forms.RequestForm.default sources={sources.data} />
       <div>
         <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
-          <History size={16} /> Latest requests
+          <History size={16} /> <Trans id="home.latest.request.title" />
         </h4>
         <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
           {requests.data.slice(0, 4).map((request) => (
@@ -88,7 +93,7 @@ const IndexComponent: React.FC = () => {
       </div>
       <div>
         <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
-          <Server size={16} /> Runners status
+          <Server size={16} /> <Trans id="home.runners.title" />
         </h4>
         <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
           <RunnerStatus
@@ -110,39 +115,39 @@ const IndexComponent: React.FC = () => {
       </div>
       <div>
         <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
-          <AreaChartIcon size={16} /> Stats
+          <AreaChartIcon size={16} /> <Trans id="stats" />
         </h4>
         <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
           <StatsCounter
             Icon={Send}
             count={statsCount.data.history}
-            title="Total requests"
+            title="home.stats.requests.title"
             subCount={statsCount.data.historyLast24hrs}
-            subTitle="Last 24 hours"
+            subTitle="home.stats.requests.subtitle"
             to="/history"
           />
           <StatsCounter
             Icon={Database}
             count={statsCount.data.sources}
-            title="Total sources"
+            title="home.stats.sources.title"
             subCount={statsCount.data.enabledSources}
-            subTitle="Enabled sources"
+            subTitle="home.stats.sources.subtitle"
             to="/sources"
           />
           <StatsCounter
             Icon={Globe}
             count={statsCount.data.providers}
-            title="Total providers"
+            title="home.stats.providers.title"
             subCount={statsCount.data.enabledProviders}
-            subTitle="Enabled providers"
+            subTitle="home.stats.providers.subtitle"
             to="/providers"
           />
           <StatsCounter
             Icon={Scroll}
             count={statsCount.data.ignoreLists}
-            title="Total ignore lists"
+            title="home.stats.ignore.lists.title"
             subCount={statsCount.data.enabledIgnoreLists}
-            subTitle="Enabled ignore lists"
+            subTitle="home.stats.ignore.lists.subtitle"
             to="/lists"
           />
         </div>
@@ -155,16 +160,16 @@ const IndexComponent: React.FC = () => {
                 {
                   id: "1",
                   count: i.uncachedCount,
-                  name: "Uncached",
+                  name: t("uncached"),
                 },
                 {
                   id: "2",
                   count: i.cachedCount,
-                  name: "Cached",
+                  name: t("cached"),
                 },
               ],
             }))}
-            title="Requests over time (last 24 hours)"
+            title="home.charts.requests.title"
             chartContainerClassName="h-[300px]"
           />
           <StackedAreaChart
@@ -177,17 +182,17 @@ const IndexComponent: React.FC = () => {
                 ],
               })),
             }))}
-            title="Requests by kinds over time (last 24 hours)"
+            title="home.charts.requests.by.kinds.title"
             chartContainerClassName="h-[300px]"
           />
           <StackedAreaChart
             data={statsCountRequestsBySources.data}
-            title="Requests by sources over time (last 24 hours)"
+            title="home.charts.requests.by.sources.title"
             className="lg:col-span-2"
           />
           <StackedAreaChart
             data={statsCountRequestsByProviders.data}
-            title="Requests by providers over time (last 24 hours)"
+            title="home.charts.requests.by.providers.title"
             className="lg:col-span-2"
           />
         </div>

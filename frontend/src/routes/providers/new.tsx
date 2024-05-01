@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import { useProviderCreate } from "@/api/providers";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProvidersNewComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const ProvidersNewComponent: React.FC = () => {
 
   const onSubmit = async (values: Forms.ProviderEditCreate.FormSchema) => {
     const { slug } = await providerCreate.mutateAsync(values);
-    toast.success("Provider created");
+    toast.success(<Trans id="provider.created" />);
     navigate({ to: `/providers/$slug`, params: { slug } });
   };
 
@@ -26,6 +27,7 @@ type ProviderSearch = {
 
 export const Route = createFileRoute("/providers/new")({
   component: ProvidersNewComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   validateSearch: (search: Record<string, unknown>): ProviderSearch => {
     return {
       name: search.name as string,

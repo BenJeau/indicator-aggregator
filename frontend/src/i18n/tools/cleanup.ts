@@ -28,8 +28,8 @@ const findDuplicateTranslations = (languages: Languages) => {
   if (foundDuplicateValues) {
     console.error("findDuplicateTranslations check: FAIL\n");
   } else {
-    console.error("There a no duplicate values in the en_CA and fr_CA files!");
-    console.error("findDuplicateTranslations check: SUCCESS\n");
+    console.log("There a no duplicate values in the en_CA and fr_CA files!");
+    console.log("findDuplicateTranslations check: SUCCESS\n");
   }
 };
 

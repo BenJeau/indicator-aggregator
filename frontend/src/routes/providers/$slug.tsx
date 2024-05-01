@@ -26,10 +26,12 @@ import {
   SearchResults,
   FullBadge,
   TitleEntryCount,
+  Trans,
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types/backendTypes";
 import { dedupeListOnId } from "@/data";
+import { beforeLoadAuthenticated } from "@/auth";
 
 const ProviderComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -79,7 +81,9 @@ const ProviderComponent: React.FC = () => {
           <>
             {provider.data.description}
             {provider.data.description.length === 0 && (
-              <span className="italic opacity-50">no description</span>
+              <span className="italic opacity-50 lowercase">
+                <Trans id="no.description" />
+              </span>
             )}
           </>
         }
@@ -87,7 +91,7 @@ const ProviderComponent: React.FC = () => {
           <Link to="/providers/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
-              Edit
+              <Trans id="edit" />
             </Button>
           </Link>
         }
@@ -103,12 +107,12 @@ const ProviderComponent: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <FullBadge
                 Icon={CalendarClock}
-                label="Created date"
+                label="created.date"
                 value={dayjs.utc(provider.data.createdAt).local().format("LLL")}
               />
               <FullBadge
                 Icon={CalendarClock}
-                label="Updated date"
+                label="updated.date"
                 value={dayjs.utc(provider.data.updatedAt).local().format("LLL")}
               />
             </div>
@@ -116,7 +120,7 @@ const ProviderComponent: React.FC = () => {
             <div className="mt-2 flex flex-wrap gap-2">
               <FullBadge
                 Icon={Book}
-                label="Documentation"
+                label="documentation"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -134,7 +138,7 @@ const ProviderComponent: React.FC = () => {
               {firstTag && (
                 <FullBadge
                   Icon={Tags}
-                  label="Tags"
+                  label="tags"
                   valueBadgeProps={{
                     variant: "secondary",
                   }}
@@ -154,7 +158,7 @@ const ProviderComponent: React.FC = () => {
 
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Sources
+              <Trans id="sources" />
               <TitleEntryCount count={providerSources.data.length} />
             </h2>
             <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
@@ -163,19 +167,21 @@ const ProviderComponent: React.FC = () => {
               ))}
             </div>
             {providerSources.data.length === 0 && (
-              <div className="text-xs italic opacity-50">no linked sources</div>
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.sources" />
+              </div>
             )}
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Ignore list
+              <Trans id="ignore.lists" />
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
               <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
-              <div className="text-xs italic opacity-50">
-                no linked ignore lists
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.ignore.lists" />
               </div>
             )}
           </div>
@@ -190,6 +196,7 @@ const ProviderComponent: React.FC = () => {
 
 export const Route = createFileRoute("/providers/$slug")({
   component: ProviderComponent,
+  beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
       providerSlugQueryOptions(slug),

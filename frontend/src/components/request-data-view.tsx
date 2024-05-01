@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { LoaderCircle } from "lucide-react";
 
 import {
   Tooltip,
@@ -6,11 +7,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ReqestSSEData } from "@/api/requests";
-import { Empty, TitleEntryCount } from "@/components";
+import { AutoAnimate, Empty, TitleEntryCount, Trans } from "@/components";
 import { Source } from "@/components/sources";
 import WaitingImage from "@/assets/day-dreaming-two-color.svg";
 import LoadingImage from "@/assets/waiter-two-color.svg";
 import { Badge } from "@/components/ui/badge";
+import { TransId } from "@/i18n";
 
 interface Props {
   data?: { [key: string]: ReqestSSEData };
@@ -89,67 +91,77 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
       <div className="mb-2 flex items-center justify-between">
         {sourcesOrdered.length !== 0 && (
           <div className="flex flex-wrap items-baseline gap-2 gap-y-0 text-lg font-semibold">
-            <span className="whitespace-nowrap">Source data</span>
+            <span className="whitespace-nowrap">
+              <Trans id="request.title" />
+            </span>
             <TitleEntryCount count={sourcesOrdered.length} />
+            {isFetching && (
+              <div className="mt-1 self-center">
+                <LoaderCircle size={16} className="animate-spin" />
+              </div>
+            )}
           </div>
         )}
         <div className="flex flex-wrap justify-end gap-2 gap-y-1">
-          <BadgeTooltip title="Missing source code" data={missingSourceCode} />
-          <BadgeTooltip title="Disabled sources" data={disabledSource} />
-          <BadgeTooltip title="Disabled indicators" data={disabledIndicator} />
+          <BadgeTooltip title="missing.source.code" data={missingSourceCode} />
+          <BadgeTooltip title="disabled.sources" data={disabledSource} />
+          <BadgeTooltip title="disabled.indicators" data={disabledIndicator} />
           <BadgeTooltip
-            title="Unsupported indicators"
+            title="unsupported.indicators"
             data={unsupportedIndicator}
           />
-          <BadgeTooltip title="Missing secrets" data={missingSecrets} />
-          <BadgeTooltip title="Disabled providers" data={disabledProvider} />
-          <BadgeTooltip title="Whitelisted" data={whitelistedIndicator} />
+          <BadgeTooltip title="missing.secrets" data={missingSecrets} />
+          <BadgeTooltip title="disabled.providers" data={disabledProvider} />
+          <BadgeTooltip
+            title="within.ignore.list"
+            data={whitelistedIndicator}
+          />
         </div>
       </div>
       {sourcesOrdered.length === 0 && !isFetching && (
         <Empty
           image={WaitingImage}
-          title="Make a request"
-          description="Start by making a request to see the data we have"
+          title="request.empty.title"
+          description="request.empty.description"
           className="flex-1"
         />
       )}
       {sourcesOrdered.length === 0 && isFetching && (
         <Empty
           image={LoadingImage}
-          title="Requesting data"
-          description="We are fetching the data for you"
+          title="request.loading.title"
+          description="request.loading.description"
           className="flex-1"
         />
       )}
-      <div className="grid grid-cols-12 gap-2">
+      <AutoAnimate className="grid grid-cols-12 gap-2">
         {sourceWithoutErrors.map((source) => (
           <Source key={source.source.id} {...source} />
         ))}
-      </div>
-      <div className="my-4 grid grid-cols-12 gap-2">
+      </AutoAnimate>
+      <AutoAnimate className="my-4 grid grid-cols-12 gap-2">
         {sourceWithErrors.map((source) => (
           <Source key={source.source.id} {...source} />
         ))}
-      </div>
-      <div className="grid grid-cols-12 gap-2">
+      </AutoAnimate>
+      <AutoAnimate className="grid grid-cols-12 gap-2">
         {missingSourceCode.map((source) => (
           <Source key={source.source.id} {...source} />
         ))}
-      </div>
+      </AutoAnimate>
     </div>
   );
 };
 
-const BadgeTooltip: React.FC<{ title: string; data: ReqestSSEData[] }> = ({
-  title,
-  data,
-}) =>
+const BadgeTooltip: React.FC<{
+  title: TransId;
+  data: ReqestSSEData[];
+}> = ({ title, data }) =>
   data.length > 0 && (
     <Tooltip>
       <TooltipTrigger>
         <Badge variant="secondary">
-          {title} {data.length}
+          <Trans id={title} /> {data.length}
         </Badge>
       </TooltipTrigger>
       <TooltipContent side="bottom" align="end">

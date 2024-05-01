@@ -16,7 +16,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Editor } from "@/components";
+import { Editor, Trans } from "@/components";
+import { TransId } from "@/i18n";
 
 import { PhishTank } from "./phishtank";
 
@@ -88,12 +89,16 @@ export const Source: React.FC<ReqestSSEData> = ({
           {errors.length !== 0 && (
             <span className="flex flex-col items-end text-xs italic">
               {errors.map((error, i) => (
-                <span key={i}>{SourceErrorPreview[error.kind]} </span>
+                <span key={i}>
+                  <Trans id={SourceErrorPreview[error.kind]} />
+                </span>
               ))}
             </span>
           )}
           {!hasSourceCode && (
-            <span className="text-xs italic">Missing source code</span>
+            <span className="text-xs italic">
+              <Trans id="missing.source.code" />
+            </span>
           )}
           {shouldHaveData && (
             <>
@@ -106,25 +111,35 @@ export const Source: React.FC<ReqestSSEData> = ({
                       ) : (
                         <Save size={16} />
                       )}
-                      {cache?.action === "FROM_CACHE"
-                        ? "Response cached"
-                        : "Cached response"}
+                      <Trans
+                        id={
+                          cache?.action === "FROM_CACHE"
+                            ? "response.cached"
+                            : "cached.response"
+                        }
+                      />
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" align="end">
                     <div className="flex justify-between gap-2">
-                      <span className="font-semibold">Expires at</span>
+                      <span className="font-semibold">
+                        <Trans id="expires.at" />
+                      </span>
                       <span>
                         {dayjs(cache?.expiresAt).format("DD-MM-YYYY HH:mm:ss")}
                       </span>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="font-semibold">Cached at</span>
+                      <span className="font-semibold">
+                        <Trans id="cached.at" />
+                      </span>
                       {dayjs(cache?.cachedAt).format("DD-MM-YYYY HH:mm:ss")}
                     </div>
 
                     <div className="flex justify-between gap-2">
-                      <span className="font-semibold">Cache key</span>
+                      <span className="font-semibold">
+                        <Trans id="cache.key" />
+                      </span>
                       {cache?.cacheKey}
                     </div>
                   </TooltipContent>
@@ -154,22 +169,26 @@ export const Source: React.FC<ReqestSSEData> = ({
                 <TooltipTrigger>
                   <FullBadge
                     Icon={Hourglass}
-                    label="Elapsed"
+                    label="elapsed"
                     valueBadgeProps={{
-                      variant: diff > 500 ? "destructive" : "success",
+                      variant: diff > 1000 ? "destructive" : "success",
                     }}
                     value={getElapsedTime(diff)}
                   />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" align="end">
                   <div className="flex justify-between gap-2">
-                    <span className="font-semibold">Started at</span>
+                    <span className="font-semibold">
+                      <Trans id="started.at" />
+                    </span>
                     <span>
                       {dayjs(timing?.startedAt).format("DD-MM-YYYY HH:mm:ss")}
                     </span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="font-semibold">Ended at</span>
+                    <span className="font-semibold">
+                      <Trans id="ended.at" />
+                    </span>
                     <span>
                       {dayjs(timing?.endedAt).format("DD-MM-YYYY HH:mm:ss")}
                     </span>
@@ -183,7 +202,9 @@ export const Source: React.FC<ReqestSSEData> = ({
       {/* @ts-expect-error Lazy */}
       {shouldHaveData && entryCount > 0 && <Content data={data} />}
       {shouldHaveData && entryCount === 0 && (
-        <span className="text-xs italic opacity-50">no data</span>
+        <span className="text-xs italic opacity-50 lowercase">
+          <Trans id="no.data" />
+        </span>
       )}
     </div>
   );
@@ -204,21 +225,21 @@ function getElapsedTime(diff: number): string {
   return `${diff}m`;
 }
 
-const SourceErrorPreview: { [key in SourceError["kind"]]: string } = {
-  DISABLED_INDICATOR: "Disabled Indicator",
-  PROVIDER_DISABLED: "Disabled Provider",
-  RUNNER_DISABLED: "Disabled Runner",
-  MISSING_SECRET: "Missing Secret",
-  SOURCE_DISABLED: "Source Disabled",
-  UNSUPPORTED_INDICATOR: "Unsupported Indicator",
-  WITHIN_IGNORE_LIST: "Within Ignore List",
-  TIMEOUT: "Timeout",
-  NOT_FOUND: "Not Found",
-  UNAUTHORIZED: "Unauthorized",
-  REQUEST_ERROR: "Request Error",
-  RESPONSE_ERROR: "Response Error",
-  DATABASE_ERROR: "Database Error",
-  INTERNAL_SERVER_ERROR: "Internal Server Error",
-  MISSING_SOURCE_CODE: "Missing Source Code",
-  RATE_LIMITED: "Rate Limited",
+const SourceErrorPreview: { [key in SourceError["kind"]]: TransId } = {
+  DISABLED_INDICATOR: "disabled.indicator",
+  PROVIDER_DISABLED: "disabled.provider",
+  RUNNER_DISABLED: "disabled.runner",
+  MISSING_SECRET: "missing.secret",
+  SOURCE_DISABLED: "disabled.source",
+  UNSUPPORTED_INDICATOR: "unsupported.indicator",
+  WITHIN_IGNORE_LIST: "within.ignore.list",
+  TIMEOUT: "timeout",
+  NOT_FOUND: "not.found",
+  UNAUTHORIZED: "unauthorized",
+  REQUEST_ERROR: "request.error",
+  RESPONSE_ERROR: "response.error",
+  DATABASE_ERROR: "database.error",
+  INTERNAL_SERVER_ERROR: "internal.server.error",
+  MISSING_SOURCE_CODE: "missing.source.code",
+  RATE_LIMITED: "rate.limited",
 };
