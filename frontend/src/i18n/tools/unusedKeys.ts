@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 const findUnusedKeys = async (
   filesContent: string[],
-  searchableKeys: string[]
+  searchableKeys: string[],
 ) => {
   const unusedKeys: string[] = [];
 
@@ -20,7 +20,7 @@ const findUnusedKeys = async (
         content.includes(`"${key}"`) ||
         content.includes(`'${key}'`) ||
         content.includes(`\`${key}\``) ||
-        ignoredKeys.includes(key)
+        ignoredKeys.includes(key),
     );
 
     if (!result) unusedKeys.push(key);
@@ -29,7 +29,7 @@ const findUnusedKeys = async (
   if (unusedKeys.length) {
     console.error(
       `${unusedKeys.length} keys that are unused in the project found`,
-      unusedKeys
+      unusedKeys,
     );
     console.error("findUnusedKeys check: FAIL\n");
   } else {
@@ -42,13 +42,13 @@ const findUnusedKeys = async (
 
 const getFileContent = async (dir: string, ext: string[]) => {
   const files = await Promise.all(
-    ext.map((extension) => getFilesInDirectory(dir, extension))
+    ext.map((extension) => getFilesInDirectory(dir, extension)),
   );
 
   return Promise.all(
     files
       .flat()
-      .map(async (i) => fs.readFile(i).then((buffer) => buffer.toString()))
+      .map(async (i) => fs.readFile(i).then((buffer) => buffer.toString())),
   );
 };
 
@@ -66,7 +66,7 @@ const getFilesInDirectory = async (dir: string, ext: string) => {
       } else if (path.extname(file) === ext) {
         files.push(filePath);
       }
-    })
+    }),
   );
 
   return files;

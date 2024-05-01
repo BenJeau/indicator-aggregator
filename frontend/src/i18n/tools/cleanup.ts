@@ -5,7 +5,7 @@ const findDuplicates = (arr: string[]) =>
     (
       (s) => (v) =>
         s.has(v) || !s.add(v)
-    )(new Set())
+    )(new Set()),
   );
 
 const findDuplicateTranslations = (languages: Languages) => {
@@ -20,7 +20,7 @@ const findDuplicateTranslations = (languages: Languages) => {
       foundDuplicateValues = true;
       console.error(
         `${duplicateValues.length} duplicate values are in ${lang.lang}:`,
-        duplicateValues
+        duplicateValues,
       );
     }
   });

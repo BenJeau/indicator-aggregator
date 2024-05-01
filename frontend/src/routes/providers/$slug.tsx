@@ -38,10 +38,10 @@ const ProviderComponent: React.FC = () => {
 
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
-    providerQueryOptions(id)
+    providerQueryOptions(id),
   ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
-    providerIgnoreListsQueryOptions(id)
+    providerIgnoreListsQueryOptions(id),
   );
   const providerSources = useSuspenseQuery(providerSourcesQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
@@ -54,7 +54,7 @@ const ProviderComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/providers/$slug/edit"),
-    [matches]
+    [matches],
   );
 
   const firstTag = provider.data.tags[0];
@@ -64,13 +64,13 @@ const ProviderComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20"
+          isEdit && "blur-sm pointer-events-none select-none opacity-20",
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              provider.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
+              provider.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -101,7 +101,7 @@ const ProviderComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
             )}
           >
             <div className="flex flex-wrap gap-2">
@@ -199,7 +199,7 @@ export const Route = createFileRoute("/providers/$slug")({
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      providerSlugQueryOptions(slug)
+      providerSlugQueryOptions(slug),
     );
 
     if (!id) {

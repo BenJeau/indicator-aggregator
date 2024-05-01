@@ -42,16 +42,16 @@ const IndexComponent: React.FC = () => {
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
   const requests = useSuspenseQuery(requestsQueryOptions);
   const statsCountRequestsBySources = useSuspenseQuery(
-    statsCountRequestsBySourcesQueryOptions
+    statsCountRequestsBySourcesQueryOptions,
   );
   const statsCountRequestsByProviders = useSuspenseQuery(
-    statsCountRequestsByProvidersQueryOptions
+    statsCountRequestsByProvidersQueryOptions,
   );
   const statsCountRequestsByHour = useSuspenseQuery(
-    statsCountRequestsByHourQueryOptions
+    statsCountRequestsByHourQueryOptions,
   );
   const statsCountRequestsByKinds = useSuspenseQuery(
-    statsCountRequestsByKindsQueryOptions
+    statsCountRequestsByKindsQueryOptions,
   );
   const user = useAtomValue(userAtom);
 

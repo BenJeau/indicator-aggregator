@@ -40,26 +40,26 @@ const ListComponent = () => {
   const ignoreListEntries = useSuspenseQuery(ignoreListEntriesQueryOptions(id));
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
   const ignoreListProviders = useSuspenseQuery(
-    ignoreListProvidersQueryOptions(id)
+    ignoreListProvidersQueryOptions(id),
   );
 
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/lists/$slug/edit"),
-    [matches]
+    [matches],
   );
 
   return (
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20"
+          isEdit && "blur-sm pointer-events-none select-none opacity-20",
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              ignoreList.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
+              ignoreList.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -90,7 +90,7 @@ const ListComponent = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
             )}
           >
             <div className="flex flex-wrap gap-2">
@@ -202,7 +202,7 @@ export const Route = createFileRoute("/lists/$slug")({
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      ignoreListSlugQueryOptions(slug)
+      ignoreListSlugQueryOptions(slug),
     );
 
     if (!id) {
