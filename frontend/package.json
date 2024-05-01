@@ -10,7 +10,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "preview": "vite preview",
-    "i18n:sort": "tsx src/i18n/tools/sortKeys.ts"
+    "i18n:sort": "tsx src/i18n/tools/sortKeys.ts",
+    "i18n:cleanup": "tsx src/i18n/tools/cleanup.ts",
+    "i18n:unused": "tsx src/i18n/tools/unusedKeys.ts"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",

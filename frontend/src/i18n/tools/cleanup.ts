@@ -5,7 +5,7 @@ const findDuplicates = (arr: string[]) =>
     (
       (s) => (v) =>
         s.has(v) || !s.add(v)
-    )(new Set()),
+    )(new Set())
   );
 
 const findDuplicateTranslations = (languages: Languages) => {
@@ -20,7 +20,7 @@ const findDuplicateTranslations = (languages: Languages) => {
       foundDuplicateValues = true;
       console.error(
         `${duplicateValues.length} duplicate values are in ${lang.lang}:`,
-        duplicateValues,
+        duplicateValues
       );
     }
   });
@@ -28,8 +28,8 @@ const findDuplicateTranslations = (languages: Languages) => {
   if (foundDuplicateValues) {
     console.error("findDuplicateTranslations check: FAIL\n");
   } else {
-    console.error("There a no duplicate values in the en_CA and fr_CA files!");
-    console.error("findDuplicateTranslations check: SUCCESS\n");
+    console.log("There a no duplicate values in the en_CA and fr_CA files!");
+    console.log("findDuplicateTranslations check: SUCCESS\n");
   }
 };
 
