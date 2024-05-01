@@ -38,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
-        run: pnpm install --prod --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Run i18n sort
         run: pnpm i18n:sort
       - name: Check if files changed
