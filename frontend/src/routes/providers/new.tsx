@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import { useProviderCreate } from "@/api/providers";
 import { beforeLoadAuthenticated } from "@/auth";
 
@@ -12,7 +12,7 @@ const ProvidersNewComponent: React.FC = () => {
 
   const onSubmit = async (values: Forms.ProviderEditCreate.FormSchema) => {
     const { slug } = await providerCreate.mutateAsync(values);
-    toast.success("Provider created");
+    toast.success(<Trans id="provider.created" />);
     navigate({ to: `/providers/$slug`, params: { slug } });
   };
 

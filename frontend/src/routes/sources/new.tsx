@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   useCreateSourceMutation,
   usePutSourceIgnoreListMutation,
@@ -37,7 +37,7 @@ const SourceNewComponent: React.FC = () => {
       }),
     ]);
 
-    toast.success("Source created");
+    toast.success(<Trans id="source.created" />);
     navigate({ to: `/sources/$slug`, params: { slug } });
   };
 

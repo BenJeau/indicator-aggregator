@@ -5,9 +5,11 @@ import { Send } from "lucide-react";
 import { requestsQueryOptions } from "@/api/requests";
 import { GenericPanelSearch, SearchResults } from "@/components";
 import { beforeLoadAuthenticated } from "@/auth";
+import { useTranslation } from "@/i18n";
 
 const SourcesComponents: React.FC = () => {
   const requests = useSuspenseQuery(requestsQueryOptions);
+  const { t } = useTranslation();
 
   return (
     <GenericPanelSearch
@@ -16,14 +18,14 @@ const SourcesComponents: React.FC = () => {
         data.data.toLowerCase().includes(searchValue.toLowerCase()) ||
         data.kind.toLowerCase().includes(searchValue.toLowerCase())
       }
-      searchPlaceholder="Search past requests..."
+      searchPlaceholder="history.search.placeholder"
       createLinkTo="/request"
       CreateLinkIcon={Send}
       Item={SearchResults.History}
       empty={{
-        title: "No past request",
-        description: "Create a request to see it here",
-        extra: "Send a request",
+        title: "history.search.empty.title",
+        description: "history.search.empty.description",
+        extra: t("history.search.empty.extra"),
       }}
     />
   );

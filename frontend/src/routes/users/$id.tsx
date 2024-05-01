@@ -21,6 +21,7 @@ import {
   FullBadge,
   SectionPanelHeader,
   TitleEntryCount,
+  Trans,
   UserLogTable,
 } from "@/components";
 import { userLogsQueryOptions, userQueryOptions } from "@/api/users";
@@ -41,7 +42,7 @@ const UserComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/users/$id/edit"),
-    [matches],
+    [matches]
   );
 
   return (
@@ -51,7 +52,7 @@ const UserComponent: React.FC = () => {
           <div
             className={cn(
               "rounded-lg p-2",
-              user.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
+              user.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -63,7 +64,7 @@ const UserComponent: React.FC = () => {
           <Link to="/users/$id/edit" params={{ id }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
-              Edit
+              <Trans id="edit" />
             </Button>
           </Link>
         }
@@ -73,18 +74,18 @@ const UserComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
             )}
           >
             <div className="flex flex-wrap gap-2">
               <FullBadge
                 Icon={CalendarClock}
-                label="Created date"
+                label="created.date"
                 value={dayjs.utc(user.data.createdAt).local().format("LLL")}
               />
               <FullBadge
                 Icon={CalendarClock}
-                label="Updated date"
+                label="updated.date"
                 value={dayjs.utc(user.data.updatedAt).local().format("LLL")}
               />
             </div>
@@ -92,7 +93,7 @@ const UserComponent: React.FC = () => {
             <div className="mt-2 flex flex-wrap gap-2">
               <FullBadge
                 Icon={UserCheck}
-                label="Verified"
+                label="verified"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -100,7 +101,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Mail}
-                label="Email"
+                label="email"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -108,7 +109,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Database}
-                label="Provider"
+                label="provider"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -116,7 +117,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Database}
-                label="Provider user ID"
+                label="provider.user.id"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -124,7 +125,7 @@ const UserComponent: React.FC = () => {
               />
               <FullBadge
                 Icon={Network}
-                label="Roles"
+                label="roles"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -145,7 +146,7 @@ const UserComponent: React.FC = () => {
             <Separator className="mt-2" />
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Logs
+              <Trans id="logs" />
               <TitleEntryCount count={userLogs.data.length} />
             </h2>
             <UserLogTable data={userLogs.data} />

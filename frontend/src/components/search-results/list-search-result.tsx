@@ -22,9 +22,8 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-baseline">
           <div className="font-semibold">{name}</div>
-          <div className="text-xs opacity-70">
-            {global && "is global"}
-            {!global && "is not global"}
+          <div className="text-xs opacity-70 lowercase">
+            <Trans id={global ? "is.global" : "is.not.global"} />
           </div>
         </div>
         <div className="text-sm">
@@ -43,7 +42,7 @@ const ListSearchResult: React.FC<ComponentSearchResultProps<IgnoreList>> = ({
             "p-1",
             enabled
               ? "bg-green-500/20 hover:bg-green-500/20"
-              : "bg-red-500/20 hover:bg-red-500/20",
+              : "bg-red-500/20 hover:bg-red-500/20"
           )}
           variant="secondary"
         >

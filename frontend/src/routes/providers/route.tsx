@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { providersQueryOptions } from "@/api/providers";
-import { GenericPanelSearch, SearchResults } from "@/components";
+import { GenericPanelSearch, SearchResults, Trans } from "@/components";
 import { beforeLoadAuthenticated } from "@/auth";
 
 const ProvidersComponent: React.FC = () => {
@@ -14,13 +14,13 @@ const ProvidersComponent: React.FC = () => {
       onFilter={(data, searchValue) =>
         data.name.toLowerCase().includes(searchValue.toLowerCase())
       }
-      searchPlaceholder="Search providers..."
+      searchPlaceholder="providers.search.placeholder"
       createLinkTo="/providers/new"
       Item={SearchResults.Provider}
       empty={{
-        title: "No providers",
-        description: "Create a new provider to get started",
-        extra: "Create provider",
+        title: "providers.search.empty.title",
+        description: "providers.search.empty.description",
+        extra: <Trans id="providers.search.empty.extra" />,
       }}
     />
   );

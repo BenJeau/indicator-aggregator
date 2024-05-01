@@ -56,10 +56,11 @@ const Login: React.FC = () => {
               <Trans id="authentication" />
             </h1>
             <p className="text-muted-foreground text-sm">
-              <Trans id="authentication.description.1" />{" "}
-              <span className="font-medium">Google</span> <Trans id="or" />{" "}
-              <span className="font-medium">Microsoft</span>{" "}
-              <Trans id="authentication.description.2" />
+              <Trans
+                id="authentication.description"
+                google={<span className="font-medium">Google</span>}
+                microsoft={<span className="font-medium">Microsoft</span>}
+              />
             </p>
           </div>
           <div className={cn("grid gap-2")}>

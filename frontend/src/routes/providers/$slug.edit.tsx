@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   providerIgnoreListsQueryOptions,
   providerQueryOptions,
@@ -25,10 +25,10 @@ const ProviderEditComponent: React.FC = () => {
 
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
-    providerQueryOptions(id),
+    providerQueryOptions(id)
   ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
-    providerIgnoreListsQueryOptions(id),
+    providerIgnoreListsQueryOptions(id)
   );
   const providerSources = useSuspenseQuery(providerSourcesQueryOptions(id));
 
@@ -59,14 +59,16 @@ const ProviderEditComponent: React.FC = () => {
         data: values.sources.map((i) => i.id),
       }),
     ]);
-    toast.success("Provider saved");
+    toast.success(<Trans id="provider.saved" />);
     navigate({ to: "/providers/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
     await deleteProvider.mutateAsync(provider.data.id);
-    toast.success("Provider deleted", {
-      description: `Provider ${provider.data.name} was deleted successfully and is no longer linked to any sources.`,
+    toast.success(<Trans id="provider.deleted.title" />, {
+      description: (
+        <Trans id="provider.deleted.description" name={provider.data.name} />
+      ),
     });
     navigate({ to: "/providers" });
   };
@@ -87,7 +89,7 @@ export const Route = createFileRoute("/providers/$slug/edit")({
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      providerSlugQueryOptions(slug),
+      providerSlugQueryOptions(slug)
     );
 
     if (!id) {

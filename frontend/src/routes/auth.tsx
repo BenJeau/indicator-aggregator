@@ -46,7 +46,6 @@ const SaveUserData: React.FC = () => {
   return (
     <div className="absolute bottom-0 left-0 right-0 top-0 flex h-screen w-screen flex-col items-center">
       <LoaderCircle className="animate-spin" /> <Trans id="authenticating" />
-      ...
     </div>
   );
 };

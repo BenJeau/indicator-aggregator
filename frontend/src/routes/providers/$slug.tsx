@@ -26,6 +26,7 @@ import {
   SearchResults,
   FullBadge,
   TitleEntryCount,
+  Trans,
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types/backendTypes";
@@ -37,10 +38,10 @@ const ProviderComponent: React.FC = () => {
 
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
-    providerQueryOptions(id),
+    providerQueryOptions(id)
   ) as UseSuspenseQueryResult<Provider, Error>;
   const providerIgnoreLists = useSuspenseQuery(
-    providerIgnoreListsQueryOptions(id),
+    providerIgnoreListsQueryOptions(id)
   );
   const providerSources = useSuspenseQuery(providerSourcesQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
@@ -53,7 +54,7 @@ const ProviderComponent: React.FC = () => {
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/providers/$slug/edit"),
-    [matches],
+    [matches]
   );
 
   const firstTag = provider.data.tags[0];
@@ -63,13 +64,13 @@ const ProviderComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "blur-sm pointer-events-none select-none opacity-20"
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              provider.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
+              provider.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -80,7 +81,9 @@ const ProviderComponent: React.FC = () => {
           <>
             {provider.data.description}
             {provider.data.description.length === 0 && (
-              <span className="italic opacity-50">no description</span>
+              <span className="italic opacity-50 lowercase">
+                <Trans id="no.description" />
+              </span>
             )}
           </>
         }
@@ -88,7 +91,7 @@ const ProviderComponent: React.FC = () => {
           <Link to="/providers/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
-              Edit
+              <Trans id="edit" />
             </Button>
           </Link>
         }
@@ -98,18 +101,18 @@ const ProviderComponent: React.FC = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
             )}
           >
             <div className="flex flex-wrap gap-2">
               <FullBadge
                 Icon={CalendarClock}
-                label="Created date"
+                label="created.date"
                 value={dayjs.utc(provider.data.createdAt).local().format("LLL")}
               />
               <FullBadge
                 Icon={CalendarClock}
-                label="Updated date"
+                label="updated.date"
                 value={dayjs.utc(provider.data.updatedAt).local().format("LLL")}
               />
             </div>
@@ -117,7 +120,7 @@ const ProviderComponent: React.FC = () => {
             <div className="mt-2 flex flex-wrap gap-2">
               <FullBadge
                 Icon={Book}
-                label="Documentation"
+                label="documentation"
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
@@ -135,7 +138,7 @@ const ProviderComponent: React.FC = () => {
               {firstTag && (
                 <FullBadge
                   Icon={Tags}
-                  label="Tags"
+                  label="tags"
                   valueBadgeProps={{
                     variant: "secondary",
                   }}
@@ -155,7 +158,7 @@ const ProviderComponent: React.FC = () => {
 
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Sources
+              <Trans id="sources" />
               <TitleEntryCount count={providerSources.data.length} />
             </h2>
             <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
@@ -164,19 +167,21 @@ const ProviderComponent: React.FC = () => {
               ))}
             </div>
             {providerSources.data.length === 0 && (
-              <div className="text-xs italic opacity-50">no linked sources</div>
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.sources" />
+              </div>
             )}
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Ignore list
+              <Trans id="ignore.lists" />
               <TitleEntryCount count={combinedIgnoreLists.length} />
             </h2>
             {combinedIgnoreLists.map((ignoreList) => (
               <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
-              <div className="text-xs italic opacity-50">
-                no linked ignore lists
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.ignore.lists" />
               </div>
             )}
           </div>
@@ -194,7 +199,7 @@ export const Route = createFileRoute("/providers/$slug")({
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      providerSlugQueryOptions(slug),
+      providerSlugQueryOptions(slug)
     );
 
     if (!id) {

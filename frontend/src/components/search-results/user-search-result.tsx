@@ -23,8 +23,7 @@ const UserSearchResult: React.FC<
         <div className="flex gap-2 items-baseline">
           <div className="font-semibold">{name}</div>
           <div className="text-xs opacity-70 lowercase">
-            {numLogs} <Trans id="log" />
-            {numLogs > 1 && "s"}
+            {numLogs} <Trans id={numLogs > 1 ? "logs" : "log"} />
           </div>
         </div>
         <div className="text-sm">{email}</div>
@@ -35,7 +34,7 @@ const UserSearchResult: React.FC<
             "p-1",
             enabled
               ? "bg-green-500/20 hover:bg-green-500/20"
-              : "bg-red-500/20 hover:bg-red-500/20",
+              : "bg-red-500/20 hover:bg-red-500/20"
           )}
           variant="secondary"
         >

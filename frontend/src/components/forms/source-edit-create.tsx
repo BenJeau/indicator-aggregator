@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
 import { IndicatorKind, Source, SourceKind } from "@/types/backendTypes";
-import { SectionPanelHeader, Editor } from "@/components";
+import { SectionPanelHeader, Editor, Trans } from "@/components";
 import {
   Form,
   FormControl,
@@ -62,6 +62,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { cleanConfigValue, configQueryOptions } from "@/api/config";
+import { useTranslation } from "@/i18n";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -107,7 +108,7 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   sourceSecrets: z.array(
     z.object({
@@ -121,7 +122,7 @@ const formSchema = z.object({
         .nullish()
         .transform((x) => x ?? undefined),
       required: z.boolean(),
-    }),
+    })
   ),
 });
 
@@ -188,7 +189,7 @@ const SourceEditCreate: React.FC<Props> = ({
       sourceCode: cleanConfigValue(source?.sourceCode ?? ""),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [source],
+    [source]
   );
 
   const form = useForm<FormSchema>({
@@ -213,6 +214,8 @@ const SourceEditCreate: React.FC<Props> = ({
   const secrets = useQuery(secretsQueryOptions);
   const config = useQuery(configQueryOptions);
 
+  const { t } = useTranslation();
+
   const cancelSaveDeleteSection = (
     <>
       <Link to="../">
@@ -224,35 +227,41 @@ const SourceEditCreate: React.FC<Props> = ({
             form.reset();
           }}
         >
-          Cancel
+          <Trans id="cancel" />
         </Button>
       </Link>
       {source && source.kind !== SourceKind.System && (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="destructive" size="sm" className="gap-2">
-              <Trash size={16} /> Delete
+              <Trash size={16} />
+              <Trans id="delete" />
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogTitle>
+                <Trans id="delete.confirmation.title" />
+              </DialogTitle>
               <DialogDescription>
-                This action cannot be undone. This will permanently{" "}
-                <span className="font-semibold">{source.name}</span> as a
-                source.
+                <Trans
+                  id="source.delete.confirmation.description"
+                  name={<span className="font-semibold">{source.name}</span>}
+                />
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogPrimitive.Close asChild>
-                <Button variant="secondary">Cancel</Button>
+                <Button variant="secondary">
+                  <Trans id="delete" />
+                </Button>
               </DialogPrimitive.Close>
               <Button
                 variant="destructive"
                 className="gap-2"
                 onClick={onDelete}
               >
-                <Trash size={16} /> Delete
+                <Trash size={16} /> <Trans id="delete" />
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -260,7 +269,7 @@ const SourceEditCreate: React.FC<Props> = ({
       )}
       <Button className="gap-2" size="sm" type="submit">
         <Save size={16} />
-        Save
+        <Trans id="save" />
       </Button>
     </>
   );
@@ -287,7 +296,7 @@ const SourceEditCreate: React.FC<Props> = ({
                         type="button"
                         className={cn(
                           "rounded-md p-2 text-white shadow",
-                          field.value ? "bg-green-500" : "bg-red-500",
+                          field.value ? "bg-green-500" : "bg-red-500"
                         )}
                         onClick={() => {
                           field.onChange(!field.value);
@@ -313,11 +322,13 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="flex-1 text-sm">
-                    <FormLabel className="text-xs">Name</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="name" />
+                    </FormLabel>
                     <FormControl>
                       <Input
                         className="h-8"
-                        placeholder="e.g. Abuse.ch"
+                        placeholder={t("e.g.") + " Abuse.ch"}
                         {...field}
                       />
                     </FormControl>
@@ -330,11 +341,15 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="description"
                 render={({ field }) => (
                   <FormItem className="flex-1 text-sm">
-                    <FormLabel className="text-xs">Description</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="description" />
+                    </FormLabel>
                     <FormControl>
                       <Input
                         className="h-8"
-                        placeholder="e.g. Reputable provider of threat intelligence"
+                        placeholder={
+                          t("e.g.") + " " + t("example.source.description")
+                        }
                         {...field}
                       />
                     </FormControl>
@@ -354,13 +369,15 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="tags"
                 render={({ field }) => (
                   <FormItem className="text-sm">
-                    <FormLabel className="text-xs">Tags</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="tags" />
+                    </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2">
                         <div className="flex gap-2">
                           <Input
                             className="h-8 flex-1"
-                            placeholder="e.g. threat-intelligence"
+                            placeholder={t("e.g.") + " threat-intelligence"}
                             value={newTag}
                             onChange={(e) => setNewTag(e.target.value)}
                           />
@@ -377,7 +394,7 @@ const SourceEditCreate: React.FC<Props> = ({
                             }}
                           >
                             <Plus size={16} />
-                            Add tag
+                            <Trans id="add.tag" />
                           </Button>
                         </div>
                         <div className="flex gap-2">
@@ -390,7 +407,7 @@ const SourceEditCreate: React.FC<Props> = ({
                               <button
                                 onClick={() => {
                                   field.onChange(
-                                    field.value.filter((_, i) => i !== index),
+                                    field.value.filter((_, i) => i !== index)
                                   );
                                 }}
                                 type="button"
@@ -412,7 +429,9 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="kind"
                 render={({ field }) => (
                   <FormItem className="flex-1 text-sm">
-                    <FormLabel className="text-xs">Kind</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="kind" />
+                    </FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
@@ -468,7 +487,9 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="favicon"
                 render={({ field }) => (
                   <FormItem className="text-sm">
-                    <FormLabel className="text-xs">Favicon</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="favicon" />
+                    </FormLabel>
                     <FormControl>
                       <div className="flex gap-2">
                         <img
@@ -477,7 +498,7 @@ const SourceEditCreate: React.FC<Props> = ({
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                         />
                         <div className="relative flex flex-1">
@@ -493,7 +514,7 @@ const SourceEditCreate: React.FC<Props> = ({
                                 reader.onloadend = () => {
                                   form.setValue(
                                     "favicon",
-                                    reader.result?.toString(),
+                                    reader.result?.toString()
                                   );
                                 };
                                 reader.readAsDataURL(file);
@@ -502,11 +523,9 @@ const SourceEditCreate: React.FC<Props> = ({
                           />
                           <Input
                             className="h-8 flex-1"
-                            placeholder={
-                              field.value
-                                ? "Change favicon"
-                                : "Upload a favicon image, will use URL's favicon if not provided"
-                            }
+                            placeholder={t(
+                              field.value ? "favicon.change" : "favicon.upload"
+                            )}
                           />
                         </div>
                         <Button
@@ -514,7 +533,7 @@ const SourceEditCreate: React.FC<Props> = ({
                           type="button"
                           className={cn(
                             "h-8 w-8 p-0",
-                            !field.value && "hidden",
+                            !field.value && "hidden"
                           )}
                           onClick={() => field.onChange("")}
                         >
@@ -537,7 +556,7 @@ const SourceEditCreate: React.FC<Props> = ({
                   render={({ field: supportedIndicatorsField }) => (
                     <FormItem className="text-sm">
                       <FormLabel className="text-xs">
-                        Disabled/supported indicator types
+                        <Trans id="disabled.supported.indicator.kinds" />
                       </FormLabel>
                       <FormControl>
                         <div className="flex flex-wrap gap-2">
@@ -569,13 +588,13 @@ const SourceEditCreate: React.FC<Props> = ({
                                   if (isSupported && isDisabled) {
                                     supportedIndicatorsField.onChange(
                                       supportedIndicatorsField.value.filter(
-                                        (i) => i !== value,
-                                      ),
+                                        (i) => i !== value
+                                      )
                                     );
                                     disabledIndicatorsField.onChange(
                                       disabledIndicatorsField.value.filter(
-                                        (i) => i !== value,
-                                      ),
+                                        (i) => i !== value
+                                      )
                                     );
                                   } else if (isSupported && !isDisabled) {
                                     disabledIndicatorsField.onChange([
@@ -620,7 +639,7 @@ const SourceEditCreate: React.FC<Props> = ({
                           onCheckedChange={field.onChange}
                         />
                         <Label htmlFor={field.name} className="text-xs">
-                          Enable rate limiter
+                          <Trans id="enable.rate.limiter" />
                         </Label>
                       </div>
                     </FormControl>
@@ -634,14 +653,14 @@ const SourceEditCreate: React.FC<Props> = ({
                 render={({ field }) => (
                   <FormItem className="col-span-2 text-sm">
                     <FormLabel className="text-xs">
-                      Maximum number of request per interval
+                      <Trans id="max.request.per.interval" />
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={!form.getValues("limitEnabled")}
                         type="number"
                         className="h-8"
-                        placeholder="e.g. 50"
+                        placeholder={t("e.g.") + " 50"}
                         min={1}
                         value={field.value?.toString() ?? undefined}
                         onChange={(e) => {
@@ -658,13 +677,15 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="limitInterval"
                 render={({ field }) => (
                   <FormItem className="text-sm">
-                    <FormLabel className="text-xs">Limit interval</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="limit.interval" />
+                    </FormLabel>
                     <FormControl>
                       <Input
                         disabled={!form.getValues("limitEnabled")}
                         type="number"
                         className="h-8"
-                        placeholder="e.g. 360"
+                        placeholder={t("e.g.") + " 360"}
                         min={1}
                         value={field.value?.toString() ?? undefined}
                         onChange={(e) => {
@@ -694,7 +715,7 @@ const SourceEditCreate: React.FC<Props> = ({
                           onCheckedChange={field.onChange}
                         />
                         <Label htmlFor={field.name} className="text-xs">
-                          Enable background task
+                          <Trans id="enable.background.task" />
                         </Label>
                       </div>
                     </FormControl>
@@ -708,14 +729,14 @@ const SourceEditCreate: React.FC<Props> = ({
                 render={({ field }) => (
                   <FormItem className="col-span-3 text-sm">
                     <FormLabel className="text-xs">
-                      Background task interval in seconds
+                      <Trans id="background.task.interval.in.seconds" />
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={!form.getValues("taskEnabled")}
                         type="number"
                         className="h-8"
-                        placeholder="e.g. 120"
+                        placeholder={t("e.g.") + " 120"}
                         min={1}
                         value={field.value?.toString() ?? undefined}
                         onChange={(e) => {
@@ -745,7 +766,7 @@ const SourceEditCreate: React.FC<Props> = ({
                           onCheckedChange={field.onChange}
                         />
                         <Label htmlFor={field.name} className="text-xs">
-                          Enable caching
+                          <Trans id="enable.caching" />
                         </Label>
                       </div>
                     </FormControl>
@@ -759,14 +780,14 @@ const SourceEditCreate: React.FC<Props> = ({
                 render={({ field }) => (
                   <FormItem className="col-span-3 text-sm">
                     <FormLabel className="text-xs">
-                      Cache time-to-live interval in seconds
+                      <Trans id="cache.ttl.interval.in.seconds" />
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={!form.getValues("cacheEnabled")}
                         type="number"
                         className="h-8"
-                        placeholder="e.g. 3600"
+                        placeholder={t("e.g.") + " 3600"}
                         min={1}
                         value={field.value?.toString() ?? undefined}
                         onChange={(e) => {
@@ -781,17 +802,27 @@ const SourceEditCreate: React.FC<Props> = ({
             </div>
 
             <FormItem className="text-sm">
-              <FormLabel className="text-xs">Secret entries</FormLabel>
+              <FormLabel className="text-xs">
+                <Trans id="secret.entries" />
+              </FormLabel>
               <FormControl>
                 <div className="flex flex-col gap-2">
                   <div className="rounded-md border">
                     <Table className="table-fixed">
                       <TableHeader>
                         <TableRow>
-                          <TableHead style={{ width: 80 }}>Required</TableHead>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Description</TableHead>
-                          <TableHead>Secret</TableHead>
+                          <TableHead style={{ width: 80 }}>
+                            <Trans id="required" />
+                          </TableHead>
+                          <TableHead>
+                            <Trans id="name" />
+                          </TableHead>
+                          <TableHead>
+                            <Trans id="description" />
+                          </TableHead>
+                          <TableHead>
+                            <Trans id="secret" />
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -887,11 +918,13 @@ const SourceEditCreate: React.FC<Props> = ({
                                                     </span>{" "}
                                                     -{" "}
                                                     <span>
-                                                      Used in {numSources}{" "}
-                                                      sources
+                                                      <Trans
+                                                        id="used.in.number.sources"
+                                                        number={numSources}
+                                                      />
                                                     </span>
                                                   </SelectItem>
-                                                ),
+                                                )
                                               )}
                                             </SelectContent>
                                           </Select>
@@ -912,7 +945,7 @@ const SourceEditCreate: React.FC<Props> = ({
                                             type="button"
                                             onClick={() =>
                                               sourceSecretFormFields.remove(
-                                                index,
+                                                index
                                               )
                                             }
                                           >
@@ -930,7 +963,7 @@ const SourceEditCreate: React.FC<Props> = ({
                         ) : (
                           <TableRow>
                             <TableCell colSpan={4} className="h-24 text-center">
-                              No results.
+                              <Trans id="no.results" />
                             </TableCell>
                           </TableRow>
                         )}
@@ -951,7 +984,7 @@ const SourceEditCreate: React.FC<Props> = ({
                     }
                   >
                     <Plus size={16} />
-                    Add entry
+                    <Trans id="add.entry" />
                   </Button>
                 </div>
               </FormControl>
@@ -965,18 +998,20 @@ const SourceEditCreate: React.FC<Props> = ({
                   const availableIgnoreLists =
                     sourceIgnoreLists.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Ignore lists</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="ignore.lists" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
                               const id = sourceIgnoreLists.data?.find(
-                                ({ name: listName }) => listName === name,
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -984,7 +1019,11 @@ const SourceEditCreate: React.FC<Props> = ({
                             disabled={availableIgnoreLists.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select an ignore list" />
+                              <SelectValue
+                                placeholder={
+                                  <Trans id="ignore.list.select.placeholder" />
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {availableIgnoreLists.map(({ id, name }) => (
@@ -1005,8 +1044,8 @@ const SourceEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -1029,24 +1068,30 @@ const SourceEditCreate: React.FC<Props> = ({
                 name="providerId"
                 render={({ field }) => {
                   const name = providers.data?.find(
-                    (i) => field.value === i.id,
+                    (i) => field.value === i.id
                   )?.name;
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Linked provider</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="linked.provider" />
+                      </FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={(name) => {
                             const id = providers.data?.find(
-                              ({ name: listName }) => listName === name,
+                              ({ name: listName }) => listName === name
                             )?.id;
                             field.onChange(id);
                           }}
                           value={name}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a provider" />
+                            <SelectValue
+                              placeholder={
+                                <Trans id="providers.select.placeholder" />
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {providers.data?.map(({ id, name }) => (
@@ -1071,7 +1116,9 @@ const SourceEditCreate: React.FC<Props> = ({
               render={({ field }) => (
                 <FormItem className="text-sm">
                   <div className="flex items-center justify-between">
-                    <FormLabel className="text-xs">Source code</FormLabel>
+                    <FormLabel className="text-xs">
+                      <Trans id="source.code" />
+                    </FormLabel>
                     <Button
                       type="button"
                       size="sm"
@@ -1091,7 +1138,7 @@ const SourceEditCreate: React.FC<Props> = ({
                         if (configEntry) {
                           form.setValue(
                             "sourceCode",
-                            configEntry.value ?? configEntry.defaultValue,
+                            configEntry.value ?? configEntry.defaultValue
                           );
                         }
                       }}
@@ -1099,7 +1146,7 @@ const SourceEditCreate: React.FC<Props> = ({
                       disabled={source?.kind === SourceKind.System}
                     >
                       <RotateCcw size={16} />
-                      Reset and use template
+                      <Trans id="reset.and.use.template" />
                     </Button>
                   </div>
 

@@ -1,14 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { LucideIcon } from "lucide-react";
 
-import { useTranslation } from "@/i18n";
+import { TransId, useTranslation } from "@/i18n";
+import { Trans } from "@/components";
 
 interface Props {
   Icon: LucideIcon;
   count: number;
-  title: string;
+  title: TransId;
   subCount: number;
-  subTitle: string;
+  subTitle: TransId;
   to: string;
 }
 
@@ -31,11 +32,15 @@ const StatsCounter: React.FC<Props> = ({
         <div>
           <div className="flex items-baseline gap-2 font-semibold -mb-1">
             <h5 className="text-xl">{count}</h5>
-            <p className="text-lg">{title}</p>
+            <p className="text-lg">
+              <Trans id={title} />
+            </p>
           </div>
           <div className="flex items-baseline gap-2 opacity-50">
             <h5 className="text-sm">{subCount}</h5>
-            <p className="text-sm">{subTitle}</p>
+            <p className="text-sm">
+              <Trans id={subTitle} />
+            </p>
           </div>
         </div>
       </div>

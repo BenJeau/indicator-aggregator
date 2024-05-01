@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   sourceIgnoreListsQueryOptions,
   sourceQueryOptions,
@@ -57,14 +57,16 @@ const SourceEditComponent: React.FC = () => {
         data: values.sourceSecrets,
       }),
     ]);
-    toast.success("Source saved");
+    toast.success(<Trans id="source.saved" />);
     navigate({ to: "/sources/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
     await deleteSource.mutateAsync(id);
-    toast.success("Source deleted", {
-      description: `Source ${source.data.name} was deleted successfully.`,
+    toast.success(<Trans id="source.deleted.title" />, {
+      description: (
+        <Trans id="source.deleted.description" name={source.data.name} />
+      ),
     });
     navigate({ to: "/sources" });
   };

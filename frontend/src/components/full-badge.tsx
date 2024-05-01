@@ -2,10 +2,12 @@ import { LucideIcon } from "lucide-react";
 
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { TransId } from "@/i18n";
+import { Trans } from "@/components";
 
 interface Props {
   Icon?: LucideIcon;
-  label?: React.ReactNode;
+  label?: TransId;
   value: React.ReactNode;
   valueBadgeProps?: BadgeProps;
 }
@@ -20,7 +22,7 @@ const FullBadge: React.FC<Props> = ({
     {(Icon || label) && (
       <span className="px-2 gap-2 flex">
         {Icon && <Icon size={14} strokeWidth={3} />}
-        {label}
+        {label && <Trans id={label} />}
       </span>
     )}
     <Badge

@@ -83,7 +83,7 @@ export const Layout: React.FC = () => {
     document.title = page
       ? `${t(page)} - Indicator Aggregator`
       : "Indicator Aggregator";
-  }, [page]);
+  }, [page, t]);
 
   const togglePanel = () => {
     setIsButtonCollapsed((prev) => !prev);
@@ -97,7 +97,7 @@ export const Layout: React.FC = () => {
       <div
         className={cn(
           "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out z-20",
-          isCollapsed && "w-14 min-w-14",
+          isCollapsed && "w-14 min-w-14"
         )}
       >
         <div>
@@ -107,7 +107,7 @@ export const Layout: React.FC = () => {
               "bg-primary/20 text-primary hover:bg-primary/10 flex h-[52px] items-center gap-2 whitespace-nowrap font-medium transition-all",
               isCollapsed ? "justify-center" : "px-4",
               page === "home" &&
-                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white",
+                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white"
             )}
             disabled={page === "home"}
           >
@@ -252,7 +252,7 @@ export const Layout: React.FC = () => {
           <div
             className={cn(
               "bg-muted/50 flex  items-center gap-2 py-4",
-              isCollapsed ? "justify-center" : "px-4",
+              isCollapsed ? "justify-center" : "px-4"
             )}
           >
             <Avatar className="border">
@@ -274,7 +274,7 @@ export const Layout: React.FC = () => {
       <div
         className={cn(
           "flex h-full flex-col",
-          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]",
+          isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]"
         )}
       >
         <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">
@@ -370,8 +370,8 @@ export const Layout: React.FC = () => {
                     <Empty
                       image={NotifcationEmpty}
                       imageWidth={150}
-                      title={<Trans id="no.notifications.title" />}
-                      description={<Trans id="no.notifications.description" />}
+                      title="no.notifications.title"
+                      description="no.notifications.description"
                       className="my-8"
                     />
                   )}

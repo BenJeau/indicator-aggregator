@@ -22,41 +22,44 @@ import {
   SearchResults,
   TitleEntryCount,
   FullBadge,
+  Trans,
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { beforeLoadAuthenticated } from "@/auth";
+import { useTranslation } from "@/i18n";
 
 const ListComponent = () => {
   const { slug } = Route.useParams();
+  const { t } = useTranslation();
 
   const { data: id } = useSuspenseQuery(ignoreListSlugQueryOptions(slug));
   const ignoreList = useSuspenseQuery(ignoreListQueryOptions(id));
   const ignoreListEntries = useSuspenseQuery(ignoreListEntriesQueryOptions(id));
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
   const ignoreListProviders = useSuspenseQuery(
-    ignoreListProvidersQueryOptions(id),
+    ignoreListProvidersQueryOptions(id)
   );
 
   const matches = useMatches();
   const isEdit = useMemo(
     () => matches.some((i) => i.routeId === "/lists/$slug/edit"),
-    [matches],
+    [matches]
   );
 
   return (
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "blur-sm pointer-events-none select-none opacity-20"
         )}
         titleIcon={
           <div
             className={cn(
               "rounded-lg p-2",
-              ignoreList.data.enabled ? "bg-green-500/20" : "bg-red-500/20",
+              ignoreList.data.enabled ? "bg-green-500/20" : "bg-red-500/20"
             )}
           >
             <Power size={16} strokeWidth={2.54} />
@@ -67,7 +70,9 @@ const ListComponent = () => {
           <>
             {ignoreList.data.description}
             {ignoreList.data.description.length === 0 && (
-              <span className="italic opacity-50">no description</span>
+              <span className="italic opacity-50 lowercase">
+                <Trans id="no.description" />
+              </span>
             )}
           </>
         }
@@ -75,7 +80,7 @@ const ListComponent = () => {
           <Link to="/lists/$slug/edit" params={{ slug }}>
             <Button variant="ghost" className="gap-2" size="sm" type="button">
               <Edit size={16} />
-              Edit
+              <Trans id="edit" />
             </Button>
           </Link>
         }
@@ -85,13 +90,13 @@ const ListComponent = () => {
           <div
             className={cn(
               "flex flex-1 flex-col gap-2 transition-all",
-              isEdit && "pointer-events-none select-none opacity-20 blur-sm",
+              isEdit && "pointer-events-none select-none opacity-20 blur-sm"
             )}
           >
             <div className="flex flex-wrap gap-2">
               <FullBadge
                 Icon={CalendarClock}
-                label="Created date"
+                label="created.date"
                 value={dayjs
                   .utc(ignoreList.data.createdAt)
                   .local()
@@ -99,7 +104,7 @@ const ListComponent = () => {
               />
               <FullBadge
                 Icon={CalendarClock}
-                label="Updated date"
+                label="updated.date"
                 value={dayjs
                   .utc(ignoreList.data.updatedAt)
                   .local()
@@ -110,59 +115,59 @@ const ListComponent = () => {
             <div className="mt-2 flex flex-wrap gap-2">
               <FullBadge
                 Icon={Asterisk}
-                label="Global"
+                label="global"
                 valueBadgeProps={{
                   variant: ignoreList.data.global ? "success" : "destructive",
                 }}
-                value={ignoreList.data.global ? "Yes" : "No"}
+                value={ignoreList.data.global ? "yes" : "no"}
               />
             </div>
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Linked sources
+              <Trans id="linked.sources" />
               <TitleEntryCount count={ignoreListSources.data.length} />
             </h2>
             {ignoreList.data.global && (
               <div className="-mt-2 text-xs">
-                since list is global, <b>all</b> sources are affected, below are
-                sources that would still be affected if not global
+                <Trans id="global.linked.sources.description" />
               </div>
             )}
             {ignoreListSources.data.map((source) => (
               <SearchResults.Source key={source.id} data={source} />
             ))}
             {ignoreListSources.data.length === 0 && (
-              <div className="text-xs italic opacity-50">no linked sources</div>
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.sources" />
+              </div>
             )}
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Linked providers
+              <Trans id="linked.providers" />
               <TitleEntryCount count={ignoreListProviders.data.length} />
             </h2>
             {ignoreList.data.global && (
               <div className="-mt-2 text-xs">
-                since list is global, <b>all</b> providers are affected, below
-                are providers that would still be affected if not global
+                <Trans id="global.linked.providers.description" />
               </div>
             )}
             {ignoreListProviders.data.map((provider) => (
               <SearchResults.Provider key={provider.id} data={provider} />
             ))}
             {ignoreListProviders.data.length === 0 && (
-              <div className="text-xs italic opacity-50">
-                no linked providers
+              <div className="text-xs italic opacity-50 lowercase">
+                <Trans id="no.linked.providers" />
               </div>
             )}
             <Separator className="mt-2" />
 
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
-              Entries
+              <Trans id="entries" />
               <TitleEntryCount count={ignoreListEntries.data.length} />
             </h2>
             <DataTable
               columns={[
                 {
                   accessorKey: "data",
-                  header: "Data",
+                  header: t("data"),
                   cell: ({ row }) => {
                     return (
                       <code className="bg-foreground/5 dark:bg-foreground/30 rounded-sm px-1 text-xs">
@@ -173,8 +178,8 @@ const ListComponent = () => {
                 },
                 {
                   accessorKey: "indicatorKind",
+                  header: t("kind"),
                   size: 50,
-                  header: "Kind",
                   cell: ({ row }) => {
                     return <Badge>{row.getValue("indicatorKind")}</Badge>;
                   },
@@ -197,7 +202,7 @@ export const Route = createFileRoute("/lists/$slug")({
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(
-      ignoreListSlugQueryOptions(slug),
+      ignoreListSlugQueryOptions(slug)
     );
 
     if (!id) {

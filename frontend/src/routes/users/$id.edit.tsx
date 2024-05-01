@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { useUserPatch, userQueryOptions } from "@/api/users";
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import { beforeLoadAuthenticated } from "@/auth";
 
 const UserEditComponent: React.FC = () => {
@@ -19,7 +19,7 @@ const UserEditComponent: React.FC = () => {
       id,
       data: values,
     });
-    toast.success("User updated");
+    toast.success(<Trans id="user.updated" />);
     navigate({ to: "/users/$id", params: { id } });
   };
 

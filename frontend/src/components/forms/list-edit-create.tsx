@@ -49,6 +49,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { useTranslation } from "@/i18n";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -59,19 +60,19 @@ const formSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   providers: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   entries: z.array(
     z.object({
       data: z.string().min(1),
       indicatorKind: z.string().min(1),
-    }),
+    })
   ),
 });
 
@@ -129,7 +130,7 @@ const ListEditCreate: React.FC<Props> = ({
       ...list,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    []
   );
 
   const form = useForm<FormSchema>({
@@ -148,6 +149,8 @@ const ListEditCreate: React.FC<Props> = ({
 
   const listSources = useQuery(sourcesQueryOptions);
   const listProviders = useQuery(providersQueryOptions);
+
+  const { t } = useTranslation();
 
   return (
     <Form {...form}>
@@ -169,7 +172,7 @@ const ListEditCreate: React.FC<Props> = ({
                       type="button"
                       className={cn(
                         "rounded-lg p-2 text-white",
-                        field.value ? "bg-green-500" : "bg-red-500",
+                        field.value ? "bg-green-500" : "bg-red-500"
                       )}
                       onClick={() => {
                         field.onChange(!field.value);
@@ -195,7 +198,7 @@ const ListEditCreate: React.FC<Props> = ({
                   <FormControl>
                     <Input
                       className="h-8"
-                      placeholder="e.g. Abuse.ch"
+                      placeholder={t("e.g.") + " Abuse.ch"}
                       {...field}
                     />
                   </FormControl>
@@ -216,7 +219,9 @@ const ListEditCreate: React.FC<Props> = ({
                   <FormControl>
                     <Input
                       className="h-8"
-                      placeholder="e.g. Reputable provider of threat intelligence"
+                      placeholder={
+                        t("e.g.") + " " + t("example.ignore.list.description")
+                      }
                       {...field}
                     />
                   </FormControl>
@@ -320,18 +325,20 @@ const ListEditCreate: React.FC<Props> = ({
                   const availableSources =
                     listSources.data?.filter(
                       ({ id }) =>
-                        !field.value.some((source) => source.id === id),
+                        !field.value.some((source) => source.id === id)
                     ) || [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
-                      <FormLabel className="text-xs">Sources</FormLabel>
+                      <FormLabel className="text-xs">
+                        <Trans id="source" />
+                      </FormLabel>
                       <FormControl>
                         <div className="flex flex-col gap-2">
                           <Select
                             onValueChange={(name) => {
                               const id = listSources.data?.find(
-                                ({ name: sourceName }) => sourceName === name,
+                                ({ name: sourceName }) => sourceName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -364,8 +371,8 @@ const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -390,7 +397,7 @@ const ListEditCreate: React.FC<Props> = ({
                   const availableProviders =
                     listProviders.data?.filter(
                       ({ id }) =>
-                        !field.value.some((ignoreList) => ignoreList.id === id),
+                        !field.value.some((ignoreList) => ignoreList.id === id)
                     ) || [];
 
                   return (
@@ -403,7 +410,7 @@ const ListEditCreate: React.FC<Props> = ({
                           <Select
                             onValueChange={(name) => {
                               const id = listProviders.data?.find(
-                                ({ name: listName }) => listName === name,
+                                ({ name: listName }) => listName === name
                               )?.id;
                               field.onChange([...field.value, { id, name }]);
                             }}
@@ -436,8 +443,8 @@ const ListEditCreate: React.FC<Props> = ({
                                   onClick={() => {
                                     field.onChange(
                                       field.value.filter(
-                                        (value) => value.id !== id,
-                                      ),
+                                        (value) => value.id !== id
+                                      )
                                     );
                                   }}
                                   type="button"
@@ -520,7 +527,7 @@ const ListEditCreate: React.FC<Props> = ({
                                                 >
                                                   {value}
                                                 </SelectItem>
-                                              ),
+                                              )
                                             )}
                                           </SelectContent>
                                         </Select>

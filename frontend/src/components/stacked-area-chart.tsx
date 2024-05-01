@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CountPerIdWrapper } from "@/types/backendTypes";
 import { TransId, useTranslation } from "@/i18n";
+import { Trans } from "@/components";
 
 function DynamicCustomTooltip({
   payload,
@@ -70,7 +71,7 @@ function DynamicCustomTooltip({
 
 interface ChartDynamicProps {
   data: CountPerIdWrapper[];
-  title: string;
+  title: TransId;
   className?: string;
   chartContainerClassName?: string;
   emptyDataLabel?: TransId;
@@ -98,7 +99,7 @@ const rainbowColors = [
 
 const numSeparations = 3;
 const areaColors = Array.from({ length: numSeparations }, (_, i) =>
-  rainbowColors.filter((_, j) => j % numSeparations === i),
+  rainbowColors.filter((_, j) => j % numSeparations === i)
 )
   .flat()
   .reverse();
@@ -118,20 +119,20 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
           ...acc,
           [i.id ?? "null"]: i.name ?? t(emptyDataLabel ?? "no.results"),
         }),
-        {},
+        {}
       );
       return {
         ...acc,
         ...ids,
       };
     }, {});
-  }, [data]);
+  }, [data, emptyDataLabel, t]);
 
   const chartData = data.map((i) => ({
     original: i,
     data: Object.entries(areas).reduce((acc, [id, name]) => {
       const found = i.data.find(
-        (j) => j.id === id || (j.id === null && id === "null"),
+        (j) => j.id === id || (j.id === null && id === "null")
       );
       return {
         ...acc,
@@ -143,7 +144,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
 
   const [hideAreas, setHideAreas] = useState(new Set<string>());
   const [hoveredAread, setHoveredArea] = useState<string | undefined>(
-    undefined,
+    undefined
   );
 
   const selectLegend = (e: Payload) => {
@@ -166,11 +167,13 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
     <div
       className={cn(
         "border rounded-xl shadow-sm p-4 w-full text-sm gap-4 flex flex-col",
-        className,
+        className
       )}
     >
       <div className="flex justify-between gap-2">
-        <h3 className="text-lg font-bold">{title}</h3>
+        <h3 className="text-lg font-bold">
+          <Trans id={title} />
+        </h3>
         <div className="flex gap-2">
           <Button
             onClick={() => setHideAreas(new Set())}
@@ -180,12 +183,12 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
             disabled={hideAreas.size === 0}
           >
             <Eye size={16} />
-            Show all
+            <Trans id="show.all" />
           </Button>
           <Button
             onClick={() =>
               setHideAreas(
-                new Set(Object.keys(areas).map((i) => `data.${i}.count`)),
+                new Set(Object.keys(areas).map((i) => `data.${i}.count`))
               )
             }
             className="gap-2"
@@ -194,7 +197,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
             disabled={hideAreas.size === Object.keys(areas).length}
           >
             <EyeOff size={16} />
-            Hide all
+            <Trans id="hide.all" />
           </Button>
         </div>
       </div>
@@ -213,7 +216,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
                 dx={-10}
                 className="fill-black dark:fill-white"
               >
-                Number of requests
+                <Trans id="number.of.requests" />
               </Label>
             </YAxis>
             <Legend

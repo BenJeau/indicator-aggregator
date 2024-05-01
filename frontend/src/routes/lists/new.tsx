@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { Forms } from "@/components";
+import { Forms, Trans } from "@/components";
 import {
   useIgnoreListCreate,
   useIgnoreListProvidersPut,
@@ -38,7 +38,7 @@ const ListsNewComponent: React.FC = () => {
         })),
       }),
     ]);
-    toast.success("Ignore list created");
+    toast.success(<Trans id="ignore.list.created" />);
     navigate({ to: `/lists/$slug`, params: { slug } });
   };
 

@@ -8,7 +8,7 @@ import {
   requestDataQueryOptions,
   requestQueryOptions,
 } from "@/api/requests";
-import { SectionPanelHeader, RequestDataView } from "@/components";
+import { SectionPanelHeader, RequestDataView, Trans } from "@/components";
 import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ const HistoryComponent: React.FC = () => {
               type="button"
             >
               <ExternalLink size={16} />
-              View related traces
+              <Trans id="view.related.traces" />
             </Button>
           </a>
         }
@@ -76,7 +76,7 @@ const HistoryComponent: React.FC = () => {
               };
               return acc;
             },
-            {} as { [key: string]: ReqestSSEData },
+            {} as { [key: string]: ReqestSSEData }
           )}
         />
       </div>
