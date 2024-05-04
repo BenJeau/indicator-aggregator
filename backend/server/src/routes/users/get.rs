@@ -4,7 +4,10 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use database::{logic::users, PgPool};
+use database::{
+    logic::{api_tokens, users},
+    PgPool,
+};
 
 use crate::Result;
 
@@ -68,4 +71,15 @@ pub async fn get_user(
     } else {
         Ok(StatusCode::NOT_FOUND.into_response())
     }
+}
+
+/// Get list of API tokens for a user
+#[utoipa::path(get, path = "/users/{id}/apiTokens", tag = "apiTokens")]
+pub async fn get_user_api_tokens(
+    State(pool): State<PgPool>,
+    Path(id): Path<String>,
+) -> Result<impl IntoResponse> {
+    let users = api_tokens::get_user_api_keys(&pool, &id).await?;
+
+    Ok(Json(users))
 }

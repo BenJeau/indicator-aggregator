@@ -17,7 +17,7 @@ Select a tag (category) to reveal information about the endpoints and select an 
 
 ## Authentication
 
-Currently no authentication is required to access the API.",
+All endpoints are protected except for auth endpoints. You either need to provide a JWT as a bearer token or an API token in the Authorization header.",
         contact(
             name = "Benoît Jeaurond",
             email = "benoit@jeaurond.dev"
@@ -27,10 +27,14 @@ Currently no authentication is required to access the API.",
         (url = "/api/v1/")
     ),
     paths(
-        routes::auth::microsoft::get::microsoft_auth_redirect_callback,
-        routes::auth::microsoft::get::microsoft_redirect_login,
+        routes::api_tokens::delete::delete_api_tokens,
+        routes::api_tokens::patch::update_api_tokens,
+        routes::api_tokens::post::create_api_tokens,
+        routes::api_tokens::post::regenerate_api_tokens,
         routes::auth::google::get::google_auth_redirect_callback,
         routes::auth::google::get::google_redirect_login,
+        routes::auth::microsoft::get::microsoft_auth_redirect_callback,
+        routes::auth::microsoft::get::microsoft_redirect_login,
         routes::config::get::get_config,
         routes::config::put::update_config,
         routes::favicon::get::get_favicon,
@@ -87,6 +91,7 @@ Currently no authentication is required to access the API.",
         routes::stats::count::get::count_requests_by_providers,
         routes::stats::count::get::count_requests_by_sources,
         routes::users::get::get_user,
+        routes::users::get::get_user_api_tokens,
         routes::users::get::get_user_logs,
         routes::users::get::get_users,
         routes::users::patch::update_user,

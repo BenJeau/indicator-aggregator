@@ -1,5 +1,6 @@
+pub use chacha20poly1305::aead::Error;
 use chacha20poly1305::{
-    aead::{generic_array::GenericArray, Aead, OsRng, Result},
+    aead::{generic_array::GenericArray, rand_core::RngCore, Aead, OsRng, Result},
     AeadCore, KeyInit, XChaCha20Poly1305,
 };
 use tracing::instrument;
@@ -38,6 +39,14 @@ impl Crypto {
         let decrypted_data = self.cipher.decrypt(nonce, ciphertext)?;
 
         Ok(String::from_utf8_lossy(&decrypted_data).into())
+    }
+
+    #[instrument(skip_all, err)]
+    pub fn generate_random_string(&self, length: u8) -> Result<String> {
+        let mut random_string = vec![0; length as usize];
+        OsRng.fill_bytes(&mut random_string);
+
+        Ok(String::from_utf8_lossy(&random_string).to_string())
     }
 }
 
