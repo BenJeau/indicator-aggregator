@@ -270,6 +270,20 @@ CREATE TABLE IF NOT EXISTS "server_config" (
     "value" TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS "api_tokens" (
+    "id" TEXT PRIMARY KEY DEFAULT nanoid(),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
+
+    "user_id" TEXT NOT NULL,
+
+    "note" TEXT NOT NULL UNIQUE,
+    "value" BYTEA NOT NULL,
+    "expires_at" TIMESTAMP(3),
+
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TRIGGER "source_providers_updated_at" BEFORE UPDATE ON "providers" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
 CREATE TRIGGER "sources_updated_at" BEFORE UPDATE ON "sources" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
 CREATE TRIGGER "secrets_updated_at" BEFORE UPDATE ON "secrets" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
@@ -281,3 +295,4 @@ CREATE TRIGGER "provider_ignore_lists_updated_at" BEFORE UPDATE ON "provider_ign
 CREATE TRIGGER "requests_updated_at" BEFORE UPDATE ON "requests" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
 CREATE TRIGGER "source_requests_updated_at" BEFORE UPDATE ON "source_requests" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
 CREATE TRIGGER "server_config_updated_at" BEFORE UPDATE ON "server_config" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
+CREATE TRIGGER "api_tokens_updated_at" BEFORE UPDATE ON "api_tokens" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");
