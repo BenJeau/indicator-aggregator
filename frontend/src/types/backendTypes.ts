@@ -54,6 +54,36 @@ export interface CacheEntry<T> {
   expiration?: number;
 }
 
+/** An token used for authentication with the API */
+export interface ApiToken {
+  /** The database ID of the token */
+  id: string;
+  /** The time the token was created */
+  createdAt: NaiveDateTime;
+  /** The time the token was last updated */
+  updatedAt: NaiveDateTime;
+  /** A description of the token */
+  note: string;
+  /** The time the token expires */
+  expiresAt?: NaiveDateTime;
+}
+
+/** Parameters for creating a new API token */
+export interface CreateApiToken {
+  /** A description of the token */
+  note: string;
+  /** The time the token expires */
+  expiresAt?: NaiveDateTime;
+}
+
+/** Parameters for updating an API token */
+export interface UpdateApiToken {
+  /** A description of the token */
+  note?: string;
+  /** The time the token expires */
+  expiresAt?: NaiveDateTime;
+}
+
 /** List of indicators to ignore when processing requests against sources */
 export interface IgnoreList {
   /** Database ID of the ignore list */
