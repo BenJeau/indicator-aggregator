@@ -16,7 +16,7 @@ use hyper::{HeaderMap, Uri};
 use jsonwebtoken::{jwk::Jwk, Algorithm, DecodingKey, Validation};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{net::SocketAddr, time::Duration};
-use tokio::{join, sync::watch, time::sleep};
+use tokio::{sync::watch, time::sleep};
 use tracing::{error, info};
 use utoipa::{IntoParams, ToSchema};
 
@@ -512,8 +512,9 @@ pub async fn logic(
         method: "GET".to_string(),
     };
 
-    let user = users::create_or_update_user(pool, &create_user)?;
+    let user = users::create_or_update_user(pool, &create_user).await?;
     let _ = users::create_user_log(pool, &user_log)
+        .await
         .map_err(|err| error!(%err, "Failed to create user log"));
 
     auth::set_user_id_for_login_request(pool, &login_request.id, &claims.sub).await?;
