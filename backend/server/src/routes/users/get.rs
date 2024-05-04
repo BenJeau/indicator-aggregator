@@ -74,7 +74,17 @@ pub async fn get_user(
 }
 
 /// Get list of API tokens for a user
-#[utoipa::path(get, path = "/users/{id}/apiTokens", tag = "apiTokens")]
+#[utoipa::path(
+    get,
+    path = "/users/{id}/apiTokens",
+    tag = "apiTokens",
+    responses(
+        (status = 200, description = "List of users' API tokens", body = [ApiToken])
+    ),
+    params(
+        ("id" = String, Path, description = "User database ID"),
+    )
+)]
 pub async fn get_user_api_tokens(
     State(pool): State<PgPool>,
     Path(id): Path<String>,

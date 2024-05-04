@@ -99,6 +99,9 @@ All endpoints are protected except for auth endpoints. You either need to provid
     components(
         schemas(
             db_schemas::IdSlug,
+            db_schemas::api_tokens::ApiToken,
+            db_schemas::api_tokens::CreateApiToken,
+            db_schemas::api_tokens::UpdateApiToken,
             db_schemas::ignore_lists::CreateIgnoreList,
             db_schemas::ignore_lists::CreateIngoreListEntry,
             db_schemas::ignore_lists::IgnoreList,
@@ -151,6 +154,7 @@ All endpoints are protected except for auth endpoints. You either need to provid
         )
     ),
     tags(
+        (name = "apiTokens", description = "Authentication API token management"),
         (name = "auth", description = "Authentication endpoints"),
         (name = "config", description = "Server configuration management"),
         (name = "favicon", description = "Favicon middleman fetcher for external URLs"),

@@ -23,6 +23,9 @@ use crate::{config::Config, Result};
     tag = "apiTokens",
     responses(
         (status = 200, description = "Database ID of the API token", body = String)
+    ),
+    request_body(
+        description = "API token to create", content_type = "application/json", content = CreateApiToken
     )
 )]
 pub async fn create_api_tokens(
@@ -48,7 +51,18 @@ pub async fn create_api_tokens(
 }
 
 /// Regenerate the value of an existing API token
-#[utoipa::path(post, path = "/apiTokens/{id}/regenerate", tag = "apiTokens")]
+#[utoipa::path(
+    post,
+    path = "/apiTokens/{id}/regenerate",
+    tag = "apiTokens",
+    responses(
+        (status = 200, description = "Token was generated and returned value is API token", body = String),
+        (status = 404, description = "Token not found or not linked to user")
+    ),
+    params(
+        ("id" = String, Path, description = "API token database ID"),
+    )
+)]
 pub async fn regenerate_api_tokens(
     State(pool): State<PgPool>,
     State(config): State<Config>,

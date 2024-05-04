@@ -13,7 +13,21 @@ use database::{
 use crate::{config::Config, Result};
 
 /// Update an existing API token
-#[utoipa::path(patch, path = "/apiTokens/{id}", tag = "apiTokens")]
+#[utoipa::path(
+    patch,
+    path = "/apiTokens/{id}",
+    tag = "apiTokens",
+    responses(
+        (status = 204, description = "API token updated successfully"),
+        (status = 404, description = "API token not found"),
+    ),
+    request_body(
+        description = "Fields of the API token to update", content_type = "application/json", content = UpdateApiToken
+    ),
+    params(
+        ("id" = String, Path, description = "API token database ID"),
+    )
+)]
 pub async fn update_api_tokens(
     State(pool): State<PgPool>,
     State(config): State<Config>,

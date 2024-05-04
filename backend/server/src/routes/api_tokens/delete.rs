@@ -9,7 +9,18 @@ use database::{logic::api_tokens, schemas::users::User, PgPool};
 use crate::Result;
 
 /// Delete an API token
-#[utoipa::path(delete, path = "/apiTokens/{id}", tag = "apiTokens")]
+#[utoipa::path(
+    delete,
+    path = "/apiTokens/{id}",
+    tag = "apiTokens",
+    responses(
+        (status = 204, description = "API token deleted successfully"),
+        (status = 404, description = "API token not found"),
+    ),
+    params(
+        ("id" = String, Path, description = "API token database ID"),
+    )
+)]
 pub async fn delete_api_tokens(
     State(pool): State<PgPool>,
     Extension(user): Extension<User>,
