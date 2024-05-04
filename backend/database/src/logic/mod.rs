@@ -1,3 +1,4 @@
+pub mod api_tokens;
 pub mod auth;
 pub mod ignore_lists;
 pub mod notifications;

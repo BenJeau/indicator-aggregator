@@ -3,6 +3,7 @@ use sqlx::FromRow;
 use typeshare::typeshare;
 use utoipa::ToSchema;
 
+pub mod api_tokens;
 pub mod auth;
 pub mod ignore_lists;
 pub mod indicators;
