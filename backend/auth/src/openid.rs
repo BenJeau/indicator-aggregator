@@ -512,13 +512,9 @@ pub async fn logic(
         method: "GET".to_string(),
     };
 
-    let (user, create_user_log) = join!(
-        users::create_or_update_user(pool, &create_user),
-        users::create_user_log(pool, &user_log),
-    );
-
-    let user = user?;
-    let _ = create_user_log.map_err(|err| error!(%err, "Failed to create user log"));
+    let user = users::create_or_update_user(pool, &create_user)?;
+    let _ = users::create_user_log(pool, &user_log)
+        .map_err(|err| error!(%err, "Failed to create user log"));
 
     auth::set_user_id_for_login_request(pool, &login_request.id, &claims.sub).await?;
 
