@@ -200,3 +200,13 @@ impl Data {
         }
     }
 }
+
+/// Data returned from the creation of an API token
+#[derive(Serialize, ToSchema, Debug, Clone)]
+#[typeshare]
+pub struct CreatedApiToken {
+    /// The database ID of the API token
+    pub id: String,
+    /// The value of the API token
+    pub value: String,
+}

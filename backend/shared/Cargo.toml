@@ -13,6 +13,7 @@ opentelemetry-jaeger = { workspace = true }
 opentelemetry-otlp = { workspace = true }
 opentelemetry-stdout = { workspace = true }
 opentelemetry_sdk = { workspace = true }
+rand = { workspace = true }
 sentry = { workspace = true }
 sentry-tower = { workspace = true }
 sentry-tracing = { workspace = true }

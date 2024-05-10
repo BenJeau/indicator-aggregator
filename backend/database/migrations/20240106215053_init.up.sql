@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS "user_logs" (
     "uri" TEXT NOT NULL,
     "method" TEXT NOT NULL,
 
-    FOREIGN KEY ("user_id") REFERENCES "users" ("auth_id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "login_requests" (

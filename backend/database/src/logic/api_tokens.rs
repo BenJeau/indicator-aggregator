@@ -1,4 +1,5 @@
-use sqlx::{PgPool, Result};
+use shared::crypto::Crypto;
+use sqlx::{FromRow, PgPool, Result};
 use tracing::instrument;
 
 use crate::schemas::api_tokens::{ApiToken, CreateApiToken, InternalUpdateApiToken};
@@ -70,4 +71,35 @@ pub async fn get_user_api_keys(pool: &PgPool, user_id: &str) -> Result<Vec<ApiTo
     .fetch_all(pool)
     .await
     .map_err(Into::into)
+}
+
+#[derive(FromRow, Debug)]
+struct TempTest {
+    pub value: Vec<u8>,
+    pub user_id: String,
+}
+
+pub async fn get_user_id_from_token(
+    pool: &PgPool,
+    unencrypted_value: &str,
+    db_secret: &str,
+    crypto: Crypto,
+) -> Result<Option<String>> {
+    let api_tokens = sqlx::query_as!(
+        TempTest,
+        r#"SELECT pgp_sym_decrypt_bytea(value, $1) as "value!", user_id FROM api_tokens"#,
+        db_secret
+    )
+    .fetch_all(pool)
+    .await?;
+
+    for api_token in api_tokens {
+        let decoded_token = crypto.decrypt(&api_token.value).unwrap();
+
+        if decoded_token == unencrypted_value {
+            return Ok(Some(api_token.user_id));
+        }
+    }
+
+    Ok(None)
 }

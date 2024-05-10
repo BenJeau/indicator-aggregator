@@ -14,7 +14,7 @@ use database::{
 use reqwest::StatusCode;
 use shared::crypto::Crypto;
 
-use crate::{config::Config, Result};
+use crate::{config::Config, schemas::CreatedApiToken, Result};
 
 /// Create an API token
 #[utoipa::path(
@@ -22,7 +22,7 @@ use crate::{config::Config, Result};
     path = "/apiTokens",
     tag = "apiTokens",
     responses(
-        (status = 200, description = "Database ID of the API token", body = String)
+        (status = 200, description = "Database ID of the API token", body = CreatedApiToken)
     ),
     request_body(
         description = "API token to create", content_type = "application/json", content = CreateApiToken
@@ -35,8 +35,8 @@ pub async fn create_api_tokens(
     Extension(user): Extension<User>,
     Json(data): Json<CreateApiToken>,
 ) -> Result<impl IntoResponse> {
-    let value = crypto.generate_random_string(32)?;
-    let encrypted_value = crypto.encrypt(value)?;
+    let value = crypto.generate_random_string(32);
+    let encrypted_value = crypto.encrypt(value.clone())?;
 
     let id = api_tokens::create_api_token(
         &pool,
@@ -47,7 +47,7 @@ pub async fn create_api_tokens(
     )
     .await?;
 
-    Ok(id)
+    Ok(Json(CreatedApiToken { id, value }))
 }
 
 /// Regenerate the value of an existing API token
@@ -70,7 +70,7 @@ pub async fn regenerate_api_tokens(
     Extension(user): Extension<User>,
     Path(id): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let value = crypto.generate_random_string(32)?;
+    let value = crypto.generate_random_string(32);
     let encrypted_value = crypto.encrypt(value.clone())?;
 
     let num_affected = api_tokens::update_api_token(

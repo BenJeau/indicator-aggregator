@@ -98,6 +98,8 @@ All endpoints are protected except for auth endpoints. You either need to provid
     ),
     components(
         schemas(
+            auth::openid::RedirectCallbackQuery,
+            auth::openid::RedirectLoginQuery,
             db_schemas::IdSlug,
             db_schemas::api_tokens::ApiToken,
             db_schemas::api_tokens::CreateApiToken,
@@ -137,10 +139,12 @@ All endpoints are protected except for auth endpoints. You either need to provid
             db_schemas::stats::CountPerHour,
             db_schemas::stats::CountPerId,
             db_schemas::stats::CountPerIdWrapper,
-            db_schemas::users::User,
-            db_schemas::users::UpdateUser,
             db_schemas::users::DbUserLog,
+            db_schemas::users::UpdateUser,
+            db_schemas::users::User,
             db_schemas::users::UserWithNumLogs,
+            routes::auth::google::get::GoogleCallbackContent,
+            schemas::CreatedApiToken,
             schemas::Data,
             schemas::DataCache,
             schemas::DataCacheAction,
@@ -148,9 +152,6 @@ All endpoints are protected except for auth endpoints. You either need to provid
             schemas::DataTiming,
             schemas::RequestExecuteParam,
             sources_schemas::SourceError,
-            routes::auth::google::get::GoogleCallbackContent,
-            auth::openid::RedirectLoginQuery,
-            auth::openid::RedirectCallbackQuery,
         )
     ),
     tags(
