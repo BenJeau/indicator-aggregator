@@ -1,17 +1,22 @@
-import { Edit, Minus, Plus, Save, Trash2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import {
+  Edit,
+  Loader2,
+  Minus,
+  Plus,
+  RefreshCcw,
+  Save,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { useAtomValue } from "jotai";
 
-import {
-  secretValueQueryOptions,
-  useCreateSecretMutation,
-  useDeleteSecretMutation,
-  usePatchSecretMutation,
-} from "@/api/secrets";
 import TitleEntryCount from "@/components/title-entry-count";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +26,11 @@ import {
   FormField,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import {
   TableHeader,
@@ -31,44 +41,69 @@ import {
   Table,
 } from "@/components/ui/table";
 import { AutoAnimate, Code, DatePicker, MaskValue, Trans } from "@/components";
-import { SecretWithNumSources } from "@/types/backendTypes";
+import { ApiToken } from "@/types/backendTypes";
 import { useTranslation } from "@/i18n";
+import {
+  useCreateApiTokenMutation,
+  useDeleteApiTokenMutation,
+  useDeleteUserApiTokensMutation,
+  useRegenerateApiTokenMutation,
+  useUpdateApiTokenMutation,
+} from "@/api/apiTokens";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { userAtom } from "@/atoms/auth";
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  description: z.string().max(500).optional(),
-  value: z.string(),
-  expiresAt: z.date().min(new Date()).optional(),
+  note: z.string().min(2).max(500),
+  expiresAt: z.date().min(new Date()).nullable().optional(),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;
 
 interface Props {
-  secrets: SecretWithNumSources[];
+  apiTokens: ApiToken[];
 }
 
-const SecretsTable: React.FC<Props> = ({ secrets }) => {
+const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
   const [showForm, setShowForm] = useState(false);
-  const createSecretMutation = useCreateSecretMutation();
+  const createApiToken = useCreateApiTokenMutation();
   const { t } = useTranslation();
+  const deleteApiTokens = useDeleteUserApiTokensMutation();
+  const user = useAtomValue(userAtom);
+
+  const [apiTokenValues, setApiTokenValues] = useState<Record<string, string>>(
+    {},
+  );
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      description: undefined,
-      value: "",
-      expiresAt: undefined,
-    },
+    defaultValues: { note: "", expiresAt: null },
   });
 
   const handleOnSubmit = async (values: FormSchema) => {
-    await createSecretMutation.mutateAsync({
-      ...values,
+    const token = await createApiToken.mutateAsync({
+      note: values.note,
+      // @ts-expect-error Lazy to fix atm
       expiresAt: values.expiresAt
         ? dayjs(values.expiresAt).utc().toISOString().slice(0, -1)
-        : undefined,
+        : null,
     });
+
+    toast(<Trans id="api.token.created.title" />, {
+      description: <Trans id="api.token.created.description" />,
+    });
+
+    setApiTokenValues((prev) => ({ ...prev, [token.id]: token.value }));
+
     form.reset();
     setShowForm(false);
   };
@@ -79,18 +114,66 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
         <div>
           <h2 className="flex items-baseline gap-2">
             <span className="font-semibold text-lg">
-              <Trans id="secrets" />
+              <Trans id="api.tokens" />
             </span>
-            <TitleEntryCount count={secrets.length} />
+            <TitleEntryCount count={apiTokens.length} />
           </h2>
           <p className="text-xs">
-            <Trans id="secrets.table.description.1" />{" "}
-            <span className="font-semibold">
-              <Trans id="secrets.table.description.2" />
-            </span>
+            <Trans
+              id="api.tokens.table.description"
+              header={<Code>Authentication</Code>}
+              headerFormat={<Code>Token API_TOKEN</Code>}
+            />
           </p>
         </div>
-        <div className="flex items-end flex-1 justify-end">
+        <div className="flex gap-2 items-end flex-1 justify-end flex-wrap md:flex-nowrap">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                className="gap-2"
+                size="sm"
+                type="button"
+                variant="destructive"
+                disabled={apiTokens.length === 0}
+              >
+                <Trash size={16} />
+                <Trans id="delete.user.api.tokens" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  <Trans id="delete.confirmation.title" />
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  <Trans id="api.tokens.delete.confirmation.description" />
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  <Trans id="cancel" />
+                </AlertDialogCancel>
+                <AlertDialogPrimitive.Action>
+                  <Button
+                    onClick={async () => {
+                      await deleteApiTokens.mutateAsync(user!.id);
+                      toast(<Trans id="api.tokens.deleted" />);
+                    }}
+                    disabled={deleteApiTokens.isPending}
+                    variant="destructive"
+                    className="gap-2"
+                  >
+                    {deleteApiTokens.isPending ? (
+                      <Loader2 className="animate-spin" size={14} />
+                    ) : (
+                      <Trash size={14} />
+                    )}
+                    <Trans id="delete.user.api.tokens" />
+                  </Button>
+                </AlertDialogPrimitive.Action>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button
             className="gap-2"
             size="sm"
@@ -99,11 +182,10 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
             variant="secondary"
           >
             <Plus size={16} />
-            <Trans id="add.new.secret" />
+            <Trans id="add.new.api.token" />
           </Button>
         </div>
       </div>
-
       <div className="rounded-md border">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleOnSubmit)}>
@@ -112,63 +194,48 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                 <TableRow>
                   <TableHead
                     style={{ width: 180 }}
-                    className="hidden xl:table-cell"
+                    className="hidden lg:table-cell"
                   >
                     <Trans id="created.at" />
                   </TableHead>
                   <TableHead
                     style={{ width: 180 }}
-                    className="hidden 2xl:table-cell"
+                    className="hidden xl:table-cell"
                   >
                     <Trans id="updated.at" />
                   </TableHead>
                   <TableHead>
-                    <Trans id="name" />
+                    <Trans id="note" />
                     {showForm && " *"}
-                  </TableHead>
-                  <TableHead>
-                    <Trans id="description" />
                   </TableHead>
                   <TableHead>
                     <Trans id="value" />
-                    {showForm && " *"}
                   </TableHead>
                   <TableHead>
                     <Trans id="expires.at" />
                   </TableHead>
-                  <TableHead
-                    style={{ width: 100 }}
-                    className="hidden lg:table-cell"
-                  >
-                    <Trans id="sources" />
-                  </TableHead>
-                  <TableHead style={{ width: 80 }}></TableHead>
+                  <TableHead style={{ width: 110 }}></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="text-xs">
-                {secrets.length >= 0 &&
-                  secrets.map((row) => (
-                    <TableRowWithData row={row} key={row.id} />
-                  ))}
-
                 {showForm && (
                   <TableRow>
+                    <TableCell className="italic opacity-50 hidden lg:table-cell">
+                      <Trans id="now" />
+                    </TableCell>
                     <TableCell className="italic opacity-50 hidden xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
-                    <TableCell className="italic opacity-50 hidden 2xl:table-cell">
-                      <Trans id="now" />
-                    </TableCell>
                     <TableCell>
                       <FormField
                         control={form.control}
-                        name="name"
+                        name="note"
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
                               <Input
                                 {...field}
-                                placeholder={`${t("e.g.")} SOURCE_API_KEY`}
+                                placeholder={`${t("e.g.")} ${t("api.token.note.placeholder")}`}
                                 className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
                               />
                             </FormControl>
@@ -178,42 +245,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                       />
                     </TableCell>
                     <TableCell>
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                placeholder={t(
-                                  "secrets.table.description.placholder",
-                                )}
-                                className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormField
-                        control={form.control}
-                        name="value"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                placeholder={`${t("e.g.")} ABCDEFGHIJKLMNOP`}
-                                className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <MaskValue disableToggle />
                     </TableCell>
                     <TableCell>
                       <FormField
@@ -235,20 +267,10 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                         )}
                       />
                     </TableCell>
-                    <TableCell className="italic opacity-50 hidden lg:table-cell">
-                      0
-                    </TableCell>
                     <TableCell>
                       <Button
-                        type="submit"
-                        className="h-6 w-6 p-0"
-                        variant="success"
-                      >
-                        <Save size={16} />
-                      </Button>
-                      <Button
                         type="button"
-                        className="ml-2 h-6 w-6 p-0"
+                        className="ml-8 h-6 w-6 p-0"
                         variant="ghost"
                         onClick={() => {
                           form.reset();
@@ -257,13 +279,29 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                       >
                         <Minus size={16} />
                       </Button>
+                      <Button
+                        type="submit"
+                        className="ml-2 h-6 w-6 p-0"
+                        variant="success"
+                      >
+                        <Save size={16} />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 )}
 
-                {secrets.length === 0 && (
+                {apiTokens.length >= 0 &&
+                  apiTokens.map((row) => (
+                    <TableRowWithData
+                      row={row}
+                      key={row.id}
+                      apiTokenValue={apiTokenValues[row.id]}
+                    />
+                  ))}
+
+                {apiTokens.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={8} className="h-24 text-center">
+                    <TableCell colSpan={6} className="h-24 text-center">
                       <Trans id="no.results" />
                     </TableCell>
                   </TableRow>
@@ -278,65 +316,58 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
 };
 
 interface TableRowWithDataProps {
-  row: SecretWithNumSources;
+  row: ApiToken;
+  apiTokenValue?: string;
 }
 
-const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
-  const secretValue = useQuery(secretValueQueryOptions(row.id));
-  const deleteSecretMutation = useDeleteSecretMutation();
-  const patchSecretMutation = usePatchSecretMutation();
+const TableRowWithData: React.FC<TableRowWithDataProps> = ({
+  row,
+  apiTokenValue,
+}) => {
+  const deleteApiTokenMutation = useDeleteApiTokenMutation();
+  const updateApiTokenMutation = useUpdateApiTokenMutation();
+  const regenerateApiTokenMutation = useRegenerateApiTokenMutation();
+
+  const [apiToken, setApiToken] = useState<string | undefined>(apiTokenValue);
 
   const { t } = useTranslation();
 
   const [edit, setEdit] = useState(false);
 
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: row.name,
-      description: row.description,
-      value: "",
+  const defaultValues = useMemo(
+    () => ({
+      note: row.note,
       expiresAt: row.expiresAt
         ? dayjs.utc(row.expiresAt).local().toDate()
         : undefined,
-    },
+    }),
+    [row],
+  );
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
   });
+
+  useEffect(() => {
+    if (form.getValues() !== defaultValues) {
+      form.reset(defaultValues);
+    }
+  }, [form, defaultValues]);
 
   return (
     <TableRow className="h-10">
-      <TableCell className="hidden xl:table-cell">
+      <TableCell className="hidden lg:table-cell">
         {dayjs.utc(row.createdAt).local().format("LLL")}
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell">
+      <TableCell className="hidden xl:table-cell">
         {dayjs.utc(row.updatedAt).local().format("LLL")}
       </TableCell>
       <AutoAnimate as={TableCell} className="py-0">
         {edit ? (
           <FormField
             control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={`${t("e.g.")} SOURCE_API_KEY`}
-                    className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ) : (
-          <Code>{row.name}</Code>
-        )}
-      </AutoAnimate>
-      <AutoAnimate as={TableCell} className="py-0">
-        {edit ? (
-          <FormField
-            control={form.control}
-            name="description"
+            name="note"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -351,43 +382,20 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             )}
           />
         ) : (
-          row.description ?? (
+          row.note ?? (
             <span className="italic opacity-50 lowercase">
               <Trans id="no.description" />
             </span>
           )
         )}
       </AutoAnimate>
-      <AutoAnimate as={TableCell} className="py-0">
-        {edit ? (
-          <FormField
-            control={form.control}
-            name="value"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={`${t("e.g.")} ABCDEFGHIJKLMNOP`}
-                    className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ) : (
-          <MaskValue
-            value={secretValue.data}
-            copieable="whenShown"
-            onToggle={(showValue) => {
-              if (!showValue) {
-                secretValue.refetch();
-              }
-            }}
-          />
-        )}
-      </AutoAnimate>
+      <TableCell>
+        <MaskValue
+          disableToggle={!apiToken}
+          value={apiToken}
+          copieable={apiToken ? "always" : "never"}
+        />
+      </TableCell>
       <AutoAnimate as={TableCell} className="py-0">
         {edit ? (
           <FormField
@@ -400,7 +408,9 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                     // @ts-expect-error Lazy
                     selected={field.value}
                     fromDate={new Date()}
-                    onSelect={(date: Date) => field.onChange(date)}
+                    onSelect={(date: Date | null) => {
+                      form.setValue("expiresAt", date);
+                    }}
                     buttonClassName="dark:bg-foreground/10 rounded-sm h-7 text-xs"
                   />
                 </FormControl>
@@ -416,40 +426,70 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
           </span>
         )}
       </AutoAnimate>
-      <TableCell className="hidden lg:table-cell">{row.numSources}</TableCell>
-      <AutoAnimate as={TableCell} className="py-0">
+      <TableCell className="py-0">
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              type="button"
+              className="h-6 w-6 p-0"
+              variant="ghost"
+              onClick={async () => {
+                const token = await regenerateApiTokenMutation.mutateAsync(
+                  row.id,
+                );
+                setApiToken(token);
+
+                toast(<Trans id="api.token.regenerated.title" />, {
+                  description: <Trans id="api.token.regenerated.description" />,
+                });
+              }}
+            >
+              <RefreshCcw size={14} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="w-40 text-wrap">
+              <h6 className="font-bold">
+                <Trans id="api.token.regenerate.tooltip.title" />
+              </h6>
+              <Trans id="api.token.regenerate.tooltip.details" />
+            </p>
+          </TooltipContent>
+        </Tooltip>
         <Button
           type="button"
-          className="h-6 w-6 p-0"
+          className="ml-2 h-6 w-6 p-0"
           variant="ghost"
           onClick={async () => {
             if (!edit) {
-              const data = await secretValue.refetch();
-              form.setValue("value", data.data ?? "");
+              form.resetField("note");
             }
             setEdit((prev) => !prev);
           }}
         >
           <Edit size={14} />
         </Button>
+
         {edit ? (
           <Button
             className="ml-2 h-6 w-6 p-0"
             variant="success"
             type="button"
-            onClick={() => {
-              form.handleSubmit(async (values) => {
-                await patchSecretMutation.mutateAsync({
+            onClick={async () => {
+              await form.handleSubmit(async (values) => {
+                await updateApiTokenMutation.mutateAsync({
                   id: row.id,
                   data: {
                     ...values,
+                    // @ts-expect-error Lazy to fix atm
                     expiresAt: values.expiresAt
                       ? dayjs(values.expiresAt).utc().toISOString().slice(0, -1)
-                      : undefined,
+                      : null,
                   },
                 });
                 form.reset();
                 setEdit(false);
+                toast(<Trans id="api.token.updated" />);
               })();
             }}
           >
@@ -460,14 +500,17 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             className="ml-2 h-6 w-6 p-0"
             variant="destructive"
             type="button"
-            onClick={() => deleteSecretMutation.mutate(row.id)}
+            onClick={async () => {
+              await deleteApiTokenMutation.mutateAsync(row.id);
+              toast(<Trans id="api.token.deleted" />);
+            }}
           >
             <Trash2 size={14} />
           </Button>
         )}
-      </AutoAnimate>
+      </TableCell>
     </TableRow>
   );
 };
 
-export default SecretsTable;
+export default ApiTokensTable;

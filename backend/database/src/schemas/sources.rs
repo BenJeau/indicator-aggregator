@@ -15,12 +15,11 @@ pub enum SourceKind {
     JavaScript,
 }
 
-impl ToString for SourceKind {
-    fn to_string(&self) -> String {
-        serde_json::to_string(&self)
-            .unwrap()
-            .trim_matches('"')
-            .to_string()
+impl std::fmt::Display for SourceKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let json = serde_json::to_string(&self).unwrap();
+        let trimmed = json.trim_matches('"');
+        f.write_str(trimmed)
     }
 }
 

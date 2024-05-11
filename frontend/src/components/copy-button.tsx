@@ -28,18 +28,13 @@ const CopyButton: React.FC<Props> = ({
         }
       }}
       className={cn(
-        "dark:bg-black-50 bg-white/50 backdrop-blur-md",
+        "dark:bg-black-50 bg-white/50 backdrop-blur-md h-6 w-6 p-0",
         copied ? "bg-green-300/50 text-green-700" : "",
         className,
       )}
-      size="sm"
       disabled={!text}
     >
-      {copied ? (
-        <Check size={iconSize} strokeWidth={3} />
-      ) : (
-        <Copy size={iconSize} strokeWidth={3} />
-      )}
+      {copied ? <Check size={iconSize} /> : <Copy size={iconSize} />}
     </Button>
   );
 };

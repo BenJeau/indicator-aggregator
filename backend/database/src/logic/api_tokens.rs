@@ -39,6 +39,15 @@ pub async fn delete_api_token(pool: &PgPool, id: &str, user_id: &str) -> Result<
 }
 
 #[instrument(skip(pool), ret, err)]
+pub async fn delete_all_user_api_tokens(pool: &PgPool, user_id: &str) -> Result<u64> {
+    sqlx::query!("DELETE FROM api_tokens WHERE user_id = $1", user_id)
+        .execute(pool)
+        .await
+        .map_err(Into::into)
+        .map(|i| i.rows_affected())
+}
+
+#[instrument(skip(pool), ret, err)]
 pub async fn update_api_token(
     pool: &PgPool,
     id: &str,
@@ -65,7 +74,7 @@ pub async fn update_api_token(
 pub async fn get_user_api_keys(pool: &PgPool, user_id: &str) -> Result<Vec<ApiToken>> {
     sqlx::query_as!(
         ApiToken,
-        r#"SELECT id, created_at, updated_at, note, expires_at FROM api_tokens WHERE user_id = $1"#,
+        r#"SELECT id, created_at, updated_at, note, expires_at FROM api_tokens WHERE user_id = $1 ORDER BY created_at DESC"#,
         user_id
     )
     .fetch_all(pool)

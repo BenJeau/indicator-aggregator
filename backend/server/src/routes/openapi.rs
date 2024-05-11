@@ -90,6 +90,7 @@ All endpoints are protected except for auth endpoints. You either need to provid
         routes::stats::count::get::count_requests_by_kind,
         routes::stats::count::get::count_requests_by_providers,
         routes::stats::count::get::count_requests_by_sources,
+        routes::users::delete::delete_api_tokens,
         routes::users::get::get_user,
         routes::users::get::get_user_api_tokens,
         routes::users::get::get_user_logs,

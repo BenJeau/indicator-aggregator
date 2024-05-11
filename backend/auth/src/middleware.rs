@@ -31,6 +31,7 @@ impl Credentials for Token {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 #[tracing::instrument(skip_all)]
 pub async fn auth_middleware(
     pool: PgPool,

@@ -27,7 +27,7 @@ const DatePicker: React.FC<Props> = (props) => (
           props.buttonClassName,
         )}
       >
-        <CalendarIcon className="mr-2 h-4 w-4" />
+        <CalendarIcon className="mr-2 h-4 w-4 min-w-4" />
         {props.selected ? (
           format(props.selected, "PPP")
         ) : (
@@ -43,7 +43,7 @@ const DatePicker: React.FC<Props> = (props) => (
             onClick={(e) => {
               e.stopPropagation();
               // @ts-expect-error onSelect is optional
-              props.onSelect && props.onSelect(undefined);
+              props.onSelect && props.onSelect(null);
             }}
           >
             <X size={16} />

@@ -12,7 +12,7 @@ export const userApiTokensQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: ["apiTokens", userId],
     queryFn: async ({ signal }) =>
-      await fetcher.get<ApiToken>(`/users/${userId}/apiTokens`, {
+      await fetcher.get<ApiToken[]>(`/users/${userId}/apiTokens`, {
         signal,
       }),
   });
@@ -49,6 +49,15 @@ export const useUpdateApiTokenMutation = () =>
 export const useDeleteApiTokenMutation = () =>
   useMutation({
     mutationFn: async (id: string) => await fetcher.delete(`/apiTokens/${id}`),
+    onSettled: async () =>
+      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
+  });
+
+export const useDeleteUserApiTokensMutation = () =>
+  useMutation({
+    mutationFn: async (userId: string) => {
+      await fetcher.delete(`/users/${userId}/apiTokens`);
+    },
     onSettled: async () =>
       await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
   });
