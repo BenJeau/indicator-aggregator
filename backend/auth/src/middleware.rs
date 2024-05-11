@@ -43,9 +43,9 @@ pub async fn auth_middleware(
     db_secret: &str,
     request: &mut Request,
 ) -> Result<()> {
-    let user = match (bearer_auth, token_auth) {
+    let user_id = match (bearer_auth, token_auth) {
         (Some(auth), None) => {
-            let user_auth_id = state
+            state
                 .jwt_manager
                 .get_claims(auth.token())
                 .map_err(|err| {
@@ -53,9 +53,7 @@ pub async fn auth_middleware(
                     Error::Unauthorized("Invalid token".to_string())
                 })?
                 .data
-                .sub;
-
-            users::get_user_by_auth_id(&pool, &user_auth_id).await?
+                .sub
         }
         (None, Some(auth)) => {
             let token = auth.0 .0.clone();
@@ -65,12 +63,12 @@ pub async fn auth_middleware(
                 return Err(Error::Unauthorized("API token unused".to_string()));
             };
 
-            users::get_user(&pool, &user_id).await?
+            user_id
         }
         _ => return Err(Error::Unauthorized("Missing token".to_string())),
     };
 
-    let Some(user) = user else {
+    let Some(user) = users::get_user(&pool, &user_id).await? else {
         return Err(Error::Unauthorized("User does not exist".to_string()));
     };
 

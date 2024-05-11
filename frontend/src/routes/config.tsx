@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { secretsQueryOptions } from "@/api/secrets";
 import { configQueryOptions } from "@/api/config";
@@ -8,9 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { SecretsTable, GeneralServerConfig, Trans } from "@/components";
 import { beforeLoadAuthenticated } from "@/auth";
 import { useCreateApiTokenMutation } from "@/api/apiTokens";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const ConfigComponent: React.FC = () => {
   const secrets = useSuspenseQuery(secretsQueryOptions);

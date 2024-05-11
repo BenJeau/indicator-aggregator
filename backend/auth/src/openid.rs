@@ -329,9 +329,14 @@ pub struct CreateUserClaims {
 
 impl CreateUserClaims {
     #[tracing::instrument(skip_all)]
-    pub fn generate_jwt(self, jwt_manager: &JwtManager, roles: Vec<String>) -> Result<String> {
+    pub fn generate_jwt(
+        self,
+        jwt_manager: &JwtManager,
+        roles: Vec<String>,
+        id: String,
+    ) -> Result<String> {
         let claims = Claims {
-            sub: self.sub,
+            sub: id,
             email: self.email,
             email_verified: self.email_verified,
             name: self.name,
@@ -529,7 +534,7 @@ pub async fn logic(
         return Ok(temporary_redirect(&redirect_uri));
     }
 
-    let jwt = claims.generate_jwt(&state.jwt_manager, user.roles)?;
+    let jwt = claims.generate_jwt(&state.jwt_manager, user.roles, user.id)?;
 
     let next_part = if let Some(next) = login_request.browser_state {
         format!("&next={}", next)
