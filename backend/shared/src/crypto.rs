@@ -1,7 +1,9 @@
+pub use chacha20poly1305::aead::Error;
 use chacha20poly1305::{
     aead::{generic_array::GenericArray, Aead, OsRng, Result},
     AeadCore, KeyInit, XChaCha20Poly1305,
 };
+use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use tracing::instrument;
 
 #[derive(Clone)]
@@ -38,6 +40,17 @@ impl Crypto {
         let decrypted_data = self.cipher.decrypt(nonce, ciphertext)?;
 
         Ok(String::from_utf8_lossy(&decrypted_data).into())
+    }
+
+    #[instrument(skip_all)]
+    pub fn generate_random_string(&self, length: usize) -> String {
+        let mut rng = thread_rng();
+
+        std::iter::repeat(())
+            .map(|()| rng.sample(Alphanumeric))
+            .map(char::from)
+            .take(length)
+            .collect()
     }
 }
 

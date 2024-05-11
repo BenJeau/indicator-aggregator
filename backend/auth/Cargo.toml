@@ -22,3 +22,4 @@ tracing = { workspace = true }
 utoipa = { workspace = true }
 
 database = { path = "../database" }
+shared = { path = "../shared" }

@@ -47,7 +47,7 @@ pub async fn microsoft_redirect_login(
 /// Microsoft OAuth2 callback
 #[utoipa::path(
     get,
-    path = "/auth/microsoft/callback",
+    path = "/auth/microsoft/redirect",
     tag = "auth",
     responses(
         (status = 302, description = "Redirect to Indicator Aggregator frontend")

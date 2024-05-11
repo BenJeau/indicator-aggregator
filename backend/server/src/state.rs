@@ -30,6 +30,12 @@ impl FromRef<ServerState> for Crypto {
     }
 }
 
+impl FromRef<ServerState> for Config {
+    fn from_ref(state: &ServerState) -> Self {
+        state.config.clone()
+    }
+}
+
 impl ServerState {
     #[instrument(skip_all)]
     pub async fn new() -> Self {

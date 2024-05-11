@@ -3,6 +3,7 @@ use shared::tower::CommonTowerLayerBuilder;
 
 use crate::ServerState;
 
+pub mod api_tokens;
 pub mod auth;
 pub mod config;
 pub mod favicon;
@@ -26,6 +27,7 @@ pub fn router(state: ServerState) -> Router {
     let router = Router::new().merge(openapi::swagger_router()).nest(
         "/api/v1",
         Router::new()
+            .nest("/apiTokens", api_tokens::router())
             .nest("/config", config::router())
             .nest("/favicon", favicon::router())
             .nest("/health", health::router())

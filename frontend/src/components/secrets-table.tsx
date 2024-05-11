@@ -1,13 +1,4 @@
-import {
-  Asterisk,
-  Edit,
-  Eye,
-  EyeOff,
-  Minus,
-  Plus,
-  Save,
-  Trash2,
-} from "lucide-react";
+import { Edit, Minus, Plus, Save, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
@@ -39,7 +30,7 @@ import {
   TableCell,
   Table,
 } from "@/components/ui/table";
-import { DatePicker, Trans } from "@/components";
+import { AutoAnimate, Code, DatePicker, MaskValue, Trans } from "@/components";
 import { SecretWithNumSources } from "@/types/backendTypes";
 import { useTranslation } from "@/i18n";
 
@@ -54,11 +45,10 @@ export type FormSchema = z.infer<typeof formSchema>;
 
 interface Props {
   secrets: SecretWithNumSources[];
-  showForm: boolean;
-  setShowForm: (show: boolean) => void;
 }
 
-const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
+const SecretsTable: React.FC<Props> = ({ secrets }) => {
+  const [showForm, setShowForm] = useState(false);
   const createSecretMutation = useCreateSecretMutation();
   const { t } = useTranslation();
 
@@ -94,22 +84,24 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
             <TitleEntryCount count={secrets.length} />
           </h2>
           <p className="text-xs">
-            <Trans id="secrets.table.description.1" />
+            <Trans id="secrets.table.description.1" />{" "}
             <span className="font-semibold">
               <Trans id="secrets.table.description.2" />
             </span>
           </p>
         </div>
-        <Button
-          className="gap-2"
-          size="sm"
-          onClick={() => setShowForm(true)}
-          type="button"
-          variant="secondary"
-        >
-          <Plus size={16} />
-          <Trans id="add.new.secret" />
-        </Button>
+        <div className="flex items-end flex-1 justify-end">
+          <Button
+            className="gap-2"
+            size="sm"
+            onClick={() => setShowForm(true)}
+            type="button"
+            variant="secondary"
+          >
+            <Plus size={16} />
+            <Trans id="add.new.secret" />
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-md border">
@@ -118,10 +110,16 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
             <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead style={{ width: 180 }}>
+                  <TableHead
+                    style={{ width: 180 }}
+                    className="hidden xl:table-cell"
+                  >
                     <Trans id="created.at" />
                   </TableHead>
-                  <TableHead style={{ width: 180 }}>
+                  <TableHead
+                    style={{ width: 180 }}
+                    className="hidden 2xl:table-cell"
+                  >
                     <Trans id="updated.at" />
                   </TableHead>
                   <TableHead>
@@ -138,7 +136,10 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                   <TableHead>
                     <Trans id="expires.at" />
                   </TableHead>
-                  <TableHead style={{ width: 100 }}>
+                  <TableHead
+                    style={{ width: 100 }}
+                    className="hidden lg:table-cell"
+                  >
                     <Trans id="sources" />
                   </TableHead>
                   <TableHead style={{ width: 80 }}></TableHead>
@@ -152,10 +153,10 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
 
                 {showForm && (
                   <TableRow>
-                    <TableCell className="italic opacity-50">
+                    <TableCell className="italic opacity-50 hidden xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
-                    <TableCell className="italic opacity-50">
+                    <TableCell className="italic opacity-50 hidden 2xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
                     <TableCell>
@@ -234,7 +235,9 @@ const SecretsTable: React.FC<Props> = ({ secrets, showForm, setShowForm }) => {
                         )}
                       />
                     </TableCell>
-                    <TableCell className="italic opacity-50">0</TableCell>
+                    <TableCell className="italic opacity-50 hidden lg:table-cell">
+                      0
+                    </TableCell>
                     <TableCell>
                       <Button
                         type="submit"
@@ -285,7 +288,6 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
 
   const { t } = useTranslation();
 
-  const [showValue, setShowValue] = useState(false);
   const [edit, setEdit] = useState(false);
 
   const form = useForm<FormSchema>({
@@ -301,10 +303,14 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
   });
 
   return (
-    <TableRow>
-      <TableCell>{dayjs.utc(row.createdAt).local().format("LLL")}</TableCell>
-      <TableCell>{dayjs.utc(row.updatedAt).local().format("LLL")}</TableCell>
-      <TableCell>
+    <TableRow className="h-10">
+      <TableCell className="hidden xl:table-cell">
+        {dayjs.utc(row.createdAt).local().format("LLL")}
+      </TableCell>
+      <TableCell className="hidden 2xl:table-cell">
+        {dayjs.utc(row.updatedAt).local().format("LLL")}
+      </TableCell>
+      <AutoAnimate as={TableCell} className="py-0">
         {edit ? (
           <FormField
             control={form.control}
@@ -323,12 +329,10 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             )}
           />
         ) : (
-          <code className="bg-foreground/5 dark:bg-foreground/30 rounded-sm px-1">
-            {row.name}
-          </code>
+          <Code>{row.name}</Code>
         )}
-      </TableCell>
-      <TableCell>
+      </AutoAnimate>
+      <AutoAnimate as={TableCell} className="py-0">
         {edit ? (
           <FormField
             control={form.control}
@@ -353,8 +357,8 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             </span>
           )
         )}
-      </TableCell>
-      <TableCell>
+      </AutoAnimate>
+      <AutoAnimate as={TableCell} className="py-0">
         {edit ? (
           <FormField
             control={form.control}
@@ -373,49 +377,18 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             )}
           />
         ) : (
-          <div className="flex w-full items-center justify-between gap-2">
-            {showValue ? (
-              <code className="bg-foreground/5 dark:bg-foreground/30 rounded-sm px-1">
-                {secretValue.data}
-              </code>
-            ) : (
-              <div className="flex">
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-                <Asterisk size={12} className="-ml-1" />
-              </div>
-            )}
-            <Button
-              className="h-6 w-6 p-0"
-              variant="ghost"
-              type="button"
-              onClick={() => {
-                if (!showValue) {
-                  secretValue.refetch();
-                }
-                setShowValue((prev) => !prev);
-              }}
-            >
-              {showValue ? <EyeOff size={14} /> : <Eye size={14} />}
-            </Button>
-          </div>
+          <MaskValue
+            value={secretValue.data}
+            copieable="whenShown"
+            onToggle={(showValue) => {
+              if (!showValue) {
+                secretValue.refetch();
+              }
+            }}
+          />
         )}
-      </TableCell>
-      <TableCell>
+      </AutoAnimate>
+      <AutoAnimate as={TableCell} className="py-0">
         {edit ? (
           <FormField
             control={form.control}
@@ -442,12 +415,26 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             <Trans id="no.expiration" />
           </span>
         )}
-      </TableCell>
-      <TableCell>{row.numSources}</TableCell>
-      <TableCell>
+      </AutoAnimate>
+      <TableCell className="hidden lg:table-cell">{row.numSources}</TableCell>
+      <AutoAnimate as={TableCell} className="py-0">
+        <Button
+          type="button"
+          className="h-6 w-6 p-0"
+          variant="ghost"
+          onClick={async () => {
+            if (!edit) {
+              const data = await secretValue.refetch();
+              form.setValue("value", data.data ?? "");
+            }
+            setEdit((prev) => !prev);
+          }}
+        >
+          <Edit size={14} />
+        </Button>
         {edit ? (
           <Button
-            className="h-6 w-6 p-0"
+            className="ml-2 h-6 w-6 p-0"
             variant="success"
             type="button"
             onClick={() => {
@@ -470,7 +457,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
           </Button>
         ) : (
           <Button
-            className="h-6 w-6 p-0"
+            className="ml-2 h-6 w-6 p-0"
             variant="destructive"
             type="button"
             onClick={() => deleteSecretMutation.mutate(row.id)}
@@ -478,21 +465,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             <Trash2 size={14} />
           </Button>
         )}
-        <Button
-          type="button"
-          className="ml-2 h-6 w-6 p-0"
-          variant="ghost"
-          onClick={async () => {
-            if (!edit) {
-              const data = await secretValue.refetch();
-              form.setValue("value", data.data ?? "");
-            }
-            setEdit((prev) => !prev);
-          }}
-        >
-          <Edit size={14} />
-        </Button>
-      </TableCell>
+      </AutoAnimate>
     </TableRow>
   );
 };

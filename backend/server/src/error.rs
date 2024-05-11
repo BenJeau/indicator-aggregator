@@ -2,11 +2,10 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use database::schemas::indicators::IndicatorKind;
 use sources::schemas::SourceError;
 use strum::Display;
 use tracing::error;
-
-use database::schemas::indicators::IndicatorKind;
 
 #[derive(Debug, Display)]
 pub enum Error {
@@ -35,6 +34,7 @@ pub enum Error {
     TonicStatus(tonic::Status),
     InvalidHeaderValue(reqwest::header::InvalidHeaderValue),
     ZipError(sources::error::ZipError),
+    EncryptionError(shared::crypto::Error),
 }
 
 impl std::error::Error for Error {}
@@ -84,6 +84,12 @@ impl From<tonic::transport::Error> for Error {
 impl From<tonic::Status> for Error {
     fn from(error: tonic::Status) -> Self {
         Self::TonicStatus(error)
+    }
+}
+
+impl From<shared::crypto::Error> for Error {
+    fn from(value: shared::crypto::Error) -> Self {
+        Self::EncryptionError(value)
     }
 }
 

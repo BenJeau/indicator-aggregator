@@ -1,4 +1,4 @@
-FROM rust:1.77.2-slim-bookworm as builder-chef
+FROM rust:1.78.0-slim-bookworm as builder-chef
 RUN cargo install --version 0.1.66 cargo-chef
 RUN apt-get update && apt-get install -y libpq-dev libssl-dev pkg-config protobuf-compiler python3-dev
 WORKDIR /app

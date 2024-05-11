@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   indicator_aggregator_pg:
     container_name: indicator_aggregator_pg
@@ -64,43 +62,34 @@ services:
     container_name: indicator_aggregator_backend
     image: indicator_aggregator_backend:latest
     build:
-      context: .
-      dockerfile: ./backend/Dockerfile.local
+      context: ./backend
+      dockerfile: ./server/Dockerfile.local
     ports:
       - 3456:3456
     volumes:
       - ./backend:/app/backend
-      - ./cache:/app/cache
-      - ./shared:/app/shared
-      - ./Cargo.toml:/app/Cargo.toml
-      - ./Cargo.lock:/app/Cargo.lock
-      - backend_data:/target
+      - backend_data:/app/backend/target
     depends_on:
       - indicator_aggregator_pg
     networks:
       - proxy-network
     env_file:
-      - .env
+      - ./backend/server/.env
 
   indicator_aggregator_python_runner:
     container_name: indicator_aggregator_python_runner
     hostname: indicator_aggregator_python_runner
     image: indicator_aggregator_python_runner:latest
     build:
-      context: .
+      context: ./backend
       dockerfile: ./runners/python/Dockerfile.local
     ports:
       - 50051:50051
     volumes:
-      - ./runners:/app/runners
-      - ./shared:/app/shared
-      - ./Cargo.toml:/app/Cargo.toml
-      - ./Cargo.lock:/app/Cargo.lock
-      - python_runner_data:/target
+      - ./backend:/app/backend
+      - python_runner_data:/app/backend/target
     networks:
       - proxy-network
-    env_file:
-      - .env
 
 networks:
   proxy-network:

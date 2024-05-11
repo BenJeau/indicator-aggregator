@@ -14,7 +14,7 @@ use crate::{Result, ServerState};
     path = "/secrets/{id}",
     tag = "secrets",
     responses(
-        (status = 204, description = "Secret updated successfully", body = ()),
+        (status = 204, description = "Secret updated successfully"),
         (status = 404, description = "Secret not found"),
     ),
     params(

@@ -1,7 +1,7 @@
 import { atomWithLocalStorage } from "@/atoms";
 
 interface User {
-  id: number;
+  id: string;
   email: string;
   name: string;
   givenName: string;

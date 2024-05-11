@@ -16,7 +16,7 @@ use hyper::{HeaderMap, Uri};
 use jsonwebtoken::{jwk::Jwk, Algorithm, DecodingKey, Validation};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{net::SocketAddr, time::Duration};
-use tokio::{join, sync::watch, time::sleep};
+use tokio::{sync::watch, time::sleep};
 use tracing::{error, info};
 use utoipa::{IntoParams, ToSchema};
 
@@ -329,9 +329,14 @@ pub struct CreateUserClaims {
 
 impl CreateUserClaims {
     #[tracing::instrument(skip_all)]
-    pub fn generate_jwt(self, jwt_manager: &JwtManager, roles: Vec<String>) -> Result<String> {
+    pub fn generate_jwt(
+        self,
+        jwt_manager: &JwtManager,
+        roles: Vec<String>,
+        id: String,
+    ) -> Result<String> {
         let claims = Claims {
-            sub: self.sub,
+            sub: id,
             email: self.email,
             email_verified: self.email_verified,
             name: self.name,
@@ -512,13 +517,10 @@ pub async fn logic(
         method: "GET".to_string(),
     };
 
-    let (user, create_user_log) = join!(
-        users::create_or_update_user(pool, &create_user),
-        users::create_user_log(pool, &user_log),
-    );
-
-    let user = user?;
-    let _ = create_user_log.map_err(|err| error!(%err, "Failed to create user log"));
+    let user = users::create_or_update_user(pool, &create_user).await?;
+    let _ = users::create_user_log(pool, &user_log)
+        .await
+        .map_err(|err| error!(%err, "Failed to create user log"));
 
     auth::set_user_id_for_login_request(pool, &login_request.id, &claims.sub).await?;
 
@@ -532,7 +534,7 @@ pub async fn logic(
         return Ok(temporary_redirect(&redirect_uri));
     }
 
-    let jwt = claims.generate_jwt(&state.jwt_manager, user.roles)?;
+    let jwt = claims.generate_jwt(&state.jwt_manager, user.roles, user.id)?;
 
     let next_part = if let Some(next) = login_request.browser_state {
         format!("&next={}", next)

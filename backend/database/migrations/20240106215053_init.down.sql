@@ -1,3 +1,4 @@
+DROP TABLE "api_tokens";
 DROP TABLE "server_config";
 DROP TABLE "source_requests";
 DROP TABLE "requests";

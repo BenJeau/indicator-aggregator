@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 import config from "@/config";
 import { queryClient } from "@/api";
 import { SourceKind } from "@/types/backendTypes";
+import { store } from "@/atoms";
+import { userAtom } from "@/atoms/auth";
 
 export type RunnerStatus =
   | "UNKNOWN"
@@ -20,32 +23,28 @@ export const useRunnersStatus = () =>
     refetchOnWindowFocus: false,
     queryKey: ["runners", "status"],
     queryFn: async ({ queryKey }) =>
-      await new Promise((_resolve, reject) => {
-        const url = new URL(
-          `${config.rest_server_base_url}/runners/status/sse`,
-        );
+      await new Promise((resolve, reject) => {
+        const token = store.get(userAtom)!.token;
 
-        const sse = new EventSource(url);
+        fetchEventSource(`${config.rest_server_base_url}/runners/status/sse`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          onerror: (event) => {
+            reject(event);
+          },
+          onmessage: async (event) => {
+            const data = event.data as RunnerStatus;
+            const id = event.id as SourceKind.Python | SourceKind.JavaScript;
 
-        sse.onerror = (event) => {
-          sse.close();
-          reject(event);
-        };
-
-        sse.onopen = () => {
-          queryClient.invalidateQueries({ queryKey: ["stats", "count"] });
-        };
-
-        sse.onmessage = (event) => {
-          const data = event.data as RunnerStatus;
-          const id = event.lastEventId as
-            | SourceKind.Python
-            | SourceKind.JavaScript;
-
-          queryClient.setQueryData<RunnersStatus>(queryKey, (oldData) => ({
-            ...(oldData ?? {}),
-            [id]: data,
-          }));
-        };
+            queryClient.setQueryData<RunnersStatus>(queryKey, (oldData) => ({
+              ...(oldData ?? {}),
+              [id]: data,
+            }));
+          },
+          onclose: () => {
+            resolve(queryClient.getQueryData(queryKey) ?? {});
+          },
+        });
       }),
   });

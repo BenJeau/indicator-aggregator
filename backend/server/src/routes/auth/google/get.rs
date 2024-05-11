@@ -58,7 +58,7 @@ pub struct GoogleCallbackContent {
 /// Google OAuth2 callback
 #[utoipa::path(
     get,
-    path = "/auth/google/callback",
+    path = "/auth/google/redirect",
     tag = "auth",
     responses(
         (status = 302, description = "Redirect to Indicator Aggregator frontend")

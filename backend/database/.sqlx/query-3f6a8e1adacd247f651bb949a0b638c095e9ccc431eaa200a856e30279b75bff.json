@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE api_tokens SET value = COALESCE(pgp_sym_encrypt_bytea($1, $2), value), note = COALESCE($3, note), expires_at = COALESCE($4, expires_at) WHERE id = $5 AND user_id = $6",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Bytea",
+        "Text",
+        "Text",
+        "Timestamp",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3f6a8e1adacd247f651bb949a0b638c095e9ccc431eaa200a856e30279b75bff"
+}
