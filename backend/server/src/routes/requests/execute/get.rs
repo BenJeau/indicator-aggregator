@@ -68,7 +68,7 @@ pub async fn sse_handler(
     Query(request): Query<RequestExecuteParam>,
 ) -> Result<impl IntoResponse> {
     let should_ignore_errors = request.ignore_errors;
-    let source_ids = request.sources.clone();
+    let source_ids = request.source_ids.clone();
     let indicator: Indicator = request.into();
     let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
 

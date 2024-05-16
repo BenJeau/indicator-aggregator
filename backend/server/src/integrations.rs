@@ -27,7 +27,7 @@ pub async fn handle_indicator_request(
         return Err(Error::InvalidIndicatorKind(indicator.kind));
     }
 
-    get_source_data(&indicator, state, &request.sources).await
+    get_source_data(&indicator, state, &request.source_ids).await
 }
 
 async fn get_source_data(

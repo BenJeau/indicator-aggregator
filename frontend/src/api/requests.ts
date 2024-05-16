@@ -56,7 +56,7 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
           `kind=${request!.kind}`,
         ];
         for (const source of request?.sources ?? []) {
-          searchParamParts.push(`sources=${source.id}`);
+          searchParamParts.push(`source_ids=${source.id}`);
         }
 
         const token = store.get(userAtom)!.token;
@@ -85,7 +85,7 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
             onclose: () => {
               resolve(queryClient.getQueryData(queryKey) ?? {});
             },
-          },
+          }
         );
       }),
   });
@@ -169,7 +169,7 @@ const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
         },
       },
     }),
-    {} as RequestData,
+    {} as RequestData
   );
 
   queryClient.setQueryData<RequestData>(queryKey, () => newData);

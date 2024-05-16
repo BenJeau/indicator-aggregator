@@ -26,9 +26,9 @@ pub struct RequestExecuteParam {
     pub data: String,
     /// Kind of the indicator
     pub kind: IndicatorKind,
-    /// List of sources to query, if not provided, all sources will be queried
+    /// List of source IDs to query, if not provided, all sources will be queried
     #[serde(default)]
-    pub sources: Vec<String>,
+    pub source_ids: Vec<String>,
     /// Ignore errors, will remove all sources that return an error from the response
     #[serde(default)]
     pub ignore_errors: bool,
