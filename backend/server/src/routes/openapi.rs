@@ -52,6 +52,7 @@ All endpoints are protected except for auth endpoints. You either need to provid
         routes::ignore_lists::slugs::get::get_ignore_list_id_from_slug,
         routes::ignore_lists::sources::get::get_list_sources,
         routes::ignore_lists::sources::put::put_ignore_list_sources,
+        routes::indicator_kinds::get::get_indicator_kinds,
         routes::notifications::get::get_notifications,
         routes::providers::delete::delete_provider,
         routes::providers::get::get_provider,
