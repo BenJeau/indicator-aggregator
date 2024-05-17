@@ -40,6 +40,15 @@ Alternatively, you can spin up the stack locally by following the respective `RE
 - [./backend/server/README.md](./backend/server/README.md)
 - [./frontend/README.md](./frontend/README.md)
 
+## CLI tool
+
+Once you have the stack up either locally or remotely, you can use the simple CLI tool (a simple HTTP client of Indicator Aggregator) to query data from sources in an interactive manner (asking you for the data, kind of data, and to which sources to query). Run it with the following command:
+
+```sh
+cd backend
+API_TOKEN=<INDICATOR_AGGREGATOR_API_TOKEN> BASE_URL=<INDICATOR_AGGREGATOR_BACKEND_SERVER_BASE_URL> cargo run --bin cli
+```
+
 ## Architecture
 
 Indicator Aggregator's architecture is defined at the [./docs/architecture.md](./docs/architecture.md) markdown file alongside other documents and diagrams.

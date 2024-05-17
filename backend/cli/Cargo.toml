@@ -1,0 +1,16 @@
+[package]
+edition = "2021"
+name = "cli"
+version = "0.1.0"
+
+[dependencies]
+chrono = { workspace = true }
+colored = { workspace = true }
+eventsource-stream = { workspace = true }
+futures-util = { workspace = true }
+inquire = { workspace = true }
+reqwest = { workspace = true }
+reqwest-eventsource = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
