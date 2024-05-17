@@ -9,6 +9,7 @@ pub mod config;
 pub mod favicon;
 pub mod health;
 pub mod ignore_lists;
+pub mod indicator_kinds;
 mod middleware;
 pub mod notifications;
 mod openapi;
@@ -32,6 +33,7 @@ pub fn router(state: ServerState) -> Router {
             .nest("/favicon", favicon::router())
             .nest("/health", health::router())
             .nest("/ignoreLists", ignore_lists::router())
+            .nest("/indicatorKinds", indicator_kinds::router())
             .nest("/notifications", notifications::router())
             .nest("/providers", providers::router())
             .nest("/requests", requests::router())

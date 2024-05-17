@@ -3,9 +3,21 @@ use typeshare::typeshare;
 use utoipa::ToSchema;
 
 /// Kind of the indicator
-#[derive(Deserialize, Debug, strum::Display, PartialEq, Eq, Clone, Copy, ToSchema)]
+#[derive(
+    Deserialize,
+    Debug,
+    strum::Display,
+    PartialEq,
+    Eq,
+    Clone,
+    Copy,
+    ToSchema,
+    strum::EnumIter,
+    strum::EnumString,
+)]
 #[typeshare]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
 pub enum IndicatorKind {
     Domain,
     Ipv4,

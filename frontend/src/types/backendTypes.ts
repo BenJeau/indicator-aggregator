@@ -632,8 +632,8 @@ export interface RequestExecuteParam {
   data: string;
   /** Kind of the indicator */
   kind: IndicatorKind;
-  /** List of sources to query, if not provided, all sources will be queried */
-  sources?: string[];
+  /** List of source IDs to query, if not provided, all sources will be queried */
+  sourceIds?: string[];
   /** Ignore errors, will remove all sources that return an error from the response */
   ignoreErrors?: boolean;
 }
