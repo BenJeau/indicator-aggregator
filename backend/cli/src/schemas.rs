@@ -9,26 +9,26 @@ pub struct Source {
 
 #[derive(PartialEq, Eq)]
 pub enum EventKind {
-    FetchingData,
-    FetchingStart,
-    FetchingError,
+    Data,
+    Start,
+    Error,
 }
 
 impl EventKind {
     pub fn from_str(data: &str) -> Self {
         match data {
-            "fetching_data" => Self::FetchingData,
-            "fetching_start" => Self::FetchingStart,
-            "fetching_error" => Self::FetchingError,
+            "fetching_data" => Self::Data,
+            "fetching_start" => Self::Start,
+            "fetching_error" => Self::Error,
             _ => panic!("Invalid EventKind"),
         }
     }
 
     pub fn as_str(&self) -> &'static str {
         match self {
-            Self::FetchingData => "data",
-            Self::FetchingStart => "start",
-            Self::FetchingError => "error",
+            Self::Data => "data",
+            Self::Start => "start",
+            Self::Error => "error",
         }
     }
 }

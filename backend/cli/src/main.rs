@@ -85,7 +85,7 @@ fn handle_message(
     }
 
     match event {
-        EventKind::FetchingData if should_print_event => {
+        EventKind::Data if should_print_event => {
             let data = &serde_json::from_str::<Data>(&message.data).unwrap();
             let elapsed = (data.timing.ended_at - data.timing.started_at).num_milliseconds();
 
@@ -93,20 +93,20 @@ fn handle_message(
             println!("{:#}", data.data);
             println!();
         }
-        EventKind::FetchingError if should_print_event => {
+        EventKind::Error if should_print_event => {
             let data = &serde_json::from_str::<Vec<ErrorData>>(&message.data).unwrap();
 
             println!("{}", title.on_bright_red().red());
-            data.into_iter().for_each(|e| println!("- {}", e.kind));
+            data.iter().for_each(|e| println!("- {}", e.kind));
             println!();
         }
-        EventKind::FetchingStart => {
+        EventKind::Start => {
             println!("request ID {}", message.id.bold());
             println!();
 
             let data = &serde_json::from_str::<Vec<StartData>>(&message.data).unwrap();
             let (has_source_code, no_source_code): (Vec<_>, Vec<_>) = data
-                .into_iter()
+                .iter()
                 .filter(|s| source_ids.contains(&s.source.id))
                 .partition(|d| d.has_source_code);
 
