@@ -35,6 +35,7 @@ pub enum Error {
     InvalidHeaderValue(reqwest::header::InvalidHeaderValue),
     ZipError(sources::error::ZipError),
     EncryptionError(shared::crypto::Error),
+    PasswordHash(shared::crypto::PasswordHashError),
 }
 
 impl std::error::Error for Error {}
@@ -93,6 +94,12 @@ impl From<shared::crypto::Error> for Error {
     }
 }
 
+impl From<shared::crypto::PasswordHashError> for Error {
+    fn from(e: shared::crypto::PasswordHashError) -> Self {
+        Self::PasswordHash(e)
+    }
+}
+
 impl From<auth::error::Error> for Error {
     fn from(error: auth::error::Error) -> Self {
         error!(error=?error);
@@ -106,6 +113,7 @@ impl From<auth::error::Error> for Error {
             auth::error::Error::SerdeJson(_) => Self::InternalError,
             auth::error::Error::Reqwest(err) => Self::Reqwest(err),
             auth::error::Error::Jsonwebtoken(_) => Self::InternalError,
+            auth::error::Error::PasswordHash(err) => Self::PasswordHash(err),
         }
     }
 }

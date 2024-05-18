@@ -29,8 +29,6 @@ pub async fn auth_middleware(
         bearer_auth.map(|auth| auth.0),
         token_auth.map(|auth| auth.0),
         user_agent,
-        state.crypto,
-        &state.config.encryption.db_key,
         &mut request,
     )
     .await?;

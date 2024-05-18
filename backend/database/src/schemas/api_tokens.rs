@@ -22,7 +22,7 @@ pub struct ApiToken {
 }
 
 /// Parameters for creating a new API token
-#[derive(Deserialize, FromRow, ToSchema)]
+#[derive(Deserialize, FromRow, ToSchema, Debug)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct CreateApiToken {
@@ -46,22 +46,22 @@ pub struct UpdateApiToken {
 impl From<UpdateApiToken> for InternalUpdateApiToken {
     fn from(value: UpdateApiToken) -> Self {
         Self {
-            value: None,
+            token: None,
             note: value.note,
             expires_at: value.expires_at,
         }
     }
 }
 
-#[derive(FromRow)]
-pub struct GetApiToken {
-    pub id: String,
-    pub value: Vec<u8>,
-}
-
 #[derive(Debug, Default)]
 pub struct InternalUpdateApiToken {
-    pub value: Option<Vec<u8>>,
+    pub token: Option<String>,
     pub note: Option<String>,
     pub expires_at: Option<NaiveDateTime>,
+}
+
+#[derive(FromRow, Debug)]
+pub struct GetApiToken {
+    pub token: String,
+    pub user_id: String,
 }

@@ -10,7 +10,7 @@ use database::{
     PgPool,
 };
 
-use crate::{config::Config, Result};
+use crate::Result;
 
 /// Update an existing API token
 #[utoipa::path(
@@ -30,19 +30,11 @@ use crate::{config::Config, Result};
 )]
 pub async fn update_api_tokens(
     State(pool): State<PgPool>,
-    State(config): State<Config>,
     Extension(user): Extension<User>,
     Path(id): Path<String>,
     Json(data): Json<UpdateApiToken>,
 ) -> Result<impl IntoResponse> {
-    let num_affected = api_tokens::update_api_token(
-        &pool,
-        &id,
-        &data.into(),
-        &user.id,
-        &config.encryption.db_key,
-    )
-    .await?;
+    let num_affected = api_tokens::update_api_token(&pool, &id, &data.into(), &user.id).await?;
 
     if num_affected > 0 {
         Ok(StatusCode::NO_CONTENT)

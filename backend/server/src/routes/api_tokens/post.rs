@@ -12,9 +12,9 @@ use database::{
     PgPool,
 };
 use reqwest::StatusCode;
-use shared::crypto::Crypto;
+use shared::crypto::{hash_password, Crypto};
 
-use crate::{config::Config, schemas::CreatedApiToken, Result};
+use crate::{schemas::CreatedApiToken, Result};
 
 /// Create an API token
 #[utoipa::path(
@@ -30,24 +30,16 @@ use crate::{config::Config, schemas::CreatedApiToken, Result};
 )]
 pub async fn create_api_tokens(
     State(pool): State<PgPool>,
-    State(config): State<Config>,
     State(crypto): State<Crypto>,
     Extension(user): Extension<User>,
     Json(data): Json<CreateApiToken>,
 ) -> Result<impl IntoResponse> {
-    let value = crypto.generate_random_string(32);
-    let encrypted_value = crypto.encrypt(value.clone())?;
+    let token = crypto.generate_random_alphanumeric_string(32);
+    let hashed_token = hash_password(&token)?;
 
-    let id = api_tokens::create_api_token(
-        &pool,
-        data,
-        &user.id,
-        &encrypted_value,
-        &config.encryption.db_key,
-    )
-    .await?;
+    let id = api_tokens::create_api_token(&pool, data, &user.id, &hashed_token).await?;
 
-    Ok(Json(CreatedApiToken { id, value }))
+    Ok(Json(CreatedApiToken { id, token }))
 }
 
 /// Regenerate the value of an existing API token
@@ -65,28 +57,26 @@ pub async fn create_api_tokens(
 )]
 pub async fn regenerate_api_tokens(
     State(pool): State<PgPool>,
-    State(config): State<Config>,
     State(crypto): State<Crypto>,
     Extension(user): Extension<User>,
     Path(id): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let value = crypto.generate_random_string(32);
-    let encrypted_value = crypto.encrypt(value.clone())?;
+    let token = crypto.generate_random_alphanumeric_string(32);
+    let hashed_token = hash_password(&token)?;
 
     let num_affected = api_tokens::update_api_token(
         &pool,
         &id,
         &InternalUpdateApiToken {
-            value: Some(encrypted_value),
+            token: Some(hashed_token),
             ..Default::default()
         },
         &user.id,
-        &config.encryption.db_key,
     )
     .await?;
 
     if num_affected > 0 {
-        Ok((StatusCode::OK, value).into_response())
+        Ok((StatusCode::OK, token).into_response())
     } else {
         Ok(StatusCode::NOT_FOUND.into_response())
     }

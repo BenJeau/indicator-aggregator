@@ -9,6 +9,7 @@ resolver = "2"
 
 [workspace.dependencies]
 anyhow = "1.0.83"
+argon2 = { version = "0.5.3", features = ["password-hash"] }
 async-trait = "0.1.80"
 axum = { version = "0.7.5", features = ["json", "original-uri", "tokio"] }
 axum-core = "0.4.3"

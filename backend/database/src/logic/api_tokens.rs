@@ -1,24 +1,21 @@
-use shared::crypto::Crypto;
-use sqlx::{FromRow, PgPool, Result};
+use sqlx::{PgPool, Result};
 use tracing::instrument;
 
-use crate::schemas::api_tokens::{ApiToken, CreateApiToken, InternalUpdateApiToken};
+use crate::schemas::api_tokens::{ApiToken, CreateApiToken, GetApiToken, InternalUpdateApiToken};
 
-#[instrument(skip_all, ret, err)]
+#[instrument(skip(pool), ret, err)]
 pub async fn create_api_token(
     pool: &PgPool,
     data: CreateApiToken,
     user_id: &str,
-    value: &[u8],
-    db_secret: &str,
+    hashed_token: &str,
 ) -> Result<String> {
     sqlx::query_scalar!(
-        "INSERT INTO api_tokens (user_id, note, expires_at, value) VALUES ($1, $2, $3, pgp_sym_encrypt_bytea($4, $5)) RETURNING id",
+        "INSERT INTO api_tokens (user_id, note, expires_at, token) VALUES ($1, $2, $3, $4) RETURNING id",
         user_id,
         data.note,
         data.expires_at,
-        value,
-        db_secret,
+        hashed_token,
     )
     .fetch_one(pool)
     .await
@@ -53,12 +50,10 @@ pub async fn update_api_token(
     id: &str,
     data: &InternalUpdateApiToken,
     user_id: &str,
-    db_secret: &str,
 ) -> Result<u64> {
     sqlx::query!(
-        "UPDATE api_tokens SET value = COALESCE(pgp_sym_encrypt_bytea($1, $2), value), note = COALESCE($3, note), expires_at = COALESCE($4, expires_at) WHERE id = $5 AND user_id = $6",
-        data.value,
-        db_secret,
+        "UPDATE api_tokens SET token = COALESCE($1, token), note = COALESCE($2, note), expires_at = COALESCE($3, expires_at) WHERE id = $4 AND user_id = $5",
+        data.token,
         data.note,
         data.expires_at,
         id,
@@ -82,33 +77,13 @@ pub async fn get_user_api_keys(pool: &PgPool, user_id: &str) -> Result<Vec<ApiTo
     .map_err(Into::into)
 }
 
-#[derive(FromRow, Debug)]
-struct TempTest {
-    pub value: Vec<u8>,
-    pub user_id: String,
-}
-
-pub async fn get_user_id_from_token(
-    pool: &PgPool,
-    unencrypted_value: &str,
-    db_secret: &str,
-    crypto: Crypto,
-) -> Result<Option<String>> {
-    let api_tokens = sqlx::query_as!(
-        TempTest,
-        r#"SELECT pgp_sym_decrypt_bytea(value, $1) as "value!", user_id FROM api_tokens"#,
-        db_secret
+#[instrument(skip(pool), ret, err)]
+pub async fn get_api_token_from_id(pool: &PgPool, id: &str) -> Result<Option<GetApiToken>> {
+    sqlx::query_as!(
+        GetApiToken,
+        r#"SELECT token, user_id FROM api_tokens WHERE id = $1"#,
+        id
     )
-    .fetch_all(pool)
-    .await?;
-
-    for api_token in api_tokens {
-        let decoded_token = crypto.decrypt(&api_token.value).unwrap();
-
-        if decoded_token == unencrypted_value {
-            return Ok(Some(api_token.user_id));
-        }
-    }
-
-    Ok(None)
+    .fetch_optional(pool)
+    .await
 }

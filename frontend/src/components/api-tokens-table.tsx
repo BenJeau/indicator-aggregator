@@ -102,7 +102,7 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
       description: <Trans id="api.token.created.description" />,
     });
 
-    setApiTokenValues((prev) => ({ ...prev, [token.id]: token.value }));
+    setApiTokenValues((prev) => ({ ...prev, [token.id]: token.token }));
 
     form.reset();
     setShowForm(false);
@@ -193,14 +193,14 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead
-                    style={{ width: 180 }}
-                    className="hidden lg:table-cell"
+                    style={{ width: 150 }}
+                    className="hidden xl:table-cell"
                   >
                     <Trans id="created.at" />
                   </TableHead>
                   <TableHead
-                    style={{ width: 180 }}
-                    className="hidden xl:table-cell"
+                    style={{ width: 150 }}
+                    className="hidden 2xl:table-cell"
                   >
                     <Trans id="updated.at" />
                   </TableHead>
@@ -208,7 +208,7 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
                     <Trans id="note" />
                     {showForm && " *"}
                   </TableHead>
-                  <TableHead>
+                  <TableHead style={{ width: 420 }}>
                     <Trans id="value" />
                   </TableHead>
                   <TableHead>
@@ -220,10 +220,10 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
               <TableBody className="text-xs">
                 {showForm && (
                   <TableRow>
-                    <TableCell className="italic opacity-50 hidden lg:table-cell">
+                    <TableCell className="italic opacity-50 hidden xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
-                    <TableCell className="italic opacity-50 hidden xl:table-cell">
+                    <TableCell className="italic opacity-50 hidden 2xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
                     <TableCell>
@@ -355,12 +355,20 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({
     }
   }, [form, defaultValues]);
 
+  useEffect(() => {
+    if (apiTokenValue !== apiToken) {
+      setApiToken(apiTokenValue);
+    }
+    // This needs to be like this, or else when you regenerate the API token, it will not be updated in the UI
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiTokenValue]);
+
   return (
     <TableRow className="h-10">
-      <TableCell className="hidden lg:table-cell">
+      <TableCell className="hidden xl:table-cell">
         {dayjs.utc(row.createdAt).local().format("LLL")}
       </TableCell>
-      <TableCell className="hidden xl:table-cell">
+      <TableCell className="hidden 2xl:table-cell">
         {dayjs.utc(row.updatedAt).local().format("LLL")}
       </TableCell>
       <AutoAnimate as={TableCell} className="py-0">
@@ -392,7 +400,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({
       <TableCell>
         <MaskValue
           disableToggle={!apiToken}
-          value={apiToken}
+          value={apiToken ? `${row.id}_${apiToken}` : undefined}
           copieable={apiToken ? "always" : "never"}
         />
       </TableCell>

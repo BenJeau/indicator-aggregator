@@ -208,5 +208,5 @@ pub struct CreatedApiToken {
     /// The database ID of the API token
     pub id: String,
     /// The value of the API token
-    pub value: String,
+    pub token: String,
 }

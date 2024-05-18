@@ -9,6 +9,7 @@ use database::{
     PgPool,
 };
 use http::HeaderValue;
+use shared::crypto::verify_password;
 use std::net::SocketAddr;
 use tracing::Span;
 
@@ -40,8 +41,6 @@ pub async fn auth_middleware(
     bearer_auth: Option<Authorization<Bearer>>,
     token_auth: Option<Authorization<Token>>,
     user_agent: UserAgent,
-    crypto: shared::crypto::Crypto,
-    db_secret: &str,
     request: &mut Request,
 ) -> Result<()> {
     let user_id = match (bearer_auth, token_auth) {
@@ -57,14 +56,20 @@ pub async fn auth_middleware(
                 .sub
         }
         (None, Some(auth)) => {
-            let token = auth.0 .0.clone();
-            let Some(user_id) =
-                api_tokens::get_user_id_from_token(&pool, &token, db_secret, crypto).await?
-            else {
+            let raw_token = auth.0 .0.clone();
+            let Some((id, value)) = raw_token.split_once('_') else {
+                return Err(Error::Unauthorized("Invalid API token".to_string()));
+            };
+
+            let Some(token) = api_tokens::get_api_token_from_id(&pool, id).await? else {
                 return Err(Error::Unauthorized("API token unused".to_string()));
             };
 
-            user_id
+            if !verify_password(value, &token.token)? {
+                return Err(Error::Unauthorized("Invalid API token".to_string()));
+            }
+
+            token.user_id
         }
         _ => return Err(Error::Unauthorized("Missing token".to_string())),
     };
