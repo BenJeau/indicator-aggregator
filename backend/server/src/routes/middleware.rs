@@ -15,6 +15,7 @@ use std::net::SocketAddr;
 
 use crate::{Result, ServerState};
 
+#[allow(clippy::too_many_arguments)]
 #[tracing::instrument(skip_all)]
 pub async fn auth_middleware(
     State(state): State<ServerState>,
