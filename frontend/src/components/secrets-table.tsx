@@ -111,13 +111,13 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead
-                    style={{ width: 180 }}
+                    style={{ width: 150 }}
                     className="hidden xl:table-cell"
                   >
                     <Trans id="created.at" />
                   </TableHead>
                   <TableHead
-                    style={{ width: 180 }}
+                    style={{ width: 150 }}
                     className="hidden 2xl:table-cell"
                   >
                     <Trans id="updated.at" />

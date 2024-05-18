@@ -724,7 +724,7 @@ export interface CreatedApiToken {
   /** The database ID of the API token */
   id: string;
   /** The value of the API token */
-  value: string;
+  token: string;
 }
 
 /** Enum containing the different kinds of notifications and it's content */

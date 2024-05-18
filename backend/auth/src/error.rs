@@ -9,6 +9,7 @@ pub enum Error {
     Reqwest(reqwest::Error),
     Database(database::Error),
     Jsonwebtoken(jsonwebtoken::errors::Error),
+    PasswordHash(shared::crypto::PasswordHashError),
 }
 
 impl From<serde_json::Error> for Error {
@@ -32,5 +33,11 @@ impl From<database::Error> for Error {
 impl From<jsonwebtoken::errors::Error> for Error {
     fn from(e: jsonwebtoken::errors::Error) -> Self {
         Self::Jsonwebtoken(e)
+    }
+}
+
+impl From<shared::crypto::PasswordHashError> for Error {
+    fn from(e: shared::crypto::PasswordHashError) -> Self {
+        Self::PasswordHash(e)
     }
 }

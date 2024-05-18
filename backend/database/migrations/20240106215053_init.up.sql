@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS "api_tokens" (
     "user_id" TEXT NOT NULL,
 
     "note" TEXT NOT NULL UNIQUE,
-    "value" BYTEA NOT NULL,
+    "token" TEXT NOT NULL,
     "expires_at" TIMESTAMP(3),
 
     FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
