@@ -1,6 +1,6 @@
 use axum_core::extract::Request;
 use axum_extra::headers::{
-    authorization::{Bearer, Credentials},
+    authorization::{Basic, Bearer, Credentials},
     Authorization, UserAgent,
 };
 use database::{
@@ -40,12 +40,13 @@ pub async fn auth_middleware(
     addr: SocketAddr,
     bearer_auth: Option<Authorization<Bearer>>,
     token_auth: Option<Authorization<Token>>,
+    basic_auth: Option<Authorization<Basic>>,
     user_agent: UserAgent,
     request: &mut Request,
 ) -> Result<()> {
-    let user_id = match (bearer_auth, token_auth) {
-        (Some(auth), None) => {
-            state
+    let user = match (bearer_auth, token_auth, basic_auth) {
+        (Some(auth), None, None) => {
+            let id = state
                 .jwt_manager
                 .get_claims(auth.token())
                 .map_err(|err| {
@@ -53,9 +54,11 @@ pub async fn auth_middleware(
                     Error::Unauthorized("Invalid token".to_string())
                 })?
                 .data
-                .sub
+                .sub;
+
+            users::get_user(&pool, &id).await?
         }
-        (None, Some(auth)) => {
+        (None, Some(auth), None) => {
             let raw_token = auth.0 .0.clone();
             let Some((id, value)) = raw_token.split_once('_') else {
                 return Err(Error::Unauthorized("Invalid API token".to_string()));
@@ -69,12 +72,26 @@ pub async fn auth_middleware(
                 return Err(Error::Unauthorized("Invalid API token".to_string()));
             }
 
-            token.user_id
+            users::get_user(&pool, &token.user_id).await?
+        }
+        (None, None, Some(auth)) => {
+            let email = auth.username();
+            let password = auth.password();
+
+            let Some(data) = users::get_user_from_email(&pool, email).await? else {
+                return Err(Error::Unauthorized("API token unused".to_string()));
+            };
+
+            if !verify_password(password, &data.password.clone().unwrap())? {
+                return Err(Error::Unauthorized("Invalid API token".to_string()));
+            }
+
+            Some(data.into())
         }
         _ => return Err(Error::Unauthorized("Missing token".to_string())),
     };
 
-    let Some(user) = users::get_user(&pool, &user_id).await? else {
+    let Some(user) = user else {
         return Err(Error::Unauthorized("User does not exist".to_string()));
     };
 

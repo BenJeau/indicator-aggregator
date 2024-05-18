@@ -17,7 +17,7 @@ Select a tag (category) to reveal information about the endpoints and select an 
 
 ## Authentication
 
-All endpoints are protected except for auth endpoints. You either need to provide a JWT as a bearer token or an API token in the Authorization header.",
+All endpoints are protected except for auth endpoints. You either need to provide a JWT as a bearer token `Bearer TOKEN`, username + password as basic authentication `Basic base64(username:password)`, or an API token `Token TOKEN` in the Authorization header.",
         contact(
             name = "Benoît Jeaurond",
             email = "benoit@jeaurond.dev"
