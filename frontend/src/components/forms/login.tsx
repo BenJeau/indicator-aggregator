@@ -79,7 +79,11 @@ const Login: React.FC<Props> = ({ onSubmit, loading, error }) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder={t("password").toLowerCase()} {...field} />
+                <Input
+                  placeholder={t("password").toLowerCase()}
+                  type="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
