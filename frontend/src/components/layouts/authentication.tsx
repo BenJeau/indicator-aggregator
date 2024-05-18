@@ -1,20 +1,13 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { TrainFrontTunnel } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import config from "@/config";
-import { Icons, Layouts, Trans } from "@/components";
+import { Layouts, Trans } from "@/components";
 import { getRandomBackground } from "@/assets";
-import { store } from "@/atoms";
-import { userAtom } from "@/atoms/auth";
 
-const Login: React.FC = () => {
-  const { next } = Route.useSearch();
-
-  const query = next ? `?next=${next}` : "";
-
-  const bg = getRandomBackground();
+export const Authentication: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
+  const bg = useMemo(getRandomBackground, []);
 
   return (
     <div className="relative grid h-[800px] flex-col items-center justify-center lg:max-w-none lg:grid-cols-5 lg:ps-4 ">
@@ -72,37 +65,8 @@ const Login: React.FC = () => {
         </div>
       </div>
       <div className="lg:p-8 lg:col-span-2">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              <Trans id="authentication" />
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              <Trans
-                id="authentication.description"
-                google={<span className="font-medium">Google</span>}
-                microsoft={<span className="font-medium">Microsoft</span>}
-              />
-            </p>
-          </div>
-          <div className={cn("grid gap-2")}>
-            <Button type="button" className="gap-2 shadow-md" asChild>
-              <a
-                href={`${config.rest_server_base_url}/auth/openid/google${query}`}
-              >
-                <Icons.Google className="fill-black" />
-                Google
-              </a>
-            </Button>
-            <Button type="button" className="gap-2" asChild variant="secondary">
-              <a
-                href={`${config.rest_server_base_url}/auth/openid/microsoft${query}`}
-              >
-                <Icons.Microsoft />
-                Microsoft
-              </a>
-            </Button>
-          </div>
+        <div className="mx-auto flex w-full flex-col justify-center space-y-8 sm:w-[350px]">
+          {children}
         </div>
       </div>
       <div className="absolute bottom-0 left-4 right-4 flex flex-wrap justify-between gap-4 items-center lg:hidden mt-8">
@@ -111,19 +75,3 @@ const Login: React.FC = () => {
     </div>
   );
 };
-
-type SearchParams = {
-  next?: string;
-};
-
-export const Route = createFileRoute("/login")({
-  component: Login,
-  beforeLoad: () => {
-    const user = store.get(userAtom);
-
-    if (user) {
-      throw redirect({ to: "/" });
-    }
-  },
-  validateSearch: (search: SearchParams): SearchParams => search,
-});

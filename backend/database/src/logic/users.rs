@@ -1,7 +1,9 @@
 use sqlx::{PgPool, Result};
 use tracing::instrument;
 
-use crate::schemas::users::{CreateUser, DbUserLog, UpdateUser, User, UserLog, UserWithNumLogs};
+use crate::schemas::users::{
+    CreateUser, DbUserLog, UpdateUser, User, UserLog, UserWithNumLogs, UserWithPassword,
+};
 
 #[instrument(skip(pool), ret, err)]
 pub async fn is_user_enabled(pool: &PgPool, user_auth_id: &str) -> Result<Option<bool>> {
@@ -15,11 +17,7 @@ pub async fn is_user_enabled(pool: &PgPool, user_auth_id: &str) -> Result<Option
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_or_update_user(
-    pool: &PgPool,
-    user: &CreateUser,
-    db_secret: Option<&str>,
-) -> Result<User> {
+pub async fn create_or_update_user(pool: &PgPool, user: &CreateUser) -> Result<User> {
     sqlx::query_as(include_str!("../sql/users/create_or_update.sql"))
         .bind(&user.auth_id)
         .bind(&user.provider)
@@ -32,8 +30,7 @@ pub async fn create_or_update_user(
         .bind(&user.locale)
         .bind(&user.picture)
         .bind(user.roles.iter().cloned().collect::<Vec<_>>())
-        .bind(&user.password)
-        .bind(db_secret)
+        .bind(&user.hashed_password)
         .fetch_one(pool)
         .await
 }
@@ -126,4 +123,15 @@ pub async fn update_user(pool: &PgPool, user_id: &str, user: &UpdateUser) -> Res
     .await?;
 
     Ok(())
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_from_email(pool: &PgPool, email: &str) -> Result<Option<UserWithPassword>> {
+    sqlx::query_as!(
+        UserWithPassword,
+        "SELECT * FROM users WHERE email = $1;",
+        email
+    )
+    .fetch_optional(pool)
+    .await
 }

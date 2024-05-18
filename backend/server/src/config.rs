@@ -7,6 +7,8 @@ use serde::Deserialize;
 use std::net::{AddrParseError, SocketAddr};
 use tracing::info;
 
+pub const AUTH_PROVIDER: &str = "Indicator Aggregtor";
+
 #[derive(Deserialize, Clone)]
 pub struct Database {
     pub username: String,

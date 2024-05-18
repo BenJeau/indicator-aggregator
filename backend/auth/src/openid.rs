@@ -63,6 +63,29 @@ fn temporary_redirect(uri: &str) -> Response {
     (StatusCode::FOUND, [(LOCATION, uri)]).into_response()
 }
 
+pub fn parse_and_validate_referer(headers: &HeaderMap, auth: &Auth) -> Result<Uri> {
+    let parsed_referer = headers
+        .get("referer")
+        .ok_or(Error::BadRequest("Missing referer".to_string()))?
+        .to_str()
+        .map_err(|_| Error::BadRequest("Invalid referer".to_string()))?
+        .parse::<Uri>()
+        .map_err(|_| Error::BadRequest("Invalid referer address".to_string()))?;
+
+    if !auth.frontend_redirect_hosts.contains(
+        &parsed_referer
+            .host()
+            .ok_or(Error::BadRequest(
+                "Invalid referer address host".to_string(),
+            ))?
+            .to_string(),
+    ) {
+        return Err(Error::BadRequest("Invalid referer host".to_string()));
+    }
+
+    Ok(parsed_referer)
+}
+
 impl OpenIdResponse {
     #[allow(clippy::too_many_arguments)]
     #[tracing::instrument(skip_all)]
@@ -76,24 +99,7 @@ impl OpenIdResponse {
         provider: &str,
         headers: HeaderMap,
     ) -> Result<impl IntoResponse> {
-        let parsed_referer = headers
-            .get("referer")
-            .ok_or(Error::BadRequest("Missing referer".to_string()))?
-            .to_str()
-            .map_err(|_| Error::BadRequest("Invalid referer".to_string()))?
-            .parse::<hyper::Uri>()
-            .map_err(|_| Error::BadRequest("Invalid referer address".to_string()))?;
-
-        if !auth.frontend_redirect_hosts.contains(
-            &parsed_referer
-                .host()
-                .ok_or(Error::BadRequest(
-                    "Invalid referer address host".to_string(),
-                ))?
-                .to_string(),
-        ) {
-            return Err(Error::BadRequest("Invalid referer host".to_string()));
-        }
+        let parsed_referer = parse_and_validate_referer(&headers, auth)?;
 
         let redirect_uri = format!(
             "{}://{}",
@@ -497,7 +503,7 @@ pub async fn logic(
     };
 
     let create_user = CreateUser {
-        auth_id: claims.sub.clone(),
+        auth_id: Some(claims.sub.clone()),
         provider: provider.to_string(),
         email: claims.email.clone(),
         verified: claims.email_verified.unwrap_or_default(),
@@ -508,17 +514,17 @@ pub async fn logic(
         enabled,
         locale: claims.locale.clone(),
         roles: Default::default(),
-        password: None,
+        hashed_password: None,
     };
+    let user = users::create_or_update_user(pool, &create_user).await?;
+
     let user_log = UserLog {
-        user_id: claims.sub.clone(),
+        user_id: user.id.clone(),
         ip_address: addr.to_string(),
         user_agent: user_agent.to_string(),
         uri: uri.to_string(),
         method: "GET".to_string(),
     };
-
-    let user = users::create_or_update_user(pool, &create_user, None).await?;
     let _ = users::create_user_log(pool, &user_log)
         .await
         .map_err(|err| error!(%err, "Failed to create user log"));

@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
-    "auth_id" TEXT NOT NULL UNIQUE,
+    "auth_id" TEXT UNIQUE,
     "provider" TEXT NOT NULL,
     "enabled" BOOLEAN NOT NULL DEFAULT TRUE,
     "email" TEXT NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "locale" TEXT,
     "picture" BYTEA,
     "roles" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
-    "password" BYTEA,
+    "password" TEXT,
 
     CHECK (LENGTH("email") <= 1000),
     UNIQUE ("email", "provider")

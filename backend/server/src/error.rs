@@ -20,7 +20,7 @@ pub enum Error {
     Unauthorized,
     Timeout,
     InternalError,
-    BadRequest,
+    BadRequest(String),
     MissingSourceCode,
     RateLimited,
     FigmentError(figment::Error),
@@ -36,6 +36,8 @@ pub enum Error {
     ZipError(sources::error::ZipError),
     EncryptionError(shared::crypto::Error),
     PasswordHash(shared::crypto::PasswordHashError),
+    InvalidCredentials,
+    DisabledUser,
 }
 
 impl std::error::Error for Error {}
@@ -109,7 +111,7 @@ impl From<auth::error::Error> for Error {
             auth::error::Error::Database(err) => Self::SqlxError(err),
             auth::error::Error::Unauthorized(_) => Self::Unauthorized,
             auth::error::Error::MissingRoles(_) => Self::Unauthorized,
-            auth::error::Error::BadRequest(_) => Self::BadRequest,
+            auth::error::Error::BadRequest(err) => Self::BadRequest(err),
             auth::error::Error::SerdeJson(_) => Self::InternalError,
             auth::error::Error::Reqwest(err) => Self::Reqwest(err),
             auth::error::Error::Jsonwebtoken(_) => Self::InternalError,
@@ -140,6 +142,13 @@ impl IntoResponse for Error {
                 format!("Indicator data is not a valid {kind:?}"),
             )
                 .into_response(),
+            Self::BadRequest(_) => StatusCode::BAD_REQUEST.into_response(),
+            Self::InvalidCredentials => {
+                (StatusCode::UNAUTHORIZED, "Invalid credentials").into_response()
+            }
+            Self::DisabledUser => {
+                (StatusCode::UNAUTHORIZED, "Your account is disabled").into_response()
+            }
             _ => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         }
     }
