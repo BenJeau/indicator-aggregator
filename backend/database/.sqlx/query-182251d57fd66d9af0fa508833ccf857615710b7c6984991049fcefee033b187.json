@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO api_tokens (user_id, note, expires_at, value) VALUES ($1, $2, $3, pgp_sym_encrypt_bytea($4, $5)) RETURNING id",
+  "query": "INSERT INTO api_tokens (user_id, note, expires_at, token) VALUES ($1, $2, $3, $4) RETURNING id",
   "describe": {
     "columns": [
       {
@@ -14,7 +14,6 @@
         "Text",
         "Text",
         "Timestamp",
-        "Bytea",
         "Text"
       ]
     },
@@ -22,5 +21,5 @@
       false
     ]
   },
-  "hash": "eca2eb580222c873cc28cfc766385fed2c8906ad2c3c06ec9435c463253dc7c3"
+  "hash": "182251d57fd66d9af0fa508833ccf857615710b7c6984991049fcefee033b187"
 }

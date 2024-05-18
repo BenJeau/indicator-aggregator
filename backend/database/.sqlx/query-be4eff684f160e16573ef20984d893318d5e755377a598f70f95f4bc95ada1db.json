@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM users WHERE auth_id = $1;",
+  "query": "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles FROM users WHERE id = $1;",
   "describe": {
     "columns": [
       {
@@ -83,7 +83,7 @@
       false,
       false,
       false,
-      false,
+      true,
       false,
       false,
       false,
@@ -96,5 +96,5 @@
       false
     ]
   },
-  "hash": "b3f69b4ada4e478af840af4022d85956b1270469d8002d681882008f4e21b4c6"
+  "hash": "be4eff684f160e16573ef20984d893318d5e755377a598f70f95f4bc95ada1db"
 }
