@@ -78,6 +78,7 @@ pub async fn get_requests(pool: &PgPool) -> Result<Vec<Request>> {
         .await
         .map_err(Into::into)
 }
+
 #[instrument(skip(pool), ret, err)]
 pub async fn get_request(pool: &PgPool, request_id: &str) -> Result<Option<Request>> {
     sqlx::query_as!(

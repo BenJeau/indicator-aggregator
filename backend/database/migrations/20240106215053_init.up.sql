@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "locale" TEXT,
     "picture" BYTEA,
     "roles" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    "password" BYTEA,
 
     CHECK (LENGTH("email") <= 1000),
     UNIQUE ("email", "provider")

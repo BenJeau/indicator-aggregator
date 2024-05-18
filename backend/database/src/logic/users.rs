@@ -15,7 +15,11 @@ pub async fn is_user_enabled(pool: &PgPool, user_auth_id: &str) -> Result<Option
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_or_update_user(pool: &PgPool, user: &CreateUser) -> Result<User> {
+pub async fn create_or_update_user(
+    pool: &PgPool,
+    user: &CreateUser,
+    db_secret: Option<&str>,
+) -> Result<User> {
     sqlx::query_as(include_str!("../sql/users/create_or_update.sql"))
         .bind(&user.auth_id)
         .bind(&user.provider)
@@ -28,6 +32,8 @@ pub async fn create_or_update_user(pool: &PgPool, user: &CreateUser) -> Result<U
         .bind(&user.locale)
         .bind(&user.picture)
         .bind(user.roles.iter().cloned().collect::<Vec<_>>())
+        .bind(&user.password)
+        .bind(db_secret)
         .fetch_one(pool)
         .await
 }
@@ -53,7 +59,7 @@ VALUES ($1, $2, $3, $4, $5);
 
 #[instrument(skip(pool), ret, err)]
 pub async fn get_user(pool: &PgPool, user_id: &str) -> Result<Option<User>> {
-    sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1;", user_id)
+    sqlx::query_as!(User, "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles FROM users WHERE id = $1;", user_id)
         .fetch_optional(pool)
         .await
 }
@@ -62,7 +68,7 @@ pub async fn get_user(pool: &PgPool, user_id: &str) -> Result<Option<User>> {
 pub async fn get_user_by_auth_id(pool: &PgPool, user_auth_id: &str) -> Result<Option<User>> {
     sqlx::query_as!(
         User,
-        "SELECT * FROM users WHERE auth_id = $1;",
+        "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles FROM users WHERE auth_id = $1;",
         user_auth_id
     )
     .fetch_optional(pool)
@@ -74,7 +80,7 @@ pub async fn get_users(pool: &PgPool) -> Result<Vec<UserWithNumLogs>> {
     sqlx::query_as!(
         UserWithNumLogs,
         r#"
-    SELECT users.*, count(DISTINCT user_logs.id)::int as "num_logs!" FROM users
+    SELECT users.id, users.created_at, users.updated_at, users.auth_id, users.provider, users.enabled, users.email, users.verified, users.name, users.given_name, users.family_name, users.locale, users.picture, users.roles, count(DISTINCT user_logs.id)::int as "num_logs!" FROM users
     LEFT JOIN user_logs ON user_logs.user_id = users.auth_id
     GROUP BY users.id
             "#,

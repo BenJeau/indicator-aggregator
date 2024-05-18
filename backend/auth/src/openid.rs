@@ -508,6 +508,7 @@ pub async fn logic(
         enabled,
         locale: claims.locale.clone(),
         roles: Default::default(),
+        password: None,
     };
     let user_log = UserLog {
         user_id: claims.sub.clone(),
@@ -517,7 +518,7 @@ pub async fn logic(
         method: "GET".to_string(),
     };
 
-    let user = users::create_or_update_user(pool, &create_user).await?;
+    let user = users::create_or_update_user(pool, &create_user, None).await?;
     let _ = users::create_user_log(pool, &user_log)
         .await
         .map_err(|err| error!(%err, "Failed to create user log"));

@@ -1,5 +1,5 @@
-INSERT INTO users (auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO users (auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles, password)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, pgp_sym_encrypt_bytea($12, $13))
 ON CONFLICT (email, provider) DO UPDATE SET
     verified = EXCLUDED.verified,
     name = EXCLUDED.name,

@@ -67,6 +67,7 @@ pub struct CreateUser {
     pub locale: Option<String>,
     pub picture: Option<Vec<u8>>,
     pub roles: HashSet<String>,
+    pub password: Option<Vec<u8>>,
 }
 
 #[derive(Debug, Clone)]

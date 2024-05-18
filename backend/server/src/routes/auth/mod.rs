@@ -2,11 +2,8 @@ use axum::Router;
 
 use crate::ServerState;
 
-pub mod google;
-pub mod microsoft;
+pub mod openid;
 
 pub fn router() -> Router<ServerState> {
-    Router::new()
-        .nest("/google", google::router())
-        .nest("/microsoft", microsoft::router())
+    Router::new().nest("/openid", openid::router())
 }

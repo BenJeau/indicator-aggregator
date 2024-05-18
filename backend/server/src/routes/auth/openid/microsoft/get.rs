@@ -13,7 +13,7 @@ use crate::{Result, ServerState};
 /// Redirect to Microsoft OAuth2 login
 #[utoipa::path(
     get,
-    path = "/auth/microsoft",
+    path = "/auth/openid/microsoft",
     tag = "auth",
     responses(
         (status = 302, description = "Redirect to Microsoft login page"),
@@ -47,7 +47,7 @@ pub async fn microsoft_redirect_login(
 /// Microsoft OAuth2 callback
 #[utoipa::path(
     get,
-    path = "/auth/microsoft/redirect",
+    path = "/auth/openid/microsoft/redirect",
     tag = "auth",
     responses(
         (status = 302, description = "Redirect to Indicator Aggregator frontend")

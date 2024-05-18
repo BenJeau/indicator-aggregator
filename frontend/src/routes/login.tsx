@@ -87,13 +87,17 @@ const Login: React.FC = () => {
           </div>
           <div className={cn("grid gap-2")}>
             <Button type="button" className="gap-2 shadow-md" asChild>
-              <a href={`${config.rest_server_base_url}/auth/google${query}`}>
+              <a
+                href={`${config.rest_server_base_url}/auth/openid/google${query}`}
+              >
                 <Icons.Google className="fill-black" />
                 Google
               </a>
             </Button>
             <Button type="button" className="gap-2" asChild variant="secondary">
-              <a href={`${config.rest_server_base_url}/auth/microsoft${query}`}>
+              <a
+                href={`${config.rest_server_base_url}/auth/openid/microsoft${query}`}
+              >
                 <Icons.Microsoft />
                 Microsoft
               </a>

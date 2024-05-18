@@ -15,7 +15,7 @@ use crate::{Result, ServerState};
 /// Redirect to Google OAuth2 login
 #[utoipa::path(
     get,
-    path = "/auth/google",
+    path = "/auth/openid/google",
     tag = "auth",
     responses(
         (status = 302, description = "Redirect to Google login page"),
@@ -58,7 +58,7 @@ pub struct GoogleCallbackContent {
 /// Google OAuth2 callback
 #[utoipa::path(
     get,
-    path = "/auth/google/redirect",
+    path = "/auth/openid/google/redirect",
     tag = "auth",
     responses(
         (status = 302, description = "Redirect to Indicator Aggregator frontend")
