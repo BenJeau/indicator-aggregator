@@ -13,21 +13,21 @@
 import { Route as rootRoute } from "./routes/__root";
 import { Route as RequestImport } from "./routes/request";
 import { Route as LogoutImport } from "./routes/logout";
-import { Route as LoginImport } from "./routes/login";
 import { Route as DocsImport } from "./routes/docs";
 import { Route as ConfigImport } from "./routes/config";
-import { Route as AuthImport } from "./routes/auth";
 import { Route as UsersRouteImport } from "./routes/users/route";
 import { Route as SourcesRouteImport } from "./routes/sources/route";
 import { Route as ProvidersRouteImport } from "./routes/providers/route";
 import { Route as ListsRouteImport } from "./routes/lists/route";
 import { Route as HistoryRouteImport } from "./routes/history/route";
+import { Route as AuthRouteImport } from "./routes/auth/route";
 import { Route as IndexImport } from "./routes/index";
 import { Route as UsersIndexImport } from "./routes/users/index";
 import { Route as SourcesIndexImport } from "./routes/sources/index";
 import { Route as ProvidersIndexImport } from "./routes/providers/index";
 import { Route as ListsIndexImport } from "./routes/lists/index";
 import { Route as HistoryIndexImport } from "./routes/history/index";
+import { Route as AuthIndexImport } from "./routes/auth/index";
 import { Route as UsersIdImport } from "./routes/users/$id";
 import { Route as SourcesNewImport } from "./routes/sources/new";
 import { Route as SourcesSlugImport } from "./routes/sources/$slug";
@@ -36,6 +36,8 @@ import { Route as ProvidersSlugImport } from "./routes/providers/$slug";
 import { Route as ListsNewImport } from "./routes/lists/new";
 import { Route as ListsSlugImport } from "./routes/lists/$slug";
 import { Route as HistoryIdImport } from "./routes/history/$id";
+import { Route as AuthSignupImport } from "./routes/auth/signup";
+import { Route as AuthLoginImport } from "./routes/auth/login";
 import { Route as UsersIdEditImport } from "./routes/users/$id.edit";
 import { Route as SourcesSlugEditImport } from "./routes/sources/$slug.edit";
 import { Route as ProvidersSlugEditImport } from "./routes/providers/$slug.edit";
@@ -53,11 +55,6 @@ const LogoutRoute = LogoutImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
-const LoginRoute = LoginImport.update({
-  path: "/login",
-  getParentRoute: () => rootRoute,
-} as any);
-
 const DocsRoute = DocsImport.update({
   path: "/docs",
   getParentRoute: () => rootRoute,
@@ -65,11 +62,6 @@ const DocsRoute = DocsImport.update({
 
 const ConfigRoute = ConfigImport.update({
   path: "/config",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const AuthRoute = AuthImport.update({
-  path: "/auth",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -95,6 +87,11 @@ const ListsRouteRoute = ListsRouteImport.update({
 
 const HistoryRouteRoute = HistoryRouteImport.update({
   path: "/history",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const AuthRouteRoute = AuthRouteImport.update({
+  path: "/auth",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -126,6 +123,11 @@ const ListsIndexRoute = ListsIndexImport.update({
 const HistoryIndexRoute = HistoryIndexImport.update({
   path: "/",
   getParentRoute: () => HistoryRouteRoute,
+} as any);
+
+const AuthIndexRoute = AuthIndexImport.update({
+  path: "/",
+  getParentRoute: () => AuthRouteRoute,
 } as any);
 
 const UsersIdRoute = UsersIdImport.update({
@@ -168,6 +170,16 @@ const HistoryIdRoute = HistoryIdImport.update({
   getParentRoute: () => HistoryRouteRoute,
 } as any);
 
+const AuthSignupRoute = AuthSignupImport.update({
+  path: "/signup",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
+
+const AuthLoginRoute = AuthLoginImport.update({
+  path: "/login",
+  getParentRoute: () => AuthRouteRoute,
+} as any);
+
 const UsersIdEditRoute = UsersIdEditImport.update({
   path: "/edit",
   getParentRoute: () => UsersIdRoute,
@@ -196,6 +208,10 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
+    "/auth": {
+      preLoaderRoute: typeof AuthRouteImport;
+      parentRoute: typeof rootRoute;
+    };
     "/history": {
       preLoaderRoute: typeof HistoryRouteImport;
       parentRoute: typeof rootRoute;
@@ -216,20 +232,12 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof UsersRouteImport;
       parentRoute: typeof rootRoute;
     };
-    "/auth": {
-      preLoaderRoute: typeof AuthImport;
-      parentRoute: typeof rootRoute;
-    };
     "/config": {
       preLoaderRoute: typeof ConfigImport;
       parentRoute: typeof rootRoute;
     };
     "/docs": {
       preLoaderRoute: typeof DocsImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/login": {
-      preLoaderRoute: typeof LoginImport;
       parentRoute: typeof rootRoute;
     };
     "/logout": {
@@ -239,6 +247,14 @@ declare module "@tanstack/react-router" {
     "/request": {
       preLoaderRoute: typeof RequestImport;
       parentRoute: typeof rootRoute;
+    };
+    "/auth/login": {
+      preLoaderRoute: typeof AuthLoginImport;
+      parentRoute: typeof AuthRouteImport;
+    };
+    "/auth/signup": {
+      preLoaderRoute: typeof AuthSignupImport;
+      parentRoute: typeof AuthRouteImport;
     };
     "/history/$id": {
       preLoaderRoute: typeof HistoryIdImport;
@@ -271,6 +287,10 @@ declare module "@tanstack/react-router" {
     "/users/$id": {
       preLoaderRoute: typeof UsersIdImport;
       parentRoute: typeof UsersRouteImport;
+    };
+    "/auth/": {
+      preLoaderRoute: typeof AuthIndexImport;
+      parentRoute: typeof AuthRouteImport;
     };
     "/history/": {
       preLoaderRoute: typeof HistoryIndexImport;
@@ -315,6 +335,7 @@ declare module "@tanstack/react-router" {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  AuthRouteRoute.addChildren([AuthLoginRoute, AuthSignupRoute, AuthIndexRoute]),
   HistoryRouteRoute.addChildren([HistoryIdRoute, HistoryIndexRoute]),
   ListsRouteRoute.addChildren([
     ListsSlugRoute.addChildren([ListsSlugEditRoute]),
@@ -335,10 +356,8 @@ export const routeTree = rootRoute.addChildren([
     UsersIdRoute.addChildren([UsersIdEditRoute]),
     UsersIndexRoute,
   ]),
-  AuthRoute,
   ConfigRoute,
   DocsRoute,
-  LoginRoute,
   LogoutRoute,
   RequestRoute,
 ]);

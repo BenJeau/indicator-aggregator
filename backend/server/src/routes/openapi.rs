@@ -17,7 +17,7 @@ Select a tag (category) to reveal information about the endpoints and select an 
 
 ## Authentication
 
-All endpoints are protected except for auth endpoints. You either need to provide a JWT as a bearer token or an API token in the Authorization header.",
+All endpoints are protected except for auth endpoints. You either need to provide a JWT as a bearer token `Bearer TOKEN`, username + password as basic authentication `Basic base64(username:password)`, or an API token `Token TOKEN` in the Authorization header.",
         contact(
             name = "Benoît Jeaurond",
             email = "benoit@jeaurond.dev"
@@ -31,10 +31,12 @@ All endpoints are protected except for auth endpoints. You either need to provid
         routes::api_tokens::patch::update_api_tokens,
         routes::api_tokens::post::create_api_tokens,
         routes::api_tokens::post::regenerate_api_tokens,
-        routes::auth::google::get::google_auth_redirect_callback,
-        routes::auth::google::get::google_redirect_login,
-        routes::auth::microsoft::get::microsoft_auth_redirect_callback,
-        routes::auth::microsoft::get::microsoft_redirect_login,
+        routes::auth::login::post::login,
+        routes::auth::openid::google::get::google_auth_redirect_callback,
+        routes::auth::openid::google::get::google_redirect_login,
+        routes::auth::openid::microsoft::get::microsoft_auth_redirect_callback,
+        routes::auth::openid::microsoft::get::microsoft_redirect_login,
+        routes::auth::signup::post::signup,
         routes::config::get::get_config,
         routes::config::put::update_config,
         routes::favicon::get::get_favicon,
@@ -91,7 +93,7 @@ All endpoints are protected except for auth endpoints. You either need to provid
         routes::stats::count::get::count_requests_by_kind,
         routes::stats::count::get::count_requests_by_providers,
         routes::stats::count::get::count_requests_by_sources,
-        routes::users::delete::delete_api_tokens,
+        routes::users::delete::delete_user_api_tokens,
         routes::users::get::get_user,
         routes::users::get::get_user_api_tokens,
         routes::users::get::get_user_logs,
@@ -145,14 +147,17 @@ All endpoints are protected except for auth endpoints. You either need to provid
             db_schemas::users::UpdateUser,
             db_schemas::users::User,
             db_schemas::users::UserWithNumLogs,
-            routes::auth::google::get::GoogleCallbackContent,
+            routes::auth::openid::google::get::GoogleCallbackContent,
             schemas::CreatedApiToken,
             schemas::Data,
             schemas::DataCache,
             schemas::DataCacheAction,
             schemas::DataSource,
             schemas::DataTiming,
+            schemas::LoginUserRequest,
+            schemas::LoginUserResponse,
             schemas::RequestExecuteParam,
+            schemas::SignupUserRequest,
             sources_schemas::SourceError,
         )
     ),

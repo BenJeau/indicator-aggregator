@@ -13,14 +13,19 @@ export const beforeLoadAuthenticated: BeforeLoadFn =
     const user = store.get(userAtom);
 
     if (!user) {
-      throw redirect({ to: "/login", search: { next: location.pathname } });
+      throw redirect({
+        to: "/auth/login",
+        search: {
+          next: location.pathname !== "/" ? location.pathname : undefined,
+        },
+      });
     }
 
     if (roles && roles.length > 0) {
       const hasRoles = user.roles.every((role) => roles.includes(role));
 
       if (!hasRoles) {
-        throw redirect({ to: "/login" });
+        throw redirect({ to: "/auth/login" });
       }
     }
   };

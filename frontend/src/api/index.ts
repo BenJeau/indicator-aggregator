@@ -61,20 +61,21 @@ const axiosKiller = async <T>(
       text && `: ${text}`
     }`;
 
-    if (response.status === 401) {
+    if (response.status === 401 && !endpoint.startsWith("/auth")) {
       store.set(userAtom, undefined);
       toast("Authentication expired", {
-        description: "Please login again",
+        description: "Please login again" + endpoint,
+        id: "expired.auth",
       });
       router.navigate({
-        to: "/login",
+        to: "/auth/login",
         search: {
           next: location.pathname,
         },
       });
     } else {
-      toast.error("API response error", {
-        description: message,
+      toast.error(`${response.status} - ${response.statusText}`, {
+        description: text || undefined,
       });
     }
 

@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import { userAtom } from "@/atoms/auth";
 import { useUpdateTheme } from "@/atoms/theme";
 
+import { Authentication } from "./authentication";
 import * as Public from "./public";
 import * as Authenticated from "./authenticated";
 
@@ -19,4 +20,4 @@ const Layout = () => {
 
 export default Layout;
 
-export { Public, Authenticated };
+export { Public, Authenticated, Authentication };

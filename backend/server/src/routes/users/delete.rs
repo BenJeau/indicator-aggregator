@@ -20,7 +20,7 @@ use crate::Result;
         ("id" = String, Path, description = "User database ID"),
     )
 )]
-pub async fn delete_api_tokens(
+pub async fn delete_user_api_tokens(
     State(pool): State<PgPool>,
     Path(id): Path<String>,
 ) -> Result<impl IntoResponse> {

@@ -167,6 +167,7 @@ export enum IndicatorKind {
   Ssdeep = "SSDEEP",
 }
 
+/** An indicator of compromise, containing the data and its kind */
 export interface Indicator {
   /** Data of the indicator */
   data: string;
@@ -579,7 +580,7 @@ export interface User {
   id: string;
   createdAt: NaiveDateTime;
   updatedAt: NaiveDateTime;
-  authId: string;
+  authId?: string;
   provider: string;
   enabled: boolean;
   email: string;
@@ -601,7 +602,7 @@ export interface UserWithNumLogs {
   id: string;
   createdAt: NaiveDateTime;
   updatedAt: NaiveDateTime;
-  authId: string;
+  authId?: string;
   provider: string;
   enabled: boolean;
   email: string;
@@ -725,6 +726,30 @@ export interface CreatedApiToken {
   id: string;
   /** The value of the API token */
   token: string;
+}
+
+/** Data needed to login a user */
+export interface LoginUserRequest {
+  /** The email of the user to authenticate */
+  email: string;
+  /** The password of the user to authenticate */
+  password: string;
+}
+
+/** Response from login request */
+export interface LoginUserResponse {
+  /** The JWT token created from login request that can be used to authenticate yourself */
+  jwtToken: string;
+}
+
+/** Data needed to signup/create a new user */
+export interface SignupUserRequest {
+  /** The name of the user to authenticate */
+  name: string;
+  /** The email of the user to authenticate */
+  email: string;
+  /** The password of the user to authenticate */
+  password: string;
 }
 
 /** Enum containing the different kinds of notifications and it's content */

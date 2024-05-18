@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE api_tokens SET token = COALESCE($1, token), note = COALESCE($2, note), expires_at = COALESCE($3, expires_at) WHERE id = $4 AND user_id = $5",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Timestamp",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "293bfb0aafc812392ea975fc1d629af0c1f8b85e277f71f69c592460d90336cd"
+}

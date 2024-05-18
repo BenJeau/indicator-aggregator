@@ -1,12 +1,12 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT pgp_sym_decrypt_bytea(value, $1) as \"value!\", user_id FROM api_tokens",
+  "query": "SELECT token, user_id FROM api_tokens WHERE id = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "value!",
-        "type_info": "Bytea"
+        "name": "token",
+        "type_info": "Text"
       },
       {
         "ordinal": 1,
@@ -20,9 +20,9 @@
       ]
     },
     "nullable": [
-      null,
+      false,
       false
     ]
   },
-  "hash": "6998f8d783daa8ee5eb5ffbce7a3a81854015e972514d34cda3ae25a29dd2730"
+  "hash": "fb492d600ff1b872f52b4aa83e7b67e8c893440e06e74c5600d6ccbea4ee57b0"
 }

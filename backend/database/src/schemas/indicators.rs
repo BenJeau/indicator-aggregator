@@ -32,6 +32,7 @@ pub enum IndicatorKind {
     Ssdeep,
 }
 
+/// An indicator of compromise, containing the data and its kind
 #[derive(Deserialize, ToSchema, Debug, Clone)]
 #[typeshare]
 pub struct Indicator {
