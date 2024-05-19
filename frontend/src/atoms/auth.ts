@@ -4,8 +4,8 @@ interface User {
   id: string;
   email: string;
   name: string;
-  givenName: string;
-  familyName: string;
+  givenName?: string;
+  familyName?: string;
   roles: string[];
   token: string;
 }

@@ -29,8 +29,8 @@ const SaveUserData: React.FC = () => {
           setUser({
             token,
             name: claims.name,
-            givenName: claims.given_name,
-            familyName: claims.family_name,
+            givenName: claims?.given_name,
+            familyName: claims?.family_name,
             email: claims.email,
             id: claims.sub,
             roles: claims.roles,
