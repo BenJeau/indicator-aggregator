@@ -257,9 +257,7 @@ export const Layout: React.FC = () => {
           >
             <Avatar className="border">
               <AvatarImage alt="@shadcn" />
-              <AvatarFallback>
-                {auth!.givenName[0] + auth!.familyName[0]}
-              </AvatarFallback>
+              <AvatarFallback>{auth?.name}</AvatarFallback>
             </Avatar>
             <div className={cn("flex flex-col", isCollapsed && "hidden")}>
               <span className="block whitespace-nowrap font-semibold">
