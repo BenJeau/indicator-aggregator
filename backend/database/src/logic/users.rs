@@ -37,16 +37,19 @@ pub async fn create_or_update_user(pool: &PgPool, user: &CreateUser) -> Result<U
 
 #[instrument(skip(pool), ret, err)]
 pub async fn create_user_log(pool: &PgPool, log: &UserLog) -> Result<()> {
+    let trace_id = shared::telemetry::Telemetry::get_trace_id();
+
     sqlx::query!(
         r#"
-INSERT INTO user_logs (user_id, ip_address, user_agent, uri, method)
-VALUES ($1, $2, $3, $4, $5);
+INSERT INTO user_logs (user_id, ip_address, user_agent, uri, method, trace_id)
+VALUES ($1, $2, $3, $4, $5, $6);
         "#,
         log.user_id,
         log.ip_address,
         log.user_agent,
         log.uri,
-        log.method
+        log.method,
+        trace_id
     )
     .execute(pool)
     .await?;
@@ -90,7 +93,7 @@ pub async fn get_users(pool: &PgPool) -> Result<Vec<UserWithNumLogs>> {
 pub async fn get_user_logs(pool: &PgPool, user_id: &str) -> Result<Vec<DbUserLog>> {
     sqlx::query_as!(
         DbUserLog,
-        "SELECT user_logs.* FROM user_logs INNER JOIN users ON users.auth_id = user_logs.user_id AND users.id = $1;",
+        "SELECT * FROM user_logs WHERE user_id = $1;",
         user_id
     )
     .fetch_all(pool)

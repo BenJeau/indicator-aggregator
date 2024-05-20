@@ -131,4 +131,5 @@ pub struct DbUserLog {
     pub user_agent: String,
     pub uri: String,
     pub method: String,
+    pub trace_id: String,
 }

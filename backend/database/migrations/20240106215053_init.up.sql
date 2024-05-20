@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS "user_logs" (
     "user_agent" TEXT NOT NULL,
     "uri" TEXT NOT NULL,
     "method" TEXT NOT NULL,
+    "trace_id" TEXT NOT NULL,
 
     FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
