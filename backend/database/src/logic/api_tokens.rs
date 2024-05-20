@@ -4,14 +4,14 @@ use tracing::instrument;
 use crate::schemas::api_tokens::{ApiToken, CreateApiToken, GetApiToken, InternalUpdateApiToken};
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_api_token(
+pub async fn update_or_create_api_token(
     pool: &PgPool,
     data: CreateApiToken,
     user_id: &str,
     hashed_token: &str,
 ) -> Result<String> {
     sqlx::query_scalar!(
-        "INSERT INTO api_tokens (user_id, note, expires_at, token) VALUES ($1, $2, $3, $4) RETURNING id",
+        r#"INSERT INTO api_tokens (user_id, note, expires_at, token) VALUES ($1, $2, $3, $4) ON CONFLICT ("user_id", "note") DO UPDATE SET note = $2 RETURNING id"#,
         user_id,
         data.note,
         data.expires_at,
