@@ -625,6 +625,7 @@ export interface DbUserLog {
   userAgent: string;
   uri: string;
   method: string;
+  traceId: string;
 }
 
 /** Request to get the data for a specific indicator from enabled sources supporting the indicator kind */

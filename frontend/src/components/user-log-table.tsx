@@ -1,8 +1,11 @@
 import dayjs from "dayjs";
+import { ExternalLink } from "lucide-react";
 
 import { DataTable } from "@/components";
+import { Button } from "@/components/ui/button";
 import { DbUserLog } from "@/types/backendTypes";
 import { useTranslation } from "@/i18n";
+import config from "@/config";
 
 interface Props {
   data: DbUserLog[];
@@ -42,6 +45,23 @@ const UserLogTable: React.FC<Props> = ({ data }) => {
         {
           header: t("user.agent"),
           accessorKey: "userAgent",
+        },
+        {
+          header: "",
+          accessorKey: "traceId",
+          cell: ({ getValue }) => (
+            <Button className="ml-2 h-6 w-6 p-0" variant="secondary" asChild>
+              <a
+                href={`${config.opentel_url}/trace/${getValue()}`}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="flex"
+              >
+                <ExternalLink size={14} />
+              </a>
+            </Button>
+          ),
+          size: 50,
         },
       ]}
       data={data ?? []}

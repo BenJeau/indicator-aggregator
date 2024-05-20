@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO user_logs (user_id, ip_address, user_agent, uri, method, trace_id)\nVALUES ($1, $2, $3, $4, $5, $6);\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5de9c0f149d67e0305a03ce5e3d369c285c4bce0537d1db481e991f8e74b4aa8"
+}
