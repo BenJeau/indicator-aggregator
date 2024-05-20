@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO api_tokens (user_id, note, expires_at, token) VALUES ($1, $2, $3, $4) RETURNING id",
+  "query": "INSERT INTO api_tokens (user_id, note, expires_at, token) VALUES ($1, $2, $3, $4) ON CONFLICT (\"user_id\", \"note\") DO UPDATE SET note = $2 RETURNING id",
   "describe": {
     "columns": [
       {
@@ -21,5 +21,5 @@
       false
     ]
   },
-  "hash": "182251d57fd66d9af0fa508833ccf857615710b7c6984991049fcefee033b187"
+  "hash": "7abd99ffaf91754e483ccac2bb9067086a710b5dfddd13d5c4270dd0387fc706"
 }

@@ -58,7 +58,7 @@ mod tests {
     }
 
     #[tracing_test::traced_test]
-    #[sqlx::test]
+    #[sqlx::test(migrations = "../database/migrations")]
     async fn given_request_without_json_when_calling_update_config_endpoint_then_returns_415_error(
         pool: PgPool,
     ) {
@@ -71,7 +71,7 @@ mod tests {
     }
 
     #[tracing_test::traced_test]
-    #[sqlx::test]
+    #[sqlx::test(migrations = "../database/migrations")]
     async fn given_request_with_invalid_json_when_calling_update_config_endpoint_then_returns_422_error(
         pool: PgPool,
     ) {

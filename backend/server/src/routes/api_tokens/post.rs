@@ -37,7 +37,7 @@ pub async fn create_api_tokens(
     let token = crypto.generate_random_alphanumeric_string(32);
     let hashed_token = hash_password(&token)?;
 
-    let id = api_tokens::create_api_token(&pool, data, &user.id, &hashed_token).await?;
+    let id = api_tokens::update_or_create_api_token(&pool, data, &user.id, &hashed_token).await?;
 
     Ok(Json(CreatedApiToken { id, token }))
 }

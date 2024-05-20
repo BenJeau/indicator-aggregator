@@ -278,11 +278,13 @@ CREATE TABLE IF NOT EXISTS "api_tokens" (
 
     "user_id" TEXT NOT NULL,
 
-    "note" TEXT NOT NULL UNIQUE,
+    "note" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "expires_at" TIMESTAMP(3),
 
-    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+
+    UNIQUE ("user_id", "note")
 );
 
 CREATE TRIGGER "source_providers_updated_at" BEFORE UPDATE ON "providers" FOR EACH ROW EXECUTE PROCEDURE "moddatetime" ("updated_at");

@@ -22,7 +22,7 @@ pub struct ApiToken {
 }
 
 /// Parameters for creating a new API token
-#[derive(Deserialize, FromRow, ToSchema, Debug)]
+#[derive(Deserialize, FromRow, ToSchema, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct CreateApiToken {
