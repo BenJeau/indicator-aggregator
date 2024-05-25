@@ -77,12 +77,11 @@ pub async fn get_user_by_auth_id(pool: &PgPool, user_auth_id: &str) -> Result<Op
 
 #[instrument(skip(pool), ret, err)]
 pub async fn get_users(pool: &PgPool) -> Result<Vec<UserWithNumLogs>> {
-    sqlx::query_as!(
-        UserWithNumLogs,
+    sqlx::query_as(
         r#"
-    SELECT users.id, users.created_at, users.updated_at, users.auth_id, users.provider, users.enabled, users.email, users.verified, users.name, users.given_name, users.family_name, users.locale, users.picture, users.roles, count(DISTINCT user_logs.id)::int as "num_logs!" FROM users
-    LEFT JOIN user_logs ON user_logs.user_id = users.auth_id
-    GROUP BY users.id
+SELECT users.id, users.created_at, users.updated_at, users.auth_id, users.provider, users.enabled, users.email, users.verified, users.name, users.given_name, users.family_name, users.locale, users.picture, users.roles, count(DISTINCT user_logs.id)::int as "num_logs" FROM users
+LEFT JOIN user_logs ON user_logs.user_id = users.id
+GROUP BY users.id
             "#,
     )
     .fetch_all(pool)

@@ -30,11 +30,15 @@ impl From<redis_lib::RedisError> for CacheError {
 
 pub type Result<T> = std::result::Result<T, CacheError>;
 
+/// A cache entry, encapsulating the value and the timestamp of when it was created
 #[derive(Debug, Serialize, Deserialize)]
 #[typeshare]
 pub struct CacheEntry<T> {
+    /// Timestamp of when the cache entry was created
     pub timestamp: NaiveDateTime,
+    /// The actual value of the cache entry
     pub value: T,
+    /// The timespan after which the cache entry will be invalidated, if any
     pub expiration: Option<u32>,
 }
 
@@ -52,6 +56,7 @@ impl From<(bool, NaiveDateTime)> for SetCacheEntryResult {
     }
 }
 
+/// Cache key, consisting of a list of strings, used for cache hits and invalidations
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[typeshare]
 pub struct CacheKey(pub Vec<String>);

@@ -13,6 +13,7 @@ pub enum NotificationKind {
     // TODO: ExpiredSecret,
 }
 
+/// A source with minimal information needed for displaying the notification
 #[derive(Serialize, FromRow, ToSchema, Debug)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]

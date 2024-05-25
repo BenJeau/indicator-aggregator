@@ -9,7 +9,12 @@ import { Trans } from "@/components";
 
 const UserSearchResult: React.FC<
   ComponentSearchResultProps<UserWithNumLogs>
-> = ({ data: { id, name, enabled, numLogs, email } }) => (
+> = ({
+  data: {
+    user: { id, name, enabled, email },
+    numLogs,
+  },
+}) => (
   <Link
     to="/users/$id"
     params={{ id }}

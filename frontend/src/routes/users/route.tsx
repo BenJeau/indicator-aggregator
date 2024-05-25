@@ -12,7 +12,7 @@ const UsersComponent: React.FC = () => {
     <GenericPanelSearch
       data={users.data}
       onFilter={(data, searchValue) =>
-        data.name.toLowerCase().includes(searchValue.toLowerCase())
+        data.user.name.toLowerCase().includes(searchValue.toLowerCase())
       }
       searchPlaceholder="users.search.palceholder"
       Item={SearchResults.User}
