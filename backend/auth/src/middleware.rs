@@ -82,7 +82,13 @@ pub async fn auth_middleware(
                 return Err(Error::Unauthorized("API token unused".to_string()));
             };
 
-            if !verify_password(password, &data.password.clone().unwrap())? {
+            let Some(password_hash) = &data.password else {
+                return Err(Error::Unauthorized(
+                    "User not using password authentication".to_string(),
+                ));
+            };
+
+            if !verify_password(password, password_hash)? {
                 return Err(Error::Unauthorized("Invalid API token".to_string()));
             }
 
