@@ -1,6 +1,12 @@
 use database::schemas as db_schemas;
 use sources::schemas as sources_schemas;
-use utoipa::OpenApi;
+use utoipa::{
+    openapi::{
+        security::{ApiKey, ApiKeyValue, Http, HttpAuthScheme, SecurityScheme},
+        Components, ContentBuilder, RefOr, ResponseBuilder, SecurityRequirement,
+    },
+    Modify, OpenApi,
+};
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
 use crate::{routes, schemas};
@@ -13,11 +19,20 @@ use crate::{routes, schemas};
 
 ## How to use
 
-Select a tag (category) to reveal information about the endpoints and select an endpoint to test them. To query the API, you'll need to authenticate yourself with Keycloak below or by clicking on any of the locks.
+Select a tag (category) to reveal information about the endpoints and select an endpoint to test them. To query the API, you'll need to authenticate yourself with one of the methods below or by clicking on any of the locks.
 
 ## Authentication
 
-All endpoints are protected except for auth endpoints. You either need to provide a JWT as a bearer token `Bearer TOKEN`, username + password as basic authentication `Basic base64(username:password)`, or an API token `Token TOKEN` in the Authorization header.",
+All endpoints are protected except for auth endpoints. You either need to authenticate with one of the following ways all within the `Authorization` request header:
+1. provide a JWT as a bearer token - `Bearer JWT_TOKEN`
+2. provide username + password as basic authentication - `Basic base64(username:password)`
+3. provide a API token as token authentication - `Token API_TOKEN`
+
+Only this documentation and the `/auth` endpoints are not protected.
+
+## Clients
+
+There's no official API client yet, but thanks to the OpenAPI documentation, you can generate your own HTTP client using something like [OpenAPI Generator](https://openapi-generator.tech/) with the JSON from the OpenAPI docs located at `/api/v1/docs/openspi.json`.",
         contact(
             name = "Benoît Jeaurond",
             email = "benoit@jeaurond.dev"
@@ -31,6 +46,7 @@ All endpoints are protected except for auth endpoints. You either need to provid
         routes::api_tokens::patch::update_api_tokens,
         routes::api_tokens::post::create_api_tokens,
         routes::api_tokens::post::regenerate_api_tokens,
+        routes::auth::get::get_enabled_auth,
         routes::auth::login::post::login,
         routes::auth::openid::google::get::google_auth_redirect_callback,
         routes::auth::openid::google::get::google_redirect_login,
@@ -148,6 +164,8 @@ All endpoints are protected except for auth endpoints. You either need to provid
             db_schemas::users::User,
             db_schemas::users::UserWithNumLogs,
             routes::auth::openid::google::get::GoogleCallbackContent,
+            schemas::AuthService, 
+            schemas::AuthServiceKind,
             schemas::CreatedApiToken,
             schemas::Data,
             schemas::DataCache,
@@ -158,6 +176,8 @@ All endpoints are protected except for auth endpoints. You either need to provid
             schemas::LoginUserResponse,
             schemas::RequestExecuteParam,
             schemas::SignupUserRequest,
+            schemas::SseDoneData,
+            schemas::SseStartData,
             sources_schemas::SourceError,
         )
     ),
@@ -168,6 +188,7 @@ All endpoints are protected except for auth endpoints. You either need to provid
         (name = "favicon", description = "Favicon middleman fetcher for external URLs"),
         (name = "health", description = "Overall health check for the service"),
         (name = "ignoreLists", description = "Ignore list management"),
+        (name = "indicatorKinds", description = "Indicator kind management"),
         (name = "notifications", description = "Notifications about misconfigured sources and providers"),
         (name = "providers", description = "Source providers management"),
         (name = "requests", description = "Execute requests to sources"),
@@ -176,7 +197,8 @@ All endpoints are protected except for auth endpoints. You either need to provid
         (name = "sources", description = "Sources management"),
         (name = "stats", description = "General statistics about the service"),
         (name = "users", description = "User management"),
-    )
+    ),
+    modifiers(&SecurityAddon)
 )]
 struct ApiDoc;
 
@@ -193,4 +215,46 @@ pub fn swagger_router() -> SwaggerUi {
                 .request_snippets_enabled(true)
                 .persist_authorization(true),
         )
+}
+
+struct SecurityAddon;
+
+impl Modify for SecurityAddon {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        let mut components = openapi.components.clone().unwrap_or_else(Components::new);
+        components.add_security_scheme(
+            "api_key",
+            SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::with_description(
+                "Authorization",
+                "Prefix the value with \"Token\" to indicate the custom authorization type",
+            ))),
+        );
+        components.add_security_scheme("basic_auth", SecurityScheme::Http(Http::new(HttpAuthScheme::Basic)));
+        openapi.components = Some(components);
+
+        let scopes: [&str; 0] = [];
+        let data = vec![SecurityRequirement::new("api_key", scopes), SecurityRequirement::new("basic_auth", scopes)];
+        let unauthorized_response: RefOr<_> =
+            ResponseBuilder::new()
+                .description("Need to provide valid authentication")
+                .content("text/plain", ContentBuilder::new().build())
+                .build()
+                .into();
+
+        openapi
+            .paths
+            .paths
+            .iter_mut()
+            .filter(|(path, _)| !path.starts_with("/auth"))
+            .for_each(|(_, item)| {
+                item.operations.iter_mut().for_each(|(_, operation)| {
+                    operation.security =
+                        Some(operation.security.clone().unwrap_or_else(|| data.clone()));
+                    operation
+                        .responses
+                        .responses
+                        .insert("401".to_string(), unauthorized_response.clone());
+                });
+            });
+    }
 }

@@ -14,7 +14,7 @@ use crate::{Result, ServerState};
     path = "/secrets",
     tag = "secrets",
     responses(
-        (status = 200, description = "Secrets retrieved successfully", body = Vec<SecretWithNumSources>),
+        (status = 200, description = "Secrets retrieved successfully", body = [SecretWithNumSources]),
     )
 )]
 pub async fn get_secrets(State(pool): State<PgPool>) -> Result<impl IntoResponse> {

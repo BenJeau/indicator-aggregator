@@ -242,3 +242,19 @@ pub struct SignupUserRequest {
     /// The password of the user to authenticate
     pub password: String,
 }
+
+#[derive(Serialize, ToSchema, Debug, Clone)]
+#[serde(tag = "kind", content = "content", rename_all = "camelCase")]
+#[typeshare]
+pub enum AuthServiceKind {
+    OpenId { name: String },
+    Password,
+}
+
+#[derive(Serialize, ToSchema, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct AuthService {
+    pub enabled: bool,
+    pub kind: AuthServiceKind,
+}

@@ -32,6 +32,7 @@ pub async fn google_redirect_login(
     state
         .auth_state
         .google_keys
+        .unwrap()
         .0
         .handle_redirect_login(
             &query,

@@ -15,7 +15,7 @@ use crate::Result;
     path = "/providers",
     tag = "providers",
     responses(
-        (status = 200, description = "Providers retrieved successfully", body = Vec<ProviderWithNumSources>),
+        (status = 200, description = "Providers retrieved successfully", body = [Provider]),
     ),
 )]
 pub async fn get_providers(State(pool): State<PgPool>) -> Result<impl IntoResponse> {
@@ -30,7 +30,7 @@ pub async fn get_providers(State(pool): State<PgPool>) -> Result<impl IntoRespon
     path = "/providers/{id}",
     tag = "providers",
     responses(
-        (status = 200, description = "Provider retrieved successfully", body = ProviderWithNumSources),
+        (status = 200, description = "Provider retrieved successfully", body = Provider),
         (status = 404, description = "Provider not found"),
     ),
     params(

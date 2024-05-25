@@ -477,6 +477,7 @@ pub async fn logic(
             &query.code,
             &state
                 .provider_data(provider)
+                .unwrap()
                 .open_id_response()
                 .token_endpoint,
         )
@@ -484,6 +485,7 @@ pub async fn logic(
 
     let Some(claims) = state
         .provider_data(provider)
+        .unwrap()
         .validate_and_decode_jwt(&data.id_token, &state.auth.open_id(provider).client_id)
         .await
     else {

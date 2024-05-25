@@ -15,7 +15,7 @@ use crate::Result;
     path = "/requests",
     tag = "requests",
     responses(
-        (status = 200, description = "List of requests", body = Vec<Request>),
+        (status = 200, description = "List of requests", body = [Request]),
     )
 )]
 pub async fn get_requests(State(pool): State<PgPool>) -> Result<impl IntoResponse> {
@@ -56,7 +56,7 @@ pub async fn get_request(
     path = "/requests/{id}/history",
     tag = "requests",
     responses(
-        (status = 200, description = "Request data", body = Vec<SourceRequest>),
+        (status = 200, description = "Request data", body = [SourceRequest]),
     ),
     params(
         ("id" = String, Path, description = "Request ID"),

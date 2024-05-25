@@ -10,7 +10,7 @@ use crate::Result;
     path = "/notifications",
     tag = "notifications",
     responses(
-        (status = 200, description = "Notifications retrieved successfully", body = Vec<NotificationKind>),
+        (status = 200, description = "Notifications retrieved successfully", body = [NotificationKind]),
     ),
 )]
 pub async fn get_notifications(State(pool): State<PgPool>) -> Result<impl IntoResponse> {

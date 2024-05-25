@@ -26,7 +26,7 @@ use crate::{
     tag = "requests",
     params(RequestExecuteParam),
     responses(
-        (status = 200, description = "Data retrieved successfully", body = Vec<Data>),
+        (status = 200, description = "Data retrieved successfully", body = [Data]),
     )
 )]
 pub async fn request(
@@ -47,11 +47,11 @@ pub async fn request(
 /// Get a stream of Server-Sent Events (SSE) for a specific indicator from enabled sources supporting the indicator kind
 ///
 /// The SSE stream will contain the following event in order:
-/// - `fetching_start`: (a single time) The event is sent when the server starts fetching data from the sources. The event will contain a list of all sources and wether they have source code.
+/// - `fetching_start` (a single time): The event is sent when the server starts fetching data from the sources. The event will contain a list of all sources and wether they have source code.
 ///
 /// One of the following events will be sent for each source if they have source code set. To know which event relates to which souce, the `id` field in the event will be the same as the `id` field in the source.
 /// - `fetching_done`: The event is sent when the server has finished fetching data from the sources and the time it was done.
-/// - `fetching_error`: (ignored `ignoreErrors` is set to `false) The event is sent when the server encounters an error while fetching data from the sources.
+/// - `fetching_error` (ignored `ignoreErrors` is set to `false`): The event is sent when the server encounters an error while fetching data from the sources.
 ///
 /// The server will also send a `keep-alive` event every 30 seconds to keep the connection alive.
 #[utoipa::path(
@@ -60,7 +60,25 @@ pub async fn request(
     tag = "requests",
     params(RequestExecuteParam),
     responses(
-        (status = 200, description = "SSE stream for the indicator", content_type = "text/event-stream"),
+        (status = 200, description = "SSE stream for the indicator", content_type = "text/event-stream", body = serde_json::Value,
+            examples(
+                ("fetching_start" = (
+                    summary = "fetching_start",
+                    description = "The event is sent when the server starts fetching data from the sources. The event will contain a list of all sources and wether they have source code.",
+                    value = json!(vec![SseStartData{has_source_code: true, source: DataSource{name: "DNS".to_string(), slug: "dns".to_string(), id: "a479w5ks7qfg".to_string(), url: "github.com".to_string(), favicon: None}},SseStartData{has_source_code: false, source: DataSource{name: "Google Web Risk".to_string(), slug: "google-web-risk".to_string(), id: "jyh3ktarowap".to_string(), url: "google.com".to_string(), favicon: None}}])
+                )),
+                ("fetching_done" = (
+                    summary = "fetching_done",
+                    description = "The event is sent when the server has finished fetching data from the sources and the time it was done.",
+                    value = json!({"cache": {"action": "FROM_CACHE", "cached_at": "2024-05-20T01:30:45.548", "expires_at": "2024-05-21T01:30:45.000", "cache_key": "ie9zxieg227c:DOMAIN:google.com"}, "timing": {"started_at": "2024-05-20T01:30:43.224", "ended_at": "2024-05-20T01:30:45.548"}, "data": Some(serde_json::json!({"url": ["google.com/bad_url", "google.com/phishing_url"]}))})
+                )),
+                ("fetching_error" = (
+                    summary = "fetching_error",
+                    description = "The event is sent when the server encounters an error while fetching data from the sources.",
+                    value = json!(vec![SourceError::UnsupportedIndicator, SourceError::MissingSourceCode])
+                )),
+             )
+        ),
     )
 )]
 pub async fn sse_handler(

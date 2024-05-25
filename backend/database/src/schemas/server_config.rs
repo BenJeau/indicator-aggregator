@@ -34,6 +34,7 @@ pub enum ServerConfigCategory {
 #[derive(Deserialize, Serialize, Debug, ToSchema, Default, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
+#[aliases(ServerConfigEntryString = ServerConfigEntry<String>, ServerConfigEntryBool = ServerConfigEntry<bool>, ServerConfigEntryU32 = ServerConfigEntry<u32>)]
 pub struct ServerConfigEntry<T: Default> {
     /// Unique identifier of the server config entry
     pub id: Option<String>,
@@ -60,15 +61,6 @@ impl<T: Default> ServerConfigEntry<T> {
         self.value.as_ref().unwrap_or(&self.default_value)
     }
 }
-
-#[typeshare]
-pub type ServerConfigEntryString = ServerConfigEntry<String>;
-
-#[typeshare]
-pub type ServerConfigEntryBool = ServerConfigEntry<bool>;
-
-#[typeshare]
-pub type ServerConfigEntryU32 = ServerConfigEntry<u32>;
 
 /// Parameters for updating a server config entry
 #[derive(Deserialize, Debug, ToSchema)]

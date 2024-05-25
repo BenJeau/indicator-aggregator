@@ -113,12 +113,14 @@ pub mod test {
                     expiration: 3600,
                 },
                 google: OpenId {
+                    enabled: false,
                     redirect_uri: "http://localhost:8080/auth/google/callback".to_string(),
                     openid_url: "https://accounts.google.com".to_string(),
                     client_id: "test".to_string(),
                     client_secret: "test".to_string(),
                 },
                 microsoft: OpenId {
+                    enabled: false,
                     redirect_uri: "http://localhost:8080/auth/microsoft/callback".to_string(),
                     openid_url: "https://login.microsoftonline.com".to_string(),
                     client_id: "test".to_string(),

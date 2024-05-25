@@ -30,6 +30,7 @@ pub async fn microsoft_redirect_login(
     state
         .auth_state
         .microsoft_keys
+        .unwrap()
         .0
         .handle_redirect_login(
             &query,

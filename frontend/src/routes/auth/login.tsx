@@ -6,13 +6,14 @@ import {
 } from "@tanstack/react-router";
 import { useSetAtom } from "jotai";
 import { toast } from "sonner";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import config from "@/config";
 import { Forms, Icons, Trans } from "@/components";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
-import { useUserLogin } from "@/api/auth";
+import { authServicesQueryOptions, useUserLogin } from "@/api/auth";
 import { parseJwt } from "@/auth";
 
 const Login: React.FC = () => {
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
   const login = useUserLogin();
   const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
+  const authServices = useSuspenseQuery(authServicesQueryOptions);
 
   const handleOnSubmit = async (data: Forms.Login.FormSchema) => {
     const { jwtToken } = await login.mutateAsync(data);
@@ -50,6 +52,14 @@ const Login: React.FC = () => {
     }
   };
 
+  const getOpenIdAuthService = (name: string) =>
+    authServices.data.find(
+      (i) => i.kind.kind === "openId" && i.kind.content.name === name
+    );
+
+  const googleEnabled = getOpenIdAuthService("google")?.enabled;
+  const microsoftEnabled = getOpenIdAuthService("google")?.enabled;
+
   return (
     <>
       <div className="flex flex-col space-y-2 text-center">
@@ -57,34 +67,38 @@ const Login: React.FC = () => {
           <Trans id="login" />
         </h1>
         <p className="text-muted-foreground text-sm">
-          <Trans
-            id="authentication.description"
-            google={<span className="font-medium">Google</span>}
-            microsoft={<span className="font-medium">Microsoft</span>}
-          />
+          <Trans id="authentication.description" />
         </p>
       </div>
       <div className="grid gap-2">
-        <Button type="button" className="gap-2" asChild variant="outline">
-          <a href={`${config.rest_server_base_url}/auth/openid/google${query}`}>
-            <Icons.Google />
-            Google
-          </a>
-        </Button>
-        <Button type="button" className="gap-2" asChild variant="outline">
-          <a
-            href={`${config.rest_server_base_url}/auth/openid/microsoft${query}`}
-          >
-            <Icons.Microsoft />
-            Microsoft
-          </a>
-        </Button>
-        <div className="relative my-8 flex items-center justify-center">
-          <hr className="flex-1" />
-          <div className="self-center italic text-muted-foreground text-xs absolute text-center bg-background px-6">
-            <Trans id="login.alternative.description" />
+        {googleEnabled && (
+          <Button type="button" className="gap-2" asChild variant="outline">
+            <a
+              href={`${config.rest_server_base_url}/auth/openid/google${query}`}
+            >
+              <Icons.Google />
+              Google
+            </a>
+          </Button>
+        )}
+        {microsoftEnabled && (
+          <Button type="button" className="gap-2" asChild variant="outline">
+            <a
+              href={`${config.rest_server_base_url}/auth/openid/microsoft${query}`}
+            >
+              <Icons.Microsoft />
+              Microsoft
+            </a>
+          </Button>
+        )}
+        {(microsoftEnabled || googleEnabled) && (
+          <div className="relative my-8 flex items-center justify-center">
+            <hr className="flex-1" />
+            <div className="self-center italic text-muted-foreground text-xs absolute text-center bg-background px-6">
+              <Trans id="login.alternative.description" />
+            </div>
           </div>
-        </div>
+        )}
         <Forms.Login.default
           onSubmit={handleOnSubmit}
           loading={login.isPending}
@@ -125,4 +139,6 @@ export const Route = createFileRoute("/auth/login")({
   validateSearch: ({ next }: SearchParams): SearchParams => ({
     next: next && next !== "/" ? next : undefined,
   }),
+  loader: async ({ context: { queryClient } }) =>
+    await queryClient.ensureQueryData(authServicesQueryOptions),
 });

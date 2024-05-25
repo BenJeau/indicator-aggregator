@@ -15,7 +15,7 @@ use crate::Result;
     path = "/ignoreLists",
     tag = "ignoreLists",
     responses(
-        (status = 200, description = "Ignore lists retrieved successfully", body = Vec<IgnoreList>),
+        (status = 200, description = "Ignore lists retrieved successfully", body = [IgnoreList]),
     ),
 )]
 pub async fn get_lists(State(pool): State<PgPool>) -> Result<impl IntoResponse> {
@@ -56,7 +56,7 @@ pub async fn get_list(
     path = "/ignoreLists/global",
     tag = "ignoreLists",
     responses(
-        (status = 200, description = "Global ignore list retrieved successfully", body = Vec<IgnoreList>),
+        (status = 200, description = "Global ignore list retrieved successfully", body = [IgnoreList]),
     ),
 )]
 pub async fn get_global_lists(State(pool): State<PgPool>) -> Result<impl IntoResponse> {

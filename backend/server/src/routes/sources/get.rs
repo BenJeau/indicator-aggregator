@@ -14,7 +14,7 @@ use crate::Result;
     path = "/sources",
     tag = "sources",
     responses(
-        (status = 200, description = "Sources retrieved successfully", body = Vec<Source>),
+        (status = 200, description = "Sources retrieved successfully", body = [Source]),
     ),
 )]
 pub async fn get_sources(State(pool): State<PgPool>) -> Result<impl IntoResponse> {

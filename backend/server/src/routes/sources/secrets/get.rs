@@ -14,7 +14,7 @@ use crate::Result;
     path = "/sources/{id}/secrets",
     tag = "sources",
     responses(
-        (status = 200, description = "Source secrets retrieved successfully", body = Vec<SourceSecret>),
+        (status = 200, description = "Source secrets retrieved successfully", body = [SourceSecret]),
         (status = 404, description = "Source not found"),
     ),
     params(

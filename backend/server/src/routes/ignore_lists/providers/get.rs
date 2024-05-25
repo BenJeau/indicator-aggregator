@@ -14,7 +14,7 @@ use crate::Result;
     path = "/ignoreLists/{id}/providers",
     tag = "ignoreLists",
     responses(
-        (status = 200, description = "Ignore list providers retrieved successfully", body = Vec<Provider>),
+        (status = 200, description = "Ignore list providers retrieved successfully", body = [Provider]),
     ),
     params(
         ("id" = String, Path, description = "Ignore list database ID"),
