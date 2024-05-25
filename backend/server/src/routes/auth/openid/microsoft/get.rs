@@ -8,7 +8,7 @@ use axum_extra::{headers::UserAgent, TypedHeader};
 use std::net::SocketAddr;
 use tracing::info;
 
-use crate::{Result, ServerState};
+use crate::{Error, Result, ServerState};
 
 /// Redirect to Microsoft OAuth2 login
 #[utoipa::path(
@@ -27,10 +27,11 @@ pub async fn microsoft_redirect_login(
     headers: HeaderMap,
     Query(query): Query<RedirectLoginQuery>,
 ) -> Result<impl IntoResponse> {
-    state
-        .auth_state
-        .microsoft_keys
-        .0
+    let Some(keys) = state.auth_state.microsoft_keys else {
+        return Err(Error::NotFound);
+    };
+
+    keys.0
         .handle_redirect_login(
             &query,
             &addr,

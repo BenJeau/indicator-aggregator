@@ -4,50 +4,6 @@
 
 export type CacheKey = string[];
 
-/** Enum containing the different kinds of server configuration entries */
-export enum ServerConfigKind {
-  String = "STRING",
-  Number = "NUMBER",
-  Boolean = "BOOLEAN",
-  Code = "CODE",
-}
-
-/** Enum containing the different categories of server configuration entries */
-export enum ServerConfigCategory {
-  Code = "CODE",
-  Proxy = "PROXY",
-  Sse = "SSE",
-  Runners = "RUNNERS",
-}
-
-/** Configuration entry for the server */
-export interface ServerConfigEntry<T> {
-  /** Unique identifier of the server config entry */
-  id?: string;
-  /** Timestamp of the creation of the server config entry */
-  createdAt?: NaiveDateTime;
-  /** Timestamp of the last update of the server config entry */
-  updatedAt?: NaiveDateTime;
-  /** User defined value of the server config entry, if any, otherwise defaults to the default value */
-  value?: T;
-  /** Default value of the server config entry */
-  defaultValue: T;
-  /** Friendly name of the server config entry */
-  friendlyName: string;
-  /** Brief description of the server config entry */
-  description: string;
-  /** Kind of the server config entry */
-  kind: ServerConfigKind;
-  /** Category grouping server config entries */
-  category: ServerConfigCategory;
-}
-
-export type ServerConfigEntryString = ServerConfigEntry<string>;
-
-export type ServerConfigEntryBool = ServerConfigEntry<boolean>;
-
-export type ServerConfigEntryU32 = ServerConfigEntry<number>;
-
 export interface CacheEntry<T> {
   timestamp: NaiveDateTime;
   value: T;
@@ -367,6 +323,44 @@ export interface CreateSourceSecret {
   description?: string;
   /** Wether the source secret needs a secret linked for the source to work */
   required: boolean;
+}
+
+/** Enum containing the different kinds of server configuration entries */
+export enum ServerConfigKind {
+  String = "STRING",
+  Number = "NUMBER",
+  Boolean = "BOOLEAN",
+  Code = "CODE",
+}
+
+/** Enum containing the different categories of server configuration entries */
+export enum ServerConfigCategory {
+  Code = "CODE",
+  Proxy = "PROXY",
+  Sse = "SSE",
+  Runners = "RUNNERS",
+}
+
+/** Configuration entry for the server */
+export interface ServerConfigEntry<T> {
+  /** Unique identifier of the server config entry */
+  id?: string;
+  /** Timestamp of the creation of the server config entry */
+  createdAt?: NaiveDateTime;
+  /** Timestamp of the last update of the server config entry */
+  updatedAt?: NaiveDateTime;
+  /** User defined value of the server config entry, if any, otherwise defaults to the default value */
+  value?: T;
+  /** Default value of the server config entry */
+  defaultValue: T;
+  /** Friendly name of the server config entry */
+  friendlyName: string;
+  /** Brief description of the server config entry */
+  description: string;
+  /** Kind of the server config entry */
+  kind: ServerConfigKind;
+  /** Category grouping server config entries */
+  category: ServerConfigCategory;
 }
 
 /** Parameters for updating a server config entry */
@@ -751,6 +745,20 @@ export interface SignupUserRequest {
   email: string;
   /** The password of the user to authenticate */
   password: string;
+}
+
+export type AuthServiceKind =
+  | {
+      kind: "openId";
+      content: {
+        name: string;
+      };
+    }
+  | { kind: "password"; content?: undefined };
+
+export interface AuthService {
+  enabled: boolean;
+  kind: AuthServiceKind;
 }
 
 /** Enum containing the different kinds of notifications and it's content */

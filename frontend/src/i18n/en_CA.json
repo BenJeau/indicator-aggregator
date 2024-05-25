@@ -23,7 +23,7 @@
   "auth.validating.description": "Validating information from Authentication provider",
   "authenticate": "Authenticate",
   "authenticating": "Authenticating",
-  "authentication.description": "Login or signup via {google} or {microsoft} below to access the platform.",
+  "authentication.description": "Login or signup via the methods below to access the platform.",
   "background.task": "Background task",
   "background.task.interval.in.seconds": "Background task interval in seconds",
   "cache.key": "Cache key",

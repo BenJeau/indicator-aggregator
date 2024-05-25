@@ -14,7 +14,7 @@ use crate::Result;
     path = "/sources/{id}/requests",
     tag = "sources",
     responses(
-        (status = 200, description = "List of source requests", body = Vec<Request>),
+        (status = 200, description = "List of source requests", body = [Request]),
     ),
     params(
         ("id" = String, Path, description = "Source database ID"),

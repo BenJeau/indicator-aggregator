@@ -23,7 +23,7 @@
   "auth.validating.description": "En cours de validation des informations provenant du fournisseur d'authentification",
   "authenticate": "Authentifier",
   "authenticating": "Authentification en cours",
-  "authentication.description": "Connectez-vous via {google} ou {microsoft} ci-dessous pour accéder à la plateforme.",
+  "authentication.description": "Connectez-vous ci-dessous pour accéder à la plateforme.",
   "background.task": "Tâche en arrière-plan",
   "background.task.interval.in.seconds": "Intervalle de la tâche d'arrière-plan en secondes",
   "cache.key": "Clé de cache",

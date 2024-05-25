@@ -14,7 +14,7 @@ use crate::Result;
     path = "/providers/{id}/sources",
     tag = "providers",
     responses(
-        (status = 200, description = "Provider sources retrieved successfully", body = Vec<Source>),
+        (status = 200, description = "Provider sources retrieved successfully", body = [Source]),
     ),
     params(
         ("id" = String, Path, description = "Provider database ID"),

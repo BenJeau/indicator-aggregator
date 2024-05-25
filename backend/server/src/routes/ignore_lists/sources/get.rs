@@ -14,7 +14,7 @@ use crate::Result;
     path = "/ignoreLists/{id}/sources",
     tag = "ignoreLists",
     responses(
-        (status = 200, description = "Ignore list sources retrieved successfully", body = Vec<Source>),
+        (status = 200, description = "Ignore list sources retrieved successfully", body = [Source]),
     ),
     params(
         ("id" = String, Path, description = "Ignore list database ID"),

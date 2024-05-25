@@ -116,6 +116,7 @@ impl From<auth::error::Error> for Error {
             auth::error::Error::Reqwest(err) => Self::Reqwest(err),
             auth::error::Error::Jsonwebtoken(_) => Self::InternalError,
             auth::error::Error::PasswordHash(err) => Self::PasswordHash(err),
+            auth::error::Error::NotProperlySetup => Self::NotFound,
         }
     }
 }

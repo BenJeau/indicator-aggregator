@@ -10,7 +10,7 @@ use std::net::SocketAddr;
 use tracing::info;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::{Result, ServerState};
+use crate::{Error, Result, ServerState};
 
 /// Redirect to Google OAuth2 login
 #[utoipa::path(
@@ -29,10 +29,11 @@ pub async fn google_redirect_login(
     headers: HeaderMap,
     Query(query): Query<RedirectLoginQuery>,
 ) -> Result<impl IntoResponse> {
-    state
-        .auth_state
-        .google_keys
-        .0
+    let Some(keys) = state.auth_state.google_keys else {
+        return Err(Error::NotFound);
+    };
+
+    keys.0
         .handle_redirect_login(
             &query,
             &addr,

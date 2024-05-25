@@ -4,7 +4,6 @@ use cache::CacheImpl;
 use database::PgPool;
 use shared::crypto::Crypto;
 use sources::FetchState;
-use tokio::join;
 use tracing::instrument;
 
 use crate::{config::Config, Result};
@@ -55,15 +54,32 @@ impl ServerState {
 
         let jwt_manager = JwtManager::new(&config.auth.jwt);
 
-        let (google_keys, microsoft_keys) = join!(
-            OpenIdKeys::new(&config.auth.google.openid_url),
-            OpenIdKeys::new(&config.auth.microsoft.openid_url),
-        );
+        let google_keys = if config.auth.google.enabled {
+            Some(
+                OpenIdKeys::new(&config.auth.google.openid_url)
+                    .await
+                    .unwrap()
+                    .into(),
+            )
+        } else {
+            None
+        };
+
+        let microsoft_keys = if config.auth.google.enabled {
+            Some(
+                OpenIdKeys::new(&config.auth.microsoft.openid_url)
+                    .await
+                    .unwrap()
+                    .into(),
+            )
+        } else {
+            None
+        };
 
         let auth_state = auth::config::State {
             auth: config.auth.clone(),
-            google_keys: google_keys.unwrap().into(),
-            microsoft_keys: microsoft_keys.unwrap().into(),
+            google_keys,
+            microsoft_keys,
             jwt_manager,
         };
 
@@ -95,8 +111,6 @@ impl ServerState {
 
 #[cfg(test)]
 pub mod test {
-    use auth::openid::OpenIdResponse;
-
     use super::*;
     use crate::config::test::create_config;
 
@@ -107,28 +121,8 @@ pub mod test {
 
         let auth_state = auth::config::State {
             auth: config.auth.clone(),
-            google_keys: OpenIdResponse {
-                keys: tokio::sync::watch::channel(OpenIdKeys {
-                    fetched_at: chrono::Utc::now().naive_utc(),
-                    jwks: vec![],
-                })
-                .1,
-                token_endpoint: "https://accounts.google.com".to_string(),
-                authorization_endpoint: "https://accounts.google.com".to_string(),
-                issuer: "https://accounts.google.com".to_string(),
-            }
-            .into(),
-            microsoft_keys: OpenIdResponse {
-                keys: tokio::sync::watch::channel(OpenIdKeys {
-                    fetched_at: chrono::Utc::now().naive_utc(),
-                    jwks: vec![],
-                })
-                .1,
-                token_endpoint: "https://login.microsoftonline.com".to_string(),
-                authorization_endpoint: "https://login.microsoftonline.com".to_string(),
-                issuer: "https://login.microsoftonline.com".to_string(),
-            }
-            .into(),
+            google_keys: None,
+            microsoft_keys: None,
             jwt_manager: JwtManager::new(&config.auth.jwt),
         };
 

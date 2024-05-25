@@ -12,6 +12,7 @@ pub struct Jwt {
 
 #[derive(Deserialize, Clone)]
 pub struct OpenId {
+    pub enabled: bool,
     pub redirect_uri: String,
     pub openid_url: String,
     pub client_id: String,
@@ -40,16 +41,22 @@ impl Auth {
 #[derive(Clone)]
 pub struct State {
     pub auth: Auth,
-    pub google_keys: GoogleOpenId,
-    pub microsoft_keys: MicrosoftOpenId,
+    pub google_keys: Option<GoogleOpenId>,
+    pub microsoft_keys: Option<MicrosoftOpenId>,
     pub jwt_manager: crate::jwt::JwtManager,
 }
 
 impl State {
-    pub fn provider_data(&self, provider: &str) -> Box<dyn OpenIdProvider> {
+    pub fn provider_data(&self, provider: &str) -> Option<Box<dyn OpenIdProvider>> {
         match provider {
-            "google" => Box::new(self.google_keys.clone()),
-            "microsoft" => Box::new(self.microsoft_keys.clone()),
+            "google" => self
+                .google_keys
+                .as_ref()
+                .map(|a| Box::new(a.clone()) as Box<dyn OpenIdProvider>),
+            "microsoft" => self
+                .microsoft_keys
+                .as_ref()
+                .map(|a| Box::new(a.clone()) as Box<dyn OpenIdProvider>),
             _ => panic!("Unknown provider: {}", provider),
         }
     }
