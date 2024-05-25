@@ -3,7 +3,7 @@ use sources::schemas as sources_schemas;
 use utoipa::{
     openapi::{
         security::{ApiKey, ApiKeyValue, Http, HttpAuthScheme, SecurityScheme},
-        Components, ContentBuilder, RefOr, ResponseBuilder, SecurityRequirement,
+        ContentBuilder, RefOr, ResponseBuilder, SecurityRequirement,
     },
     Modify, OpenApi,
 };
@@ -164,7 +164,7 @@ There's no official API client yet, but thanks to the OpenAPI documentation, you
             db_schemas::users::User,
             db_schemas::users::UserWithNumLogs,
             routes::auth::openid::google::get::GoogleCallbackContent,
-            schemas::AuthService, 
+            schemas::AuthService,
             schemas::AuthServiceKind,
             schemas::CreatedApiToken,
             schemas::Data,
@@ -221,7 +221,7 @@ struct SecurityAddon;
 
 impl Modify for SecurityAddon {
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
-        let mut components = openapi.components.clone().unwrap_or_else(Components::new);
+        let mut components = openapi.components.clone().unwrap_or_default();
         components.add_security_scheme(
             "api_key",
             SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::with_description(
@@ -229,17 +229,22 @@ impl Modify for SecurityAddon {
                 "Prefix the value with \"Token\" to indicate the custom authorization type",
             ))),
         );
-        components.add_security_scheme("basic_auth", SecurityScheme::Http(Http::new(HttpAuthScheme::Basic)));
+        components.add_security_scheme(
+            "basic_auth",
+            SecurityScheme::Http(Http::new(HttpAuthScheme::Basic)),
+        );
         openapi.components = Some(components);
 
         let scopes: [&str; 0] = [];
-        let data = vec![SecurityRequirement::new("api_key", scopes), SecurityRequirement::new("basic_auth", scopes)];
-        let unauthorized_response: RefOr<_> =
-            ResponseBuilder::new()
-                .description("Need to provide valid authentication")
-                .content("text/plain", ContentBuilder::new().build())
-                .build()
-                .into();
+        let data = vec![
+            SecurityRequirement::new("api_key", scopes),
+            SecurityRequirement::new("basic_auth", scopes),
+        ];
+        let unauthorized_response: RefOr<_> = ResponseBuilder::new()
+            .description("Need to provide valid authentication")
+            .content("text/plain", ContentBuilder::new().build())
+            .build()
+            .into();
 
         openapi
             .paths
