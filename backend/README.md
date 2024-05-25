@@ -7,10 +7,10 @@ A multipurpose Rust backend doing the following:
 
 ## Getting started
 
-To run the backend locally, you'll need a PostgreSQL instance (to even build the backend you'll need it since SQLx's verifies queries at compile time unless `SQLX_OFFLINE=true` is defined) and have Rust installed then run the following:
+To run the backend server locally, you'll need a PostgreSQL instance (to even build the backend you'll need it since SQLx's verifies queries at compile time unless `SQLX_OFFLINE=true` is defined) and have Rust installed then run the following:
 
 ```sh
-cargo run
+cargo run --bin server
 ```
 
 ### Database migrations
@@ -18,7 +18,7 @@ cargo run
 You'll need to have the [SQLx CLI](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md) installed and run the migrations with the following:
 
 ```sh
-sqlx migrate run
+cd database && sqlx migrate run
 ```
 
 > **Note**: you will need to have the `DATABASE_URL` environment variable properly defined either in the shell or in the `.env` file.
@@ -26,7 +26,7 @@ sqlx migrate run
 Whenever you make modifications to the migrations or the SQL queries made within the codebase, you need to run the following in order for the build steps in CI to not need a live PostgreSQL instance:
 
 ```sh
-cargo sqlx prepare
+cd database && cargo sqlx prepare
 ```
 
 ### Frontend types
@@ -50,3 +50,15 @@ make reset_db
 ### Sentry
 
 For Sentry.io to work correctly, you need to supply as environment variable the Sentry.io DSN via environment variable with `SENTRY_DSN`. Other values can be overriden as per the following documentation https://docs.sentry.io/platforms/rust/configuration/options/.
+
+## Runners
+
+Currently sources can be in Rust (which are ran from within the main backend server) and in Python where it has its own dedicated server for it to be ran separately in an environment where Python is installed.
+
+### Python runner
+
+To run the runner, you can run the associated docker imagae/container or run it locally if you have Python installed:
+
+```sh
+cargo run --bin python_runner
+```
