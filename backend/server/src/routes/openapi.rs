@@ -9,6 +9,13 @@ use utoipa::{
 };
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
+use axum::{
+    body::{Body, Bytes},
+    extract::Request,
+    middleware::Next,
+    response::Response,
+};
+
 use crate::{routes, schemas};
 
 #[derive(OpenApi)]
@@ -262,4 +269,64 @@ impl Modify for SecurityAddon {
                 });
             });
     }
+}
+
+pub async fn swagger_inject_dark_styles(request: Request, next: Next) -> Response {
+    let is_index_css = request.uri().to_string().ends_with("index.css");
+
+    let response = next.run(request).await;
+
+    if is_index_css {
+        let (mut parts, body) = response.into_parts();
+
+        return axum::body::to_bytes(body, usize::MAX)
+            .await
+            .map(|b| {
+                [
+                    b,
+                    Bytes::from_static(
+                        r#"
+                    
+@media (prefers-color-scheme: dark) {
+  body, .modal-ux, .opblock-section-header, .swagger-ui textarea {
+    background: #0C0A09 !important;
+    border-color: #ffffff10 !important;
+  }
+
+  .modal-ux {
+    fill: #fafaf9;
+  }
+
+  p, h1, h2, h3, h4, h5, h6, li, div, th, span, button, i, label, td, .swagger-ui textarea {
+    color: #fafaf9 !important;
+  }
+
+  .scheme-container, .model-container, div .btn {
+    background: #1f1f1f !important;
+  }
+
+  .authorization__btn, .opblock-control-arrow, .model-toggle {
+    fill: #fafaf9;
+  }
+}
+                    
+                    "#
+                        .as_bytes(),
+                    ),
+                ]
+                .concat()
+            })
+            .map(|b| {
+                let content_length = b.len();
+
+                parts
+                    .headers
+                    .insert("content-length", content_length.into());
+
+                Response::from_parts(parts, Body::from(b))
+            })
+            .unwrap();
+    }
+
+    response
 }
