@@ -54,7 +54,7 @@ const Login: React.FC = () => {
 
   const getOpenIdAuthService = (name: string) =>
     authServices.data.find(
-      (i) => i.kind.kind === "openId" && i.kind.content.name === name
+      (i) => i.kind.kind === "openId" && i.kind.content.name === name,
     );
 
   const googleEnabled = getOpenIdAuthService("google")?.enabled;
