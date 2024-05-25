@@ -16,7 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import config from "@/config";
+import config from "@/lib/config";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RawContent, Trans, Layouts } from "@/components";
 import { useTranslation } from "@/i18n";

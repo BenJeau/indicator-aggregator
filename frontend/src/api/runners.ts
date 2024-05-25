@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
-import config from "@/config";
+import config from "@/lib/config";
 import { queryClient } from "@/api";
 import { SourceKind } from "@/types/backendTypes";
 import { store } from "@/atoms";

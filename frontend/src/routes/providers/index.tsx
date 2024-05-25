@@ -4,7 +4,7 @@ import { Globe2, Plus } from "lucide-react";
 import EmptyImage from "@/assets/surfing-two-color-6c783.svg";
 import { Empty, SectionPanelHeader, Trans } from "@/components";
 import { Button } from "@/components/ui/button";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ProviderHomeComponent: React.FC = () => (
   <>

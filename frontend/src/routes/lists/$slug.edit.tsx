@@ -15,7 +15,7 @@ import {
   useIgnoreListEntryPut,
   ignoreListSlugQueryOptions,
 } from "@/api/ignoreLists";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ListEditComponent: React.FC = () => {
   const { slug } = Route.useParams();

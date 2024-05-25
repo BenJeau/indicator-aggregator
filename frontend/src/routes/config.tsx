@@ -10,7 +10,7 @@ import {
   GeneralServerConfig,
   ApiTokensTable,
 } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 import { userApiTokensQueryOptions } from "@/api/apiTokens";
 import { userAtom } from "@/atoms/auth";
 import { store } from "@/atoms";

@@ -30,8 +30,8 @@ import {
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types/backendTypes";
-import { dedupeListOnId } from "@/data";
-import { beforeLoadAuthenticated } from "@/auth";
+import { dedupeListOnId } from "@/lib/data";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ProviderComponent: React.FC = () => {
   const { slug } = Route.useParams();

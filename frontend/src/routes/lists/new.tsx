@@ -8,7 +8,7 @@ import {
   useIgnoreListSourcesPut,
   useIgnoreListEntryPut,
 } from "@/api/ignoreLists";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ListsNewComponent: React.FC = () => {
   const navigate = useNavigate();

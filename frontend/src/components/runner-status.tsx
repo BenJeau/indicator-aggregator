@@ -6,12 +6,13 @@ import {
   sourceKindIconMapping,
   runnerStatusBadgeVariantMapping,
   runnerStatusMapping,
-} from "@/data";
-import { cn, getConfigValue, getKeyByValue } from "@/lib/utils";
+} from "@/lib/data";
+import { cn } from "@/lib/utils";
 import { SourceKind, ServerConfigEntry } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { Trans } from "@/components";
 import { useTranslation } from "@/i18n";
+import { getConfigValue, getKeyByValue } from "@/lib/config";
 
 interface Props {
   sourceKind: SourceKind;

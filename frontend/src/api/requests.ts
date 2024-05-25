@@ -16,7 +16,7 @@ import {
   DataTiming,
   DataCache,
 } from "@/types/backendTypes";
-import config from "@/config";
+import config from "@/lib/config";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
 

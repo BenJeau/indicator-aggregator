@@ -7,7 +7,7 @@ import { getRandomBackground } from "@/assets";
 export const Authentication: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const bg = useMemo(getRandomBackground, []);
+  const bg = useMemo(() => getRandomBackground(), []);
 
   return (
     <div className="relative grid h-[800px] flex-col items-center justify-center lg:max-w-none lg:grid-cols-5 lg:ps-4 ">

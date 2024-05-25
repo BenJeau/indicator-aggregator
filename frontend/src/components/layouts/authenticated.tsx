@@ -39,7 +39,7 @@ import TitleEntryCount from "@/components/title-entry-count";
 import { notificationsQueryOptions } from "@/api/notifications";
 import { Empty, Nav, Trans } from "@/components";
 import NotifcationEmpty from "@/assets/resting-two-color.svg";
-import config from "@/config";
+import config from "@/lib/config";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { userAtom } from "@/atoms/auth";
 import { useTranslation } from "@/i18n";

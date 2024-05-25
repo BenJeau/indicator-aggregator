@@ -1,31 +1,58 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Braces, ExternalLink } from "lucide-react";
 
-import config from "@/config";
+import config from "@/lib/config";
 import { Button } from "@/components/ui/button";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 import { Trans } from "@/components";
 
 const DocsComponents: React.FC = () => (
-  <div className="p-4 flex gap-2 flex-col">
-    <h1 className="font-semibold text-lg">
-      <Trans id="definitions" />
-    </h1>
-    <h1 id="sources" className="font-semibold">
-      <Trans id="sources" />
-    </h1>
-    <h1 id="providers" className="font-semibold">
-      <Trans id="providers" />
-    </h1>
-    <h1 id="lists" className="font-semibold">
-      <Trans id="ignore.lists" />
-    </h1>
-    <h1 id="requests" className="font-semibold">
-      <Trans id="requests" />
-    </h1>
-    <h1 id="config" className="font-semibold">
-      <Trans id="config" />
-    </h1>
+  <div className="p-4 flex gap-4 flex-col">
+    <div>
+      <h1 className="font-semibold text-lg">
+        <Trans id="definitions" />
+      </h1>
+      <p className="text-sm">
+        Are you new or not familiar with the different terms used in throughout
+        this application? Find below many of the main terms used.
+      </p>
+    </div>
+    <div>
+      <h2 id="indicators" className="font-semibold">
+        Indicators
+      </h2>
+      <p className="text-sm"></p>
+    </div>
+    <div>
+      <h2 id="sources" className="font-semibold">
+        <Trans id="sources" />
+      </h2>
+      <p className="text-sm">A source is something that can correlate</p>
+    </div>
+    <div>
+      <h2 id="providers" className="font-semibold">
+        <Trans id="providers" />
+      </h2>
+      <p className="text-sm"></p>
+    </div>
+    <div>
+      <h2 id="lists" className="font-semibold">
+        <Trans id="ignore.lists" />
+      </h2>
+      <p className="text-sm"></p>
+    </div>
+    <div>
+      <h2 id="requests" className="font-semibold">
+        <Trans id="requests" />
+      </h2>
+      <p className="text-sm"></p>
+    </div>
+    <div>
+      <h2 id="config" className="font-semibold">
+        <Trans id="config" />
+      </h2>
+      <p className="text-sm"></p>
+    </div>
     <div className="flex justify-between items-center">
       <div>
         <h1 className="font-semibold text-lg">

@@ -4,7 +4,7 @@ import { DatabaseZap, Plus } from "lucide-react";
 import EmptyImage from "@/assets/hiking-two-color-e83a0.svg";
 import { Empty, SectionPanelHeader, Trans } from "@/components";
 import { Button } from "@/components/ui/button";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const SourceHomeComponent: React.FC = () => (
   <>

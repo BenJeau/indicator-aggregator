@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { providerQueryOptions } from "@/api/providers";
 import { globalIgnoreListsQueryOptions } from "@/api/ignoreLists";
-import { dedupeListOnId, sourceKindIconMapping } from "@/data";
+import { dedupeListOnId, sourceKindIconMapping } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
 import { IndicatorKind, SourceKind, SourceSecret } from "@/types/backendTypes";
 import {
@@ -49,7 +49,7 @@ import {
   Trans,
 } from "@/components";
 import { cleanConfigValue } from "@/api/config";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const SourceComponent: React.FC = () => {
   const { slug } = Route.useParams();

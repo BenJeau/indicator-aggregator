@@ -6,7 +6,7 @@ import { IndicatorKind } from "@/types/backendTypes";
 import { sourcesQueryOptions } from "@/api/sources";
 import { RequestDataView, Forms } from "@/components";
 import { ModifiedRequest, useRequest } from "@/api/requests";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const RequestComponent: React.FC = () => {
   const search = Route.useSearch();

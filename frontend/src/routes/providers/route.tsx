@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { providersQueryOptions } from "@/api/providers";
 import { GenericPanelSearch, SearchResults, Trans } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ProvidersComponent: React.FC = () => {
   const providers = useSuspenseQuery(providersQueryOptions);

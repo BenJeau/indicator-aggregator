@@ -4,7 +4,7 @@ import { Send } from "lucide-react";
 
 import { requestsQueryOptions } from "@/api/requests";
 import { GenericPanelSearch, SearchResults } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 
 const SourcesComponents: React.FC = () => {

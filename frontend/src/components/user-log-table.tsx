@@ -5,7 +5,7 @@ import { DataTable } from "@/components";
 import { Button } from "@/components/ui/button";
 import { DbUserLog } from "@/types/backendTypes";
 import { useTranslation } from "@/i18n";
-import config from "@/config";
+import config from "@/lib/config";
 
 interface Props {
   data: DbUserLog[];

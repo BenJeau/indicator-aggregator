@@ -4,7 +4,7 @@ import { Plus, Scroll } from "lucide-react";
 import EmptyImage from "@/assets/files-and-folder-two-color.svg";
 import { Empty, SectionPanelHeader, Trans } from "@/components";
 import { Button } from "@/components/ui/button";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ListHomeComponent: React.FC = () => (
   <>

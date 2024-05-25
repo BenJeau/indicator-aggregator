@@ -8,7 +8,7 @@ import {
   usePutSourceSecretsMutation,
 } from "@/api/sources";
 import { SourceKind } from "@/types/backendTypes";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const SourceNewComponent: React.FC = () => {
   const navigate = useNavigate();

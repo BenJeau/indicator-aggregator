@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 import { Forms, Trans } from "@/components";
 import { useProviderCreate } from "@/api/providers";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ProvidersNewComponent: React.FC = () => {
   const navigate = useNavigate();

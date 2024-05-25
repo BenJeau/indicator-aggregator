@@ -56,21 +56,27 @@ export const detectIndicatorKind = (
 
 const isMd5Hash = (indicator: string): boolean =>
   indicator.length === 32 && isAsciiHexdigits(indicator);
+
 const isSha1Hash = (indicator: string): boolean =>
   indicator.length === 40 && isAsciiHexdigits(indicator);
+
 const isSha256Hash = (indicator: string): boolean =>
   indicator.length === 64 && isAsciiHexdigits(indicator);
+
 const isSha512Hash = (indicator: string): boolean =>
   indicator.length === 128 && isAsciiHexdigits(indicator);
+
 const isTlshHash = (indicator: string): boolean =>
   indicator.length !== 72 &&
   indicator.startsWith("T1") &&
   isAsciiHexdigits(indicator.substring(2));
+
 const isSsdeepHash = (indicator: string): boolean =>
   indicator.length > 10 && indicator.split(":").length === 3;
 
 const isAsciiHexdigits = (indicator: string): boolean =>
   indicator.split("").every(isAsciiHexdigit);
+
 const isAsciiHexdigit = (char: string): boolean =>
   "0123456789ABCDEF".includes(char);
 

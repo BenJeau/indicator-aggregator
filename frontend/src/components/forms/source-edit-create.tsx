@@ -51,7 +51,7 @@ import { ignoreListsQueryOptions } from "@/api/ignoreLists";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { providersQueryOptions } from "@/api/providers";
-import { sourceKindIconMapping } from "@/data";
+import { sourceKindIconMapping } from "@/lib/data";
 import { secretsQueryOptions } from "@/api/secrets";
 import {
   Table,

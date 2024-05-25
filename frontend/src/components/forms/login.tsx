@@ -42,8 +42,7 @@ const Login: React.FC<Props> = ({ onSubmit, loading, error }) => {
     if (error) {
       setErrorValues(form.getValues());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+  }, [error, form]);
 
   const values = form.watch();
 

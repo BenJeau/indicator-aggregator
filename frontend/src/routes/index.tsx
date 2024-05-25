@@ -23,7 +23,7 @@ import {
 import { requestsQueryOptions } from "@/api/requests";
 import { useRunnersStatus } from "@/api/runners";
 import { SourceKind } from "@/types/backendTypes";
-import { indicatorKindMapping } from "@/data";
+import { indicatorKindMapping } from "@/lib/data";
 import { configQueryOptions } from "@/api/config";
 import {
   RunnerStatus,
@@ -33,7 +33,7 @@ import {
   Forms,
   Trans,
 } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 import { userAtom } from "@/atoms/auth";
 import { useTranslation } from "@/i18n";
 

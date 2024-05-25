@@ -4,7 +4,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 import { userAtom } from "@/atoms/auth";
-import { parseJwt } from "@/auth";
+import { parseJwt } from "@/lib/auth";
 import Trans from "@/components/trans";
 import { useTranslation } from "@/i18n";
 import { store } from "@/atoms";

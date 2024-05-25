@@ -14,7 +14,7 @@ import {
   useUpdateSourceMutation,
 } from "@/api/sources";
 import { SourceKind } from "@/types/backendTypes";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const SourceEditComponent: React.FC = () => {
   const navigate = useNavigate();

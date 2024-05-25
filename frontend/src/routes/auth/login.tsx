@@ -9,12 +9,12 @@ import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
-import config from "@/config";
+import config from "@/lib/config";
 import { Forms, Icons, Trans } from "@/components";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
 import { authServicesQueryOptions, useUserLogin } from "@/api/auth";
-import { parseJwt } from "@/auth";
+import { parseJwt } from "@/lib/auth";
 
 const Login: React.FC = () => {
   const { next } = Route.useSearch();

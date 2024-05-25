@@ -10,38 +10,38 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as RequestImport } from "./routes/request";
-import { Route as LogoutImport } from "./routes/logout";
-import { Route as DocsImport } from "./routes/docs";
-import { Route as ConfigImport } from "./routes/config";
-import { Route as UsersRouteImport } from "./routes/users/route";
-import { Route as SourcesRouteImport } from "./routes/sources/route";
-import { Route as ProvidersRouteImport } from "./routes/providers/route";
-import { Route as ListsRouteImport } from "./routes/lists/route";
-import { Route as HistoryRouteImport } from "./routes/history/route";
-import { Route as AuthRouteImport } from "./routes/auth/route";
-import { Route as IndexImport } from "./routes/index";
-import { Route as UsersIndexImport } from "./routes/users/index";
-import { Route as SourcesIndexImport } from "./routes/sources/index";
-import { Route as ProvidersIndexImport } from "./routes/providers/index";
-import { Route as ListsIndexImport } from "./routes/lists/index";
-import { Route as HistoryIndexImport } from "./routes/history/index";
-import { Route as AuthIndexImport } from "./routes/auth/index";
-import { Route as UsersIdImport } from "./routes/users/$id";
-import { Route as SourcesNewImport } from "./routes/sources/new";
-import { Route as SourcesSlugImport } from "./routes/sources/$slug";
-import { Route as ProvidersNewImport } from "./routes/providers/new";
-import { Route as ProvidersSlugImport } from "./routes/providers/$slug";
-import { Route as ListsNewImport } from "./routes/lists/new";
-import { Route as ListsSlugImport } from "./routes/lists/$slug";
-import { Route as HistoryIdImport } from "./routes/history/$id";
-import { Route as AuthSignupImport } from "./routes/auth/signup";
-import { Route as AuthLoginImport } from "./routes/auth/login";
-import { Route as UsersIdEditImport } from "./routes/users/$id.edit";
-import { Route as SourcesSlugEditImport } from "./routes/sources/$slug.edit";
-import { Route as ProvidersSlugEditImport } from "./routes/providers/$slug.edit";
-import { Route as ListsSlugEditImport } from "./routes/lists/$slug.edit";
+import { Route as rootRoute } from "../routes/__root";
+import { Route as RequestImport } from "../routes/request";
+import { Route as LogoutImport } from "../routes/logout";
+import { Route as DocsImport } from "../routes/docs";
+import { Route as ConfigImport } from "../routes/config";
+import { Route as UsersRouteImport } from "../routes/users/route";
+import { Route as SourcesRouteImport } from "../routes/sources/route";
+import { Route as ProvidersRouteImport } from "../routes/providers/route";
+import { Route as ListsRouteImport } from "../routes/lists/route";
+import { Route as HistoryRouteImport } from "../routes/history/route";
+import { Route as AuthRouteImport } from "../routes/auth/route";
+import { Route as IndexImport } from "../routes/index";
+import { Route as UsersIndexImport } from "../routes/users/index";
+import { Route as SourcesIndexImport } from "../routes/sources/index";
+import { Route as ProvidersIndexImport } from "../routes/providers/index";
+import { Route as ListsIndexImport } from "../routes/lists/index";
+import { Route as HistoryIndexImport } from "../routes/history/index";
+import { Route as AuthIndexImport } from "../routes/auth/index";
+import { Route as UsersIdImport } from "../routes/users/$id";
+import { Route as SourcesNewImport } from "../routes/sources/new";
+import { Route as SourcesSlugImport } from "../routes/sources/$slug";
+import { Route as ProvidersNewImport } from "../routes/providers/new";
+import { Route as ProvidersSlugImport } from "../routes/providers/$slug";
+import { Route as ListsNewImport } from "../routes/lists/new";
+import { Route as ListsSlugImport } from "../routes/lists/$slug";
+import { Route as HistoryIdImport } from "../routes/history/$id";
+import { Route as AuthSignupImport } from "../routes/auth/signup";
+import { Route as AuthLoginImport } from "../routes/auth/login";
+import { Route as UsersIdEditImport } from "../routes/users/$id.edit";
+import { Route as SourcesSlugEditImport } from "../routes/sources/$slug.edit";
+import { Route as ProvidersSlugEditImport } from "../routes/providers/$slug.edit";
+import { Route as ListsSlugEditImport } from "../routes/lists/$slug.edit";
 
 // Create/Update Routes
 
