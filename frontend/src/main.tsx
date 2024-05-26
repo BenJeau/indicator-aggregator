@@ -6,7 +6,7 @@ import * as Sentry from "@sentry/react";
 
 import "./index.css";
 
-import { queryClient } from "@/api";
+import { queryClient } from "@/lib/query";
 import config from "@/lib/config";
 import { router } from "@/navigation";
 
@@ -30,5 +30,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

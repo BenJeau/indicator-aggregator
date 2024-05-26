@@ -1,6 +1,6 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 
-import { fetcher, queryClient } from "@/api";
+import { fetcher } from "@/api";
 import {
   CreateSource,
   CreateSourceSecret,
@@ -11,6 +11,7 @@ import {
   SourceSecret,
   UpdateSource,
 } from "@/types/backendTypes";
+import { queryClient } from "@/lib/query";
 
 export const sourcesQueryOptions = queryOptions({
   queryKey: ["sources"],

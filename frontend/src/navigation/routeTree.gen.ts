@@ -10,324 +10,324 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "../routes/__root";
-import { Route as RequestImport } from "../routes/request";
-import { Route as LogoutImport } from "../routes/logout";
-import { Route as DocsImport } from "../routes/docs";
-import { Route as ConfigImport } from "../routes/config";
-import { Route as UsersRouteImport } from "../routes/users/route";
-import { Route as SourcesRouteImport } from "../routes/sources/route";
-import { Route as ProvidersRouteImport } from "../routes/providers/route";
-import { Route as ListsRouteImport } from "../routes/lists/route";
-import { Route as HistoryRouteImport } from "../routes/history/route";
-import { Route as AuthRouteImport } from "../routes/auth/route";
-import { Route as IndexImport } from "../routes/index";
-import { Route as UsersIndexImport } from "../routes/users/index";
-import { Route as SourcesIndexImport } from "../routes/sources/index";
-import { Route as ProvidersIndexImport } from "../routes/providers/index";
-import { Route as ListsIndexImport } from "../routes/lists/index";
-import { Route as HistoryIndexImport } from "../routes/history/index";
-import { Route as AuthIndexImport } from "../routes/auth/index";
-import { Route as UsersIdImport } from "../routes/users/$id";
-import { Route as SourcesNewImport } from "../routes/sources/new";
-import { Route as SourcesSlugImport } from "../routes/sources/$slug";
-import { Route as ProvidersNewImport } from "../routes/providers/new";
-import { Route as ProvidersSlugImport } from "../routes/providers/$slug";
-import { Route as ListsNewImport } from "../routes/lists/new";
-import { Route as ListsSlugImport } from "../routes/lists/$slug";
-import { Route as HistoryIdImport } from "../routes/history/$id";
-import { Route as AuthSignupImport } from "../routes/auth/signup";
-import { Route as AuthLoginImport } from "../routes/auth/login";
-import { Route as UsersIdEditImport } from "../routes/users/$id.edit";
-import { Route as SourcesSlugEditImport } from "../routes/sources/$slug.edit";
-import { Route as ProvidersSlugEditImport } from "../routes/providers/$slug.edit";
-import { Route as ListsSlugEditImport } from "../routes/lists/$slug.edit";
+import { Route as rootRoute } from './../routes/__root'
+import { Route as RequestImport } from './../routes/request'
+import { Route as LogoutImport } from './../routes/logout'
+import { Route as DocsImport } from './../routes/docs'
+import { Route as ConfigImport } from './../routes/config'
+import { Route as UsersRouteImport } from './../routes/users/route'
+import { Route as SourcesRouteImport } from './../routes/sources/route'
+import { Route as ProvidersRouteImport } from './../routes/providers/route'
+import { Route as ListsRouteImport } from './../routes/lists/route'
+import { Route as HistoryRouteImport } from './../routes/history/route'
+import { Route as AuthRouteImport } from './../routes/auth/route'
+import { Route as IndexImport } from './../routes/index'
+import { Route as UsersIndexImport } from './../routes/users/index'
+import { Route as SourcesIndexImport } from './../routes/sources/index'
+import { Route as ProvidersIndexImport } from './../routes/providers/index'
+import { Route as ListsIndexImport } from './../routes/lists/index'
+import { Route as HistoryIndexImport } from './../routes/history/index'
+import { Route as AuthIndexImport } from './../routes/auth/index'
+import { Route as UsersIdImport } from './../routes/users/$id'
+import { Route as SourcesNewImport } from './../routes/sources/new'
+import { Route as SourcesSlugImport } from './../routes/sources/$slug'
+import { Route as ProvidersNewImport } from './../routes/providers/new'
+import { Route as ProvidersSlugImport } from './../routes/providers/$slug'
+import { Route as ListsNewImport } from './../routes/lists/new'
+import { Route as ListsSlugImport } from './../routes/lists/$slug'
+import { Route as HistoryIdImport } from './../routes/history/$id'
+import { Route as AuthSignupImport } from './../routes/auth/signup'
+import { Route as AuthLoginImport } from './../routes/auth/login'
+import { Route as UsersIdEditImport } from './../routes/users/$id.edit'
+import { Route as SourcesSlugEditImport } from './../routes/sources/$slug.edit'
+import { Route as ProvidersSlugEditImport } from './../routes/providers/$slug.edit'
+import { Route as ListsSlugEditImport } from './../routes/lists/$slug.edit'
 
 // Create/Update Routes
 
 const RequestRoute = RequestImport.update({
-  path: "/request",
+  path: '/request',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const LogoutRoute = LogoutImport.update({
-  path: "/logout",
+  path: '/logout',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const DocsRoute = DocsImport.update({
-  path: "/docs",
+  path: '/docs',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const ConfigRoute = ConfigImport.update({
-  path: "/config",
+  path: '/config',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const UsersRouteRoute = UsersRouteImport.update({
-  path: "/users",
+  path: '/users',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const SourcesRouteRoute = SourcesRouteImport.update({
-  path: "/sources",
+  path: '/sources',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const ProvidersRouteRoute = ProvidersRouteImport.update({
-  path: "/providers",
+  path: '/providers',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const ListsRouteRoute = ListsRouteImport.update({
-  path: "/lists",
+  path: '/lists',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const HistoryRouteRoute = HistoryRouteImport.update({
-  path: "/history",
+  path: '/history',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const AuthRouteRoute = AuthRouteImport.update({
-  path: "/auth",
+  path: '/auth',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const IndexRoute = IndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const UsersIndexRoute = UsersIndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => UsersRouteRoute,
-} as any);
+} as any)
 
 const SourcesIndexRoute = SourcesIndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => SourcesRouteRoute,
-} as any);
+} as any)
 
 const ProvidersIndexRoute = ProvidersIndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => ProvidersRouteRoute,
-} as any);
+} as any)
 
 const ListsIndexRoute = ListsIndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => ListsRouteRoute,
-} as any);
+} as any)
 
 const HistoryIndexRoute = HistoryIndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => HistoryRouteRoute,
-} as any);
+} as any)
 
 const AuthIndexRoute = AuthIndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => AuthRouteRoute,
-} as any);
+} as any)
 
 const UsersIdRoute = UsersIdImport.update({
-  path: "/$id",
+  path: '/$id',
   getParentRoute: () => UsersRouteRoute,
-} as any);
+} as any)
 
 const SourcesNewRoute = SourcesNewImport.update({
-  path: "/new",
+  path: '/new',
   getParentRoute: () => SourcesRouteRoute,
-} as any);
+} as any)
 
 const SourcesSlugRoute = SourcesSlugImport.update({
-  path: "/$slug",
+  path: '/$slug',
   getParentRoute: () => SourcesRouteRoute,
-} as any);
+} as any)
 
 const ProvidersNewRoute = ProvidersNewImport.update({
-  path: "/new",
+  path: '/new',
   getParentRoute: () => ProvidersRouteRoute,
-} as any);
+} as any)
 
 const ProvidersSlugRoute = ProvidersSlugImport.update({
-  path: "/$slug",
+  path: '/$slug',
   getParentRoute: () => ProvidersRouteRoute,
-} as any);
+} as any)
 
 const ListsNewRoute = ListsNewImport.update({
-  path: "/new",
+  path: '/new',
   getParentRoute: () => ListsRouteRoute,
-} as any);
+} as any)
 
 const ListsSlugRoute = ListsSlugImport.update({
-  path: "/$slug",
+  path: '/$slug',
   getParentRoute: () => ListsRouteRoute,
-} as any);
+} as any)
 
 const HistoryIdRoute = HistoryIdImport.update({
-  path: "/$id",
+  path: '/$id',
   getParentRoute: () => HistoryRouteRoute,
-} as any);
+} as any)
 
 const AuthSignupRoute = AuthSignupImport.update({
-  path: "/signup",
+  path: '/signup',
   getParentRoute: () => AuthRouteRoute,
-} as any);
+} as any)
 
 const AuthLoginRoute = AuthLoginImport.update({
-  path: "/login",
+  path: '/login',
   getParentRoute: () => AuthRouteRoute,
-} as any);
+} as any)
 
 const UsersIdEditRoute = UsersIdEditImport.update({
-  path: "/edit",
+  path: '/edit',
   getParentRoute: () => UsersIdRoute,
-} as any);
+} as any)
 
 const SourcesSlugEditRoute = SourcesSlugEditImport.update({
-  path: "/edit",
+  path: '/edit',
   getParentRoute: () => SourcesSlugRoute,
-} as any);
+} as any)
 
 const ProvidersSlugEditRoute = ProvidersSlugEditImport.update({
-  path: "/edit",
+  path: '/edit',
   getParentRoute: () => ProvidersSlugRoute,
-} as any);
+} as any)
 
 const ListsSlugEditRoute = ListsSlugEditImport.update({
-  path: "/edit",
+  path: '/edit',
   getParentRoute: () => ListsSlugRoute,
-} as any);
+} as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/auth": {
-      preLoaderRoute: typeof AuthRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/history": {
-      preLoaderRoute: typeof HistoryRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/lists": {
-      preLoaderRoute: typeof ListsRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/providers": {
-      preLoaderRoute: typeof ProvidersRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/sources": {
-      preLoaderRoute: typeof SourcesRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/users": {
-      preLoaderRoute: typeof UsersRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/config": {
-      preLoaderRoute: typeof ConfigImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/docs": {
-      preLoaderRoute: typeof DocsImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/logout": {
-      preLoaderRoute: typeof LogoutImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/request": {
-      preLoaderRoute: typeof RequestImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/auth/login": {
-      preLoaderRoute: typeof AuthLoginImport;
-      parentRoute: typeof AuthRouteImport;
-    };
-    "/auth/signup": {
-      preLoaderRoute: typeof AuthSignupImport;
-      parentRoute: typeof AuthRouteImport;
-    };
-    "/history/$id": {
-      preLoaderRoute: typeof HistoryIdImport;
-      parentRoute: typeof HistoryRouteImport;
-    };
-    "/lists/$slug": {
-      preLoaderRoute: typeof ListsSlugImport;
-      parentRoute: typeof ListsRouteImport;
-    };
-    "/lists/new": {
-      preLoaderRoute: typeof ListsNewImport;
-      parentRoute: typeof ListsRouteImport;
-    };
-    "/providers/$slug": {
-      preLoaderRoute: typeof ProvidersSlugImport;
-      parentRoute: typeof ProvidersRouteImport;
-    };
-    "/providers/new": {
-      preLoaderRoute: typeof ProvidersNewImport;
-      parentRoute: typeof ProvidersRouteImport;
-    };
-    "/sources/$slug": {
-      preLoaderRoute: typeof SourcesSlugImport;
-      parentRoute: typeof SourcesRouteImport;
-    };
-    "/sources/new": {
-      preLoaderRoute: typeof SourcesNewImport;
-      parentRoute: typeof SourcesRouteImport;
-    };
-    "/users/$id": {
-      preLoaderRoute: typeof UsersIdImport;
-      parentRoute: typeof UsersRouteImport;
-    };
-    "/auth/": {
-      preLoaderRoute: typeof AuthIndexImport;
-      parentRoute: typeof AuthRouteImport;
-    };
-    "/history/": {
-      preLoaderRoute: typeof HistoryIndexImport;
-      parentRoute: typeof HistoryRouteImport;
-    };
-    "/lists/": {
-      preLoaderRoute: typeof ListsIndexImport;
-      parentRoute: typeof ListsRouteImport;
-    };
-    "/providers/": {
-      preLoaderRoute: typeof ProvidersIndexImport;
-      parentRoute: typeof ProvidersRouteImport;
-    };
-    "/sources/": {
-      preLoaderRoute: typeof SourcesIndexImport;
-      parentRoute: typeof SourcesRouteImport;
-    };
-    "/users/": {
-      preLoaderRoute: typeof UsersIndexImport;
-      parentRoute: typeof UsersRouteImport;
-    };
-    "/lists/$slug/edit": {
-      preLoaderRoute: typeof ListsSlugEditImport;
-      parentRoute: typeof ListsSlugImport;
-    };
-    "/providers/$slug/edit": {
-      preLoaderRoute: typeof ProvidersSlugEditImport;
-      parentRoute: typeof ProvidersSlugImport;
-    };
-    "/sources/$slug/edit": {
-      preLoaderRoute: typeof SourcesSlugEditImport;
-      parentRoute: typeof SourcesSlugImport;
-    };
-    "/users/$id/edit": {
-      preLoaderRoute: typeof UsersIdEditImport;
-      parentRoute: typeof UsersIdImport;
-    };
+    '/': {
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth': {
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/history': {
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/lists': {
+      preLoaderRoute: typeof ListsRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/providers': {
+      preLoaderRoute: typeof ProvidersRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/sources': {
+      preLoaderRoute: typeof SourcesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/users': {
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/config': {
+      preLoaderRoute: typeof ConfigImport
+      parentRoute: typeof rootRoute
+    }
+    '/docs': {
+      preLoaderRoute: typeof DocsImport
+      parentRoute: typeof rootRoute
+    }
+    '/logout': {
+      preLoaderRoute: typeof LogoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/request': {
+      preLoaderRoute: typeof RequestImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/login': {
+      preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof AuthRouteImport
+    }
+    '/auth/signup': {
+      preLoaderRoute: typeof AuthSignupImport
+      parentRoute: typeof AuthRouteImport
+    }
+    '/history/$id': {
+      preLoaderRoute: typeof HistoryIdImport
+      parentRoute: typeof HistoryRouteImport
+    }
+    '/lists/$slug': {
+      preLoaderRoute: typeof ListsSlugImport
+      parentRoute: typeof ListsRouteImport
+    }
+    '/lists/new': {
+      preLoaderRoute: typeof ListsNewImport
+      parentRoute: typeof ListsRouteImport
+    }
+    '/providers/$slug': {
+      preLoaderRoute: typeof ProvidersSlugImport
+      parentRoute: typeof ProvidersRouteImport
+    }
+    '/providers/new': {
+      preLoaderRoute: typeof ProvidersNewImport
+      parentRoute: typeof ProvidersRouteImport
+    }
+    '/sources/$slug': {
+      preLoaderRoute: typeof SourcesSlugImport
+      parentRoute: typeof SourcesRouteImport
+    }
+    '/sources/new': {
+      preLoaderRoute: typeof SourcesNewImport
+      parentRoute: typeof SourcesRouteImport
+    }
+    '/users/$id': {
+      preLoaderRoute: typeof UsersIdImport
+      parentRoute: typeof UsersRouteImport
+    }
+    '/auth/': {
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthRouteImport
+    }
+    '/history/': {
+      preLoaderRoute: typeof HistoryIndexImport
+      parentRoute: typeof HistoryRouteImport
+    }
+    '/lists/': {
+      preLoaderRoute: typeof ListsIndexImport
+      parentRoute: typeof ListsRouteImport
+    }
+    '/providers/': {
+      preLoaderRoute: typeof ProvidersIndexImport
+      parentRoute: typeof ProvidersRouteImport
+    }
+    '/sources/': {
+      preLoaderRoute: typeof SourcesIndexImport
+      parentRoute: typeof SourcesRouteImport
+    }
+    '/users/': {
+      preLoaderRoute: typeof UsersIndexImport
+      parentRoute: typeof UsersRouteImport
+    }
+    '/lists/$slug/edit': {
+      preLoaderRoute: typeof ListsSlugEditImport
+      parentRoute: typeof ListsSlugImport
+    }
+    '/providers/$slug/edit': {
+      preLoaderRoute: typeof ProvidersSlugEditImport
+      parentRoute: typeof ProvidersSlugImport
+    }
+    '/sources/$slug/edit': {
+      preLoaderRoute: typeof SourcesSlugEditImport
+      parentRoute: typeof SourcesSlugImport
+    }
+    '/users/$id/edit': {
+      preLoaderRoute: typeof UsersIdEditImport
+      parentRoute: typeof UsersIdImport
+    }
   }
 }
 
@@ -360,6 +360,6 @@ export const routeTree = rootRoute.addChildren([
   DocsRoute,
   LogoutRoute,
   RequestRoute,
-]);
+])
 
 /* prettier-ignore-end */

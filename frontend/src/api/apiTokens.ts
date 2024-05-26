@@ -1,12 +1,13 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 
-import { fetcher, queryClient } from "@/api";
+import { fetcher } from "@/api";
 import {
   ApiToken,
   CreateApiToken,
   UpdateApiToken,
   CreatedApiToken,
 } from "@/types/backendTypes";
+import { queryClient } from "@/lib/query";
 
 export const userApiTokensQueryOptions = (userId: string) =>
   queryOptions({

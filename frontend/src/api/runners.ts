@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 import config from "@/lib/config";
-import { queryClient } from "@/api";
 import { SourceKind } from "@/types/backendTypes";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
+import { queryClient } from "@/lib/query";
 
 export type RunnerStatus =
   | "UNKNOWN"

@@ -1,13 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
 
 import config from "@/lib/config";
 import { store } from "@/atoms";
@@ -28,7 +19,7 @@ type DataOptions = GenericOptions & {
 const axiosKiller = async <T>(
   endpoint: string,
   method: "POST" | "GET" | "PATCH" | "DELETE" | "PUT",
-  options?: DataOptions,
+  options?: DataOptions
 ) => {
   const token = store.get(userAtom)?.token;
 
@@ -72,7 +63,7 @@ const axiosKiller = async <T>(
     if (response.status === 401 && !endpoint.startsWith("/auth")) {
       store.set(userAtom, undefined);
       toast("Authentication expired", {
-        description: "Please login again" + endpoint,
+        description: "Please login again",
         id: "expired.auth",
       });
       router.navigate({

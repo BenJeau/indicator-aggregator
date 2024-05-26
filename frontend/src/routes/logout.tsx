@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { userAtom } from "@/atoms/auth";
 import { store } from "@/atoms";
 import { Trans } from "@/components";
-import { queryClient } from "@/api";
+import { queryClient } from "@/lib/query";
 
 const Logout: React.FC = () => {
   const navigate = useNavigate();

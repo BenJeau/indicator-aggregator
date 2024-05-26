@@ -1,10 +1,11 @@
 import { createRouter } from "@tanstack/react-router";
 
 import { routeTree } from "@/navigation/routeTree.gen";
-import { queryClient } from "@/api";
+import { queryClient } from "@/lib/query";
 
 export const router = createRouter({
   routeTree,
+  defaultPendingComponent: () => <div />,
   context: {
     queryClient,
   },

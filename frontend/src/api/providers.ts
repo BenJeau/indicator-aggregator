@@ -1,6 +1,6 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 
-import { fetcher, queryClient } from "@/api";
+import { fetcher } from "@/api";
 import {
   CreateProvider,
   IdSlug,
@@ -9,6 +9,7 @@ import {
   Provider,
   Source,
 } from "@/types/backendTypes";
+import { queryClient } from "@/lib/query";
 
 export const providersQueryOptions = queryOptions({
   queryKey: ["providers"],
@@ -147,7 +148,7 @@ export const providerSourcesQueryOptions = (providerId: string) =>
         `/providers/${providerId}/sources`,
         {
           signal,
-        },
+        }
       );
 
       data.map((source) => {

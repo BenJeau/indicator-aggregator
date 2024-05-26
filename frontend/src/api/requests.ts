@@ -4,7 +4,7 @@ import {
   EventSourceMessage,
 } from "@microsoft/fetch-event-source";
 
-import { fetcher, queryClient } from "@/api";
+import { fetcher } from "@/api";
 import {
   Request,
   SourceRequest,
@@ -19,6 +19,7 @@ import {
 import config from "@/lib/config";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
+import { queryClient } from "@/lib/query";
 
 export interface ReqestSSEData {
   source: DataSource;
@@ -85,7 +86,7 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
             onclose: () => {
               resolve(queryClient.getQueryData(queryKey) ?? {});
             },
-          },
+          }
         );
       }),
   });
@@ -169,7 +170,7 @@ const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
         },
       },
     }),
-    {} as RequestData,
+    {} as RequestData
   );
 
   queryClient.setQueryData<RequestData>(queryKey, () => newData);
