@@ -148,7 +148,7 @@ export const providerSourcesQueryOptions = (providerId: string) =>
         `/providers/${providerId}/sources`,
         {
           signal,
-        }
+        },
       );
 
       data.map((source) => {

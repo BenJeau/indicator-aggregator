@@ -12,5 +12,5 @@ setupSentry();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Providers />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
