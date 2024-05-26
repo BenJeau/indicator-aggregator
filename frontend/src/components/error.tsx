@@ -81,7 +81,7 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
                   <Trans id="refresh" />
                 </Button>
                 <Button variant="secondary" asChild>
-                  <a href="/logout" className="gap-2">
+                  <a href="/auth/logout" className="gap-2">
                     <LogOut size={16} />
                     <Trans id="logout" />
                   </a>
