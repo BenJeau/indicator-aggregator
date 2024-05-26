@@ -4,7 +4,15 @@ import { defineConfig } from "vite";
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 
 export default defineConfig({
-  plugins: [react(), TanStackRouterVite()],
+  plugins: [
+    react(),
+    TanStackRouterVite({
+      quoteStyle: "double",
+      semicolons: true,
+      routesDirectory: "./src/routes",
+      generatedRouteTree: "./src/navigation/routeTree.gen.ts",
+    }),
+  ],
   build: {
     rollupOptions: {
       output: {
