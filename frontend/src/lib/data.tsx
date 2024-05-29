@@ -64,6 +64,26 @@ export const indicatorKindIconMapping: {
   [IndicatorKind.Domain]: Globe2,
 };
 
+export const indicatorKindExamples: {
+  [key in IndicatorKind]: string;
+} = {
+  [IndicatorKind.Md5]: "1a79a4d60de6718e8e5b326e338ae533",
+  [IndicatorKind.Sha1]: "85136c79cbf9fe36bb9d05d0639c70c265c18d37",
+  [IndicatorKind.Sha256]:
+    "5fd924625f6ab16a19cc9807c7c506ae1813490e4ba675f843d5a10e0baacdb8",
+  [IndicatorKind.Sha512]:
+    "aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0",
+  [IndicatorKind.Tlsh]:
+    "T1C6F0DD7F531F123550434096E855B783BA32DB5D3604F0849ECCAAA0C25FB26D6F51ED",
+  [IndicatorKind.Ssdeep]:
+    "3:ppWSc6HN3wRu1DcdtQgeBXEcSwTnE6uVVMcBdEjBe41HV:7WitgA6igz6T9uVBEnHV",
+  [IndicatorKind.Ipv4]: "10.24.10.3",
+  [IndicatorKind.Ipv6]: "2607:f0d0:1002:51::4",
+  [IndicatorKind.Url]: "https://google.com",
+  [IndicatorKind.Email]: "test@gmail.com",
+  [IndicatorKind.Domain]: "google.com",
+};
+
 export const sourceKindIconMapping: {
   [key in SourceKind]: React.FC<React.SVGProps<SVGSVGElement>>;
 } = {
