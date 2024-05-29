@@ -5,23 +5,13 @@ import config from "@/lib/config";
 import { Button } from "@/components/ui/button";
 import { beforeLoadAuthenticated } from "@/lib/auth";
 import { Trans } from "@/components";
-import { indicatorKindMapping, indicatorKindExamples } from "@/lib/data";
+import {
+  indicatorKindMapping,
+  indicatorKindExamples,
+  indicatorKindDescriptions,
+} from "@/lib/data";
 import { TransId } from "@/i18n";
 import { IndicatorKind } from "@/types/backendTypes";
-
-const kindDescription = {
-  md5: "A MD5 hash",
-  sha1: "A SHA1 hash",
-  sha256: "A SHA256 hash",
-  sha512: "A SHA512 hash",
-  tlsh: "A SHA512 hash",
-  ssdeep: "A SSDEEP hash",
-  ipv4: "An IPv4 address",
-  ipv6: "An IPv6 address",
-  url: "A URL",
-  email: "An email address",
-  domain: "A domain",
-};
 
 type DocumentationBlockProps =
   | {
@@ -78,7 +68,7 @@ const DocsComponents: React.FC = () => (
           <ul className="list-disc ms-4">
             {Object.entries(indicatorKindMapping).map(([key, kind]) => (
               <li>
-                <b>{kind}</b>: {kindDescription[kind.toLowerCase()]}
+                <b>{kind}</b>: {indicatorKindDescriptions[key as IndicatorKind]}
                 <li className="list-none">
                   <code className="bg-muted rounded px-1 break-all text-xs">
                     {indicatorKindExamples[key as IndicatorKind]}

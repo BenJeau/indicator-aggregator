@@ -64,6 +64,22 @@ export const indicatorKindIconMapping: {
   [IndicatorKind.Domain]: Globe2,
 };
 
+export const indicatorKindDescriptions: {
+  [key in IndicatorKind]: string;
+} = {
+  [IndicatorKind.Md5]: "A MD5 hash",
+  [IndicatorKind.Sha1]: "A SHA1 hash",
+  [IndicatorKind.Sha256]: "A SHA256 hash",
+  [IndicatorKind.Sha512]: "A SHA512 hash",
+  [IndicatorKind.Tlsh]: "A SHA512 hash",
+  [IndicatorKind.Ssdeep]: "A SSDEEP hash",
+  [IndicatorKind.Ipv4]: "An IPv4 address",
+  [IndicatorKind.Ipv6]: "An IPv6 address",
+  [IndicatorKind.Url]: "A URL",
+  [IndicatorKind.Email]: "An email address",
+  [IndicatorKind.Domain]: "A domain",
+};
+
 export const indicatorKindExamples: {
   [key in IndicatorKind]: string;
 } = {
