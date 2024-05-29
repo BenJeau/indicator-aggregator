@@ -6,7 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { SourceError } from "@/types/backendTypes";
 import FullBadge from "@/components/full-badge";
 import TitleEntryCount from "@/components/title-entry-count";
-import config from "@/config";
+import config from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ReqestSSEData } from "@/api/requests";

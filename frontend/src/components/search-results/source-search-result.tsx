@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import { Source } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
-import config from "@/config";
-import { sourceKindIconMapping } from "@/data";
+import config from "@/lib/config";
+import { sourceKindIconMapping } from "@/lib/data";
 import { Trans } from "@/components";
 
 const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({

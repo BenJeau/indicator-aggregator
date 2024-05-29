@@ -1,3 +1,5 @@
+import { ServerConfigEntry } from "@/types/backendTypes";
+
 declare global {
   interface Window {
     _env_: ImportMetaEnv;
@@ -20,3 +22,16 @@ const production = {
 };
 
 export default (() => (import.meta.env.PROD ? production : development))();
+
+export function getKeyByValue<T, V extends keyof T>(
+  object: T & Record<V, T[V]>,
+  value: T[V],
+): keyof T | undefined {
+  return Object.keys(object).find((key) => object[key as V] === value) as
+    | keyof T
+    | undefined;
+}
+
+export function getConfigValue<T>(entry: ServerConfigEntry<T>): T {
+  return entry.value ?? entry.defaultValue;
+}

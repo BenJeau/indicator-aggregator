@@ -3,7 +3,7 @@ import { UserCircle } from "lucide-react";
 
 import EmptyImage from "@/assets/diversity-29.svg";
 import { Empty, SectionPanelHeader, Trans } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const UserHomeComponent: React.FC = () => (
   <>

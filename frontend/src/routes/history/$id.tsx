@@ -10,10 +10,10 @@ import {
 } from "@/api/requests";
 import { SectionPanelHeader, RequestDataView, Trans } from "@/components";
 import { Button } from "@/components/ui/button";
-import config from "@/config";
+import config from "@/lib/config";
 import { Badge } from "@/components/ui/badge";
 import { DataCacheAction, SourceError } from "@/types/backendTypes";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const HistoryComponent: React.FC = () => {
   const { id } = Route.useParams();

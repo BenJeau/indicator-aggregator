@@ -8,6 +8,7 @@ interface User {
   familyName?: string;
   roles: string[];
   token: string;
+  initials: string;
 }
 
 export const userAtom = atomWithLocalStorage<User | undefined>(

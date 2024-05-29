@@ -4,7 +4,7 @@ import {
   EventSourceMessage,
 } from "@microsoft/fetch-event-source";
 
-import { fetcher, queryClient } from "@/api";
+import { fetcher } from "@/api";
 import {
   Request,
   SourceRequest,
@@ -16,9 +16,10 @@ import {
   DataTiming,
   DataCache,
 } from "@/types/backendTypes";
-import config from "@/config";
+import config from "@/lib/config";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
+import { queryClient } from "@/lib/query";
 
 export interface ReqestSSEData {
   source: DataSource;

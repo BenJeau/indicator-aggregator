@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { useUserPatch, userQueryOptions } from "@/api/users";
 import { Forms, Trans } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const UserEditComponent: React.FC = () => {
   const { id } = Route.useParams();

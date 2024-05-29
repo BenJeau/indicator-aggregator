@@ -16,7 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import config from "@/config";
+import config from "@/lib/config";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RawContent, Trans, Layouts } from "@/components";
 import { useTranslation } from "@/i18n";
@@ -81,7 +81,7 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
                   <Trans id="refresh" />
                 </Button>
                 <Button variant="secondary" asChild>
-                  <a href="/logout" className="gap-2">
+                  <a href="/auth/logout" className="gap-2">
                     <LogOut size={16} />
                     <Trans id="logout" />
                   </a>

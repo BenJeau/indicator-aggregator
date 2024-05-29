@@ -11,6 +11,7 @@ use serde::Serialize;
 use typeshare::typeshare;
 use utoipa::ToSchema;
 
+/// Request to get the favicon for a specific URL
 #[derive(Deserialize, IntoParams)]
 pub struct GetFaviconParams {
     /// URL of the favicon to fetch
@@ -48,9 +49,12 @@ impl From<RequestExecuteParam> for Indicator {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct Data {
+    /// Information about the source
     pub source: DataSource,
+    /// Information about the data cache
     #[serde(skip_serializing_if = "should_skip_serializing_data_cache")]
     pub cache: DataCache,
+    /// Timing information about the data fetching
     pub timing: DataTiming,
     /// Error encountered when fetching the data, if any
     pub errors: Vec<SourceError>,
@@ -58,6 +62,7 @@ pub struct Data {
     pub data: Option<serde_json::Value>,
 }
 
+/// Partial information about a source for SSE start events
 #[derive(Serialize, Debug, ToSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
@@ -75,6 +80,7 @@ pub struct DataSource {
     pub favicon: Option<String>,
 }
 
+/// Cache information
 #[derive(Serialize, Debug, ToSchema, Default, Clone)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
@@ -100,6 +106,7 @@ fn should_skip_serializing_data_cache(cache: &DataCache) -> bool {
         && cache.cache_key.is_none()
 }
 
+/// Action took related to the cache
 #[derive(Serialize, Debug, ToSchema, Clone, strum::Display)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[typeshare]
@@ -108,6 +115,7 @@ pub enum DataCacheAction {
     SavedToCache,
 }
 
+/// Timing information of the data fetching
 #[derive(Serialize, Debug, ToSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
@@ -139,8 +147,10 @@ impl DataCache {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct SseDoneData {
+    /// Cache information related to the data/request
     #[serde(skip_serializing_if = "should_skip_serializing_data_cache")]
     pub cache: DataCache,
+    /// Time at the start and end of the request
     pub timing: DataTiming,
     /// Data fetched from the source
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -162,6 +172,7 @@ impl From<Data> for SseDoneData {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct SseStartData {
+    /// Source related to the data/request
     pub source: DataSource,
     /// Has source code linked
     pub has_source_code: bool,
@@ -243,6 +254,7 @@ pub struct SignupUserRequest {
     pub password: String,
 }
 
+/// Kind of authentication service
 #[derive(Serialize, ToSchema, Debug, Clone)]
 #[serde(tag = "kind", content = "content", rename_all = "camelCase")]
 #[typeshare]
@@ -251,10 +263,13 @@ pub enum AuthServiceKind {
     Password,
 }
 
+/// General authentication service configuration
 #[derive(Serialize, ToSchema, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct AuthService {
+    /// Whether the authentication service is enabled
     pub enabled: bool,
+    /// Kind of the authentication service
     pub kind: AuthServiceKind,
 }

@@ -39,7 +39,7 @@ import TitleEntryCount from "@/components/title-entry-count";
 import { notificationsQueryOptions } from "@/api/notifications";
 import { Empty, Nav, Trans } from "@/components";
 import NotifcationEmpty from "@/assets/resting-two-color.svg";
-import config from "@/config";
+import config from "@/lib/config";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { userAtom } from "@/atoms/auth";
 import { useTranslation } from "@/i18n";
@@ -236,14 +236,14 @@ export const Layout: React.FC = () => {
                 onClick: toggle,
               },
               {
-                title: t(`theme.${theme}`),
+                title: t(`theme.${ThemeCycle[theme]}`),
                 icon: ThemeIcon[ThemeCycle[theme]],
                 onClick: () => setTheme((prev) => ThemeCycle[prev]),
               },
               {
                 title: t("logout"),
                 icon: LogOut,
-                to: "/logout",
+                to: "/auth/logout",
                 preload: false,
               },
             ]}
@@ -257,7 +257,7 @@ export const Layout: React.FC = () => {
           >
             <Avatar className="border">
               <AvatarImage alt="@shadcn" />
-              <AvatarFallback>{auth?.name}</AvatarFallback>
+              <AvatarFallback>{auth?.initials}</AvatarFallback>
             </Avatar>
             <div className={cn("flex flex-col", isCollapsed && "hidden")}>
               <span className="block whitespace-nowrap font-semibold">

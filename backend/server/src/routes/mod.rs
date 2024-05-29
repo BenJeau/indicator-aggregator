@@ -1,4 +1,7 @@
-use axum::{middleware::from_fn_with_state, Router};
+use axum::{
+    middleware::{from_fn, from_fn_with_state},
+    Router,
+};
 use shared::tower::CommonTowerLayerBuilder;
 
 use crate::ServerState;
@@ -25,30 +28,33 @@ pub mod users;
 pub fn router(state: ServerState) -> Router {
     let layers = CommonTowerLayerBuilder::new().build();
 
-    let router = Router::new().merge(openapi::swagger_router()).nest(
-        "/api/v1",
-        Router::new()
-            .nest("/apiTokens", api_tokens::router())
-            .nest("/config", config::router())
-            .nest("/favicon", favicon::router())
-            .nest("/health", health::router())
-            .nest("/ignoreLists", ignore_lists::router())
-            .nest("/indicatorKinds", indicator_kinds::router())
-            .nest("/notifications", notifications::router())
-            .nest("/providers", providers::router())
-            .nest("/requests", requests::router())
-            .nest("/runners", runners::router())
-            .nest("/secrets", secrets::router())
-            .nest("/sources", sources::router())
-            .nest("/stats", stats::router())
-            .nest("/users", users::router())
-            .route_layer(from_fn_with_state(
-                state.clone(),
-                middleware::auth_middleware,
-            ))
-            .nest("/auth", auth::router())
-            .with_state(state),
-    );
+    let router = Router::new()
+        .merge(openapi::swagger_router())
+        .route_layer(from_fn(openapi::swagger_inject_dark_styles))
+        .nest(
+            "/api/v1",
+            Router::new()
+                .nest("/apiTokens", api_tokens::router())
+                .nest("/config", config::router())
+                .nest("/favicon", favicon::router())
+                .nest("/health", health::router())
+                .nest("/ignoreLists", ignore_lists::router())
+                .nest("/indicatorKinds", indicator_kinds::router())
+                .nest("/notifications", notifications::router())
+                .nest("/providers", providers::router())
+                .nest("/requests", requests::router())
+                .nest("/runners", runners::router())
+                .nest("/secrets", secrets::router())
+                .nest("/sources", sources::router())
+                .nest("/stats", stats::router())
+                .nest("/users", users::router())
+                .route_layer(from_fn_with_state(
+                    state.clone(),
+                    middleware::auth_middleware,
+                ))
+                .nest("/auth", auth::router())
+                .with_state(state),
+        );
 
     layers.apply_middlewares(router)
 }

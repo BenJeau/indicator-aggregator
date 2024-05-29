@@ -4,7 +4,7 @@ import { Clock, Send } from "lucide-react";
 import EmptyImage from "@/assets/network-two-color-c4988.svg";
 import { SectionPanelHeader, Empty, Trans } from "@/components";
 import { Button } from "@/components/ui/button";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const HistoryHomeComponent: React.FC = () => (
   <>

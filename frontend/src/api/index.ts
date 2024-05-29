@@ -1,10 +1,9 @@
-import { QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import config from "@/config";
+import config from "@/lib/config";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
-import { router } from "@/main";
+import { router } from "@/navigation";
 
 type GenericOptions = {
   params?: unknown;
@@ -64,7 +63,7 @@ const axiosKiller = async <T>(
     if (response.status === 401 && !endpoint.startsWith("/auth")) {
       store.set(userAtom, undefined);
       toast("Authentication expired", {
-        description: "Please login again" + endpoint,
+        description: "Please login again",
         id: "expired.auth",
       });
       router.navigate({
@@ -91,28 +90,7 @@ const axiosKiller = async <T>(
   return await response.text();
 };
 
-export const fetcher = {
-  get: <T>(endpoint: string, options?: GenericOptions) =>
-    axiosKiller<T>(endpoint, "GET", options) as Promise<T>,
-  post: <T>(endpoint: string, options?: DataOptions) =>
-    axiosKiller<T>(endpoint, "POST", options) as Promise<T>,
-  put: <T>(endpoint: string, options?: DataOptions) =>
-    axiosKiller<T>(endpoint, "PUT", options) as Promise<T>,
-  patch: <T>(endpoint: string, options?: DataOptions) =>
-    axiosKiller<T>(endpoint, "PATCH", options) as Promise<T>,
-  delete: <T>(endpoint: string, options?: DataOptions) =>
-    axiosKiller<T>(endpoint, "DELETE", options),
-};
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
-
-function anySignal(signals: AbortSignal[]): AbortSignal {
+const anySignal = (signals: AbortSignal[]): AbortSignal => {
   const controller = new AbortController();
 
   for (const signal of signals) {
@@ -127,4 +105,17 @@ function anySignal(signals: AbortSignal[]): AbortSignal {
   }
 
   return controller.signal;
-}
+};
+
+export const fetcher = {
+  get: <T>(endpoint: string, options?: GenericOptions) =>
+    axiosKiller<T>(endpoint, "GET", options) as Promise<T>,
+  post: <T>(endpoint: string, options?: DataOptions) =>
+    axiosKiller<T>(endpoint, "POST", options) as Promise<T>,
+  put: <T>(endpoint: string, options?: DataOptions) =>
+    axiosKiller<T>(endpoint, "PUT", options) as Promise<T>,
+  patch: <T>(endpoint: string, options?: DataOptions) =>
+    axiosKiller<T>(endpoint, "PATCH", options) as Promise<T>,
+  delete: <T>(endpoint: string, options?: DataOptions) =>
+    axiosKiller<T>(endpoint, "DELETE", options),
+};

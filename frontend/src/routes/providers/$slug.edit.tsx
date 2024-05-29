@@ -17,7 +17,7 @@ import {
   usePutProviderSourcesMutation,
 } from "@/api/providers";
 import { Provider } from "@/types/backendTypes";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const ProviderEditComponent: React.FC = () => {
   const navigate = useNavigate();

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Provider } from "@/types/backendTypes";
 import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
-import config from "@/config";
+import config from "@/lib/config";
 import { Trans } from "@/components";
 
 const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({

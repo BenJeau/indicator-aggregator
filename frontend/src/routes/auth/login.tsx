@@ -4,17 +4,14 @@ import {
   redirect,
   useNavigate,
 } from "@tanstack/react-router";
-import { useSetAtom } from "jotai";
-import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
-import config from "@/config";
+import config from "@/lib/config";
 import { Forms, Icons, Trans } from "@/components";
 import { store } from "@/atoms";
 import { userAtom } from "@/atoms/auth";
 import { authServicesQueryOptions, useUserLogin } from "@/api/auth";
-import { parseJwt } from "@/auth";
 
 const Login: React.FC = () => {
   const { next } = Route.useSearch();
@@ -22,34 +19,19 @@ const Login: React.FC = () => {
   const query = next ? `?next=${next}` : "";
 
   const login = useUserLogin();
-  const setUser = useSetAtom(userAtom);
   const navigate = useNavigate();
   const authServices = useSuspenseQuery(authServicesQueryOptions);
 
   const handleOnSubmit = async (data: Forms.Login.FormSchema) => {
     const { jwtToken } = await login.mutateAsync(data);
 
-    const claims = parseJwt(jwtToken);
-
-    if (claims.name && claims.email && claims.sub) {
-      setUser({
+    navigate({
+      to: "/auth/",
+      search: {
         token: jwtToken,
-        name: claims.name,
-        givenName: claims.given_name,
-        familyName: claims.family_name,
-        email: claims.email,
-        id: claims.sub,
-        roles: claims.roles,
-      });
-
-      navigate({
-        to: next || "/",
-      });
-    } else {
-      toast(<Trans id="auth.error.title" />, {
-        description: <Trans id="auth.error.token.missing" />,
-      });
-    }
+        next: next,
+      },
+    });
   };
 
   const getOpenIdAuthService = (name: string) =>

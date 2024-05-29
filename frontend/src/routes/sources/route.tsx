@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { sourcesQueryOptions } from "@/api/sources";
 import { GenericPanelSearch, SearchResults, Trans } from "@/components";
-import { beforeLoadAuthenticated } from "@/auth";
+import { beforeLoadAuthenticated } from "@/lib/auth";
 
 const SourcesComponents: React.FC = () => {
   const sources = useSuspenseQuery(sourcesQueryOptions);

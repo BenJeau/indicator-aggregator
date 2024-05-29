@@ -15,7 +15,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { indicatorKindIconMapping, indicatorKindMapping } from "@/data";
+import { indicatorKindIconMapping, indicatorKindMapping } from "@/lib/data";
 import { IndicatorKind, Source } from "@/types/backendTypes";
 import {
   FormField,
@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { detectIndicatorKind } from "@/validation";
+import { detectIndicatorKind } from "@/lib/validation";
 import { useTranslation } from "@/i18n";
 import { Trans } from "@/components";
 
