@@ -26,19 +26,32 @@ const SaveUserData: React.FC = () => {
         const claims = parseJwt(token);
 
         if (claims.name && claims.email && claims.sub) {
+          let initials: string;
+          if (claims.given_name && claims.family_name) {
+            initials = claims.given_name[0] + claims.family_name;
+          } else {
+            initials = claims.name[0];
+            const parts = claims.name.split(" ");
+            if (parts.length > 1) {
+              initials += parts[1][0];
+            }
+          }
+
           setUser({
             token,
             name: claims.name,
-            givenName: claims?.given_name,
-            familyName: claims?.family_name,
+            givenName: claims.given_name,
+            familyName: claims.family_name,
             email: claims.email,
             id: claims.sub,
             roles: claims.roles,
+            initials: initials.toUpperCase(),
           });
 
           navigate({
             to: next || "/",
           });
+          return;
         } else {
           error = "invalidToken";
         }
