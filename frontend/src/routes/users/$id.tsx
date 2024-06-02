@@ -130,7 +130,7 @@ const UserComponent: React.FC = () => {
                   variant: "secondary",
                 }}
                 value={
-                  firstRole ?? <i className="opacity-50 font-normal">none</i>
+                  firstRole ?? <i className="font-normal opacity-50">none</i>
                 }
               />
               {otherRoles.map((role) => (

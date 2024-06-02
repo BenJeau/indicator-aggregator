@@ -39,8 +39,8 @@ function DynamicCustomTooltip({
     };
 
     return (
-      <div className="shadow-md rounded-md border bg-popover/50 backdrop-blur-md">
-        <p className="font-semibold text-base border-b bg-background p-2 rounded-t-md">
+      <div className="rounded-md border bg-popover/50 shadow-md backdrop-blur-md">
+        <p className="rounded-t-md border-b bg-background p-2 text-base font-semibold">
           {dayjs(data.original.timeWindow).format("ll - H[h]")}
         </p>
         <div className="p-2 text-sm font-normal">
@@ -166,7 +166,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
   return (
     <div
       className={cn(
-        "border rounded-xl shadow-sm p-4 w-full text-sm gap-4 flex flex-col",
+        "flex w-full flex-col gap-4 rounded-xl border p-4 text-sm shadow-sm",
         className,
       )}
     >
@@ -220,7 +220,7 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
               </Label>
             </YAxis>
             <Legend
-              className="font-bold cursor-pointer"
+              className="cursor-pointer font-bold"
               onClick={selectLegend}
               onMouseEnter={(e) => setHoveredArea(e.dataKey?.toString())}
               onMouseLeave={() => setHoveredArea(undefined)}

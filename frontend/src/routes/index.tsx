@@ -74,15 +74,15 @@ const IndexComponent: React.FC = () => {
       <div className="mx-4">
         <Separator />
       </div>
-      <h4 className="mx-4 font-medium -mb-4 z-20 flex gap-2 items-center">
+      <h4 className="z-20 mx-4 -mb-4 flex items-center gap-2 font-medium">
         <Send size={16} /> <Trans id="home.perform.request.title" />
       </h4>
       <Forms.RequestForm.default sources={sources.data} />
       <div>
-        <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
+        <h4 className="z-20 mx-4 flex items-center gap-2 font-medium">
           <History size={16} /> <Trans id="home.latest.request.title" />
         </h4>
-        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-2 2xl:grid-cols-4">
           {requests.data.slice(0, 4).map((request) => (
             <SearchResults.History key={request.id} data={request} />
           ))}
@@ -92,10 +92,10 @@ const IndexComponent: React.FC = () => {
         <Separator />
       </div>
       <div>
-        <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
+        <h4 className="z-20 mx-4 flex items-center gap-2 font-medium">
           <Server size={16} /> <Trans id="home.runners.title" />
         </h4>
-        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-2">
           <RunnerStatus
             sourceKind={SourceKind.Python}
             status={runnersStatus.data?.PYTHON}
@@ -114,10 +114,10 @@ const IndexComponent: React.FC = () => {
         <Separator />
       </div>
       <div>
-        <h4 className="mx-4 font-medium z-20 flex gap-2 items-center">
+        <h4 className="z-20 mx-4 flex items-center gap-2 font-medium">
           <AreaChartIcon size={16} /> <Trans id="stats" />
         </h4>
-        <div className="p-4 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-2 2xl:grid-cols-4">
           <StatsCounter
             Icon={Send}
             count={statsCount.data.history}
@@ -152,7 +152,7 @@ const IndexComponent: React.FC = () => {
           />
         </div>
 
-        <div className="p-4 pt-0 gap-4 grid grid-cols-1 lg:grid-cols-2 ">
+        <div className="grid grid-cols-1 gap-4 p-4 pt-0 lg:grid-cols-2">
           <StackedAreaChart
             data={statsCountRequestsByHour.data.map((i) => ({
               timeWindow: i.timeWindow,

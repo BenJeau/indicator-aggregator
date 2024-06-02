@@ -283,7 +283,7 @@ const SourceEditCreate: React.FC<Props> = ({
           titleContainerClassName="items-center overflow-visible"
           titleClassName="flex-1"
           extraClassName="hidden 2xl:flex self-end"
-          className="flex-col items-stretch 2xl:items-center 2xl:flex-row"
+          className="flex-col items-stretch 2xl:flex-row 2xl:items-center"
           titleIcon={
             <>
               <FormField
@@ -310,13 +310,13 @@ const SourceEditCreate: React.FC<Props> = ({
                 )}
               />
               <div className="flex-1 2xl:hidden" />
-              <div className="flex 2xl:hidden gap-2 items-center">
+              <div className="flex items-center gap-2 2xl:hidden">
                 {cancelSaveDeleteSection}
               </div>
             </>
           }
           title={
-            <div className="flex gap-2 flex-col 2xl:flex-row flex-1">
+            <div className="flex flex-1 flex-col gap-2 2xl:flex-row">
               <FormField
                 control={form.control}
                 name="name"
@@ -583,7 +583,7 @@ const SourceEditCreate: React.FC<Props> = ({
                               <Badge
                                 key={key}
                                 variant={variant}
-                                className="gap-2 cursor-pointer"
+                                className="cursor-pointer gap-2"
                                 onClick={() => {
                                   if (isSupported && isDisabled) {
                                     supportedIndicatorsField.onChange(
@@ -858,7 +858,7 @@ const SourceEditCreate: React.FC<Props> = ({
                                     <FormItem>
                                       <FormControl>
                                         <Input
-                                          className="bg-foreground/10 h-7 rounded-sm text-xs"
+                                          className="h-7 rounded-sm bg-foreground/10 text-xs"
                                           {...field}
                                         />
                                       </FormControl>
@@ -875,7 +875,7 @@ const SourceEditCreate: React.FC<Props> = ({
                                     <FormItem>
                                       <FormControl>
                                         <Input
-                                          className="bg-foreground/10 h-7 rounded-sm text-xs"
+                                          className="h-7 rounded-sm bg-foreground/10 text-xs"
                                           {...field}
                                           value={field.value ?? ""}
                                         />

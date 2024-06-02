@@ -38,23 +38,23 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
 
   return (
     <div className="container relative mx-auto flex min-h-screen items-center justify-center gap-8 p-4 dark:text-white">
-      <div className="hidden h-[20rem] w-[20rem] flex-col gap-6 lg:flex xl:h-[30rem] xl:w-[30rem] ">
+      <div className="hidden h-[20rem] w-[20rem] flex-col gap-6 lg:flex xl:h-[30rem] xl:w-[30rem]">
         <img
           src={Image}
-          className="h-fit w-fit rounded-xl object-cover  text-white shadow-xl border border-black dark:border-border"
+          className="h-fit w-fit rounded-xl border border-black object-cover text-white shadow-xl dark:border-border"
         />
 
-        <div className="items-center hidden flex-wrap justify-between gap-4 xl:flex">
+        <div className="hidden flex-wrap items-center justify-between gap-4 xl:flex">
           <Layouts.Public.Footer />
         </div>
       </div>
 
       <div className="relative flex flex-1 flex-col gap-2">
-        <div className="font-serif text-5xl font-bold leading-[1] text-500 sm:text-7xl lg:text-8xl xl:text-9xl z-10">
+        <div className="text-500 z-10 font-serif text-5xl font-bold leading-[1] sm:text-7xl lg:text-8xl xl:text-9xl">
           <Trans id="error.unexpected.title" />
         </div>
 
-        <div className="absolute -right-5 -top-10 ms-4 font-serif text-7xl font-bold leading-5 text-primary/30 dark:text-800 sm:text-7xl md:text-9xl xl:top-10 xl:text-[10rem] select-none">
+        <div className="dark:text-800 absolute -right-5 -top-10 ms-4 select-none font-serif text-7xl font-bold leading-5 text-primary/30 sm:text-7xl md:text-9xl xl:top-10 xl:text-[10rem]">
           x⸑x
         </div>
         <div className="mb-2 text-sm">
@@ -109,10 +109,10 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
             <AccordionContent className="mt-4 pb-2">
               <Tabs
                 defaultValue="error"
-                className="flex flex-col gap-2 rounded border bg-background p-4 shadow-md dark:border-800 dark:bg-950"
+                className="dark:border-800 dark:bg-950 flex flex-col gap-2 rounded border bg-background p-4 shadow-md"
               >
                 <div className="flex justify-between">
-                  <h3 className="flex gap-2 text-2xl font-medium text-800 dark:text-white">
+                  <h3 className="text-800 flex gap-2 text-2xl font-medium dark:text-white">
                     <AlertTriangle size={32} strokeWidth={2.5} /> {errorName}
                   </h3>
                   <TabsList>
@@ -136,7 +136,7 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
           </AccordionItem>
         </Accordion>
 
-        <div className="mt-6 flex flex-wrap justify-between gap-4 xl:hidden items-center">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 xl:hidden">
           <Layouts.Public.Footer />
         </div>
       </div>

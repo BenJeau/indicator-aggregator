@@ -25,12 +25,12 @@ const StatsCounter: React.FC<Props> = ({
 
   return (
     <Link to={to} title={`${t("search.results")}...`}>
-      <div className="rounded-xl border shadow-sm items-center p-4 flex gap-4 hover:bg-muted transition duration-100 ease-in-out cursor-pointer">
-        <div className="p-2 rounded-xl bg-primary border">
+      <div className="flex cursor-pointer items-center gap-4 rounded-xl border p-4 shadow-sm transition duration-100 ease-in-out hover:bg-muted">
+        <div className="rounded-xl border bg-primary p-2">
           <Icon size={32} className="text-white dark:text-black" />
         </div>
         <div>
-          <div className="flex items-baseline gap-2 font-semibold -mb-1">
+          <div className="-mb-1 flex items-baseline gap-2 font-semibold">
             <h5 className="text-xl">{count}</h5>
             <p className="text-lg">
               <Trans id={title} />

@@ -24,9 +24,9 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
       activeProps={{
         className: "bg-primary/10 border-primary shadow-primary/40",
       }}
-      className="border rounded-xl p-4 shadow-sm flex gap-2 flex-col hover:bg-muted transition duration-100 ease-in-out"
+      className="flex flex-col gap-2 rounded-xl border p-4 shadow-sm transition duration-100 ease-in-out hover:bg-muted"
     >
-      <div className="flex justify-between gap-2 flex-col lg:flex-row">
+      <div className="flex flex-col justify-between gap-2 lg:flex-row">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <img
@@ -35,7 +35,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               }
               style={{ imageRendering: "pixelated" }}
               className={cn(
-                "w-8 h-8 rounded shadow border hidden",
+                "hidden h-8 w-8 rounded border shadow",
                 !imgHasError && "xl:block",
               )}
               onError={() => setImgHasError(true)}
@@ -43,14 +43,14 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
             />
             <Database
               size={32}
-              className={cn("min-w-4 hidden", imgHasError && "xl:block")}
+              className={cn("hidden min-w-4", imgHasError && "xl:block")}
             />
-            <div className="flex gap-2 flex-col gap-y-1 lg:gap-y-0">
-              <div className="font-semibold flex items-center gap-1">
-                <SourceKindIcon className="min-w-4 h-4 dark:fill-white" />
+            <div className="flex flex-col gap-2 gap-y-1 lg:gap-y-0">
+              <div className="flex items-center gap-1 font-semibold">
+                <SourceKindIcon className="h-4 min-w-4 dark:fill-white" />
                 {name}
               </div>
-              <div className="text-xs opacity-70 whitespace-nowrap lowercase">
+              <div className="whitespace-nowrap text-xs lowercase opacity-70">
                 <Trans id={providerId ? "has.provider" : "has.no.provider"} />
               </div>
             </div>
@@ -59,7 +59,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
           <div className="text-sm">
             {description}
             {description.length === 0 && (
-              <div className="opacity-50 italic lowercase">
+              <div className="lowercase italic opacity-50">
                 <Trans id="no.description" />
               </div>
             )}

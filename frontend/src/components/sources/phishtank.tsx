@@ -32,7 +32,7 @@ export const PhishTank: React.FC<SourceProps<PhishLabsData[]>> = ({ data }) => {
           header: "ID",
           accessorKey: "phish_id",
           cell: ({ row }) => (
-            <Button variant="link" asChild className="p-0 h-auto">
+            <Button variant="link" asChild className="h-auto p-0">
               <a
                 href={row.original.phish_detail_url}
                 target="_blank"

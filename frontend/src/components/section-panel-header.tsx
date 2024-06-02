@@ -33,7 +33,7 @@ const SectionPanelHeader: React.FC<Props> = ({
   <div className={outerClassName}>
     <div
       className={cn(
-        "px-4 py-3 bg-muted/60 flex justify-between items-center gap-4",
+        "flex items-center justify-between gap-4 bg-muted/60 px-4 py-3",
         className,
       )}
     >
@@ -45,7 +45,7 @@ const SectionPanelHeader: React.FC<Props> = ({
         )}
       >
         <Link to=".." className="md:hidden">
-          <Button className="p-0 w-8 h-8" variant="outline">
+          <Button className="h-8 w-8 p-0" variant="outline">
             <ChevronLeft size={16} />
           </Button>
         </Link>
@@ -53,14 +53,14 @@ const SectionPanelHeader: React.FC<Props> = ({
       </div>
       <div
         className={cn(
-          "items-baseline flex flex-1 gap-2 overflow-hidden",
+          "flex flex-1 items-baseline gap-2 overflow-hidden",
           titleContainerClassName,
         )}
       >
         {title && (
           <h3
             className={cn(
-              "textl-xl font-semibold items-center whitespace-nowrap",
+              "textl-xl items-center whitespace-nowrap font-semibold",
               titleClassName,
             )}
           >
@@ -68,13 +68,13 @@ const SectionPanelHeader: React.FC<Props> = ({
           </h3>
         )}
         {description && (
-          <div className="text-xs overflow-hidden overflow-ellipsis whitespace-nowrap flex-1">
+          <div className="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-xs">
             {description}
           </div>
         )}
       </div>
       {extra && (
-        <div className={cn("flex gap-2 items-center", extraClassName)}>
+        <div className={cn("flex items-center gap-2", extraClassName)}>
           {extra}
         </div>
       )}

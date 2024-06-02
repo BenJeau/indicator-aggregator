@@ -64,7 +64,7 @@ const ProviderComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "pointer-events-none select-none opacity-20 blur-sm",
         )}
         titleIcon={
           <div
@@ -81,7 +81,7 @@ const ProviderComponent: React.FC = () => {
           <>
             {provider.data.description}
             {provider.data.description.length === 0 && (
-              <span className="italic opacity-50 lowercase">
+              <span className="lowercase italic opacity-50">
                 <Trans id="no.description" />
               </span>
             )}
@@ -167,7 +167,7 @@ const ProviderComponent: React.FC = () => {
               ))}
             </div>
             {providerSources.data.length === 0 && (
-              <div className="text-xs italic opacity-50 lowercase">
+              <div className="text-xs lowercase italic opacity-50">
                 <Trans id="no.linked.sources" />
               </div>
             )}
@@ -180,7 +180,7 @@ const ProviderComponent: React.FC = () => {
               <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
-              <div className="text-xs italic opacity-50 lowercase">
+              <div className="text-xs lowercase italic opacity-50">
                 <Trans id="no.linked.ignore.lists" />
               </div>
             )}

@@ -22,7 +22,7 @@ const DatePicker: React.FC<Props> = (props) => (
       <Button
         variant={"outline"}
         className={cn(
-          "w-full justify-start text-left font-normal relative",
+          "relative w-full justify-start text-left font-normal",
           !props.selected && "text-muted-foreground",
           props.buttonClassName,
         )}
@@ -38,7 +38,7 @@ const DatePicker: React.FC<Props> = (props) => (
         {props.selected && (
           <Button
             type="button"
-            className="h-6 w-6 p-0 absolute right-1 top-[1px] bottom-0 hover:bg-transparent"
+            className="absolute bottom-0 right-1 top-[1px] h-6 w-6 p-0 hover:bg-transparent"
             variant="ghost"
             onClick={(e) => {
               e.stopPropagation();

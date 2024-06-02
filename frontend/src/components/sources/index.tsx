@@ -56,7 +56,7 @@ export const Source: React.FC<ReqestSSEData> = ({
       className={cn(
         "col-span-12 flex flex-col gap-2 2xl:col-span-6",
         !shouldHaveData &&
-          "border-destructive justify-center rounded-md border bg-red-500/20 px-2 py-1 md:col-span-6 2xl:col-span-4",
+          "justify-center rounded-md border border-destructive bg-red-500/20 px-2 py-1 md:col-span-6 2xl:col-span-4",
         !hasSourceCode && "opacity-50 grayscale",
       )}
     >
@@ -105,7 +105,7 @@ export const Source: React.FC<ReqestSSEData> = ({
               {cache?.action && (
                 <Tooltip>
                   <TooltipTrigger>
-                    <Badge className="gap-2 mt-1" variant="outline">
+                    <Badge className="mt-1 gap-2" variant="outline">
                       {cache?.action === "FROM_CACHE" ? (
                         <ServerCrash size={16} />
                       ) : (
@@ -202,7 +202,7 @@ export const Source: React.FC<ReqestSSEData> = ({
       {/* @ts-expect-error Lazy */}
       {shouldHaveData && entryCount > 0 && <Content data={data} />}
       {shouldHaveData && entryCount === 0 && (
-        <span className="text-xs italic opacity-50 lowercase">
+        <span className="text-xs lowercase italic opacity-50">
           <Trans id="no.data" />
         </span>
       )}

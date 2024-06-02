@@ -11,7 +11,7 @@ const SourceHomeComponent: React.FC = () => (
     <SectionPanelHeader
       title={<Trans id="sources.section.panel.title" />}
       titleIcon={
-        <div className="rounded-lg p-2 bg-black/10 dark:bg-black/50">
+        <div className="rounded-lg bg-black/10 p-2 dark:bg-black/50">
           <DatabaseZap size={16} strokeWidth={2.54} />
         </div>
       }

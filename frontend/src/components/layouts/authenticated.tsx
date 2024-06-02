@@ -96,7 +96,7 @@ export const Layout: React.FC = () => {
     <div className="relative flex h-full w-screen overflow-hidden">
       <div
         className={cn(
-          "flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out z-20",
+          "z-20 flex h-full w-[270px] min-w-[270px] flex-col justify-between border-r shadow-lg transition-[width] duration-300 ease-out",
           isCollapsed && "w-14 min-w-14",
         )}
       >
@@ -104,10 +104,10 @@ export const Layout: React.FC = () => {
           <Link
             to="/"
             className={cn(
-              "bg-primary/20 text-primary hover:bg-primary/10 flex h-[52px] items-center gap-2 whitespace-nowrap font-medium transition-all",
+              "flex h-[52px] items-center gap-2 whitespace-nowrap bg-primary/20 font-medium text-primary transition-all hover:bg-primary/10",
               isCollapsed ? "justify-center" : "px-4",
               page === "home" &&
-                "hover:bg-primary/50 bg-primary/50 dark:bg-primary/50 text-black dark:text-white",
+                "bg-primary/50 text-black hover:bg-primary/50 dark:bg-primary/50 dark:text-white",
             )}
             disabled={page === "home"}
           >
@@ -251,7 +251,7 @@ export const Layout: React.FC = () => {
           <Separator />
           <div
             className={cn(
-              "bg-muted/50 flex  items-center gap-2 py-4",
+              "flex items-center gap-2 bg-muted/50 py-4",
               isCollapsed ? "justify-center" : "px-4",
             )}
           >
@@ -275,7 +275,7 @@ export const Layout: React.FC = () => {
           isCollapsed ? "w-[calc(100%-3.5rem)]" : "w-[calc(100%-270px)]",
         )}
       >
-        <div className="bg-background flex min-h-[52px] w-full items-center justify-between gap-2 px-4 py-2">
+        <div className="flex min-h-[52px] w-full items-center justify-between gap-2 bg-background px-4 py-2">
           <div className="flex items-baseline gap-2 overflow-hidden">
             <h1 className="whitespace-nowrap text-xl font-bold">
               {page && t(page)}
@@ -314,7 +314,7 @@ export const Layout: React.FC = () => {
                 align="end"
                 className="min-w-96 overflow-hidden p-0"
               >
-                <h2 className="bg-background flex items-baseline gap-2 border-b p-2 font-semibold">
+                <h2 className="flex items-baseline gap-2 border-b bg-background p-2 font-semibold">
                   <Trans id="notifications" />
                   <TitleEntryCount
                     count={notifications.data.length}

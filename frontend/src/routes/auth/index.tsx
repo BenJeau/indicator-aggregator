@@ -78,12 +78,12 @@ const SaveUserData: React.FC = () => {
   }, [navigate, setUser, t]);
 
   return (
-    <div className="flex-col items-center flex-1 flex gap-2">
-      <h1 className="text-2xl font-semibold tracking-tight flex gap-2 animate-pulse items-center">
+    <div className="flex flex-1 flex-col items-center gap-2">
+      <h1 className="flex animate-pulse items-center gap-2 text-2xl font-semibold tracking-tight">
         <Trans id="authenticating" />
         ...
       </h1>
-      <p className="text-sm text-muted-foreground text-center">
+      <p className="text-center text-sm text-muted-foreground">
         <Trans id="auth.validating.description" />
       </p>
     </div>

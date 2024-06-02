@@ -32,13 +32,13 @@ const RunnerStatus: React.FC<Props> = ({
   return (
     <Link
       to="/config"
-      className="border rounded-xl p-4 shadow-sm flex gap-2 justify-between items-center hover:bg-muted transition-all duration-100 ease-in-out flex-wrap"
+      className="flex flex-wrap items-center justify-between gap-2 rounded-xl border p-4 shadow-sm transition-all duration-100 ease-in-out hover:bg-muted"
       title={t("runner.hover.title") + "..."}
     >
-      <div className="flex gap-x-4 gap-y-2 items-center flex-wrap">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <div
           className={cn(
-            "rounded-lg w-8 h-8 flex items-center justify-center",
+            "flex h-8 w-8 items-center justify-center rounded-lg",
             enabled
               ? getConfigValue(enabled)
                 ? "bg-green-500/20"
@@ -49,14 +49,14 @@ const RunnerStatus: React.FC<Props> = ({
           <Power size={16} strokeWidth={2.54} />
         </div>
         <div>
-          <h3 className="text-xl font-semibold flex gap-2">
+          <h3 className="flex gap-2 text-xl font-semibold">
             <Icon width={16} className="fill-foreground" />
             <Trans
               id="runner.title"
               kind={getKeyByValue(SourceKind, sourceKind)}
             />
           </h3>
-          <p className="text-sm opacity-70 italic">
+          <p className="text-sm italic opacity-70">
             {address ? getConfigValue(address) : "-"}
           </p>
         </div>

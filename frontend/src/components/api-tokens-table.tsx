@@ -113,7 +113,7 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
       <div className="flex flex-wrap justify-between gap-2">
         <div>
           <h2 className="flex items-baseline gap-2">
-            <span className="font-semibold text-lg">
+            <span className="text-lg font-semibold">
               <Trans id="api.tokens" />
             </span>
             <TitleEntryCount count={apiTokens.length} />
@@ -126,7 +126,7 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
             />
           </p>
         </div>
-        <div className="flex gap-2 items-end flex-1 justify-end flex-wrap md:flex-nowrap">
+        <div className="flex flex-1 flex-wrap items-end justify-end gap-2 md:flex-nowrap">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
@@ -220,10 +220,10 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
               <TableBody className="text-xs">
                 {showForm && (
                   <TableRow>
-                    <TableCell className="italic opacity-50 hidden xl:table-cell">
+                    <TableCell className="hidden italic opacity-50 xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
-                    <TableCell className="italic opacity-50 hidden 2xl:table-cell">
+                    <TableCell className="hidden italic opacity-50 2xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
                     <TableCell>
@@ -236,7 +236,7 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
                               <Input
                                 {...field}
                                 placeholder={`${t("e.g.")} ${t("api.token.note.placeholder")}`}
-                                className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                                className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                               />
                             </FormControl>
                             <FormMessage />
@@ -382,7 +382,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({
                   <Input
                     {...field}
                     placeholder={t("secrets.table.description.placholder")}
-                    className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                    className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                   />
                 </FormControl>
                 <FormMessage />
@@ -391,7 +391,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({
           />
         ) : (
           row.note ?? (
-            <span className="italic opacity-50 lowercase">
+            <span className="lowercase italic opacity-50">
               <Trans id="no.description" />
             </span>
           )
@@ -429,7 +429,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({
         ) : row.expiresAt ? (
           dayjs.utc(row.expiresAt).local().format("LL")
         ) : (
-          <span className="italic opacity-50 lowercase">
+          <span className="lowercase italic opacity-50">
             <Trans id="no.expiration" />
           </span>
         )}

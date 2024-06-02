@@ -53,7 +53,7 @@ const ListComponent = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "pointer-events-none select-none opacity-20 blur-sm",
         )}
         titleIcon={
           <div
@@ -70,7 +70,7 @@ const ListComponent = () => {
           <>
             {ignoreList.data.description}
             {ignoreList.data.description.length === 0 && (
-              <span className="italic opacity-50 lowercase">
+              <span className="lowercase italic opacity-50">
                 <Trans id="no.description" />
               </span>
             )}
@@ -136,7 +136,7 @@ const ListComponent = () => {
               <SearchResults.Source key={source.id} data={source} />
             ))}
             {ignoreListSources.data.length === 0 && (
-              <div className="text-xs italic opacity-50 lowercase">
+              <div className="text-xs lowercase italic opacity-50">
                 <Trans id="no.linked.sources" />
               </div>
             )}
@@ -153,7 +153,7 @@ const ListComponent = () => {
               <SearchResults.Provider key={provider.id} data={provider} />
             ))}
             {ignoreListProviders.data.length === 0 && (
-              <div className="text-xs italic opacity-50 lowercase">
+              <div className="text-xs lowercase italic opacity-50">
                 <Trans id="no.linked.providers" />
               </div>
             )}
@@ -170,7 +170,7 @@ const ListComponent = () => {
                   header: t("data"),
                   cell: ({ row }) => {
                     return (
-                      <code className="bg-foreground/5 dark:bg-foreground/30 rounded-sm px-1 text-xs">
+                      <code className="rounded-sm bg-foreground/5 px-1 text-xs dark:bg-foreground/30">
                         {row.getValue("data")}
                       </code>
                     );

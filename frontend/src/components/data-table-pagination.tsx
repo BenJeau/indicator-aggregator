@@ -23,7 +23,7 @@ interface DataTablePaginationProps<TData> {
 const DataTablePagination = <TData,>({
   table,
 }: DataTablePaginationProps<TData>) => (
-  <div className="px-2 flex items-center self-end space-x-6 lg:space-x-8">
+  <div className="flex items-center space-x-6 self-end px-2 lg:space-x-8">
     <div className="flex items-center space-x-2">
       <p className="text-sm font-medium">
         <Trans id="table.pagination.rows.per.page" />

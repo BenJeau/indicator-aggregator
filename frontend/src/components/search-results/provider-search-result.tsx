@@ -21,7 +21,7 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
       activeProps={{
         className: "bg-primary/10 border-primary shadow-primary/40",
       }}
-      className="border rounded-xl p-4 shadow-sm flex gap-2 flex-col hover:bg-muted transition duration-100 ease-in-out"
+      className="flex flex-col gap-2 rounded-xl border p-4 shadow-sm transition duration-100 ease-in-out hover:bg-muted"
     >
       <div className="flex justify-between gap-2">
         <div className="flex flex-col gap-2">
@@ -32,7 +32,7 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
               }
               style={{ imageRendering: "pixelated" }}
               className={cn(
-                "w-6 h-6 rounded border shadow",
+                "h-6 w-6 rounded border shadow",
                 imgHasError && "hidden",
               )}
               onError={() => setImgHasError(true)}
@@ -42,9 +42,9 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
               size={16}
               className={cn("min-w-4", !imgHasError && "hidden")}
             />
-            <div className="flex gap-2 items-baseline flex-wrap gap-y-0">
+            <div className="flex flex-wrap items-baseline gap-2 gap-y-0">
               <div className="font-semibold">{name}</div>
-              <div className="text-xs opacity-70 whitespace-nowrap lowercase">
+              <div className="whitespace-nowrap text-xs lowercase opacity-70">
                 {numSources} <Trans id="source" />
                 {numSources > 1 && "s"}
               </div>
@@ -54,7 +54,7 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
             {description}
 
             {description.length === 0 && (
-              <div className="opacity-50 italic lowercase">
+              <div className="lowercase italic opacity-50">
                 <Trans id="no.description" />
               </div>
             )}

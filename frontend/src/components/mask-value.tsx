@@ -37,7 +37,7 @@ const MaskValue: React.FC<Props> = ({
     <div className="flex items-center justify-between gap-2">
       <AutoAnimate>
         {showValue ? (
-          <code className="bg-foreground/5 dark:bg-foreground/30 rounded-sm px-1">
+          <code className="rounded-sm bg-foreground/5 px-1 dark:bg-foreground/30">
             {value}
           </code>
         ) : (
