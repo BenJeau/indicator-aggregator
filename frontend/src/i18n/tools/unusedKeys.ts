@@ -23,7 +23,7 @@ const findUnusedKeys = async (
         ignoredKeys.includes(key),
     );
 
-    if (!result) unusedKeys.push(key);
+    if (!result && !unusedKeys.includes(key)) unusedKeys.push(key);
   });
 
   if (unusedKeys.length) {
