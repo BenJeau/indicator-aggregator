@@ -17,6 +17,7 @@ import {
   History,
   Users,
   Languages,
+  Github,
 } from "lucide-react";
 import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -193,6 +194,12 @@ export const Layout: React.FC = () => {
           <Nav
             isCollapsed={isCollapsed}
             links={[
+              {
+                title: "GitHub",
+                href: "https://github.com/BenJeau/indicator-aggregator",
+                variant: "ghost",
+                icon: Github,
+              },
               {
                 title: t("tracing"),
                 href: config.opentel_url,
