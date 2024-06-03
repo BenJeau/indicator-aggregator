@@ -41,7 +41,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.directory }}
+          images: ${{ env.REGISTRY }}/${{ github.repository@L }}/${{ matrix.directory }}
       - name: Get context path
         id: context_path
         run: echo "DOCKERFILE=$(if [ '${{ matrix.directory }}' == 'backend' ]; then echo '/server'; else echo ''; fi)" >> $GITHUB_OUTPUT
@@ -52,9 +52,9 @@ jobs:
           context: ./${{ matrix.directory }}
           builder: ${{ steps.buildx.outputs.name }}
           platforms: ${{ matrix.platform }}
-          file: ./${{ matrix.directory }}/${{ steps.context_path.outputs.DOCKERFILE }}Dockerfile
+          file: ./${{ matrix.directory }}${{ steps.context_path.outputs.DOCKERFILE }}/Dockerfile
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.directory }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ github.repository@L }}/${{ matrix.directory }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export digest
@@ -89,7 +89,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.directory }}
+          images: ${{ env.REGISTRY }}/${{ github.repository@L }}/${{ matrix.directory }}
           flavor: |
             latest=true
           tags: |
@@ -104,7 +104,7 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.directory }}@sha256:%s ' *)          
+            $(printf '${{ env.REGISTRY }}/${{ github.repository@L }}/${{ matrix.directory }}@sha256:%s ' *)          
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.directory }}:${{ steps.meta.outputs.version }}          
+          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ github.repository@L }}/${{ matrix.directory }}:${{ steps.meta.outputs.version }}          
