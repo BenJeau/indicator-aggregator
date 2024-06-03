@@ -8,6 +8,9 @@ jobs:
       fail-fast: false
       matrix:
         directory: [backend, frontend]
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/docker_common.yml
     with:
       directory: ${{ matrix.directory }}
