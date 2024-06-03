@@ -1,0 +1,14 @@
+name: CD - Build and push Docker images
+
+on: [workflow_dispatch]
+
+jobs:
+  directory-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: [backend, frontend]
+    uses: ./.github/workflows/docker_common.yml
+    with:
+      directory: ${{ matrix.directory }}
+    secrets: inherit
