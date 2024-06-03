@@ -15,8 +15,8 @@ RUN SQLX_OFFLINE=true cargo build --release
 
 FROM debian:bookworm-20240408-slim
 RUN apt-get update && apt-get install -y libpq-dev ca-certificates
-COPY --from=builder /app/target/release/backend /
+COPY --from=builder /app/target/release/server /
 
 EXPOSE 3456
 
-CMD [ "/backend" ]
+CMD [ "/server" ]
