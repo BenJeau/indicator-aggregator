@@ -495,7 +495,7 @@ const ListEditCreate: React.FC<Props> = ({
                                     <FormItem>
                                       <FormControl>
                                         <Input
-                                          className="bg-foreground/10 h-7 rounded-sm text-xs"
+                                          className="h-7 rounded-sm bg-foreground/10 text-xs"
                                           {...field}
                                         />
                                       </FormControl>
@@ -515,7 +515,7 @@ const ListEditCreate: React.FC<Props> = ({
                                           onValueChange={field.onChange}
                                           value={field.value}
                                         >
-                                          <SelectTrigger className="bg-primary/10 h-7 rounded-sm text-xs">
+                                          <SelectTrigger className="h-7 rounded-sm bg-primary/10 text-xs">
                                             <SelectValue />
                                           </SelectTrigger>
                                           <SelectContent>

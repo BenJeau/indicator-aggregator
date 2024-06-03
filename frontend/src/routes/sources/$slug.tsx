@@ -87,7 +87,7 @@ const SourceComponent: React.FC = () => {
     <div className="relative flex h-full flex-1 flex-col">
       <SectionPanelHeader
         outerClassName={cn(
-          isEdit && "blur-sm pointer-events-none select-none opacity-20",
+          isEdit && "pointer-events-none select-none opacity-20 blur-sm",
         )}
         titleIcon={
           <div
@@ -104,7 +104,7 @@ const SourceComponent: React.FC = () => {
           <>
             {source.data.description}
             {source.data.description.length === 0 && (
-              <span className="italic opacity-50 lowercase">
+              <span className="lowercase italic opacity-50">
                 <Trans id="no.description" />
               </span>
             )}
@@ -193,7 +193,7 @@ const SourceComponent: React.FC = () => {
             </div>
             <Separator className="mt-2" />
 
-            <div className="mt-2 flex flex-wrap justify-between gap-2 ">
+            <div className="mt-2 flex flex-wrap justify-between gap-2">
               <h2 className="flex items-center gap-2 font-medium">
                 <Badge
                   className="gap-2"
@@ -236,7 +236,7 @@ const SourceComponent: React.FC = () => {
 
             <div className="text-sm">
               {!source.data.limitEnabled && (
-                <span className="text-xs italic opacity-50 lowercase">
+                <span className="text-xs lowercase italic opacity-50">
                   <Trans id="no.limit.set" />
                 </span>
               )}
@@ -268,7 +268,7 @@ const SourceComponent: React.FC = () => {
 
             <div className="text-sm">
               {!source.data.taskEnabled && (
-                <span className="text-xs italic opacity-50 lowercase">
+                <span className="text-xs lowercase italic opacity-50">
                   <Trans id="no.background.task.set" />
                 </span>
               )}
@@ -300,7 +300,7 @@ const SourceComponent: React.FC = () => {
 
             <div className="text-sm">
               {!source.data.cacheEnabled && (
-                <span className="text-xs italic opacity-50 lowercase">
+                <span className="text-xs lowercase italic opacity-50">
                   <Trans id="no.cache.set" />
                 </span>
               )}
@@ -355,7 +355,7 @@ const SourceComponent: React.FC = () => {
                   {requiredSecret.map(SecretBadge)}
 
                   {requiredSecret.length === 0 && (
-                    <span className="text-xs italic opacity-50 lowercase">
+                    <span className="text-xs lowercase italic opacity-50">
                       <Trans id="no.required.secrets" />
                     </span>
                   )}
@@ -369,7 +369,7 @@ const SourceComponent: React.FC = () => {
                 <div className="mt-1">
                   {optionalSecret.map(SecretBadge)}
                   {optionalSecret.length === 0 && (
-                    <span className="text-xs italic opacity-50 lowercase">
+                    <span className="text-xs lowercase italic opacity-50">
                       <Trans id="no.optional.secrets" />
                     </span>
                   )}
@@ -384,7 +384,7 @@ const SourceComponent: React.FC = () => {
             </h2>
             {provider.data && <SearchResults.Provider data={provider.data} />}
             {!provider.data && (
-              <span className="text-xs italic opacity-50 lowercase">
+              <span className="text-xs lowercase italic opacity-50">
                 <Trans id="no.linked.provider" />
               </span>
             )}
@@ -397,7 +397,7 @@ const SourceComponent: React.FC = () => {
               <SearchResults.List key={ignoreList.id} data={ignoreList} />
             ))}
             {combinedIgnoreLists.length === 0 && (
-              <div className="text-xs italic opacity-50 lowercase">
+              <div className="text-xs lowercase italic opacity-50">
                 <Trans id="no.linked.ignore.lists" />
               </div>
             )}
@@ -420,7 +420,7 @@ const SourceComponent: React.FC = () => {
               <TitleEntryCount count={sourceRequests.data.length} />
             </h2>
             {sourceRequests.data.length === 0 && (
-              <div className="text-xs italic opacity-50 lowercase">
+              <div className="text-xs lowercase italic opacity-50">
                 <Trans id="no.requests" />
               </div>
             )}

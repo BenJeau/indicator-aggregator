@@ -10,18 +10,18 @@ export const Authentication: React.FC<React.PropsWithChildren> = ({
   const bg = useMemo(() => getRandomBackground(), []);
 
   return (
-    <div className="relative grid h-[800px] flex-col items-center justify-center lg:max-w-none lg:grid-cols-5 lg:ps-4 ">
-      <div className="hidden h-full flex-col gap-6 lg:flex col-span-3">
-        <div className="bg-muted relative h-full flex-grow rounded-xl text-white border border-black dark:border-border overflow-hidden">
+    <div className="relative grid h-[800px] flex-col items-center justify-center lg:max-w-none lg:grid-cols-5 lg:ps-4">
+      <div className="col-span-3 hidden h-full flex-col gap-6 lg:flex">
+        <div className="relative h-full flex-grow overflow-hidden rounded-xl border border-black bg-muted text-white dark:border-border">
           <img
             id="lowres-login-img"
             src={bg.small}
-            className="absolute object-cover blur-xl flex-1 h-full"
+            className="absolute h-full flex-1 object-cover blur-xl"
           />
           <img
             id="login-img"
             src={bg.big}
-            className="absolute object-cover blur-xl transition duration-1000 ease-out flex-1 h-full opacity-0"
+            className="absolute h-full flex-1 object-cover opacity-0 blur-xl transition duration-1000 ease-out"
             style={{ transitionProperty: "filter" }}
             onLoad={() => {
               setTimeout(() => {
@@ -38,9 +38,9 @@ export const Authentication: React.FC<React.PropsWithChildren> = ({
             }}
           />
           <div className="absolute inset-0 flex flex-col">
-            <div className="relative z-20 p-10 flex flex-col gap-4">
-              <div className="flex items-center rounded-xl text-5xl font-semibold gap-4">
-                <TrainFrontTunnel size={48} className="text-primary min-w-12" />
+            <div className="relative z-20 flex flex-col gap-4 p-10">
+              <div className="flex items-center gap-4 rounded-xl text-5xl font-semibold">
+                <TrainFrontTunnel size={48} className="min-w-12 text-primary" />
                 <span className="text-primary">Indicator</span> Aggregator
               </div>
               <Trans id="tagline" />
@@ -54,22 +54,22 @@ export const Authentication: React.FC<React.PropsWithChildren> = ({
             <div className="absolute bottom-0 left-0 right-0 top-0 rounded-xl bg-gradient-to-t from-black via-transparent to-transparent opacity-70 blur-md transition-all duration-500 hover:blur-none" />
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <Layouts.Public.Footer />
         </div>
       </div>
       <div className="absolute left-4 top-4 lg:hidden">
-        <div className="relative z-20 flex items-center text-3xl sm:text-5xl font-semibold text-black dark:text-white gap-x-2 sm:gap-4 flex-wrap">
-          <TrainFrontTunnel className="text-primary  sm:w-12 h-12" />
+        <div className="relative z-20 flex flex-wrap items-center gap-x-2 text-3xl font-semibold text-black dark:text-white sm:gap-4 sm:text-5xl">
+          <TrainFrontTunnel className="h-12 text-primary sm:w-12" />
           <span className="text-primary">Indicator</span> Aggregator
         </div>
       </div>
-      <div className="lg:p-8 lg:col-span-2">
+      <div className="lg:col-span-2 lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-8 sm:w-[350px]">
           {children}
         </div>
       </div>
-      <div className="absolute bottom-0 left-4 right-4 flex flex-wrap justify-between gap-4 items-center lg:hidden mt-8">
+      <div className="absolute bottom-0 left-4 right-4 mt-8 flex flex-wrap items-center justify-between gap-4 lg:hidden">
         <Layouts.Public.Footer />
       </div>
     </div>

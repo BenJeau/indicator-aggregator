@@ -45,7 +45,7 @@ export const Footer: React.FC<{ showHome?: boolean }> = ({ showHome }) => {
         </Button>
         <Button
           variant="link"
-          className="gap-2 text-sm text-black dark:text-white p-0"
+          className="gap-2 p-0 text-sm text-black dark:text-white"
           onClick={toggle}
         >
           <Languages size={16} />

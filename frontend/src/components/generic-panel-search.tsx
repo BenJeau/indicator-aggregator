@@ -55,20 +55,20 @@ function GenericPanelSearch<T>({
     <ResizablePanelGroup
       autoSaveId="side-panel"
       direction="horizontal"
-      className="flex-1 items-stretch h-full"
+      className="h-full flex-1 items-stretch"
       style={{ overflow: "auto" }}
     >
       <ResizablePanel
         minSize={30}
         className={cn(
-          "shadow-md flex-1 flex-col h-full flex md:flex",
+          "flex h-full flex-1 flex-col shadow-md md:flex",
           isDetailsView && "hidden",
         )}
       >
-        <div className="h-14 shadow bg-muted/25">
-          <div className="flex gap-2 h-full items-center px-4">
+        <div className="h-14 bg-muted/25 shadow">
+          <div className="flex h-full items-center gap-2 px-4">
             <Link to="/" className="flex md:hidden">
-              <Button className="p-0 w-8 h-8" variant="outline">
+              <Button className="h-8 w-8 p-0" variant="outline">
                 <ChevronLeft size={16} />
               </Button>
             </Link>
@@ -80,7 +80,7 @@ function GenericPanelSearch<T>({
             />
             {createLinkTo && (
               <Link to={createLinkTo}>
-                <Button className="p-0 w-8 h-8">
+                <Button className="h-8 w-8 p-0">
                   <CreateLinkIcon size={16} />
                 </Button>
               </Link>
@@ -89,7 +89,7 @@ function GenericPanelSearch<T>({
           <Separator />
         </div>
         {filteredData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full flex-1">
+          <div className="flex h-full flex-1 flex-col items-center justify-center">
             <Empty
               title={empty.title}
               description={empty.description}
@@ -118,7 +118,7 @@ function GenericPanelSearch<T>({
       <ResizableHandle className="hidden md:block" />
       <ResizablePanel
         minSize={50}
-        className={cn("flex-col flex-1 md:flex", !isDetailsView && "hidden")}
+        className={cn("flex-1 flex-col md:flex", !isDetailsView && "hidden")}
       >
         <Outlet />
       </ResizablePanel>

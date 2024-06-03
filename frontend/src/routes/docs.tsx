@@ -22,12 +22,12 @@ type DocumentationBlockProps =
 const DocumentationBlock: React.FC<
   React.PropsWithChildren<DocumentationBlockProps>
 > = ({ id, children, transId }) => (
-  <div className="flex gap-2 flex-col border rounded-xl p-4 bg-muted/25 hover:bg-muted/5 transition-colors duration-500 shadow text-sm">
-    <h2 id={id} className="font-semibold -mt-8 pt-8 pb-1 text-base">
+  <div className="flex flex-col gap-2 rounded-xl border bg-muted/25 p-4 text-sm shadow transition-colors duration-500 hover:bg-muted/5">
+    <h2 id={id} className="-mt-8 pb-1 pt-8 text-base font-semibold">
       <Trans id={transId ?? id} />
       <a
         href={`#${id}`}
-        className="transition-all hover:opacity-100 font-normal opacity-50 ms-2"
+        className="ms-2 font-normal opacity-50 transition-all hover:opacity-100"
       >
         #
       </a>
@@ -41,9 +41,9 @@ const DocsComponents: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="p-4 flex gap-6 flex-col">
+    <div className="flex flex-col gap-6 p-4">
       <div>
-        <h1 className="font-semibold text-lg -mt-4 pt-4" id="definitions">
+        <h1 className="-mt-4 pt-4 text-lg font-semibold" id="definitions">
           <Trans id="definitions" />
         </h1>
         <p className="text-sm">
@@ -59,7 +59,7 @@ const DocsComponents: React.FC = () => {
             <p>
               <Trans id="definitions.indicators.1" />
             </p>
-            <ul className="list-disc ms-4">
+            <ul className="ms-4 list-disc">
               {Object.entries(indicatorKindMapping).map(([key, kind]) => (
                 <li key={key}>
                   <b>{kind}</b>:{" "}
@@ -68,7 +68,7 @@ const DocsComponents: React.FC = () => {
                     id={`definitions.indicators.kind.descriptions.${key.toLowerCase()}`}
                   />
                   <li className="list-none">
-                    <code className="bg-muted rounded px-1 break-all text-xs">
+                    <code className="break-all rounded bg-muted px-1 text-xs">
                       {indicatorKindExamples[key as IndicatorKind]}
                     </code>
                   </li>
@@ -86,7 +86,7 @@ const DocsComponents: React.FC = () => {
             <p>
               <Trans id="definitions.lists.1" />
             </p>
-            <ol className="list-disc ms-4">
+            <ol className="ms-4 list-disc">
               {([0, 1, 2] as const).map((i) => (
                 <li
                   key={i}
@@ -113,7 +113,7 @@ const DocsComponents: React.FC = () => {
             <p>
               <Trans id="definitions.sources.1" />
             </p>
-            <ul className="list-disc ms-4">
+            <ul className="ms-4 list-disc">
               {([0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const).map((i) => (
                 <li key={i}>
                   <Trans id={`definitions.sources.2.list.${i}`} />
@@ -156,10 +156,10 @@ const DocsComponents: React.FC = () => {
           </DocumentationBlock>
         </div>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h1
-            className="font-semibold text-lg -mt-4 pt-4"
+            className="-mt-4 pt-4 text-lg font-semibold"
             id="api-documentation"
           >
             <Trans id="docs.rest.api.doc.title" />
@@ -191,7 +191,7 @@ const DocsComponents: React.FC = () => {
           </a>
         </div>
       </div>
-      <div className="rounded-xl overflow-hidden shadow border">
+      <div className="overflow-hidden rounded-xl border shadow">
         <iframe
           src={`${config.rest_server_base_url}/docs`}
           width="100%"

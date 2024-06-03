@@ -1,6 +1,6 @@
 const Code: React.FC<React.PropsWithChildren> = (props) => (
   <code
-    className="bg-foreground/5 dark:bg-foreground/30 rounded-sm px-1"
+    className="rounded-sm bg-foreground/5 px-1 dark:bg-foreground/30"
     {...props}
   />
 );

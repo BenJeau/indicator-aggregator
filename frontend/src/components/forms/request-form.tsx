@@ -102,7 +102,7 @@ const RequestForm = forwardRef<Ref, Props>(
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="bg-background/50 sticky top-0 z-10 p-4 pb-0 backdrop-blur-md"
+          className="sticky top-0 z-10 bg-background/50 p-4 pb-0 backdrop-blur-md"
         >
           <div className="top-0 flex flex-col gap-4 md:flex-row">
             <div className="flex flex-1 flex-wrap gap-4">
@@ -225,7 +225,7 @@ const RequestForm = forwardRef<Ref, Props>(
                               const Icon = indicatorKindIconMapping[value];
                               return (
                                 <SelectItem key={value} value={value}>
-                                  <div className="flex gap-2 items-center">
+                                  <div className="flex items-center gap-2">
                                     <Icon size={14} />
                                     {indicatorKindMapping[value]}
                                   </div>

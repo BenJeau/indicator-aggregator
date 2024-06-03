@@ -90,7 +90,7 @@ const Login: React.FC<Props> = ({ onSubmit, loading, error }) => {
         />
         <AutoAnimate>
           <Button
-            className="gap-2 w-full"
+            className="w-full gap-2"
             type="submit"
             variant={isError ? "destructive" : undefined}
             disabled={loading}

@@ -25,7 +25,7 @@ const ConfigComponent: React.FC = () => {
   return (
     <div className="flex flex-col gap-2 p-4">
       <ApiTokensTable apiTokens={apiTokens.data} />
-      <Separator className="mt-4 mb-2" />
+      <Separator className="mb-2 mt-4" />
       <SecretsTable secrets={secrets.data} />
       <Separator className="mt-4" />
       <GeneralServerConfig config={config.data} />

@@ -39,7 +39,7 @@ const Signup: React.FC = () => {
         <h1 className="text-2xl font-semibold tracking-tight">
           <Trans id="signup" />
         </h1>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           <Trans id="signup.description" />
         </p>
       </div>
@@ -48,12 +48,12 @@ const Signup: React.FC = () => {
           onSubmit={handleOnSubmit}
           loading={signup.isPending}
         />
-        <p className="text-xs text-center text-muted-foreground mt-2">
+        <p className="mt-2 text-center text-xs text-muted-foreground">
           <Trans
             id="signup.login.description"
             link={
               <Link
-                className="underline text-primary"
+                className="text-primary underline"
                 to="/auth/login"
                 search={{ next }}
               >

@@ -14,7 +14,7 @@ const HistorySearchResult: React.FC<ComponentSearchResultProps<Request>> = ({
     activeProps={{
       className: "bg-primary/10 border-primary shadow-primary/40",
     }}
-    className="border rounded-xl p-4 shadow-sm flex gap-2 flex-col hover:bg-muted transition-all duration-100 ease-in-out"
+    className="flex flex-col gap-2 rounded-xl border p-4 shadow-sm transition-all duration-100 ease-in-out hover:bg-muted"
   >
     <div className="flex flex-col">
       <div className="flex justify-between gap-2">

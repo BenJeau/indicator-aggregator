@@ -9,7 +9,7 @@ interface Props {
 const TitleEntryCount: React.FC<Props> = ({ count, className }) => (
   <span
     className={cn(
-      "text-xs opacity-50 font-normal whitespace-nowrap lowercase",
+      "whitespace-nowrap text-xs font-normal lowercase opacity-50",
       className,
     )}
   >

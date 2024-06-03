@@ -48,7 +48,7 @@ const Login: React.FC = () => {
         <h1 className="text-2xl font-semibold tracking-tight">
           <Trans id="login" />
         </h1>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           <Trans id="authentication.description" />
         </p>
       </div>
@@ -76,7 +76,7 @@ const Login: React.FC = () => {
         {(microsoftEnabled || googleEnabled) && (
           <div className="relative my-8 flex items-center justify-center">
             <hr className="flex-1" />
-            <div className="self-center italic text-muted-foreground text-xs absolute text-center bg-background px-6">
+            <div className="absolute self-center bg-background px-6 text-center text-xs italic text-muted-foreground">
               <Trans id="login.alternative.description" />
             </div>
           </div>
@@ -86,12 +86,12 @@ const Login: React.FC = () => {
           loading={login.isPending}
           error={login.isError}
         />
-        <p className="text-xs text-center text-muted-foreground mt-2">
+        <p className="mt-2 text-center text-xs text-muted-foreground">
           <Trans
             id="login.signup.description"
             link={
               <Link
-                className="underline text-primary"
+                className="text-primary underline"
                 to={"/auth/signup"}
                 search={{ next }}
               >

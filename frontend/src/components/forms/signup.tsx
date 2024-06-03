@@ -82,7 +82,7 @@ const Signup: React.FC<Props> = ({ onSubmit, loading }) => {
           )}
         />
         <AutoAnimate>
-          <Button className="gap-2 w-full" type="submit" disabled={loading}>
+          <Button className="w-full gap-2" type="submit" disabled={loading}>
             <AutoAnimate>
               {loading && <Loader2 size={16} className="animate-spin" />}
               {!loading && <LogIn size={16} />}

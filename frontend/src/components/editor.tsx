@@ -73,7 +73,7 @@ const Editor: React.FC<Props> = ({ value, onChange, ...props }) => {
         bracketPairColorization: { enabled: true },
         theme: theme === "light" ? "vs" : "vs-dark",
       }}
-      className="shadow border"
+      className="border shadow"
     />
   );
 };

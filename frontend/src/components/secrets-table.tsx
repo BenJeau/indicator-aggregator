@@ -78,7 +78,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
       <div className="flex flex-wrap justify-between gap-2">
         <div>
           <h2 className="flex items-baseline gap-2">
-            <span className="font-semibold text-lg">
+            <span className="text-lg font-semibold">
               <Trans id="secrets" />
             </span>
             <TitleEntryCount count={secrets.length} />
@@ -90,7 +90,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
             </span>
           </p>
         </div>
-        <div className="flex items-end flex-1 justify-end">
+        <div className="flex flex-1 items-end justify-end">
           <Button
             className="gap-2"
             size="sm"
@@ -153,10 +153,10 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
 
                 {showForm && (
                   <TableRow>
-                    <TableCell className="italic opacity-50 hidden xl:table-cell">
+                    <TableCell className="hidden italic opacity-50 xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
-                    <TableCell className="italic opacity-50 hidden 2xl:table-cell">
+                    <TableCell className="hidden italic opacity-50 2xl:table-cell">
                       <Trans id="now" />
                     </TableCell>
                     <TableCell>
@@ -169,7 +169,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                               <Input
                                 {...field}
                                 placeholder={`${t("e.g.")} SOURCE_API_KEY`}
-                                className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                                className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                               />
                             </FormControl>
                             <FormMessage />
@@ -189,7 +189,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                                 placeholder={t(
                                   "secrets.table.description.placholder",
                                 )}
-                                className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                                className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                               />
                             </FormControl>
                             <FormMessage />
@@ -207,7 +207,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                               <Input
                                 {...field}
                                 placeholder={`${t("e.g.")} ABCDEFGHIJKLMNOP`}
-                                className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                                className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                               />
                             </FormControl>
                             <FormMessage />
@@ -235,7 +235,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                         )}
                       />
                     </TableCell>
-                    <TableCell className="italic opacity-50 hidden lg:table-cell">
+                    <TableCell className="hidden italic opacity-50 lg:table-cell">
                       0
                     </TableCell>
                     <TableCell>
@@ -321,7 +321,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                   <Input
                     {...field}
                     placeholder={`${t("e.g.")} SOURCE_API_KEY`}
-                    className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                    className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                   />
                 </FormControl>
                 <FormMessage />
@@ -343,7 +343,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                   <Input
                     {...field}
                     placeholder={t("secrets.table.description.placholder")}
-                    className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                    className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                   />
                 </FormControl>
                 <FormMessage />
@@ -352,7 +352,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
           />
         ) : (
           row.description ?? (
-            <span className="italic opacity-50 lowercase">
+            <span className="lowercase italic opacity-50">
               <Trans id="no.description" />
             </span>
           )
@@ -369,7 +369,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
                   <Input
                     {...field}
                     placeholder={`${t("e.g.")} ABCDEFGHIJKLMNOP`}
-                    className="dark:bg-foreground/10 h-7 rounded-sm text-xs"
+                    className="h-7 rounded-sm text-xs dark:bg-foreground/10"
                   />
                 </FormControl>
                 <FormMessage />
@@ -411,7 +411,7 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
         ) : row.expiresAt ? (
           dayjs.utc(row.expiresAt).local().format("LL")
         ) : (
-          <span className="italic opacity-50 lowercase">
+          <span className="lowercase italic opacity-50">
             <Trans id="no.expiration" />
           </span>
         )}

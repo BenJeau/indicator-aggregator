@@ -72,7 +72,7 @@ const Nav: React.FC<NavProps> = ({ links, isCollapsed }) => (
                     "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
                   "disabled" in link &&
                     link.disabled &&
-                    "opacity-50 cursor-default hover:bg-transparent hover:text-current",
+                    "cursor-default opacity-50 hover:bg-transparent hover:text-current",
                 )}
                 size="icon"
                 {...link}

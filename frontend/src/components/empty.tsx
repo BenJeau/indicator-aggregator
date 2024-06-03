@@ -21,13 +21,13 @@ const Empty: React.FC<Props> = ({
 }) => (
   <div
     className={cn(
-      "flex flex-col gap-2 items-center justify-center flex-1 self-center justify-self-center p-4",
+      "flex flex-1 flex-col items-center justify-center gap-2 self-center justify-self-center p-4",
       className,
     )}
   >
     {image && <img src={image} width={imageWidth} />}
-    <div className="flex items-center flex-col text-center">
-      <h2 className="font-semibold text-lg">
+    <div className="flex flex-col items-center text-center">
+      <h2 className="text-lg font-semibold">
         <Trans id={title} />
       </h2>
       <p className="text-sm">

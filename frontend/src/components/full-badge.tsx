@@ -18,9 +18,9 @@ const FullBadge: React.FC<Props> = ({
   value,
   valueBadgeProps,
 }) => (
-  <Badge className="p-0 bg-transparent" variant="secondary">
+  <Badge className="bg-transparent p-0" variant="secondary">
     {(Icon || label) && (
-      <span className="px-2 gap-2 flex">
+      <span className="flex gap-2 px-2">
         {Icon && <Icon size={14} strokeWidth={3} />}
         {label && <Trans id={label} />}
       </span>

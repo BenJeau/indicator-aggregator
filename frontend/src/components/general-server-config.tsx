@@ -125,7 +125,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
         onSubmit={form.handleSubmit(handleOnSubmit)}
         className="flex flex-col gap-4"
       >
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="mt-2 flex flex-col gap-4">
           {Object.entries(groupedConfig).map(([category, data]) => (
             <div className="flex flex-col gap-2">
               <h2 className="text-lg font-semibold">{category}</h2>
@@ -144,7 +144,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
             </div>
           ))}
         </div>
-        <div className="flex gap-2 justify-between">
+        <div className="flex justify-between gap-2">
           <div className="flex gap-2">
             <Button
               variant="destructive"
@@ -230,14 +230,14 @@ const ConfigEntry: React.FC<{
         <FormItem
           className={`col-span-12 ${numberToColSpan[configGridColMapping[kind]]}`}
         >
-          <div className="flex justify-between items-center">
-            <div className="text-md gap-4 flex">
+          <div className="flex items-center justify-between">
+            <div className="text-md flex gap-4">
               {friendlyName}
               <Tooltip>
                 <TooltipTrigger>
                   <CalendarClock
                     size={14}
-                    className="opacity-50 hover:opacity-100 transition-opacity"
+                    className="opacity-50 transition-opacity hover:opacity-100"
                   />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -253,7 +253,7 @@ const ConfigEntry: React.FC<{
                 <TooltipTrigger>
                   <Hash
                     size={14}
-                    className="opacity-50 hover:opacity-100 transition-opacity"
+                    className="opacity-50 transition-opacity hover:opacity-100"
                   />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -268,7 +268,7 @@ const ConfigEntry: React.FC<{
             </div>
             {field.value !== defaultValue && (
               <Button
-                className="gap-2 h-6 "
+                className="h-6 gap-2"
                 variant="ghost"
                 size="sm"
                 type="button"
