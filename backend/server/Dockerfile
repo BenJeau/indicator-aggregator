@@ -1,6 +1,6 @@
 FROM rust:1.78.0-slim-bookworm as builder-chef
 RUN cargo install --version 0.1.66 cargo-chef
-RUN apt-get update && apt-get install -y libpq-dev libssl-dev pkg-config protobuf-compiler python3-dev
+RUN apt-get update && apt-get install -y libpq-dev libssl-dev pkg-config protobuf-compiler python3-dev cmake
 WORKDIR /app
 
 FROM builder-chef as planner
@@ -15,8 +15,8 @@ RUN SQLX_OFFLINE=true cargo build --release
 
 FROM debian:bookworm-20240408-slim
 RUN apt-get update && apt-get install -y libpq-dev ca-certificates
-COPY --from=builder /app/target/release/backend /
+COPY --from=builder /app/target/release/server /
 
 EXPOSE 3456
 
-CMD [ "/backend" ]
+CMD [ "/server" ]
