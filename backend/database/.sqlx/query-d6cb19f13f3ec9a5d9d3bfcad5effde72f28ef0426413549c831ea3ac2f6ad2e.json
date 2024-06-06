@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO ignore_list_entries (data, indicator_kind, ignore_list_id) VALUES (UNNEST($1::TEXT[]), UNNEST($2::TEXT[]), $3) RETURNING id",
+  "query": "INSERT INTO ignore_list_entries (data, indicator_kind, ignore_list_id, created_user_id) VALUES (UNNEST($1::TEXT[]), UNNEST($2::TEXT[]), $3, $4) RETURNING id",
   "describe": {
     "columns": [
       {
@@ -13,6 +13,7 @@
       "Left": [
         "TextArray",
         "TextArray",
+        "Text",
         "Text"
       ]
     },
@@ -20,5 +21,5 @@
       false
     ]
   },
-  "hash": "fbfee857e407edb74c5bbecb7cb5b5a1b6a98689de431d0525f8e9a800ef3a24"
+  "hash": "d6cb19f13f3ec9a5d9d3bfcad5effde72f28ef0426413549c831ea3ac2f6ad2e"
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT secrets.id, secrets.created_at, secrets.updated_at, secrets.name, secrets.description, secrets.expires_at, count(source_secrets.id)::INT as \"num_sources!\" FROM secrets LEFT JOIN source_secrets ON secrets.id = source_secrets.secret_id GROUP BY secrets.id",
+  "query": "SELECT secrets.id, secrets.created_at, secrets.updated_at, secrets.name, secrets.description, secrets.expires_at, secrets.created_user_id, secrets.updated_user_id, count(source_secrets.id)::INT as \"num_sources!\" FROM secrets LEFT JOIN source_secrets ON secrets.id = source_secrets.secret_id GROUP BY secrets.id",
   "describe": {
     "columns": [
       {
@@ -35,6 +35,16 @@
       },
       {
         "ordinal": 6,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "updated_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
         "name": "num_sources!",
         "type_info": "Int4"
       }
@@ -49,8 +59,10 @@
       false,
       true,
       true,
+      false,
+      true,
       null
     ]
   },
-  "hash": "eaaf1309cfb5138d838bf08189692e11bf83cb93a6a7b834c30350ea33173f09"
+  "hash": "ca6cfcd1b7fdf1bf7a3289cef95f45c31a2a08b61cbc37289964311d478a283d"
 }

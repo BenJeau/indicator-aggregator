@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id,\ncreated_at,\nupdated_at,\nsecret_id,\nname,\ndescription,\nrequired\nFROM source_secrets\nWHERE source_id = $1",
+  "query": "SELECT id,\ncreated_at,\nupdated_at,\nsecret_id,\nname,\ndescription,\nrequired,\ncreated_user_id,\nupdated_user_id\nFROM source_secrets\nWHERE source_id = $1",
   "describe": {
     "columns": [
       {
@@ -37,6 +37,16 @@
         "ordinal": 6,
         "name": "required",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "updated_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -51,8 +61,10 @@
       true,
       false,
       true,
-      false
+      false,
+      false,
+      true
     ]
   },
-  "hash": "70c266c1155ecea08bfd0e870631b2a1df6eea73fbc3bdb8e44472eea6aa240f"
+  "hash": "6e9627e5f14007bacc88c3e60019b6e4ae39c0c10cdc424bd6f082265d9cc0f9"
 }

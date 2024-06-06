@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO server_config (key, value, last_modified_user_id)\nSELECT *, $3 FROM UNNEST($1::text[], $2::text[]) AS t(key, value)\nON CONFLICT (key) DO UPDATE\nSET value = EXCLUDED.value,\nlast_modified_user_id = EXCLUDED.last_modified_user_id\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "TextArray",
+        "TextArray",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f9c87e6ccb6fb0c200fb7fbf98047fd5383d4be6832a24a7bcfeba67fb61b19f"
+}

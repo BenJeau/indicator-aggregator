@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\nINSERT INTO sources (name, slug, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)\nRETURNING id, slug",
+  "query": "\nINSERT INTO sources (name, slug, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval, created_user_id)\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)\nRETURNING id, slug",
   "describe": {
     "columns": [
       {
@@ -46,7 +46,8 @@
         },
         "Text",
         "Bool",
-        "Int4"
+        "Int4",
+        "Text"
       ]
     },
     "nullable": [
@@ -54,5 +55,5 @@
       false
     ]
   },
-  "hash": "1070bd4a75ecef08b7cf116fd863ed07c39f408bf0e69279760c1e61a321f9d7"
+  "hash": "10f0b54d9fba2bf565863cd91d9e36bdb84d0a858c3d99c9a04e5b3f66a19f63"
 }

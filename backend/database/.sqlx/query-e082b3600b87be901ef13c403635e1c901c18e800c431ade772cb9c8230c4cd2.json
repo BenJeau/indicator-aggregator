@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE secrets SET name = COALESCE($1, name), value = COALESCE(pgp_sym_encrypt_bytea($2, $3), value), updated_user_id = $4 WHERE id = $5",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bytea",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e082b3600b87be901ef13c403635e1c901c18e800c431ade772cb9c8230c4cd2"
+}
