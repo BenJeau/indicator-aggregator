@@ -1,6 +1,14 @@
-# Indicator Aggregator
+# ![Indicator Aggregator Logo](./frontend/public/logo-small.png) Indicator Aggregator [![GitHub milestone details](https://img.shields.io/github/milestones/progress-percent/benjeau/indicator-aggregator/1?logo=github&label=V1%20Milestone)](https://github.com/BenJeau/indicator-aggregator/milestone/1)
+
+[![GitHub Actions Workflow Status - Rust Compilation](https://img.shields.io/github/actions/workflow/status/BenJeau/indicator-aggregator/rust_check.yml?logo=github&label=Rust%20Compilation)](https://github.com/BenJeau/indicator-aggregator/actions/workflows/rust_check.yml)
+[![GitHub Actions Workflow Status - TypeScript Compilation](https://img.shields.io/github/actions/workflow/status/BenJeau/indicator-aggregator/react_check.yml?logo=github&label=TypeScript%20Compilation)](https://github.com/BenJeau/indicator-aggregator/actions/workflows/react_check.yml)
+[![GitHub Actions Workflow Status - Rustfmt Check](https://img.shields.io/github/actions/workflow/status/BenJeau/indicator-aggregator/rust_fmt.yml?logo=github&label=Rustfmt%20Check)](https://github.com/BenJeau/indicator-aggregator/actions/workflows/rust_fmt.yml)
+[![GitHub Actions Workflow Status - Prettier Check](https://img.shields.io/github/actions/workflow/status/BenJeau/indicator-aggregator/react_fmt.yml?logo=github&label=Prettier%20Check)](https://github.com/BenJeau/indicator-aggregator/actions/workflows/react_fmt.yml)
+[![GitHub Actions Workflow Status - Docker Compilation](https://img.shields.io/github/actions/workflow/status/BenJeau/indicator-aggregator/docker.yml?logo=github&label=Docker%20Compilation)](https://github.com/BenJeau/indicator-aggregator/actions/workflows/docker.yml)
 
 A centralized platform aggregating various data sources with multiple nice add-on features. The backend is written in Rust and the frontend is in TypeScript using React.
+
+This project is still in development and is not yet ready for production use. You can monitor the project's progress on the [project board](https://github.com/users/BenJeau/projects/6), by looking at the [issues](https://github.com/BenJeau/indicator-aggregator/issues), and [milestones](https://github.com/BenJeau/indicator-aggregator/milestones).
 
 ![Screenshot of the sources page of the frontend](./frontend/screenshot.png)
 
