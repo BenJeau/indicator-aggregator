@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT sources.id,\nsources.created_at,\nsources.updated_at,\nsources.name,\nsources.slug,\nsources.description,\nsources.url,\nsources.favicon,\nsources.tags,\nsources.enabled,\nsources.supported_indicators,\nsources.disabled_indicators,\nsources.task_enabled,\nsources.task_interval,\nsources.config,\nsources.config_values,\nsources.limit_enabled,\nsources.limit_count,\nsources.limit_interval,\nsources.cache_enabled,\nsources.cache_interval,\nsources.provider_id,\nsources.kind as \"kind: _\",\nsources.source_code\nFROM sources\nINNER JOIN source_ignore_lists ON source_ignore_lists.source_id = sources.id\nWHERE source_ignore_lists.ignore_list_id = $1",
+  "query": "SELECT id,\ncreated_at,\nupdated_at,\nname,\nslug,\ndescription,\nurl,\nfavicon,\ntags,\nenabled,\nsupported_indicators,\ndisabled_indicators,\ntask_enabled,\ntask_interval,\nconfig,\nconfig_values,\nlimit_enabled,\nlimit_count,\nlimit_interval,\ncache_enabled,\ncache_interval,\nprovider_id,\nkind as \"kind: _\",\nsource_code,\ncreated_user_id,\nupdated_user_id\nFROM sources WHERE id = $1",
   "describe": {
     "columns": [
       {
@@ -133,6 +133,16 @@
         "ordinal": 23,
         "name": "source_code",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 24,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 25,
+        "name": "updated_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -164,8 +174,10 @@
       true,
       true,
       false,
+      true,
+      false,
       true
     ]
   },
-  "hash": "835a76f5685835985180976d8d2b8641f43d560706d888c43bea7298e36effea"
+  "hash": "eb66aae32866bdf26b41fbec4e185950569a366819d42f3e0923197798529d65"
 }

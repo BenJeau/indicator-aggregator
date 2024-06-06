@@ -4,8 +4,8 @@ use sqlx::FromRow;
 use typeshare::typeshare;
 use utoipa::{IntoParams, ToSchema};
 
-/// A secret
-#[derive(FromRow, Serialize, ToSchema)]
+/// A secret with the number of sources that use it
+#[derive(FromRow, Serialize, ToSchema, Debug)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct Secret {
@@ -21,6 +21,12 @@ pub struct Secret {
     pub description: Option<String>,
     /// The time the secret expires
     pub expires_at: Option<NaiveDateTime>,
+    /// Database ID of the user who created the secret
+    pub created_user_id: String,
+    /// Database ID of the user who last updated the secret
+    pub updated_user_id: Option<String>,
+    /// The number of sources that use this secret
+    pub num_sources: i32,
 }
 
 /// Defining secrets needed for a source and the link between a source and a secret
@@ -42,27 +48,10 @@ pub struct SourceSecret {
     pub description: Option<String>,
     /// Wether the source secret needs a secret linked for the source to work
     pub required: bool,
-}
-
-/// A secret with the number of sources that use it
-#[derive(FromRow, Serialize, ToSchema, Debug)]
-#[serde(rename_all = "camelCase")]
-#[typeshare]
-pub struct SecretWithNumSources {
-    /// The database ID of the secret
-    pub id: String,
-    /// The time the secret was created
-    pub created_at: NaiveDateTime,
-    /// The time the secret was last updated
-    pub updated_at: NaiveDateTime,
-    /// The name of the secret
-    pub name: String,
-    /// The description of the secret
-    pub description: Option<String>,
-    /// The time the secret expires
-    pub expires_at: Option<NaiveDateTime>,
-    /// The number of sources that use this secret
-    pub num_sources: i32,
+    /// Database ID of the user who created the source secret
+    pub created_user_id: String,
+    /// Database ID of the user who last updated the source secret
+    pub updated_user_id: Option<String>,
 }
 
 /// Parameters for creating a new secret

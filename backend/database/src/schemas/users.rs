@@ -18,7 +18,7 @@ pub struct User {
     pub updated_at: NaiveDateTime,
     /// OpenID authentication ID of the user, if user authenticated via an OpenID provider
     pub auth_id: Option<String>,
-    /// Authentication provider of the user, either an OpenID provider or "IndicatorAggregator"
+    /// Authentication provider of the user, either an OpenID provider or "Indicator Aggregator"
     pub provider: String,
     /// Whether the user is enabled or not, if they are able to login/access the platform
     pub enabled: bool,

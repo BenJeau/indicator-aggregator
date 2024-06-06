@@ -2,10 +2,13 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
+    Extension, Json,
 };
-use database::PgPool;
-use database::{logic::ignore_lists, schemas::ignore_lists::UpdateIgnoreList};
+use database::{
+    logic::ignore_lists,
+    schemas::{ignore_lists::UpdateIgnoreList, users::User},
+    PgPool,
+};
 
 use crate::Result;
 
@@ -25,10 +28,11 @@ use crate::Result;
 )]
 pub async fn patch_list(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Path(list_id): Path<String>,
     Json(data): Json<UpdateIgnoreList>,
 ) -> Result<impl IntoResponse> {
-    let num_affected = ignore_lists::update_list(&pool, &list_id, data).await?;
+    let num_affected = ignore_lists::update_list(&pool, &list_id, data, &user.id).await?;
 
     if num_affected > 0 {
         Ok(StatusCode::NO_CONTENT)

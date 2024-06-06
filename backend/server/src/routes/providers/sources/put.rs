@@ -4,8 +4,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use database::logic::providers;
-use database::PgPool;
+use database::{logic::providers, PgPool};
 
 use crate::Result;
 
@@ -33,6 +32,7 @@ pub async fn put_provider_sources(
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;
 
+    // TODO: don't unset and set everything... then set the updated_user_id accordingly
     providers::unset_all_provider_sources(&mut *transaction, &provider_id).await?;
     providers::set_all_provider_sources(&mut *transaction, &provider_id, &source_ids).await?;
 

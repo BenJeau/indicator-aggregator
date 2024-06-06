@@ -35,17 +35,22 @@ pub async fn get_provider_id_from_slug(pool: &PgPool, slug: &str) -> Result<Opti
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_provider(pool: &PgPool, provider: CreateProvider) -> Result<IdSlug> {
+pub async fn create_provider(
+    pool: &PgPool,
+    provider: CreateProvider,
+    user_id: &str,
+) -> Result<IdSlug> {
     sqlx::query_as!(
         IdSlug,
-        "INSERT INTO providers (name, slug, description, url, favicon, tags, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, slug",
+        "INSERT INTO providers (name, slug, description, url, favicon, tags, enabled, created_user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, slug",
         provider.name,
         slugify(&provider.name),
         provider.description,
         provider.url,
         provider.favicon,
         provider.tags as Option<Vec<String>>,
-        provider.enabled
+        provider.enabled,
+        user_id
     )
     .fetch_one(pool)
     .await
@@ -71,7 +76,12 @@ GROUP BY providers.id"#,
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn patch_provider(pool: &PgPool, id: &str, provider: PatchProvider) -> Result<u64> {
+pub async fn patch_provider(
+    pool: &PgPool,
+    id: &str,
+    provider: PatchProvider,
+    user_id: &str,
+) -> Result<u64> {
     sqlx::query!(
         r#"UPDATE providers SET
 name = COALESCE($1, name),
@@ -80,8 +90,9 @@ description = COALESCE($3, description),
 url = COALESCE($4, url),
 favicon = COALESCE($5, favicon),
 tags = COALESCE($6, tags),
-enabled = COALESCE($7, enabled)
-WHERE id = $8"#,
+enabled = COALESCE($7, enabled),
+updated_user_id = $8
+WHERE id = $9"#,
         provider.name,
         provider.name.as_ref().map(|n| slugify(&n)),
         provider.description,
@@ -89,6 +100,7 @@ WHERE id = $8"#,
         provider.favicon,
         provider.tags as Option<Vec<String>>,
         provider.enabled,
+        user_id,
         id
     )
     .execute(pool)
@@ -129,11 +141,13 @@ pub async fn add_provider_ignore_lists<'e>(
     pool: impl PgExecutor<'e>,
     source_provider_id: &str,
     ignore_list_ids: &[String],
+    user_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO provider_ignore_lists (ignore_list_id, source_provider_id) VALUES (UNNEST($1::TEXT[]), $2)",
+        "INSERT INTO provider_ignore_lists (ignore_list_id, source_provider_id, user_id) VALUES (UNNEST($1::TEXT[]), $2, $3)",
         ignore_list_ids,
-        source_provider_id
+        source_provider_id,
+        user_id
     )
     .execute(pool)
     .await

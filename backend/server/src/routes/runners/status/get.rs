@@ -2,8 +2,7 @@ use axum::{
     extract::State,
     response::{sse::KeepAlive, IntoResponse, Sse},
 };
-use database::schemas::sources::SourceKind;
-use database::PgPool;
+use database::{schemas::sources::SourceKind, PgPool};
 
 use crate::{runners::stream_health_check, Result};
 

@@ -3,8 +3,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use database::logic::secrets;
-use database::PgPool;
+use database::{logic::secrets, PgPool};
 
 use crate::{Result, ServerState};
 
@@ -14,7 +13,7 @@ use crate::{Result, ServerState};
     path = "/secrets",
     tag = "secrets",
     responses(
-        (status = 200, description = "Secrets retrieved successfully", body = [SecretWithNumSources]),
+        (status = 200, description = "Secrets retrieved successfully", body = [Secret]),
     )
 )]
 pub async fn get_secrets(State(pool): State<PgPool>) -> Result<impl IntoResponse> {

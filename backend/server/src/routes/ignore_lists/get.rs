@@ -1,13 +1,11 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
     response::IntoResponse,
     Json,
 };
-use database::logic::ignore_lists;
-use database::PgPool;
+use database::{logic::ignore_lists, PgPool};
 
-use crate::Result;
+use crate::{Error, Result};
 
 /// Get all ignore lists
 #[utoipa::path(
@@ -41,13 +39,11 @@ pub async fn get_list(
     State(pool): State<PgPool>,
     Path(list_id): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let list = ignore_lists::get_list(&pool, &list_id).await?;
+    let list = ignore_lists::get_list(&pool, &list_id)
+        .await?
+        .ok_or(Error::NotFound)?;
 
-    if let Some(list) = list {
-        Ok(Json(list).into_response())
-    } else {
-        Ok(StatusCode::NOT_FOUND.into_response())
-    }
+    Ok(Json(list))
 }
 
 /// Get the ignore lists affecting all sources

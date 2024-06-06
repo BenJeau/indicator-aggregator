@@ -1,13 +1,11 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
     response::IntoResponse,
     Json,
 };
-use database::logic::requests;
-use database::PgPool;
+use database::{logic::requests, PgPool};
 
-use crate::Result;
+use crate::{Error, Result};
 
 /// Get all requests
 #[utoipa::path(
@@ -41,13 +39,11 @@ pub async fn get_request(
     State(pool): State<PgPool>,
     Path(request_id): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let request = requests::get_request(&pool, &request_id).await?;
+    let request = requests::get_request(&pool, &request_id)
+        .await?
+        .ok_or(Error::NotFound)?;
 
-    if let Some(request) = request {
-        Ok(Json(request).into_response())
-    } else {
-        Ok(StatusCode::NOT_FOUND.into_response())
-    }
+    Ok(Json(request))
 }
 
 /// Get request data

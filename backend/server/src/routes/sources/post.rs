@@ -1,8 +1,11 @@
-use axum::{extract::State, response::IntoResponse, Json};
-use database::PgPool;
+use axum::{extract::State, response::IntoResponse, Extension, Json};
 use database::{
     logic::sources,
-    schemas::sources::{CreateSource, SourceKind},
+    schemas::{
+        sources::{CreateSource, SourceKind},
+        users::User,
+    },
+    PgPool,
 };
 
 use crate::{runners::send_update_request, Result};
@@ -23,9 +26,10 @@ use crate::{runners::send_update_request, Result};
 )]
 pub async fn create_source(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Json(source): Json<CreateSource>,
 ) -> Result<impl IntoResponse> {
-    let created_source = sources::create_source(&pool, &source).await?;
+    let created_source = sources::create_source(&pool, &source, &user.id).await?;
 
     if source.kind != SourceKind::System {
         if let Some(source_code) = source.source_code {

@@ -39,7 +39,6 @@ $$;
 CREATE TYPE "source_kind" AS ENUM ('system', 'javascript', 'python');
 CREATE TYPE "server_config_kind" AS ENUM ('string', 'number', 'boolean', 'code');
 
-
 CREATE TABLE IF NOT EXISTS "users" (
     "id" TEXT PRIMARY KEY DEFAULT nanoid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
@@ -106,7 +105,12 @@ CREATE TABLE IF NOT EXISTS "providers" (
     "url" TEXT NOT NULL,
     "favicon" TEXT,
     "tags" TEXT[] NOT NULL,
-    "enabled" BOOLEAN NOT NULL DEFAULT TRUE
+    "enabled" BOOLEAN NOT NULL DEFAULT TRUE,
+    "created_user_id" TEXT NOT NULL,
+    "updated_user_id" TEXT,
+
+    FOREIGN KEY ("created_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("updated_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "sources" (
@@ -135,8 +139,12 @@ CREATE TABLE IF NOT EXISTS "sources" (
     "cache_enabled" BOOLEAN NOT NULL DEFAULT FALSE,
     "cache_interval" INTEGER,
 
+    "created_user_id" TEXT NOT NULL,
+    "updated_user_id" TEXT,
     "provider_id" TEXT,
 
+    FOREIGN KEY ("created_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("updated_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY ("provider_id") REFERENCES "providers" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
 
     CONSTRAINT "source_code_check" CHECK (
@@ -154,7 +162,13 @@ CREATE TABLE IF NOT EXISTS "secrets" (
     "name" TEXT NOT NULL UNIQUE,
     "value" BYTEA NOT NULL,
     "description" TEXT,
-    "expires_at" TIMESTAMP(3)
+    "expires_at" TIMESTAMP(3),
+
+    "created_user_id" TEXT NOT NULL,
+    "updated_user_id" TEXT,
+
+    FOREIGN KEY ("created_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("updated_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "source_secrets" (
@@ -162,14 +176,19 @@ CREATE TABLE IF NOT EXISTS "source_secrets" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
-    "secret_id" TEXT,
-    "source_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "required" BOOLEAN NOT NULL DEFAULT FALSE,
 
-    FOREIGN KEY ("secret_id") REFERENCES "secrets" ("id")  ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY ("source_id") REFERENCES "sources" ("id")  ON DELETE CASCADE ON UPDATE CASCADE
+    "secret_id" TEXT,
+    "source_id" TEXT NOT NULL,
+    "created_user_id" TEXT NOT NULL,
+    "updated_user_id" TEXT,
+
+    FOREIGN KEY ("secret_id") REFERENCES "secrets" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY ("source_id") REFERENCES "sources" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("created_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("updated_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "ignore_lists" (
@@ -181,7 +200,13 @@ CREATE TABLE IF NOT EXISTS "ignore_lists" (
     "slug" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
     "enabled" BOOLEAN NOT NULL DEFAULT TRUE,
-    "global" BOOLEAN NOT NULL DEFAULT FALSE
+    "global" BOOLEAN NOT NULL DEFAULT FALSE,
+
+    "created_user_id" TEXT NOT NULL,
+    "updated_user_id" TEXT,
+
+    FOREIGN KEY ("created_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("updated_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "ignore_list_entries" (
@@ -191,9 +216,14 @@ CREATE TABLE IF NOT EXISTS "ignore_list_entries" (
 
     "data" TEXT NOT NULL,
     "indicator_kind" TEXT NOT NULL,
+
     "ignore_list_id" TEXT NOT NULL,
+    "created_user_id" TEXT NOT NULL,
+    "updated_user_id" TEXT,
 
     FOREIGN KEY ("ignore_list_id") REFERENCES "ignore_lists" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("created_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("updated_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
 
     UNIQUE ("data", "indicator_kind", "ignore_list_id")
 );
@@ -205,9 +235,11 @@ CREATE TABLE IF NOT EXISTS "source_ignore_lists" (
 
     "ignore_list_id" TEXT NOT NULL,
     "source_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
 
     FOREIGN KEY ("ignore_list_id") REFERENCES "ignore_lists" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("source_id") REFERENCES "sources" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
 
     UNIQUE ("ignore_list_id", "source_id")
 );
@@ -219,9 +251,11 @@ CREATE TABLE IF NOT EXISTS "provider_ignore_lists" (
 
     "ignore_list_id" TEXT NOT NULL,
     "source_provider_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
 
     FOREIGN KEY ("ignore_list_id") REFERENCES "ignore_lists" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("source_provider_id") REFERENCES "providers" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
 
     UNIQUE ("ignore_list_id", "source_provider_id")
 );
@@ -233,7 +267,11 @@ CREATE TABLE IF NOT EXISTS "requests" (
 
     "data" TEXT NOT NULL,
     "kind" TEXT NOT NULL,
-    "trace_id" TEXT NOT NULL
+
+    "trace_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "source_requests" (
@@ -257,8 +295,8 @@ CREATE TABLE IF NOT EXISTS "source_requests" (
     "source_url" TEXT NOT NULL,
     "source_favicon" TEXT,
 
-    FOREIGN KEY ("request_id") REFERENCES "requests" ("id")  ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("source_id") REFERENCES "sources" ("id")  ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY ("request_id") REFERENCES "requests" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("source_id") REFERENCES "sources" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
 
     UNIQUE ("request_id", "source_id")
 );
@@ -269,7 +307,10 @@ CREATE TABLE IF NOT EXISTS "server_config" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
     "key" TEXT NOT NULL UNIQUE,
-    "value" TEXT NOT NULL
+    "value" TEXT NOT NULL,
+    "last_modified_user_id" TEXT,
+
+    FOREIGN KEY ("last_modified_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "api_tokens" (
@@ -277,11 +318,11 @@ CREATE TABLE IF NOT EXISTS "api_tokens" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT NOW(),
 
-    "user_id" TEXT NOT NULL,
-
     "note" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "expires_at" TIMESTAMP(3),
+
+    "user_id" TEXT NOT NULL,
 
     FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
 

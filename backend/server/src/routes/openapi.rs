@@ -148,7 +148,6 @@ There's no official API client yet, but thanks to the OpenAPI documentation, you
             db_schemas::secrets::CreateSecret,
             db_schemas::secrets::CreateSourceSecret,
             db_schemas::secrets::Secret,
-            db_schemas::secrets::SecretWithNumSources,
             db_schemas::secrets::SourceSecret,
             db_schemas::secrets::UpdateSecret,
             db_schemas::server_config::ServerConfig,

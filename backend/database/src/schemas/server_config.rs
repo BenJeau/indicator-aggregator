@@ -79,6 +79,7 @@ pub struct DbServerConfig {
     pub updated_at: NaiveDateTime,
     pub key: String,
     pub value: String,
+    pub last_modified_user_id: Option<String>,
 }
 
 /// General server configuration

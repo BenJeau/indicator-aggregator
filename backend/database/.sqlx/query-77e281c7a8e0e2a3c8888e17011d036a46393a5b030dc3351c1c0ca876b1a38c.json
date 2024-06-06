@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT sources.id,\nsources.created_at,\nsources.updated_at,\nsources.name,\nsources.slug,\nsources.description,\nsources.url,\nsources.favicon,\nsources.tags,\nsources.enabled,\nsources.supported_indicators,\nsources.disabled_indicators,\nsources.task_enabled,\nsources.task_interval,\nsources.config,\nsources.config_values,\nsources.limit_enabled,\nsources.limit_count,\nsources.limit_interval,\nsources.cache_enabled,\nsources.cache_interval,\nsources.provider_id,\nsources.kind as \"kind: _\",\nsources.source_code\nFROM sources\nLEFT JOIN providers ON providers.id = sources.provider_id\nWHERE $1 = ANY(sources.supported_indicators) AND NOT ($1 = ANY(sources.disabled_indicators)) AND sources.enabled = TRUE AND (providers IS NULL OR providers.enabled = TRUE)\nORDER BY name",
+  "query": "SELECT sources.id,\nsources.created_at,\nsources.updated_at,\nsources.name,\nsources.slug,\nsources.description,\nsources.url,\nsources.favicon,\nsources.tags,\nsources.enabled,\nsources.supported_indicators,\nsources.disabled_indicators,\nsources.task_enabled,\nsources.task_interval,\nsources.config,\nsources.config_values,\nsources.limit_enabled,\nsources.limit_count,\nsources.limit_interval,\nsources.cache_enabled,\nsources.cache_interval,\nsources.provider_id,\nsources.kind as \"kind: _\",\nsources.source_code,\nsources.created_user_id,\nsources.updated_user_id\nFROM sources\nLEFT JOIN providers ON providers.id = sources.provider_id\nWHERE $1 = ANY(sources.supported_indicators) AND NOT ($1 = ANY(sources.disabled_indicators)) AND sources.enabled = TRUE AND (providers IS NULL OR providers.enabled = TRUE)\nORDER BY name",
   "describe": {
     "columns": [
       {
@@ -133,6 +133,16 @@
         "ordinal": 23,
         "name": "source_code",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 24,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 25,
+        "name": "updated_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -164,8 +174,10 @@
       true,
       true,
       false,
+      true,
+      false,
       true
     ]
   },
-  "hash": "e894c7c0547c2d131977088717dfd18db67784aafb0c0111b8c394c81c816094"
+  "hash": "77e281c7a8e0e2a3c8888e17011d036a46393a5b030dc3351c1c0ca876b1a38c"
 }

@@ -1,6 +1,5 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
     response::IntoResponse,
     Json,
 };
@@ -9,7 +8,7 @@ use database::{
     PgPool,
 };
 
-use crate::Result;
+use crate::{Error, Result};
 
 /// Get list of users
 #[utoipa::path(
@@ -64,13 +63,11 @@ pub async fn get_user(
     State(pool): State<PgPool>,
     Path(user_id): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let user = users::get_user(&pool, &user_id).await?;
+    let user = users::get_user(&pool, &user_id)
+        .await?
+        .ok_or(Error::NotFound)?;
 
-    if let Some(user) = user {
-        Ok(Json(user).into_response())
-    } else {
-        Ok(StatusCode::NOT_FOUND.into_response())
-    }
+    Ok(Json(user))
 }
 
 /// Get list of API tokens for a user

@@ -25,6 +25,10 @@ pub struct IgnoreList {
     pub enabled: bool,
     /// Whether the ignore list is global and used to ignore all requests, regardless of it's source
     pub global: bool,
+    /// Database ID of the user who created the ignore list
+    pub created_user_id: String,
+    /// Database ID of the user who last updated the ignore list
+    pub updated_user_id: Option<String>,
 }
 
 /// Parameters for creating a new ignore list
@@ -74,6 +78,10 @@ pub struct IgnoreListEntry {
     pub indicator_kind: String,
     /// Database ID of the ignore list the entry belongs to
     pub ignore_list_id: String,
+    /// Database ID of the user who created the ignore list entry
+    pub created_user_id: String,
+    /// Database ID of the user who last updated the ignore list entry
+    pub updated_user_id: Option<String>,
 }
 
 /// Parameters for creating a new ignore list entry

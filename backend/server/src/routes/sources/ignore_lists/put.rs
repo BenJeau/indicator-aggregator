@@ -2,10 +2,9 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
+    Extension, Json,
 };
-use database::logic::sources;
-use database::PgPool;
+use database::{logic::sources, schemas::users::User, PgPool};
 
 use crate::Result;
 
@@ -29,13 +28,16 @@ use crate::Result;
 )]
 pub async fn put_source_ignore_lists(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Path(source_id): Path<String>,
     Json(ignore_list_ids): Json<Vec<String>>,
 ) -> Result<impl IntoResponse> {
     let mut transaction = pool.begin().await?;
 
+    // TODO: don't unset and set everything... then set the updated_user_id accordingly
     sources::delete_all_source_ignore_lists(&mut *transaction, &source_id).await?;
-    sources::add_source_ignore_lists(&mut *transaction, &source_id, &ignore_list_ids).await?;
+    sources::add_source_ignore_lists(&mut *transaction, &source_id, &ignore_list_ids, &user.id)
+        .await?;
 
     transaction.commit().await?;
 

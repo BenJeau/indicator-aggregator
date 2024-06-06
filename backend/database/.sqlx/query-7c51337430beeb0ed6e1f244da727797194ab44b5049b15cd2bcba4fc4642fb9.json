@@ -27,6 +27,11 @@
         "ordinal": 4,
         "name": "value",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_modified_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -37,7 +42,8 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
   "hash": "7c51337430beeb0ed6e1f244da727797194ab44b5049b15cd2bcba4fc4642fb9"

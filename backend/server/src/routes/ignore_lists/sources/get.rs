@@ -3,8 +3,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use database::logic::ignore_lists;
-use database::PgPool;
+use database::{logic::ignore_lists, PgPool};
 
 use crate::Result;
 

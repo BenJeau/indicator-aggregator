@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id,\ncreated_at,\nupdated_at,\nname,\nslug,\ndescription,\nurl,\nfavicon,\ntags,\nenabled,\nsupported_indicators,\ndisabled_indicators,\ntask_enabled,\ntask_interval,\nconfig,\nconfig_values,\nlimit_enabled,\nlimit_count,\nlimit_interval,\ncache_enabled,\ncache_interval,\nprovider_id,\nkind as \"kind: _\",\nsource_code FROM sources ORDER BY name",
+  "query": "SELECT id,\ncreated_at,\nupdated_at,\nname,\nslug,\ndescription,\nurl,\nfavicon,\ntags,\nenabled,\nsupported_indicators,\ndisabled_indicators,\ntask_enabled,\ntask_interval,\nconfig,\nconfig_values,\nlimit_enabled,\nlimit_count,\nlimit_interval,\ncache_enabled,\ncache_interval,\nprovider_id,\nkind as \"kind: _\",\nsource_code,\ncreated_user_id,\nupdated_user_id\nFROM sources WHERE provider_id = $1 ORDER BY name",
   "describe": {
     "columns": [
       {
@@ -133,10 +133,22 @@
         "ordinal": 23,
         "name": "source_code",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 24,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 25,
+        "name": "updated_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
       false,
@@ -162,8 +174,10 @@
       true,
       true,
       false,
+      true,
+      false,
       true
     ]
   },
-  "hash": "cc74825fc8e25016f845be457aff808d09d9fe39dd8c05b852afd709fdb4e873"
+  "hash": "5d35983c5fadc6c66b6da33f73b98333c923fde10a1ff1c1b61bbdcff9603262"
 }

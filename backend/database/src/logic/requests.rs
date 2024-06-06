@@ -7,18 +7,19 @@ use crate::schemas::{
 };
 
 #[instrument(skip(pool), ret, err)]
-pub async fn create_request(pool: &PgPool, indicator: &Indicator) -> Result<String> {
+pub async fn create_request(pool: &PgPool, indicator: &Indicator, user_id: &str) -> Result<String> {
     let trace_id = shared::telemetry::Telemetry::get_trace_id();
 
     sqlx::query_scalar!(
         r#"
-        INSERT INTO requests (data, kind, trace_id)
-        VALUES ($1, $2, $3)
+        INSERT INTO requests (data, kind, trace_id, user_id)
+        VALUES ($1, $2, $3, $4)
         RETURNING id
         "#,
         indicator.data,
         indicator.db_kind(),
-        trace_id
+        trace_id,
+        user_id
     )
     .fetch_one(pool)
     .await
