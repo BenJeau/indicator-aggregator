@@ -1,4 +1,8 @@
 {
+  "none": "Aucun",
+  "creator": "Créateur",
+  "updater": "Mise à jour par",
+  "requester": "Demandeur",
   "add.entry": "Ajouter une entrée",
   "add.new.api.token": "Créer une nouvelle clé d'API",
   "add.new.secret": "Ajouter un nouveau secret",

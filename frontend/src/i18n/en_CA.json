@@ -1,4 +1,8 @@
 {
+  "none": "None",
+  "creator": "Creator",
+  "updater": "Updater",
+  "requester": "Requester",
   "add.entry": "Add entry",
   "add.new.api.token": "Add new API token",
   "add.new.secret": "Add new secret",

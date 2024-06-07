@@ -59,7 +59,7 @@ VALUES ($1, $2, $3, $4, $5, $6);
 
 #[instrument(skip(pool), ret, err)]
 pub async fn get_user(pool: &PgPool, user_id: &str) -> Result<Option<User>> {
-    sqlx::query_as!(User, "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles FROM users WHERE id = $1;", user_id)
+    sqlx::query_as!(User, "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles, last_modified_user_id FROM users WHERE id = $1;", user_id)
         .fetch_optional(pool)
         .await
 }
@@ -68,7 +68,7 @@ pub async fn get_user(pool: &PgPool, user_id: &str) -> Result<Option<User>> {
 pub async fn get_user_by_auth_id(pool: &PgPool, user_auth_id: &str) -> Result<Option<User>> {
     sqlx::query_as!(
         User,
-        "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles FROM users WHERE auth_id = $1;",
+        "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles, last_modified_user_id FROM users WHERE auth_id = $1;",
         user_auth_id
     )
     .fetch_optional(pool)
@@ -100,7 +100,12 @@ pub async fn get_user_logs(pool: &PgPool, user_id: &str) -> Result<Vec<DbUserLog
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn update_user(pool: &PgPool, user_id: &str, user: &UpdateUser) -> Result<()> {
+pub async fn update_user(
+    pool: &PgPool,
+    user_id: &str,
+    user: &UpdateUser,
+    request_user_id: &str,
+) -> Result<()> {
     if user.enabled.is_none() && user.roles.is_none() {
         return Ok(());
     }
@@ -114,12 +119,14 @@ pub async fn update_user(pool: &PgPool, user_id: &str, user: &UpdateUser) -> Res
         r#"
     UPDATE users
     SET enabled = COALESCE($2, enabled),
-        roles = COALESCE($3, roles)
+        roles = COALESCE($3, roles),
+        last_modified_user_id = $4
     WHERE id = $1;
             "#,
         user_id,
         user.enabled,
-        roles as _
+        roles as _,
+        request_user_id
     )
     .execute(pool)
     .await?;

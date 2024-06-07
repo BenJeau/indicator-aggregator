@@ -57,6 +57,10 @@ CREATE TABLE IF NOT EXISTS "users" (
     "roles" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
     "password" TEXT,
 
+    "last_modified_user_id" TEXT,
+
+    FOREIGN KEY ("last_modified_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+
     CHECK (LENGTH("email") <= 1000),
     UNIQUE ("email", "provider")
 );

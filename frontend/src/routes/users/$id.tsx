@@ -4,7 +4,10 @@ import {
   createFileRoute,
   useMatches,
 } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  UseSuspenseQueryResult,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import dayjs from "dayjs";
 import {
   CalendarClock,
@@ -29,11 +32,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { beforeLoadAuthenticated } from "@/lib/auth";
+import { User } from "@/types/backendTypes";
 
 const UserComponent: React.FC = () => {
   const { id } = Route.useParams();
 
-  const user = useSuspenseQuery(userQueryOptions(id));
+  const user = useSuspenseQuery(userQueryOptions(id)) as UseSuspenseQueryResult<
+    User,
+    Error
+  >;
   const userLogs = useSuspenseQuery(userLogsQueryOptions(id));
 
   const firstRole = user.data.roles[0];
@@ -121,7 +128,13 @@ const UserComponent: React.FC = () => {
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
-                value={user.data.authId}
+                value={
+                  user.data.authId ?? (
+                    <i className="font-normal lowercase opacity-50">
+                      <Trans id="none" />
+                    </i>
+                  )
+                }
               />
               <FullBadge
                 Icon={Network}
@@ -130,7 +143,11 @@ const UserComponent: React.FC = () => {
                   variant: "secondary",
                 }}
                 value={
-                  firstRole ?? <i className="font-normal opacity-50">none</i>
+                  firstRole ?? (
+                    <i className="font-normal lowercase opacity-50">
+                      <Trans id="none" />
+                    </i>
+                  )
                 }
               />
               {otherRoles.map((role) => (

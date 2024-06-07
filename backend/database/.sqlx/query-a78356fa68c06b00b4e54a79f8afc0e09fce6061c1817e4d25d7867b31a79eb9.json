@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles FROM users WHERE auth_id = $1;",
+  "query": "SELECT id, created_at, updated_at, auth_id, provider, enabled, email, verified, name, given_name, family_name, locale, picture, roles, last_modified_user_id FROM users WHERE auth_id = $1;",
   "describe": {
     "columns": [
       {
@@ -72,6 +72,11 @@
         "ordinal": 13,
         "name": "roles",
         "type_info": "TextArray"
+      },
+      {
+        "ordinal": 14,
+        "name": "last_modified_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -93,8 +98,9 @@
       true,
       true,
       true,
-      false
+      false,
+      true
     ]
   },
-  "hash": "3e4c47131c8d86b2ea2964287e48e45b8e2dc2bc4031ce11a08f81b7c02521ef"
+  "hash": "a78356fa68c06b00b4e54a79f8afc0e09fce6061c1817e4d25d7867b31a79eb9"
 }

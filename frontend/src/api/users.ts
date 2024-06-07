@@ -17,14 +17,20 @@ export const usersQueryOptions = queryOptions({
     }),
 });
 
-export const userQueryOptions = (userId: string) =>
-  queryOptions({
+export function userQueryOptions<T>(userId: T) {
+  return queryOptions({
     queryKey: ["users", userId],
-    queryFn: async ({ signal }) =>
-      await fetcher.get<User>(`/users/${userId}`, {
+    queryFn: async ({ signal }) => {
+      if (userId == undefined) {
+        return null;
+      }
+
+      return await fetcher.get<User>(`/users/${userId}`, {
         signal,
-      }),
+      });
+    },
   });
+}
 
 export const userLogsQueryOptions = (userId: string) =>
   queryOptions({

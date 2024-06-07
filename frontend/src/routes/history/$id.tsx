@@ -1,6 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import {
+  UseSuspenseQueryResult,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { ExternalLink, UserIcon } from "lucide-react";
 import dayjs from "dayjs";
 
 import {
@@ -8,18 +11,27 @@ import {
   requestDataQueryOptions,
   requestQueryOptions,
 } from "@/api/requests";
-import { SectionPanelHeader, RequestDataView, Trans } from "@/components";
+import {
+  SectionPanelHeader,
+  RequestDataView,
+  Trans,
+  FullBadge,
+} from "@/components";
 import { Button } from "@/components/ui/button";
 import config from "@/lib/config";
 import { Badge } from "@/components/ui/badge";
-import { DataCacheAction, SourceError } from "@/types/backendTypes";
+import { DataCacheAction, SourceError, User } from "@/types/backendTypes";
 import { beforeLoadAuthenticated } from "@/lib/auth";
+import { userQueryOptions } from "@/api/users";
 
 const HistoryComponent: React.FC = () => {
   const { id } = Route.useParams();
 
   const request = useSuspenseQuery(requestQueryOptions(id));
   const requestData = useSuspenseQuery(requestDataQueryOptions(id));
+  const user = useSuspenseQuery(
+    userQueryOptions(request.data.userId),
+  ) as UseSuspenseQueryResult<User, Error>;
 
   return (
     <>
@@ -31,21 +43,33 @@ const HistoryComponent: React.FC = () => {
         }
         description={dayjs.utc(request.data.createdAt).format("lll")}
         extra={
-          <a
-            href={`${config.opentel_url}/trace/${request.data.traceId}`}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <Button
-              variant="secondary"
-              className="gap-2"
-              size="sm"
-              type="button"
+          <>
+            <Link to="/users/$id" params={{ id: request.data.userId }}>
+              <FullBadge
+                value={user.data.name}
+                Icon={UserIcon}
+                label="requester"
+                valueBadgeProps={{
+                  variant: "secondary",
+                }}
+              />
+            </Link>
+            <a
+              href={`${config.opentel_url}/trace/${request.data.traceId}`}
+              target="_blank"
+              rel="noreferrer noopener"
             >
-              <ExternalLink size={16} />
-              <Trans id="view.related.traces" />
-            </Button>
-          </a>
+              <Button
+                variant="secondary"
+                className="gap-2"
+                size="sm"
+                type="button"
+              >
+                <ExternalLink size={16} />
+                <Trans id="view.related.traces" />
+              </Button>
+            </a>
+          </>
         }
       />
       <div className="overflow-y-auto">
@@ -88,9 +112,10 @@ export const Route = createFileRoute("/history/$id")({
   component: HistoryComponent,
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
-    await Promise.all([
+    const [request] = await Promise.all([
       queryClient.ensureQueryData(requestQueryOptions(id)),
       queryClient.ensureQueryData(requestDataQueryOptions(id)),
     ]);
+    await queryClient.ensureQueryData(userQueryOptions(request.userId));
   },
 });

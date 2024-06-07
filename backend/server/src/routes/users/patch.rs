@@ -2,9 +2,13 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
+    Extension, Json,
 };
-use database::{logic::users, schemas::users::UpdateUser, PgPool};
+use database::{
+    logic::users,
+    schemas::users::{UpdateUser, User},
+    PgPool,
+};
 
 use crate::Result;
 
@@ -28,10 +32,11 @@ use crate::Result;
 )]
 pub async fn update_user(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Path(user_id): Path<String>,
     Json(update_user): Json<UpdateUser>,
 ) -> Result<impl IntoResponse> {
-    users::update_user(&pool, &user_id, &update_user).await?;
+    users::update_user(&pool, &user_id, &update_user, &user.id).await?;
 
     Ok(StatusCode::NO_CONTENT)
 }
