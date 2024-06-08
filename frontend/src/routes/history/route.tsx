@@ -20,6 +20,7 @@ const SourcesComponents: React.FC = () => {
       }
       searchPlaceholder="history.search.placeholder"
       createLinkTo="/request"
+      createLinkToDataKey="data"
       CreateLinkIcon={Send}
       Item={SearchResults.History}
       empty={{

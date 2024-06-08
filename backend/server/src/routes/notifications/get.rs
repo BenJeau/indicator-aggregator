@@ -1,6 +1,5 @@
 use axum::{extract::State, response::IntoResponse, Json};
-use database::logic::notifications;
-use database::PgPool;
+use database::{logic::notifications, PgPool};
 
 use crate::Result;
 

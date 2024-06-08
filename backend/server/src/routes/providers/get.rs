@@ -1,13 +1,11 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
     response::IntoResponse,
     Json,
 };
-use database::logic::providers;
-use database::PgPool;
+use database::{logic::providers, PgPool};
 
-use crate::Result;
+use crate::{Error, Result};
 
 /// Get all source providers
 #[utoipa::path(
@@ -41,11 +39,9 @@ pub async fn get_provider(
     State(pool): State<PgPool>,
     Path(provider_id): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let provider = providers::get_provider(&pool, &provider_id).await?;
+    let provider = providers::get_provider(&pool, &provider_id)
+        .await?
+        .ok_or(Error::NotFound)?;
 
-    if let Some(provider) = provider {
-        Ok(Json(provider).into_response())
-    } else {
-        Ok(StatusCode::NOT_FOUND.into_response())
-    }
+    Ok(Json(provider))
 }

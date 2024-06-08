@@ -66,6 +66,8 @@ const RequestComponent: React.FC = () => {
         kind: search.kind as IndicatorKind,
         sources: sourcesWithNames,
       });
+    } else if (search.data) {
+      ref.current?.form?.setValue("indicator", search.data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, request.data]);

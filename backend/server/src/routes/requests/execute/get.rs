@@ -4,10 +4,10 @@ use axum::{
         sse::{Event, KeepAlive, Sse},
         IntoResponse,
     },
-    Json,
+    Extension, Json,
 };
 use axum_extra::extract::Query;
-use database::schemas::indicators::Indicator;
+use database::schemas::{indicators::Indicator, users::User};
 use futures_util::future::join;
 use sources::{integrations, schemas::SourceError};
 use tokio_stream::wrappers::UnboundedReceiverStream;
@@ -31,11 +31,12 @@ use crate::{
 )]
 pub async fn request(
     State(state): State<ServerState>,
+    Extension(user): Extension<User>,
     Query(request): Query<RequestExecuteParam>,
 ) -> Result<impl IntoResponse> {
     let should_ignore_errors = request.ignore_errors;
 
-    let mut data = handle_indicator_request(&request, &state).await?;
+    let mut data = handle_indicator_request(&request, &state, &user.id).await?;
 
     if should_ignore_errors {
         data.retain(|data| data.errors.is_empty());
@@ -83,6 +84,7 @@ pub async fn request(
 )]
 pub async fn sse_handler(
     State(state): State<ServerState>,
+    Extension(user): Extension<User>,
     Query(request): Query<RequestExecuteParam>,
 ) -> Result<impl IntoResponse> {
     let should_ignore_errors = request.ignore_errors;
@@ -96,7 +98,7 @@ pub async fn sse_handler(
             &indicator,
             &source_ids,
         ),
-        database::logic::requests::create_request(&state.pool, &indicator),
+        database::logic::requests::create_request(&state.pool, &indicator, &user.id),
     )
     .await;
 

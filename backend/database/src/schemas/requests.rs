@@ -21,6 +21,8 @@ pub struct Request {
     pub kind: String,
     /// Opentelemetry trace ID of the request, can be used with Jaeger to trace the request
     pub trace_id: String,
+    /// Database ID of the user who requested the data
+    pub user_id: String,
 }
 
 /// Response of a source following a user request against it and snapshot values of the source (in case the source gets deleted/modified after the request)

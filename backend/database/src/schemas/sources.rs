@@ -76,6 +76,10 @@ pub struct Source {
     pub kind: SourceKind,
     /// Source code of the source
     pub source_code: Option<String>,
+    /// Database ID of the user who created the source
+    pub created_user_id: String,
+    /// Database ID of the user who last updated the source
+    pub updated_user_id: Option<String>,
 }
 
 /// Parameters to create a source

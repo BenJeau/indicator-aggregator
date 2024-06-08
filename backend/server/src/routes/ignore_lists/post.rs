@@ -1,6 +1,9 @@
-use axum::{extract::State, response::IntoResponse, Json};
-use database::PgPool;
-use database::{logic::ignore_lists, schemas::ignore_lists::CreateIgnoreList};
+use axum::{extract::State, response::IntoResponse, Extension, Json};
+use database::{
+    logic::ignore_lists,
+    schemas::{ignore_lists::CreateIgnoreList, users::User},
+    PgPool,
+};
 
 use crate::Result;
 
@@ -16,9 +19,10 @@ use crate::Result;
 )]
 pub async fn create_list(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Json(list): Json<CreateIgnoreList>,
 ) -> Result<impl IntoResponse> {
-    let created_list = ignore_lists::create_list(&pool, list).await?;
+    let created_list = ignore_lists::create_list(&pool, list, &user.id).await?;
 
     Ok(Json(created_list))
 }

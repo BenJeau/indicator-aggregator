@@ -1,5 +1,8 @@
-use axum::{extract::State, response::IntoResponse, Json};
-use database::{logic::secrets, schemas::secrets::CreateSecret};
+use axum::{extract::State, response::IntoResponse, Extension, Json};
+use database::{
+    logic::secrets,
+    schemas::{secrets::CreateSecret, users::User},
+};
 
 use crate::{Result, ServerState};
 
@@ -17,6 +20,7 @@ use crate::{Result, ServerState};
 )]
 pub async fn create_secret(
     State(state): State<ServerState>,
+    Extension(user): Extension<User>,
     Json(secret): Json<CreateSecret>,
 ) -> Result<impl IntoResponse> {
     let secret_id = secrets::create_secret(
@@ -24,6 +28,7 @@ pub async fn create_secret(
         secret,
         &state.crypto,
         &state.config.encryption.db_key,
+        &user.id,
     )
     .await?;
 

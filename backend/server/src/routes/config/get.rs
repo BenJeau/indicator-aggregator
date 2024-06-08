@@ -45,12 +45,17 @@ mod tests {
     async fn given_db_changes_when_calling_get_config_endpoint_then_returns_combined_config(
         pool: PgPool,
     ) {
+        let user_id = sqlx::query_scalar!("SELECT id FROM users WHERE name = 'system';")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
         create_or_update_server_configs(
             &pool,
             &[UpdateServerConfig {
                 key: "javascript_source_template".to_string(),
                 value: Some("test".to_string()),
             }],
+            &user_id,
         )
         .await
         .unwrap();

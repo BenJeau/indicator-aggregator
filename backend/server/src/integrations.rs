@@ -20,6 +20,7 @@ use crate::{
 pub async fn handle_indicator_request(
     request: &RequestExecuteParam,
     state: &ServerState,
+    user_id: &str,
 ) -> Result<Vec<Data>> {
     let indicator: Indicator = request.clone().into();
 
@@ -27,13 +28,14 @@ pub async fn handle_indicator_request(
         return Err(Error::InvalidIndicatorKind(indicator.kind));
     }
 
-    get_source_data(&indicator, state, &request.source_ids).await
+    get_source_data(&indicator, state, &request.source_ids, user_id).await
 }
 
 async fn get_source_data(
     indicator: &Indicator,
     state: &ServerState,
     source_ids: &[String],
+    user_id: &str,
 ) -> Result<Vec<Data>> {
     let (sources, request_id) = join(
         database::logic::sources::get_sources_for_internal_request(
@@ -41,7 +43,7 @@ async fn get_source_data(
             indicator,
             source_ids,
         ),
-        database::logic::requests::create_request(&state.pool, indicator),
+        database::logic::requests::create_request(&state.pool, indicator, user_id),
     )
     .await;
 

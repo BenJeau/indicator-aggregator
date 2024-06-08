@@ -18,7 +18,7 @@ pub struct User {
     pub updated_at: NaiveDateTime,
     /// OpenID authentication ID of the user, if user authenticated via an OpenID provider
     pub auth_id: Option<String>,
-    /// Authentication provider of the user, either an OpenID provider or "IndicatorAggregator"
+    /// Authentication provider of the user, either an OpenID provider or "Indicator Aggregator"
     pub provider: String,
     /// Whether the user is enabled or not, if they are able to login/access the platform
     pub enabled: bool,
@@ -38,6 +38,8 @@ pub struct User {
     pub picture: Option<Vec<u8>>,
     /// Roles of the user, defining their access and what they can do on the platform
     pub roles: Vec<String>,
+    /// User that last modified the user
+    pub last_modified_user_id: Option<String>,
 }
 
 #[derive(FromRow, Clone, Debug)]
@@ -57,6 +59,7 @@ pub struct UserWithPassword {
     pub picture: Option<Vec<u8>>,
     pub roles: Vec<String>,
     pub password: Option<String>,
+    pub last_modified_user_id: Option<String>,
 }
 
 impl From<UserWithPassword> for User {
@@ -76,6 +79,7 @@ impl From<UserWithPassword> for User {
             locale: value.locale,
             picture: value.picture,
             roles: value.roles,
+            last_modified_user_id: value.last_modified_user_id,
         }
     }
 }

@@ -63,6 +63,10 @@ export interface IgnoreList {
   enabled: boolean;
   /** Whether the ignore list is global and used to ignore all requests, regardless of it's source */
   global: boolean;
+  /** Database ID of the user who created the ignore list */
+  createdUserId: string;
+  /** Database ID of the user who last updated the ignore list */
+  updatedUserId?: string;
 }
 
 /** Parameters for creating a new ignore list */
@@ -103,6 +107,10 @@ export interface IgnoreListEntry {
   indicatorKind: string;
   /** Database ID of the ignore list the entry belongs to */
   ignoreListId: string;
+  /** Database ID of the user who created the ignore list entry */
+  createdUserId: string;
+  /** Database ID of the user who last updated the ignore list entry */
+  updatedUserId?: string;
 }
 
 /** Parameters for creating a new ignore list entry */
@@ -180,6 +188,10 @@ export interface Provider {
   enabled: boolean;
   /** Number of sources the provider has */
   numSources: number;
+  /** Database ID of the user who created the provider */
+  createdUserId: string;
+  /** Database ID of the user who last updated the provider */
+  updatedUserId?: string;
 }
 
 /** Parameters to create a provider */
@@ -228,6 +240,8 @@ export interface Request {
   kind: string;
   /** Opentelemetry trace ID of the request, can be used with Jaeger to trace the request */
   traceId: string;
+  /** Database ID of the user who requested the data */
+  userId: string;
 }
 
 /** Response of a source following a user request against it and snapshot values of the source (in case the source gets deleted/modified after the request) */
@@ -268,7 +282,7 @@ export interface SourceRequest {
   sourceFavicon?: string;
 }
 
-/** A secret */
+/** A secret with the number of sources that use it */
 export interface Secret {
   /** The database ID of the secret */
   id: string;
@@ -282,6 +296,12 @@ export interface Secret {
   description?: string;
   /** The time the secret expires */
   expiresAt?: NaiveDateTime;
+  /** Database ID of the user who created the secret */
+  createdUserId: string;
+  /** Database ID of the user who last updated the secret */
+  updatedUserId?: string;
+  /** The number of sources that use this secret */
+  numSources: number;
 }
 
 /** Defining secrets needed for a source and the link between a source and a secret */
@@ -300,24 +320,10 @@ export interface SourceSecret {
   description?: string;
   /** Wether the source secret needs a secret linked for the source to work */
   required: boolean;
-}
-
-/** A secret with the number of sources that use it */
-export interface SecretWithNumSources {
-  /** The database ID of the secret */
-  id: string;
-  /** The time the secret was created */
-  createdAt: NaiveDateTime;
-  /** The time the secret was last updated */
-  updatedAt: NaiveDateTime;
-  /** The name of the secret */
-  name: string;
-  /** The description of the secret */
-  description?: string;
-  /** The time the secret expires */
-  expiresAt?: NaiveDateTime;
-  /** The number of sources that use this secret */
-  numSources: number;
+  /** Database ID of the user who created the source secret */
+  createdUserId: string;
+  /** Database ID of the user who last updated the source secret */
+  updatedUserId?: string;
 }
 
 /** Parameters for creating a new secret */
@@ -392,6 +398,8 @@ export interface ServerConfigEntry<T> {
   kind: ServerConfigKind;
   /** Category grouping server config entries */
   category: ServerConfigCategory;
+  /** User that last modified the server config entry */
+  lastModifiedUserId?: string;
 }
 
 /** Parameters for updating a server config entry */
@@ -474,6 +482,10 @@ export interface Source {
   kind: SourceKind;
   /** Source code of the source */
   sourceCode?: string;
+  /** Database ID of the user who created the source */
+  createdUserId: string;
+  /** Database ID of the user who last updated the source */
+  updatedUserId?: string;
 }
 
 /** Parameters to create a source */
@@ -622,7 +634,7 @@ export interface User {
   updatedAt: NaiveDateTime;
   /** OpenID authentication ID of the user, if user authenticated via an OpenID provider */
   authId?: string;
-  /** Authentication provider of the user, either an OpenID provider or "IndicatorAggregator" */
+  /** Authentication provider of the user, either an OpenID provider or "Indicator Aggregator" */
   provider: string;
   /** Whether the user is enabled or not, if they are able to login/access the platform */
   enabled: boolean;
@@ -642,6 +654,8 @@ export interface User {
   picture?: number[];
   /** Roles of the user, defining their access and what they can do on the platform */
   roles: string[];
+  /** User that last modified the user */
+  lastModifiedUserId?: string;
 }
 
 /** What to update in a user */

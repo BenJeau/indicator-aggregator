@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..7}; do
+for i in {1..8}; do
   (cd ./database && sqlx migrate revert)
 done
 

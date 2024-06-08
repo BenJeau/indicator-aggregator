@@ -27,12 +27,18 @@
         "ordinal": 4,
         "name": "value",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_modified_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": []
     },
     "nullable": [
+      false,
       false,
       false,
       false,

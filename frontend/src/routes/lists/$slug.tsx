@@ -5,8 +5,18 @@ import {
   createFileRoute,
   useMatches,
 } from "@tanstack/react-router";
-import { Power, Edit, CalendarClock, Asterisk } from "lucide-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  Power,
+  Edit,
+  CalendarClock,
+  Asterisk,
+  UserIcon,
+  UserCog,
+} from "lucide-react";
+import {
+  UseSuspenseQueryResult,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import {
@@ -30,6 +40,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { beforeLoadAuthenticated } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
+import { userQueryOptions } from "@/api/users";
+import { User } from "@/types/backendTypes";
 
 const ListComponent = () => {
   const { slug } = Route.useParams();
@@ -41,6 +53,12 @@ const ListComponent = () => {
   const ignoreListSources = useSuspenseQuery(ignoreListSourcesQueryOptions(id));
   const ignoreListProviders = useSuspenseQuery(
     ignoreListProvidersQueryOptions(id),
+  );
+  const creator = useSuspenseQuery(
+    userQueryOptions(ignoreList.data.createdUserId),
+  ) as UseSuspenseQueryResult<User, Error>;
+  const updater = useSuspenseQuery(
+    userQueryOptions(ignoreList.data.updatedUserId),
   );
 
   const matches = useMatches();
@@ -121,6 +139,28 @@ const ListComponent = () => {
                 }}
                 value={ignoreList.data.global ? "yes" : "no"}
               />
+              <Link to="/users/$id" params={{ id: creator.data.id }}>
+                <FullBadge
+                  value={creator.data.name}
+                  Icon={UserIcon}
+                  label="creator"
+                  valueBadgeProps={{
+                    variant: "secondary",
+                  }}
+                />
+              </Link>
+              {updater.data && (
+                <Link to="/users/$id" params={{ id: updater.data.id }}>
+                  <FullBadge
+                    value={updater.data.name}
+                    Icon={UserCog}
+                    label="updater"
+                    valueBadgeProps={{
+                      variant: "secondary",
+                    }}
+                  />
+                </Link>
+              )}
             </div>
             <Separator className="mt-2" />
             <h2 className="mt-2 flex items-baseline gap-2 font-medium">
@@ -210,7 +250,15 @@ export const Route = createFileRoute("/lists/$slug")({
     }
 
     await Promise.all([
-      queryClient.ensureQueryData(ignoreListQueryOptions(id)),
+      async () => {
+        const list = await queryClient.ensureQueryData(
+          ignoreListQueryOptions(id),
+        );
+        await Promise.all([
+          queryClient.ensureQueryData(userQueryOptions(list.createdUserId)),
+          queryClient.ensureQueryData(userQueryOptions(list.updatedUserId)),
+        ]);
+      },
       queryClient.ensureQueryData(ignoreListEntriesQueryOptions(id)),
       queryClient.ensureQueryData(ignoreListSourcesQueryOptions(id)),
       queryClient.ensureQueryData(ignoreListProvidersQueryOptions(id)),

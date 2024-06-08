@@ -1,11 +1,10 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
     response::IntoResponse,
 };
 use database::{logic::providers, PgPool};
 
-use crate::Result;
+use crate::{Error, Result};
 
 /// Get a provider ID from a slug
 #[utoipa::path(
@@ -24,11 +23,9 @@ pub async fn get_provider_id_from_slug(
     State(pool): State<PgPool>,
     Path(slug): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let provider_id = providers::get_provider_id_from_slug(&pool, &slug).await?;
+    let provider_id = providers::get_provider_id_from_slug(&pool, &slug)
+        .await?
+        .ok_or(Error::NotFound)?;
 
-    if let Some(provider_id) = provider_id {
-        Ok(provider_id.into_response())
-    } else {
-        Ok(StatusCode::NOT_FOUND.into_response())
-    }
+    Ok(provider_id)
 }

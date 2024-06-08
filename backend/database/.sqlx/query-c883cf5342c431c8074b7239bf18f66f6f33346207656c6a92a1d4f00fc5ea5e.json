@@ -55,6 +55,16 @@
       },
       {
         "ordinal": 10,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "updated_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
         "name": "num_sources!",
         "type_info": "Int4"
       }
@@ -75,6 +85,8 @@
       true,
       false,
       false,
+      false,
+      true,
       null
     ]
   },

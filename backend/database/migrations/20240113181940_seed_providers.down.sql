@@ -1,1 +1,1 @@
-DELETE FROM "providers" WHERE "name" = ANY(ARRAY['AlienVault OTX', 'Shodan.io', 'Google', 'Abuse.ch', 'Cisco Talos', 'OpenPhish', 'HaveIBeenPwned', 'URLScan.io', 'Cymru', 'AbuseIPDB', 'Internet Archive']);
+DELETE FROM "providers" WHERE "created_user_id" = (SELECT id FROM "users" WHERE name = 'system');

@@ -2,12 +2,15 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
+    Extension, Json,
 };
-use database::PgPool;
 use database::{
     logic::sources,
-    schemas::sources::{SourceKind, UpdateSource},
+    schemas::{
+        sources::{SourceKind, UpdateSource},
+        users::User,
+    },
+    PgPool,
 };
 
 use crate::{runners::send_update_request, Result};
@@ -32,10 +35,11 @@ use crate::{runners::send_update_request, Result};
 )]
 pub async fn patch_source(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Path(source_id): Path<String>,
     Json(source): Json<UpdateSource>,
 ) -> Result<impl IntoResponse> {
-    let num_affected = sources::update_source(&pool, &source_id, source).await?;
+    let num_affected = sources::update_source(&pool, &source_id, source, &user.id).await?;
 
     let source = sources::get_source(&pool, &source_id).await?;
 

@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n    UPDATE users\n    SET enabled = COALESCE($2, enabled),\n        roles = COALESCE($3, roles),\n        last_modified_user_id = $4\n    WHERE id = $1;\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bool",
+        "TextArray",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "caf9db19ea6bbc2e8e1b7477d35478b5f3076bbc90e90944d391b15043221f07"
+}

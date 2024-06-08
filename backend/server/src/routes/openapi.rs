@@ -121,7 +121,11 @@ There's no official API client yet, but thanks to the OpenAPI documentation, you
         routes::users::get::get_user_api_tokens,
         routes::users::get::get_user_logs,
         routes::users::get::get_users,
+        routes::users::ignore_lists::get::get_user_ignore_lists,
         routes::users::patch::update_user,
+        routes::users::providers::get::get_user_providers,
+        routes::users::requests::get::get_user_requests,
+        routes::users::sources::get::get_user_sources,
     ),
     components(
         schemas(
@@ -148,7 +152,6 @@ There's no official API client yet, but thanks to the OpenAPI documentation, you
             db_schemas::secrets::CreateSecret,
             db_schemas::secrets::CreateSourceSecret,
             db_schemas::secrets::Secret,
-            db_schemas::secrets::SecretWithNumSources,
             db_schemas::secrets::SourceSecret,
             db_schemas::secrets::UpdateSecret,
             db_schemas::server_config::ServerConfig,

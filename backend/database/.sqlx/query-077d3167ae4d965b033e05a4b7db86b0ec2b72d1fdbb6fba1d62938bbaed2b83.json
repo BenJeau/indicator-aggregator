@@ -77,6 +77,11 @@
         "ordinal": 14,
         "name": "password",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "last_modified_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -99,6 +104,7 @@
       true,
       true,
       false,
+      true,
       true
     ]
   },

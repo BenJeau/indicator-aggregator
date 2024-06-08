@@ -3,8 +3,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use database::logic::providers;
-use database::PgPool;
+use database::{logic::providers, PgPool};
 
 use crate::Result;
 

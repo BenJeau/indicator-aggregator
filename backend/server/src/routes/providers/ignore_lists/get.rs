@@ -3,8 +3,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use database::logic::providers;
-use database::PgPool;
+use database::{logic::providers, PgPool};
 
 use crate::Result;
 

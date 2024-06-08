@@ -32,6 +32,16 @@
         "ordinal": 5,
         "name": "ignore_list_id",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "updated_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -45,7 +55,9 @@
       false,
       false,
       false,
-      false
+      false,
+      false,
+      true
     ]
   },
   "hash": "f5d3523a8ecb67ea69ce4577c39c7103e4ae893f6af61ac2c7b52b0d83444538"

@@ -4,7 +4,10 @@ import {
   createFileRoute,
   useMatches,
 } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  UseSuspenseQueryResult,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import dayjs from "dayjs";
 import {
   CalendarClock,
@@ -19,22 +22,38 @@ import { useMemo } from "react";
 
 import {
   FullBadge,
+  SearchResults,
   SectionPanelHeader,
   TitleEntryCount,
   Trans,
   UserLogTable,
 } from "@/components";
-import { userLogsQueryOptions, userQueryOptions } from "@/api/users";
+import {
+  userIgnoreListsQueryOptions,
+  userLogsQueryOptions,
+  userProvidersQueryOptions,
+  userQueryOptions,
+  userRequestsQueryOptions,
+  userSourcesQueryOptions,
+} from "@/api/users";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { beforeLoadAuthenticated } from "@/lib/auth";
+import { User } from "@/types/backendTypes";
 
 const UserComponent: React.FC = () => {
   const { id } = Route.useParams();
 
-  const user = useSuspenseQuery(userQueryOptions(id));
+  const user = useSuspenseQuery(userQueryOptions(id)) as UseSuspenseQueryResult<
+    User,
+    Error
+  >;
   const userLogs = useSuspenseQuery(userLogsQueryOptions(id));
+  const userRequests = useSuspenseQuery(userRequestsQueryOptions(id));
+  const userSources = useSuspenseQuery(userSourcesQueryOptions(id));
+  const userProviders = useSuspenseQuery(userProvidersQueryOptions(id));
+  const userIgnoreLists = useSuspenseQuery(userIgnoreListsQueryOptions(id));
 
   const firstRole = user.data.roles[0];
   const otherRoles = user.data.roles.slice(1);
@@ -121,7 +140,13 @@ const UserComponent: React.FC = () => {
                 valueBadgeProps={{
                   variant: "secondary",
                 }}
-                value={user.data.authId}
+                value={
+                  user.data.authId ?? (
+                    <i className="font-normal lowercase opacity-50">
+                      <Trans id="none" />
+                    </i>
+                  )
+                }
               />
               <FullBadge
                 Icon={Network}
@@ -130,7 +155,11 @@ const UserComponent: React.FC = () => {
                   variant: "secondary",
                 }}
                 value={
-                  firstRole ?? <i className="font-normal opacity-50">none</i>
+                  firstRole ?? (
+                    <i className="font-normal lowercase opacity-50">
+                      <Trans id="none" />
+                    </i>
+                  )
                 }
               />
               {otherRoles.map((role) => (
@@ -150,6 +179,67 @@ const UserComponent: React.FC = () => {
               <TitleEntryCount count={userLogs.data.length} />
             </h2>
             <UserLogTable data={userLogs.data} />
+
+            <Separator className="mt-2" />
+            <h2 className="mt-2 flex items-baseline gap-2 font-medium">
+              <Trans id="requests" />
+              <TitleEntryCount count={userRequests.data.length} />
+            </h2>
+            {userRequests.data.length === 0 && (
+              <div className="text-xs lowercase italic opacity-50">
+                <Trans id="no.requests" />
+              </div>
+            )}
+            <div className="grid grid-cols-3 gap-2">
+              {userRequests.data.map((request) => (
+                <SearchResults.History key={request.id} data={request} />
+              ))}
+            </div>
+
+            <h2 className="mt-2 flex items-baseline gap-2 font-medium">
+              <Trans id="ignore.list" />
+              <TitleEntryCount count={userIgnoreLists.data.length} />
+            </h2>
+
+            {userIgnoreLists.data.length === 0 && (
+              <div className="text-xs lowercase italic opacity-50">
+                <Trans id="no.ignore.lists" />
+              </div>
+            )}
+            <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
+              {userIgnoreLists.data.map((ignoreList) => (
+                <SearchResults.List key={ignoreList.id} data={ignoreList} />
+              ))}
+            </div>
+            <h2 className="mt-2 flex items-baseline gap-2 font-medium">
+              <Trans id="linked.sources" />
+              <TitleEntryCount count={userSources.data.length} />
+            </h2>
+            {userSources.data.length === 0 && (
+              <div className="text-xs lowercase italic opacity-50">
+                <Trans id="no.sources" />
+              </div>
+            )}
+            <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
+              {userSources.data.map((source) => (
+                <SearchResults.Source key={source.id} data={source} />
+              ))}
+            </div>
+            <h2 className="mt-2 flex items-baseline gap-2 font-medium">
+              <Trans id="linked.providers" />
+              <TitleEntryCount count={userProviders.data.length} />
+            </h2>
+
+            {userProviders.data.length === 0 && (
+              <div className="text-xs lowercase italic opacity-50">
+                <Trans id="no.providers" />
+              </div>
+            )}
+            <div className="grid auto-cols-auto grid-cols-1 gap-2 lg:grid-cols-2 [&>*:nth-child(2n-1):nth-last-of-type(1)]:col-span-full">
+              {userProviders.data.map((provider) => (
+                <SearchResults.Provider key={provider.id} data={provider} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -167,6 +257,10 @@ export const Route = createFileRoute("/users/$id")({
     await Promise.all([
       queryClient.ensureQueryData(userQueryOptions(id)),
       queryClient.ensureQueryData(userLogsQueryOptions(id)),
+      queryClient.ensureQueryData(userRequestsQueryOptions(id)),
+      queryClient.ensureQueryData(userSourcesQueryOptions(id)),
+      queryClient.ensureQueryData(userProvidersQueryOptions(id)),
+      queryClient.ensureQueryData(userIgnoreListsQueryOptions(id)),
     ]);
   },
 });

@@ -1,0 +1,68 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT secrets.id, secrets.created_at, secrets.updated_at, secrets.name, secrets.description, secrets.expires_at, secrets.created_user_id, secrets.updated_user_id, count(source_secrets.id)::INT as \"num_sources!\" FROM secrets LEFT JOIN source_secrets ON secrets.id = source_secrets.secret_id GROUP BY secrets.id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "updated_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "expires_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "updated_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "num_sources!",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "ca6cfcd1b7fdf1bf7a3289cef95f45c31a2a08b61cbc37289964311d478a283d"
+}

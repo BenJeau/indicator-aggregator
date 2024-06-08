@@ -42,6 +42,16 @@
         "ordinal": 7,
         "name": "global",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "updated_user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -57,7 +67,9 @@
       false,
       false,
       false,
-      false
+      false,
+      false,
+      true
     ]
   },
   "hash": "197327d259c4eb3881e3e096bfce3d6ca837c9919607b59baa382fd8b7e2cd50"

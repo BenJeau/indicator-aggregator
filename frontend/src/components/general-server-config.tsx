@@ -1,4 +1,4 @@
-import { CalendarClock, Eraser, Hash, Save, Undo } from "lucide-react";
+import { CalendarClock, Eraser, Hash, Save, Undo, UserCog } from "lucide-react";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
@@ -30,6 +30,9 @@ import {
 } from "@/components/ui/form";
 import { useConfigUpdate } from "@/api/config";
 import { useTranslation } from "@/i18n";
+import { useQuery } from "@tanstack/react-query";
+import { userQueryOptions } from "../api/users";
+import { Link } from "@tanstack/react-router";
 
 interface Props {
   config: ServerConfig;
@@ -218,10 +221,20 @@ const ConfigEntry: React.FC<{
   form: UseFormReturn<FormSchema>;
   index: number;
 }> = ({
-  config: { friendlyName, updatedAt, description, defaultValue, kind, key },
+  config: {
+    friendlyName,
+    updatedAt,
+    description,
+    defaultValue,
+    kind,
+    key,
+    ...config
+  },
   form,
   index,
 }) => {
+  const user = useQuery(userQueryOptions(config.lastModifiedUserId));
+
   return (
     <FormField
       control={form.control}
@@ -234,7 +247,7 @@ const ConfigEntry: React.FC<{
             <div className="text-md flex gap-4">
               {friendlyName}
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger type="button">
                   <CalendarClock
                     size={14}
                     className="opacity-50 transition-opacity hover:opacity-100"
@@ -250,7 +263,7 @@ const ConfigEntry: React.FC<{
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger type="button">
                   <Hash
                     size={14}
                     className="opacity-50 transition-opacity hover:opacity-100"
@@ -265,6 +278,26 @@ const ConfigEntry: React.FC<{
                   <code>{key}</code>
                 </TooltipContent>
               </Tooltip>
+              {user.data && (
+                <Tooltip>
+                  <Link to="/users/$id" params={{ id: user.data.id }}>
+                    <TooltipTrigger type="button">
+                      <UserCog
+                        size={14}
+                        className="opacity-50 transition-opacity hover:opacity-100"
+                      />
+                    </TooltipTrigger>
+                  </Link>
+                  <TooltipContent>
+                    <div>
+                      <strong>
+                        <Trans id="updater" />
+                      </strong>
+                    </div>
+                    <code>{user.data.name}</code>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
             {field.value !== defaultValue && (
               <Button

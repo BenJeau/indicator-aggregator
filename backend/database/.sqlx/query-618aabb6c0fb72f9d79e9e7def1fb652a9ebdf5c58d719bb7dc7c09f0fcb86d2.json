@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO source_ignore_lists (ignore_list_id, source_id, user_id) VALUES ($1, UNNEST($2::TEXT[]), $3)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "TextArray",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "618aabb6c0fb72f9d79e9e7def1fb652a9ebdf5c58d719bb7dc7c09f0fcb86d2"
+}

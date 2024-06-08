@@ -32,6 +32,11 @@
         "ordinal": 5,
         "name": "trace_id",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "user_id",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -40,6 +45,7 @@
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,

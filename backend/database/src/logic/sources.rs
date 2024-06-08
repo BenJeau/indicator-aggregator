@@ -38,7 +38,10 @@ cache_enabled,
 cache_interval,
 provider_id,
 kind as "kind: _",
-source_code FROM sources WHERE provider_id = $1 ORDER BY name"#,
+source_code,
+created_user_id,
+updated_user_id
+FROM sources WHERE provider_id = $1 ORDER BY name"#,
         provider_id
     )
     .fetch_all(pool)
@@ -116,7 +119,10 @@ cache_enabled,
 cache_interval,
 provider_id,
 kind as "kind: _",
-source_code FROM sources ORDER BY name"#
+source_code,
+created_user_id,
+updated_user_id
+ FROM sources ORDER BY name"#
     )
     .fetch_all(pool)
     .await
@@ -153,7 +159,9 @@ sources.cache_enabled,
 sources.cache_interval,
 sources.provider_id,
 sources.kind as "kind: _",
-sources.source_code
+sources.source_code,
+sources.created_user_id,
+sources.updated_user_id
 FROM sources
 LEFT JOIN providers ON providers.id = sources.provider_id
 WHERE $1 = ANY(sources.supported_indicators) AND NOT ($1 = ANY(sources.disabled_indicators)) AND sources.enabled = TRUE AND (providers IS NULL OR providers.enabled = TRUE)
@@ -192,7 +200,9 @@ cache_enabled,
 cache_interval,
 provider_id,
 kind as "kind: _",
-source_code
+source_code,
+created_user_id,
+updated_user_id
 FROM sources WHERE id = $1"#,
         id
     )
@@ -218,11 +228,13 @@ pub async fn add_source_ignore_lists<'e>(
     pool: impl PgExecutor<'e>,
     source_id: &str,
     ignore_list_ids: &[String],
+    user_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO source_ignore_lists (ignore_list_id, source_id) VALUES (UNNEST($1::TEXT[]), $2)",
+        "INSERT INTO source_ignore_lists (ignore_list_id, source_id, user_id) VALUES (UNNEST($1::TEXT[]), $2, $3)",
         ignore_list_ids,
-        source_id
+        source_id,
+        user_id
     )
     .execute(pool)
     .await
@@ -279,12 +291,12 @@ pub async fn get_source_id_from_slug(pool: &PgPool, slug: &str) -> Result<Option
 }
 
 #[instrument(skip(pool), err, ret)]
-pub async fn create_source(pool: &PgPool, data: &CreateSource) -> Result<IdSlug> {
+pub async fn create_source(pool: &PgPool, data: &CreateSource, user_id: &str) -> Result<IdSlug> {
     sqlx::query_as!(
         IdSlug,
         r#"
-INSERT INTO sources (name, slug, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+INSERT INTO sources (name, slug, description, url, favicon, tags, enabled, supported_indicators, disabled_indicators, task_enabled, task_interval, config, config_values, limit_count, limit_interval, provider_id, kind, source_code, cache_enabled, cache_interval, created_user_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
 RETURNING id, slug"#,
         data.name,
         slugify(&data.name),
@@ -305,7 +317,8 @@ RETURNING id, slug"#,
         &data.kind as &SourceKind,
         data.source_code,
         data.cache_enabled,
-        data.cache_interval
+        data.cache_interval,
+        user_id
     )
     .fetch_one(pool)
     .await
@@ -313,7 +326,12 @@ RETURNING id, slug"#,
 }
 
 #[instrument(skip(pool), err, ret)]
-pub async fn update_source(pool: &PgPool, id: &str, data: UpdateSource) -> Result<u64> {
+pub async fn update_source(
+    pool: &PgPool,
+    id: &str,
+    data: UpdateSource,
+    user_id: &str,
+) -> Result<u64> {
     sqlx::query!(
         r#"UPDATE sources SET
 name = COALESCE($1, name),
@@ -336,8 +354,9 @@ provider_id = COALESCE($17, provider_id),
 kind = COALESCE($18, kind),
 source_code = COALESCE($19, source_code),
 cache_enabled = COALESCE($20, cache_enabled),
-cache_interval = COALESCE($21, cache_interval)
-WHERE id = $22"#,
+cache_interval = COALESCE($21, cache_interval),
+updated_user_id = $22
+WHERE id = $23"#,
         data.name,
         data.name.as_ref().map(|n| slugify(&n)),
         data.description,
@@ -359,6 +378,7 @@ WHERE id = $22"#,
         data.source_code,
         data.cache_enabled,
         data.cache_interval,
+        user_id,
         id
     )
     .execute(pool)
@@ -373,6 +393,44 @@ pub async fn get_source_code_by_kind(pool: &PgPool, kind: &SourceKind) -> Result
         SourceCode,
         r#"SELECT id, source_code FROM sources WHERE kind = $1"#,
         kind as &SourceKind
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_sources(pool: &PgPool, user_id: &str) -> Result<Vec<Source>> {
+    sqlx::query_as!(
+        Source,
+        r#"SELECT id,
+created_at,
+updated_at,
+name,
+slug,
+description,
+url,
+favicon,
+tags,
+enabled,
+supported_indicators,
+disabled_indicators,
+task_enabled,
+task_interval,
+config,
+config_values,
+limit_enabled,
+limit_count,
+limit_interval,
+cache_enabled,
+cache_interval,
+provider_id,
+kind as "kind: _",
+source_code,
+created_user_id,
+updated_user_id
+FROM sources WHERE created_user_id = $1 ORDER BY name"#,
+        user_id
     )
     .fetch_all(pool)
     .await

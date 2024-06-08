@@ -31,6 +31,10 @@ pub struct Provider {
     pub enabled: bool,
     /// Number of sources the provider has
     pub num_sources: i32,
+    /// Database ID of the user who created the provider
+    pub created_user_id: String,
+    /// Database ID of the user who last updated the provider
+    pub updated_user_id: Option<String>,
 }
 
 /// Parameters to create a provider

@@ -31,7 +31,7 @@ import {
   Table,
 } from "@/components/ui/table";
 import { AutoAnimate, Code, DatePicker, MaskValue, Trans } from "@/components";
-import { SecretWithNumSources } from "@/types/backendTypes";
+import { Secret } from "@/types/backendTypes";
 import { useTranslation } from "@/i18n";
 
 const formSchema = z.object({
@@ -44,7 +44,7 @@ const formSchema = z.object({
 export type FormSchema = z.infer<typeof formSchema>;
 
 interface Props {
-  secrets: SecretWithNumSources[];
+  secrets: Secret[];
 }
 
 const SecretsTable: React.FC<Props> = ({ secrets }) => {
@@ -278,7 +278,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
 };
 
 interface TableRowWithDataProps {
-  row: SecretWithNumSources;
+  row: Secret;
 }
 
 const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {

@@ -1,16 +1,23 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  UseSuspenseQueryResult,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { useUserPatch, userQueryOptions } from "@/api/users";
 import { Forms, Trans } from "@/components";
 import { beforeLoadAuthenticated } from "@/lib/auth";
+import { User } from "@/types/backendTypes";
 
 const UserEditComponent: React.FC = () => {
   const { id } = Route.useParams();
 
   const navigate = useNavigate();
-  const user = useSuspenseQuery(userQueryOptions(id));
+  const user = useSuspenseQuery(userQueryOptions(id)) as UseSuspenseQueryResult<
+    User,
+    Error
+  >;
 
   const patchUser = useUserPatch();
 

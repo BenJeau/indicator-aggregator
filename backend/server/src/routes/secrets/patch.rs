@@ -2,9 +2,12 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
+    Extension, Json,
 };
-use database::{logic::secrets, schemas::secrets::UpdateSecret};
+use database::{
+    logic::secrets,
+    schemas::{secrets::UpdateSecret, users::User},
+};
 
 use crate::{Result, ServerState};
 
@@ -24,6 +27,7 @@ use crate::{Result, ServerState};
 )]
 pub async fn patch_secret(
     State(state): State<ServerState>,
+    Extension(user): Extension<User>,
     Path(secret_id): Path<String>,
     Json(secret): Json<UpdateSecret>,
 ) -> Result<impl IntoResponse> {
@@ -33,6 +37,7 @@ pub async fn patch_secret(
         secret,
         &state.crypto,
         &state.config.encryption.db_key,
+        &user.id,
     )
     .await?;
 

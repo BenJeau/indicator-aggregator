@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use tracing::instrument;
 
 use crate::schemas::secrets::{
-    CreateSecret, CreateSourceSecret, GetSecret, SecretWithNumSources, SourceSecret, UpdateSecret,
+    CreateSecret, CreateSourceSecret, GetSecret, Secret, SourceSecret, UpdateSecret,
 };
 
 #[instrument(skip_all, ret, err)]
@@ -13,14 +13,16 @@ pub async fn create_secret(
     data: CreateSecret,
     crypto: &Crypto,
     db_secret: &str,
+    user_id: &str,
 ) -> Result<String> {
     sqlx::query_scalar!(
-        "INSERT INTO secrets (name, value, description, expires_at) VALUES ($1, pgp_sym_encrypt_bytea($2, $3), $4, $5) RETURNING id",
+        "INSERT INTO secrets (name, value, description, expires_at, created_user_id) VALUES ($1, pgp_sym_encrypt_bytea($2, $3), $4, $5, $6) RETURNING id",
         data.name,
         crypto.encrypt(data.value).unwrap(),
         db_secret,
         data.description,
-        data.expires_at
+        data.expires_at,
+        user_id
     )
     .fetch_one(pool)
     .await
@@ -43,12 +45,14 @@ pub async fn patch_secret(
     secret: UpdateSecret,
     crypto: &Crypto,
     db_secret: &str,
+    user_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
-        "UPDATE secrets SET name = COALESCE($1, name), value = COALESCE(pgp_sym_encrypt_bytea($2, $3), value) WHERE id = $4",
+        "UPDATE secrets SET name = COALESCE($1, name), value = COALESCE(pgp_sym_encrypt_bytea($2, $3), value), updated_user_id = $4 WHERE id = $5",
         secret.name,
         secret.value.map(|v| crypto.encrypt(v)).transpose().unwrap(),
         db_secret,
+        user_id,
         id
     )
     .execute(pool)
@@ -58,10 +62,10 @@ pub async fn patch_secret(
 }
 
 #[instrument(skip(pool), ret, err)]
-pub async fn get_secrets(pool: &PgPool) -> Result<Vec<SecretWithNumSources>> {
+pub async fn get_secrets(pool: &PgPool) -> Result<Vec<Secret>> {
     sqlx::query_as!(
-        SecretWithNumSources,
-        r#"SELECT secrets.id, secrets.created_at, secrets.updated_at, secrets.name, secrets.description, secrets.expires_at, count(source_secrets.id)::INT as "num_sources!" FROM secrets LEFT JOIN source_secrets ON secrets.id = source_secrets.secret_id GROUP BY secrets.id"#
+        Secret,
+        r#"SELECT secrets.id, secrets.created_at, secrets.updated_at, secrets.name, secrets.description, secrets.expires_at, secrets.created_user_id, secrets.updated_user_id, count(source_secrets.id)::INT as "num_sources!" FROM secrets LEFT JOIN source_secrets ON secrets.id = source_secrets.secret_id GROUP BY secrets.id"#
     )
     .fetch_all(pool)
     .await
@@ -78,7 +82,9 @@ updated_at,
 secret_id,
 name,
 description,
-required
+required,
+created_user_id,
+updated_user_id
 FROM source_secrets
 WHERE source_id = $1"#,
         source_id
@@ -137,14 +143,16 @@ pub async fn add_source_secrets<'e>(
     pool: impl PgExecutor<'e>,
     source_id: &str,
     data: &[CreateSourceSecret],
+    user_id: &str,
 ) -> Result<u64> {
     sqlx::query!(
-        "INSERT INTO source_secrets (source_id, secret_id, name, description, required) VALUES ($1, UNNEST($2::TEXT[]), UNNEST($3::TEXT[]), UNNEST($4::TEXT[]), UNNEST($5::BOOLEAN[]))",
+        "INSERT INTO source_secrets (source_id, secret_id, name, description, required, created_user_id) VALUES ($1, UNNEST($2::TEXT[]), UNNEST($3::TEXT[]), UNNEST($4::TEXT[]), UNNEST($5::BOOLEAN[]), $6)",
         source_id,
         &data.iter().map(|s| s.secret_id.as_ref().map(|id| id.as_str())).collect::<Vec<_>>() as _,
         &data.iter().map(|s| s.name.as_str()).collect::<Vec<_>>() as _,
         &data.iter().map(|s| s.description.as_ref().map(|d| d.as_str())).collect::<Vec<_>>() as _,
-        &data.iter().map(|s| s.required).collect::<Vec<_>>()
+        &data.iter().map(|s| s.required).collect::<Vec<_>>(),
+        user_id
     )
     .execute(pool)
     .await

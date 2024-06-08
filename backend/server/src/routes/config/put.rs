@@ -1,7 +1,10 @@
-use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Extension, Json};
 use database::{
     logic::server_config,
-    schemas::server_config::{UpdateServerConfig, SERVER_CONFIG_ENTRIES},
+    schemas::{
+        server_config::{UpdateServerConfig, SERVER_CONFIG_ENTRIES},
+        users::User,
+    },
     PgPool,
 };
 
@@ -21,6 +24,7 @@ use crate::Result;
 )]
 pub async fn update_config(
     State(pool): State<PgPool>,
+    Extension(user): Extension<User>,
     Json(data): Json<Vec<UpdateServerConfig>>,
 ) -> Result<impl IntoResponse> {
     let filtered_data = data
@@ -31,7 +35,8 @@ pub async fn update_config(
         filtered_data.partition(|config| config.value.is_some());
 
     if !should_create_or_update.is_empty() {
-        server_config::create_or_update_server_configs(&pool, &should_create_or_update).await?;
+        server_config::create_or_update_server_configs(&pool, &should_create_or_update, &user.id)
+            .await?;
     }
 
     if !should_remove.is_empty() {
