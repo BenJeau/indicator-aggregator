@@ -17,7 +17,7 @@ run:
 	parallel -u ::: "make run-backend" "make run-frontend"
 
 start:
-	install-deps run
+	make install-deps && make run
 
 check-backend:
 	cd backend && cargo check

@@ -26,7 +26,7 @@ fn router(pool: PgPool) -> axum::Router {
 }
 
 async fn create_request(method: Method, uri: &str, pool: &PgPool) -> http::request::Builder {
-    let token_id = get_or_create_user_and_token(&pool).await;
+    let token_id = get_or_create_user_and_token(pool).await;
 
     Request::builder()
         .method(method)

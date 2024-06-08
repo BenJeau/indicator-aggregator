@@ -312,9 +312,9 @@ CREATE TABLE IF NOT EXISTS "server_config" (
 
     "key" TEXT NOT NULL UNIQUE,
     "value" TEXT NOT NULL,
-    "last_modified_user_id" TEXT,
+    "last_modified_user_id" TEXT NOT NULL,
 
-    FOREIGN KEY ("last_modified_user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY ("last_modified_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "api_tokens" (

@@ -19,6 +19,7 @@ import {
   Sigma,
   Tags,
   TimerReset,
+  UserCog,
   UserIcon,
   X,
 } from "lucide-react";
@@ -59,7 +60,7 @@ import {
 } from "@/components";
 import { cleanConfigValue } from "@/api/config";
 import { beforeLoadAuthenticated } from "@/lib/auth";
-import { userQueryOptions } from "../../api/users";
+import { userQueryOptions } from "@/api/users";
 
 const SourceComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -152,28 +153,6 @@ const SourceComponent: React.FC = () => {
                 label="updated.date"
                 value={dayjs.utc(source.data.updatedAt).local().format("LLL")}
               />
-              <Link to="/users/$id" params={{ id: source.data.createdUserId }}>
-                <FullBadge
-                  value={creator.data.name}
-                  Icon={UserIcon}
-                  label="creator"
-                  valueBadgeProps={{
-                    variant: "secondary",
-                  }}
-                />
-              </Link>
-              {updater.data && (
-                <Link to="/users/$id" params={{ id: updater.data.id }}>
-                  <FullBadge
-                    value={updater.data.name}
-                    Icon={UserIcon}
-                    label="updater"
-                    valueBadgeProps={{
-                      variant: "secondary",
-                    }}
-                  />
-                </Link>
-              )}
             </div>
             <Separator className="mt-2" />
             <div className="mt-2 flex flex-wrap gap-2">
@@ -226,6 +205,28 @@ const SourceComponent: React.FC = () => {
                   value={tag}
                 />
               ))}
+              <Link to="/users/$id" params={{ id: creator.data.id }}>
+                <FullBadge
+                  value={creator.data.name}
+                  Icon={UserIcon}
+                  label="creator"
+                  valueBadgeProps={{
+                    variant: "secondary",
+                  }}
+                />
+              </Link>
+              {updater.data && (
+                <Link to="/users/$id" params={{ id: updater.data.id }}>
+                  <FullBadge
+                    value={updater.data.name}
+                    Icon={UserCog}
+                    label="updater"
+                    valueBadgeProps={{
+                      variant: "secondary",
+                    }}
+                  />
+                </Link>
+              )}
             </div>
             <Separator className="mt-2" />
 

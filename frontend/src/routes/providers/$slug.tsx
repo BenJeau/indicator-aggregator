@@ -8,7 +8,15 @@ import {
   useSuspenseQuery,
   UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { Book, CalendarClock, Edit, Power, Tags } from "lucide-react";
+import {
+  Book,
+  CalendarClock,
+  Edit,
+  Power,
+  Tags,
+  UserCog,
+  UserIcon,
+} from "lucide-react";
 import { useMemo } from "react";
 import dayjs from "dayjs";
 
@@ -29,9 +37,10 @@ import {
   Trans,
 } from "@/components";
 import { cn } from "@/lib/utils";
-import { Provider } from "@/types/backendTypes";
+import { Provider, User } from "@/types/backendTypes";
 import { dedupeListOnId } from "@/lib/data";
 import { beforeLoadAuthenticated } from "@/lib/auth";
+import { userQueryOptions } from "@/api/users";
 
 const ProviderComponent: React.FC = () => {
   const { slug } = Route.useParams();
@@ -45,6 +54,12 @@ const ProviderComponent: React.FC = () => {
   );
   const providerSources = useSuspenseQuery(providerSourcesQueryOptions(id));
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
+  const creator = useSuspenseQuery(
+    userQueryOptions(provider.data.createdUserId),
+  ) as UseSuspenseQueryResult<User, Error>;
+  const updater = useSuspenseQuery(
+    userQueryOptions(provider.data.updatedUserId),
+  );
 
   const combinedIgnoreLists = dedupeListOnId([
     ...providerIgnoreLists.data,
@@ -154,6 +169,28 @@ const ProviderComponent: React.FC = () => {
                   value={tag}
                 />
               ))}
+              <Link to="/users/$id" params={{ id: creator.data.id }}>
+                <FullBadge
+                  value={creator.data.name}
+                  Icon={UserIcon}
+                  label="creator"
+                  valueBadgeProps={{
+                    variant: "secondary",
+                  }}
+                />
+              </Link>
+              {updater.data && (
+                <Link to="/users/$id" params={{ id: updater.data.id }}>
+                  <FullBadge
+                    value={updater.data.name}
+                    Icon={UserCog}
+                    label="updater"
+                    valueBadgeProps={{
+                      variant: "secondary",
+                    }}
+                  />
+                </Link>
+              )}
             </div>
 
             <Separator className="mt-2" />
@@ -207,7 +244,19 @@ export const Route = createFileRoute("/providers/$slug")({
     }
 
     await Promise.all([
-      queryClient.ensureQueryData(providerQueryOptions(id)),
+      async () => {
+        const provider = await queryClient.ensureQueryData(
+          providerQueryOptions(id),
+        );
+        await Promise.all([
+          queryClient.ensureQueryData(
+            userQueryOptions(provider!.createdUserId),
+          ),
+          queryClient.ensureQueryData(
+            userQueryOptions(provider!.updatedUserId),
+          ),
+        ]);
+      },
       queryClient.ensureQueryData(providerSourcesQueryOptions(id)),
       queryClient.ensureQueryData(providerIgnoreListsQueryOptions(id)),
       queryClient.ensureQueryData(globalIgnoreListsQueryOptions),

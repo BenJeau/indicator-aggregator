@@ -54,6 +54,8 @@ pub struct ServerConfigEntry<T: Default> {
     pub kind: ServerConfigKind,
     /// Category grouping server config entries
     pub category: ServerConfigCategory,
+    /// User that last modified the server config entry
+    pub last_modified_user_id: Option<String>,
 }
 
 impl<T: Default> ServerConfigEntry<T> {
@@ -79,7 +81,7 @@ pub struct DbServerConfig {
     pub updated_at: NaiveDateTime,
     pub key: String,
     pub value: String,
-    pub last_modified_user_id: Option<String>,
+    pub last_modified_user_id: String,
 }
 
 /// General server configuration
@@ -232,36 +234,46 @@ impl ServerConfig {
                     self.javascript_source_template.created_at = Some(db_result.created_at);
                     self.javascript_source_template.updated_at = Some(db_result.updated_at);
                     self.javascript_source_template.value = Some(db_result.value);
+                    self.javascript_source_template.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "python_source_template" => {
                     self.python_source_template.id = Some(db_result.id);
                     self.python_source_template.created_at = Some(db_result.created_at);
                     self.python_source_template.updated_at = Some(db_result.updated_at);
                     self.python_source_template.value = Some(db_result.value);
+                    self.python_source_template.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "proxy_enabled" => {
                     self.proxy_enabled.id = Some(db_result.id);
                     self.proxy_enabled.created_at = Some(db_result.created_at);
                     self.proxy_enabled.updated_at = Some(db_result.updated_at);
                     self.proxy_enabled.value = Some(db_result.value.parse().unwrap());
+                    self.proxy_enabled.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "proxy_type" => {
                     self.proxy_type.id = Some(db_result.id);
                     self.proxy_type.created_at = Some(db_result.created_at);
                     self.proxy_type.updated_at = Some(db_result.updated_at);
                     self.proxy_type.value = Some(db_result.value);
+                    self.proxy_type.last_modified_user_id = Some(db_result.last_modified_user_id);
                 }
                 "proxy_value" => {
                     self.proxy_value.id = Some(db_result.id);
                     self.proxy_value.created_at = Some(db_result.created_at);
                     self.proxy_value.updated_at = Some(db_result.updated_at);
                     self.proxy_value.value = Some(db_result.value);
+                    self.proxy_value.last_modified_user_id = Some(db_result.last_modified_user_id);
                 }
                 "sse_keep_alive" => {
                     self.sse_keep_alive.id = Some(db_result.id);
                     self.sse_keep_alive.created_at = Some(db_result.created_at);
                     self.sse_keep_alive.updated_at = Some(db_result.updated_at);
                     self.sse_keep_alive.value = Some(db_result.value.parse().unwrap());
+                    self.sse_keep_alive.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "sse_number_concurrent_source_fetching" => {
                     self.sse_number_concurrent_source_fetching.id = Some(db_result.id);
@@ -271,30 +283,40 @@ impl ServerConfig {
                         Some(db_result.updated_at);
                     self.sse_number_concurrent_source_fetching.value =
                         Some(db_result.value.parse().unwrap());
+                    self.sse_number_concurrent_source_fetching
+                        .last_modified_user_id = Some(db_result.last_modified_user_id);
                 }
                 "javascript_runner_grpc_address" => {
                     self.javascript_runner_grpc_address.id = Some(db_result.id);
                     self.javascript_runner_grpc_address.created_at = Some(db_result.created_at);
                     self.javascript_runner_grpc_address.updated_at = Some(db_result.updated_at);
                     self.javascript_runner_grpc_address.value = Some(db_result.value);
+                    self.javascript_runner_grpc_address.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "javascript_runner_enabled" => {
                     self.javascript_runner_enabled.id = Some(db_result.id);
                     self.javascript_runner_enabled.created_at = Some(db_result.created_at);
                     self.javascript_runner_enabled.updated_at = Some(db_result.updated_at);
                     self.javascript_runner_enabled.value = Some(db_result.value.parse().unwrap());
+                    self.javascript_runner_enabled.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "python_runner_grpc_address" => {
                     self.python_runner_grpc_address.id = Some(db_result.id);
                     self.python_runner_grpc_address.created_at = Some(db_result.created_at);
                     self.python_runner_grpc_address.updated_at = Some(db_result.updated_at);
                     self.python_runner_grpc_address.value = Some(db_result.value);
+                    self.python_runner_grpc_address.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 "python_runner_enabled" => {
                     self.python_runner_enabled.id = Some(db_result.id);
                     self.python_runner_enabled.created_at = Some(db_result.created_at);
                     self.python_runner_enabled.updated_at = Some(db_result.updated_at);
                     self.python_runner_enabled.value = Some(db_result.value.parse().unwrap());
+                    self.python_runner_enabled.last_modified_user_id =
+                        Some(db_result.last_modified_user_id);
                 }
                 _ => (),
             };
