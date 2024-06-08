@@ -23,6 +23,7 @@ interface Props<T> {
   onFilter: (data: T, seachValue: string) => boolean;
   searchPlaceholder: TransId;
   createLinkTo?: string;
+  createLinkToDataKey?: string;
   CreateLinkIcon?: LucideIcon;
   Item: React.FC<ComponentSearchResultProps<T>>;
   empty: {
@@ -37,6 +38,7 @@ function GenericPanelSearch<T>({
   onFilter,
   searchPlaceholder,
   createLinkTo,
+  createLinkToDataKey = "name",
   CreateLinkIcon = Plus,
   Item,
   empty,
@@ -95,7 +97,10 @@ function GenericPanelSearch<T>({
               description={empty.description}
               extra={
                 createLinkTo && (
-                  <Link to={createLinkTo} search={{ name: searchValue }}>
+                  <Link
+                    to={createLinkTo}
+                    search={{ [createLinkToDataKey]: searchValue }}
+                  >
                     <Button variant="secondary" size="sm" className="gap-2">
                       <CreateLinkIcon size={16} />
                       {empty.extra}
