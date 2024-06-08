@@ -16,6 +16,7 @@ import {
   RequestDataView,
   Trans,
   FullBadge,
+  NotFound,
 } from "@/components";
 import { Button } from "@/components/ui/button";
 import config from "@/lib/config";
@@ -108,8 +109,14 @@ const HistoryComponent: React.FC = () => {
   );
 };
 
+const NotFoundHistory: React.FC = () => {
+  const { id } = Route.useParams();
+  return <NotFound title="request.not.found" data={id} />;
+};
+
 export const Route = createFileRoute("/history/$id")({
   component: HistoryComponent,
+  notFoundComponent: NotFoundHistory,
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     const [request] = await Promise.all([

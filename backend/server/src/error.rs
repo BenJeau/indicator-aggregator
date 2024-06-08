@@ -150,6 +150,7 @@ impl IntoResponse for Error {
             Self::DisabledUser => {
                 (StatusCode::UNAUTHORIZED, "Your account is disabled").into_response()
             }
+            Self::NotFound => StatusCode::NOT_FOUND.into_response(),
             _ => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         }
     }

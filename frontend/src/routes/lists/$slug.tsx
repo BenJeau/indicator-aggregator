@@ -17,7 +17,7 @@ import {
   UseSuspenseQueryResult,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 import {
   ignoreListEntriesQueryOptions,
@@ -33,6 +33,7 @@ import {
   TitleEntryCount,
   FullBadge,
   Trans,
+  NotFound,
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,7 @@ import { useTranslation } from "@/i18n";
 import { userQueryOptions } from "@/api/users";
 import { User } from "@/types/backendTypes";
 
-const ListComponent = () => {
+const ListComponent: React.FC = () => {
   const { slug } = Route.useParams();
   const { t } = useTranslation();
 
@@ -237,8 +238,14 @@ const ListComponent = () => {
   );
 };
 
+const NotFoundIgnoreList: React.FC = () => {
+  const { slug } = Route.useParams();
+  return <NotFound title="list.not.found" data={slug} />;
+};
+
 export const Route = createFileRoute("/lists/$slug")({
   component: ListComponent,
+  notFoundComponent: NotFoundIgnoreList,
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(

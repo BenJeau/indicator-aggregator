@@ -35,6 +35,7 @@ import {
   FullBadge,
   TitleEntryCount,
   Trans,
+  NotFound,
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { Provider, User } from "@/types/backendTypes";
@@ -231,8 +232,14 @@ const ProviderComponent: React.FC = () => {
   );
 };
 
+const NotFoundProvider: React.FC = () => {
+  const { slug } = Route.useParams();
+  return <NotFound title="provider.not.found" data={slug} />;
+};
+
 export const Route = createFileRoute("/providers/$slug")({
   component: ProviderComponent,
+  notFoundComponent: NotFoundProvider,
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(

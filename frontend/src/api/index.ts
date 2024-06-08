@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { notFound } from "@tanstack/react-router";
 
 import config from "@/lib/config";
 import { store } from "@/atoms";
@@ -52,6 +53,10 @@ const axiosKiller = async <T>(
     body,
     keepalive: true,
   });
+
+  if (response.status === 404) {
+    throw notFound();
+  }
 
   if (!response.ok) {
     const text = await response.text();

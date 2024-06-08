@@ -57,6 +57,7 @@ import {
   SearchResults,
   TitleEntryCount,
   Trans,
+  NotFound,
 } from "@/components";
 import { cleanConfigValue } from "@/api/config";
 import { beforeLoadAuthenticated } from "@/lib/auth";
@@ -491,8 +492,14 @@ const SecretBadge: React.FC<SourceSecret> = ({ id, name, secretId }) => {
   );
 };
 
+const NotFoundSource: React.FC = () => {
+  const { slug } = Route.useParams();
+  return <NotFound title="list.not.found" data={slug} />;
+};
+
 export const Route = createFileRoute("/sources/$slug")({
   component: SourceComponent,
+  notFoundComponent: NotFoundSource,
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { slug } }) => {
     const id = await queryClient.ensureQueryData(sourceSlugQueryOptions(slug));
