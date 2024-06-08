@@ -218,3 +218,21 @@ pub async fn set_all_provider_sources<'e>(
     .map(|i| i.rows_affected())
     .map_err(Into::into)
 }
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_providers(pool: &PgPool, user_id: &str) -> Result<Vec<Provider>> {
+    sqlx::query_as!(
+        Provider,
+        r#"SELECT providers.*,
+count(sources.id)::INT as "num_sources!"
+FROM providers
+LEFT JOIN sources ON providers.id = sources.provider_id
+WHERE providers.created_user_id = $1
+GROUP BY providers.id
+ORDER BY providers.enabled DESC, providers.name"#,
+        user_id
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}

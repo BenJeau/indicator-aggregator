@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM server_config",
+  "query": "\n        SELECT requests.* FROM requests\n        WHERE user_id = $1\n        ORDER BY created_at DESC\n        ",
   "describe": {
     "columns": [
       {
@@ -20,24 +20,32 @@
       },
       {
         "ordinal": 3,
-        "name": "key",
+        "name": "data",
         "type_info": "Text"
       },
       {
         "ordinal": 4,
-        "name": "value",
+        "name": "kind",
         "type_info": "Text"
       },
       {
         "ordinal": 5,
-        "name": "last_modified_user_id",
+        "name": "trace_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "user_id",
         "type_info": "Text"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,
@@ -46,5 +54,5 @@
       false
     ]
   },
-  "hash": "7c51337430beeb0ed6e1f244da727797194ab44b5049b15cd2bcba4fc4642fb9"
+  "hash": "5c98decd7ac547beff756ba071b7cd725b253b47508bad0375fc3a7823431a59"
 }

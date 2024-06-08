@@ -130,3 +130,19 @@ pub async fn get_source_requests(pool: &PgPool, source_id: &str) -> Result<Vec<R
     .await
     .map_err(Into::into)
 }
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_requests(pool: &PgPool, user_id: &str) -> Result<Vec<Request>> {
+    sqlx::query_as!(
+        Request,
+        r#"
+        SELECT requests.* FROM requests
+        WHERE user_id = $1
+        ORDER BY created_at DESC
+        "#,
+        user_id,
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}

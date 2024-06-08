@@ -292,3 +292,15 @@ pub async fn delete_all_ignore_list_entries<'e>(
     .map_err(Into::into)
     .map(|i| i.rows_affected())
 }
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_ignore_lists(pool: &PgPool, user_id: &str) -> Result<Vec<IgnoreList>> {
+    sqlx::query_as!(
+        IgnoreList,
+        r#"SELECT ignore_lists.* FROM ignore_lists WHERE created_user_id = $1"#,
+        user_id
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}

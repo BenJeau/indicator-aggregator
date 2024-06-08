@@ -52,14 +52,17 @@ lint-frontend:
 lint:
 	parallel -u ::: "make lint-backend" "make lint-frontend"
 
-commit:
-	parallel -u ::: "make check" "make fmt" "make lint"
-
-db-changes:
-	cd backend/database && cargo sqlx generate
+db-prepare:
+	cd backend/database && cargo sqlx prepare
 
 db-create-migration:
 	cd backend/database && cargo sqlx migrate add $1
 
 db-reset:
 	cd backend && make reset-db
+
+i18n:
+	cd frontend && pnpm i18n:sort && pnpm i18n:cleanup && pnpm i18n:unused
+
+commit:
+	parallel -u ::: "make check" "make fmt" "make lint" "make i18n" "make db-prepare"

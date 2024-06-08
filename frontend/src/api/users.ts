@@ -6,6 +6,10 @@ import {
   User,
   UserWithNumLogs,
   UpdateUser,
+  Provider,
+  Source,
+  IgnoreList,
+  Request,
 } from "@/types/backendTypes";
 import { queryClient } from "@/lib/query";
 
@@ -37,6 +41,42 @@ export const userLogsQueryOptions = (userId: string) =>
     queryKey: ["users", userId, "logs"],
     queryFn: async ({ signal }) =>
       await fetcher.get<DbUserLog[]>(`/users/${userId}/logs`, {
+        signal,
+      }),
+  });
+
+export const userRequestsQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: ["users", userId, "requests"],
+    queryFn: async ({ signal }) =>
+      await fetcher.get<Request[]>(`/users/${userId}/requests`, {
+        signal,
+      }),
+  });
+
+export const userSourcesQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: ["users", userId, "sources"],
+    queryFn: async ({ signal }) =>
+      await fetcher.get<Source[]>(`/users/${userId}/sources`, {
+        signal,
+      }),
+  });
+
+export const userProvidersQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: ["users", userId, "providers"],
+    queryFn: async ({ signal }) =>
+      await fetcher.get<Provider[]>(`/users/${userId}/providers`, {
+        signal,
+      }),
+  });
+
+export const userIgnoreListsQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: ["users", userId, "ignoreLists"],
+    queryFn: async ({ signal }) =>
+      await fetcher.get<IgnoreList[]>(`/users/${userId}/ignoreLists`, {
         signal,
       }),
   });

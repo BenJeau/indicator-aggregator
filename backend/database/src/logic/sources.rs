@@ -398,3 +398,41 @@ pub async fn get_source_code_by_kind(pool: &PgPool, kind: &SourceKind) -> Result
     .await
     .map_err(Into::into)
 }
+
+#[instrument(skip(pool), ret, err)]
+pub async fn get_user_sources(pool: &PgPool, user_id: &str) -> Result<Vec<Source>> {
+    sqlx::query_as!(
+        Source,
+        r#"SELECT id,
+created_at,
+updated_at,
+name,
+slug,
+description,
+url,
+favicon,
+tags,
+enabled,
+supported_indicators,
+disabled_indicators,
+task_enabled,
+task_interval,
+config,
+config_values,
+limit_enabled,
+limit_count,
+limit_interval,
+cache_enabled,
+cache_interval,
+provider_id,
+kind as "kind: _",
+source_code,
+created_user_id,
+updated_user_id
+FROM sources WHERE created_user_id = $1 ORDER BY name"#,
+        user_id
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Into::into)
+}
