@@ -594,6 +594,10 @@ export interface Count {
   ignoreLists: number;
   /** Number of enabled indicators */
   enabledIgnoreLists: number;
+  /** Number of users */
+  users: number;
+  /** Number of enabled users */
+  enabledUsers: number;
 }
 
 /** A stats helper container for getting a count based on an ID or name of an object */

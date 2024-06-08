@@ -183,6 +183,7 @@ export const Layout: React.FC = () => {
               },
               {
                 title: t("users"),
+                label: statsCount.data.users,
                 to: "/users",
                 variant: page === "users" ? "default" : "ghost",
                 icon: Users,

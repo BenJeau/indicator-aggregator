@@ -15,7 +15,9 @@ pub async fn count(pool: &PgPool) -> Result<Count> {
 (SELECT count(*) FROM sources)::int as "sources!",
 (SELECT count(*)::int FROM sources WHERE enabled)::int as "enabled_sources!",
 (SELECT count(*) FROM ignore_lists)::int as "ignore_lists!",
-(SELECT count(*)::int FROM ignore_lists WHERE enabled)::int as "enabled_ignore_lists!"
+(SELECT count(*)::int FROM ignore_lists WHERE enabled)::int as "enabled_ignore_lists!",
+(SELECT count(*) FROM users)::int as "users!",
+(SELECT count(*)::int FROM users WHERE enabled)::int as "enabled_users!"
         "#
     )
     .fetch_one(pool)
