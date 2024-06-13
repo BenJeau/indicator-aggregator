@@ -38,6 +38,7 @@ pub enum Error {
     PasswordHash(shared::crypto::PasswordHashError),
     InvalidCredentials,
     DisabledUser,
+    Forbidden,
 }
 
 impl std::error::Error for Error {}
@@ -110,7 +111,7 @@ impl From<auth::error::Error> for Error {
         match error {
             auth::error::Error::Database(err) => Self::SqlxError(err),
             auth::error::Error::Unauthorized(_) => Self::Unauthorized,
-            auth::error::Error::MissingRoles(_) => Self::Unauthorized,
+            auth::error::Error::MissingRoles(_) => Self::Forbidden,
             auth::error::Error::BadRequest(err) => Self::BadRequest(err),
             auth::error::Error::SerdeJson(_) => Self::InternalError,
             auth::error::Error::Reqwest(err) => Self::Reqwest(err),
@@ -151,6 +152,7 @@ impl IntoResponse for Error {
                 (StatusCode::UNAUTHORIZED, "Your account is disabled").into_response()
             }
             Self::NotFound => StatusCode::NOT_FOUND.into_response(),
+            Self::Forbidden => StatusCode::FORBIDDEN.into_response(),
             _ => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         }
     }

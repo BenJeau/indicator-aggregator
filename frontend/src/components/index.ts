@@ -4,6 +4,8 @@ export * as Layouts from "./layouts";
 export * as SearchResults from "./search-results";
 
 export { default as ApiTokensTable } from "./api-tokens-table";
+export { default as AuthLink } from "./auth-link";
+export { default as AuthVisible } from "./auth-visible";
 export { default as AutoAnimate } from "./auto-animate";
 export { default as Code } from "./code";
 export { default as CopyButton } from "./copy-button";

@@ -11,10 +11,11 @@ use rand::{thread_rng, Rng};
 
 use error::{Error, Result};
 
-pub fn require_roles(user_roles: &[&str], required_roles: &[&str]) -> Result<()> {
+pub fn require_roles(user_roles: &[String], required_roles: &[&str]) -> Result<()> {
     let missing_roles = required_roles
         .iter()
-        .filter(|role| !user_roles.contains(role))
+        // TODO: rework this to not need to convert to string
+        .filter(|role| !user_roles.contains(&role.to_string()))
         .map(|role| role.to_string())
         .collect::<Vec<_>>();
 

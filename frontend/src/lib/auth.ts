@@ -1,15 +1,16 @@
 import { ParsedLocation, redirect } from "@tanstack/react-router";
+import { toast } from "sonner";
 
-import { userAtom } from "@/atoms/auth";
+import { User, userAtom } from "@/atoms/auth";
 import { store } from "@/atoms";
 
 export type BeforeLoadFn = (
   roles?: string[],
-) => (opts: { location: ParsedLocation }) => void;
+) => (opts: { location: ParsedLocation; cause?: string }) => void;
 
 export const beforeLoadAuthenticated: BeforeLoadFn =
   (roles) =>
-  ({ location }) => {
+  ({ location, cause }) => {
     const user = store.get(userAtom);
 
     if (!user) {
@@ -22,10 +23,23 @@ export const beforeLoadAuthenticated: BeforeLoadFn =
     }
 
     if (roles && roles.length > 0) {
-      const hasRoles = user.roles.every((role) => roles.includes(role));
+      const hasRoles = userHasRoles(user, roles);
 
       if (!hasRoles) {
-        throw redirect({ to: "/auth/login" });
+        if (cause !== "preload") {
+          const missingRoles = roles
+            .filter((role) => !user.roles.includes(role))
+            .join(", ");
+          toast.error(
+            `You don't have the required roles to access the page ${window.location.pathname}`,
+            {
+              id: "no-roles" + missingRoles,
+              description: "Missing roles: " + missingRoles,
+            },
+          );
+        }
+
+        throw redirect({ to: "/", replace: true });
       }
     }
   };
@@ -45,3 +59,9 @@ export const parseJwt = (token: string) => {
 
   return JSON.parse(jsonPayload);
 };
+
+export const userHasRoles = (user: User, roles?: string[]) =>
+  !roles || roles.every((role) => user.roles.includes(role));
+
+export const userHasAnyRoles = (user: User, roles?: string[]) =>
+  !roles || roles.some((role) => user.roles.includes(role));

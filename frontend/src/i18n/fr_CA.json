@@ -141,6 +141,7 @@
   "history.empty.description": "Sélectionner une ancienne demande sur le côté pour visualiser les données qui y sont liées",
   "history.empty.title": "Découvrez les demandes antérieures",
   "history.search.empty.description": "Effectuer une demande pour le voir ici",
+  "history.search.empty.description.viewer": "Ajustez votre recherche ou patientez pour que les demandes soient effectuées",
   "history.search.empty.extra": "Envoyer une demande",
   "history.search.empty.title": "Aucune demande historique",
   "history.search.placeholder": "Rechercher les demandes historiques",

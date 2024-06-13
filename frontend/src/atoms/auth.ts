@@ -1,6 +1,6 @@
 import { atomWithLocalStorage } from "@/atoms";
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name: string;

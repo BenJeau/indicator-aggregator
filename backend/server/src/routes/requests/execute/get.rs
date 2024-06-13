@@ -1,3 +1,4 @@
+use auth::require_roles;
 use axum::{
     extract::State,
     response::{
@@ -34,6 +35,8 @@ pub async fn request(
     Extension(user): Extension<User>,
     Query(request): Query<RequestExecuteParam>,
 ) -> Result<impl IntoResponse> {
+    require_roles(&user.roles, &["request_create"])?;
+
     let should_ignore_errors = request.ignore_errors;
 
     let mut data = handle_indicator_request(&request, &state, &user.id).await?;
@@ -87,6 +90,8 @@ pub async fn sse_handler(
     Extension(user): Extension<User>,
     Query(request): Query<RequestExecuteParam>,
 ) -> Result<impl IntoResponse> {
+    require_roles(&user.roles, &["request_create"])?;
+
     let should_ignore_errors = request.ignore_errors;
     let source_ids = request.source_ids.clone();
     let indicator: Indicator = request.into();

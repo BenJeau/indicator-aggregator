@@ -141,6 +141,7 @@
   "history.empty.description": "Select an old request on the side to view it's related data",
   "history.empty.title": "Learn more about past request",
   "history.search.empty.description": "Create a request to see it here",
+  "history.search.empty.description.viewer": "Refine your search or wait for requests to be made",
   "history.search.empty.extra": "Send a request",
   "history.search.empty.title": "No past request",
   "history.search.placeholder": "Search past requests",

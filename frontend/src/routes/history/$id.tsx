@@ -117,7 +117,7 @@ const NotFoundHistory: React.FC = () => {
 export const Route = createFileRoute("/history/$id")({
   component: HistoryComponent,
   notFoundComponent: NotFoundHistory,
-  beforeLoad: beforeLoadAuthenticated(),
+  beforeLoad: beforeLoadAuthenticated(["request_view"]),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     const [request] = await Promise.all([
       queryClient.ensureQueryData(requestQueryOptions(id)),
