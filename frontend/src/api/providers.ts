@@ -18,7 +18,7 @@ export const providersQueryOptions = queryOptions({
       signal,
     });
 
-    data.map((provider) => {
+    data.forEach((provider) => {
       queryClient.setQueryData(["providers", provider.id], provider);
     });
 
@@ -26,22 +26,19 @@ export const providersQueryOptions = queryOptions({
   },
 });
 
-export function providerSlugQueryOptions<T>(slug: T) {
+export function providerSlugQueryOptions(slug: string) {
   return queryOptions({
     queryKey: ["providers", "slugs", slug],
-    queryFn: async ({ signal }) => {
-      if (!slug) {
-        return slug;
-      }
-
-      return await fetcher.get<string>(`/providers/slugs/${slug}`, {
+    queryFn: async ({ signal }) =>
+      fetcher.get<string>(`/providers/slugs/${slug}`, {
         signal,
-      });
-    },
+      }),
   });
 }
 
-export function providerQueryOptions<T>(providerId: T) {
+export function providerQueryOptions<T extends undefined | string>(
+  providerId: T,
+) {
   return queryOptions({
     queryKey: ["providers", providerId],
     queryFn: async ({ signal }) => {
@@ -151,7 +148,7 @@ export const providerSourcesQueryOptions = (providerId: string) =>
         },
       );
 
-      data.map((source) => {
+      data.forEach((source) => {
         queryClient.setQueryData(["sources", source.id], source);
       });
 

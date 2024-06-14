@@ -26,15 +26,17 @@ export const useCreateSecretMutation = () =>
   useMutation({
     mutationFn: async (data: CreateSecret) =>
       await fetcher.post("/secrets", { data }),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["secrets"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["secrets"] });
+    },
   });
 
 export const useDeleteSecretMutation = () =>
   useMutation({
     mutationFn: async (id: string) => await fetcher.delete(`/secrets/${id}`),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["secrets"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["secrets"] });
+    },
   });
 
 interface PatchSecretParams {
@@ -46,6 +48,7 @@ export const usePatchSecretMutation = () =>
   useMutation({
     mutationFn: async ({ id, data }: PatchSecretParams) =>
       await fetcher.patch(`/secrets/${id}`, { data }),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["secrets"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["secrets"] });
+    },
   });

@@ -193,6 +193,7 @@ dependencies = [
  "shared",
  "tokio",
  "tracing",
+ "typeshare",
  "utoipa",
 ]
 

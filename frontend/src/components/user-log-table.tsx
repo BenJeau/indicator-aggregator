@@ -64,7 +64,7 @@ const UserLogTable: React.FC<Props> = ({ data }) => {
           size: 50,
         },
       ]}
-      data={data ?? []}
+      data={data}
     />
   );
 };

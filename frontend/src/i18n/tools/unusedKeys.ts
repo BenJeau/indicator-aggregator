@@ -8,13 +8,10 @@ import ignoredKeys from "@/i18n/ignoredKeys.json";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const findUnusedKeys = async (
-  filesContent: string[],
-  searchableKeys: string[],
-) => {
+const findUnusedKeys = (filesContent: string[], searchableKeys: string[]) => {
   const unusedKeys: string[] = [];
 
-  searchableKeys.map(async (key) => {
+  searchableKeys.forEach((key) => {
     const result = filesContent.some(
       (content) =>
         content.includes(`"${key}"`) ||
@@ -28,7 +25,7 @@ const findUnusedKeys = async (
 
   if (unusedKeys.length) {
     console.error(
-      `${unusedKeys.length} keys that are unused in the project found`,
+      `${unusedKeys.length.toString()} keys that are unused in the project found`,
       unusedKeys,
     );
     console.error("findUnusedKeys check: FAIL\n");
@@ -46,9 +43,7 @@ const getFileContent = async (dir: string, ext: string[]) => {
   );
 
   return Promise.all(
-    files
-      .flat()
-      .map(async (i) => fs.readFile(i).then((buffer) => buffer.toString())),
+    files.flat().map((i) => fs.readFile(i).then((buffer) => buffer.toString())),
   );
 };
 

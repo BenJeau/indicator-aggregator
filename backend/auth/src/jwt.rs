@@ -1,5 +1,6 @@
 use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Validation};
 use serde::{Deserialize, Serialize};
+use typeshare::typeshare;
 
 use crate::{config, Result};
 
@@ -57,16 +58,27 @@ impl JwtManager {
     }
 }
 
+/// JWT claims
 #[derive(Serialize, Deserialize)]
+#[typeshare]
 pub struct Claims {
+    /// Database ID of the user
     pub sub: String,
+    /// Email of the user
     pub email: String,
+    /// Whether the user has verified their email
     pub email_verified: Option<bool>,
+    /// Name of the user
     pub name: String,
+    /// First name of the user
     pub given_name: Option<String>,
+    /// Last name of the user
     pub family_name: Option<String>,
+    /// Locale of the user
     pub locale: Option<String>,
+    /// Roles of the user granting access to parts of the platform
     pub roles: Vec<String>,
+    /// Provider of the user
     pub provider: String,
 }
 

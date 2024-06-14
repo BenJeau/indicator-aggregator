@@ -21,7 +21,7 @@ export const usersQueryOptions = queryOptions({
     }),
 });
 
-export function userQueryOptions<T>(userId: T) {
+export function userQueryOptions<T extends undefined | string>(userId: T) {
   return queryOptions({
     queryKey: ["users", userId],
     queryFn: async ({ signal }) => {

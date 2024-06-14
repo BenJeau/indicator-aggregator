@@ -14,10 +14,9 @@ const UserEditComponent: React.FC = () => {
   const { id } = Route.useParams();
 
   const navigate = useNavigate();
-  const user = useSuspenseQuery(userQueryOptions(id)) as UseSuspenseQueryResult<
-    User,
-    Error
-  >;
+  const user = useSuspenseQuery(
+    userQueryOptions(id),
+  ) as UseSuspenseQueryResult<User>;
 
   const patchUser = useUserPatch();
 
@@ -27,7 +26,7 @@ const UserEditComponent: React.FC = () => {
       data: values,
     });
     toast.success(<Trans id="user.updated" />);
-    navigate({ to: "/users/$id", params: { id } });
+    await navigate({ to: "/users/$id", params: { id } });
   };
 
   return <Forms.UserEdit.default user={user.data} onSubmit={onSubmit} />;

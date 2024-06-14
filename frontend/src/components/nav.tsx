@@ -12,12 +12,12 @@ import {
 import { userAtom } from "@/atoms/auth";
 import { userHasRoles } from "@/lib/auth";
 
-type BaseNavLinkProps = {
+interface BaseNavLinkProps {
   title: string;
   label?: React.ReactNode;
   icon: LucideIcon;
   variant?: "default" | "ghost";
-};
+}
 
 type ExtraNavLinkProps =
   | {
@@ -44,11 +44,11 @@ interface NavProps {
 const LinkOrButtonOrExternalLink: React.FC<
   React.PropsWithChildren<ExtraNavLinkProps & { className?: string }>
 > = (props) => {
-  if ("to" in props && props.to !== undefined) {
+  if ("to" in props) {
     return <Link {...props} />;
   }
 
-  if ("href" in props && props.href !== undefined) {
+  if ("href" in props) {
     return <a target="_blank" rel="noreferrer noopener" {...props} />;
   }
 
@@ -137,7 +137,7 @@ const Nav: React.FC<NavProps> = ({ links, isCollapsed }) => {
                     {link.label}
                   </span>
                 )}
-                {"href" in link && link.href !== undefined && (
+                {"href" in link && (
                   <ExternalLinkIcon className="ml-auto" size={14} />
                 )}
               </LinkOrButtonOrExternalLink>

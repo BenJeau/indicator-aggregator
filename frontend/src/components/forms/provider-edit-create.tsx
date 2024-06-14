@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Plus, Power, Save, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -67,7 +67,7 @@ const formSchema = z.object({
 
 export type FormSchema = z.infer<typeof formSchema>;
 
-type ExtraProviderProps = {
+interface ExtraProviderProps {
   provider: Provider;
   ignoreLists: {
     id: string;
@@ -77,20 +77,20 @@ type ExtraProviderProps = {
     id: string;
     name: string;
   }[];
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
   name?: undefined;
-};
+}
 
-type WithoutProviderProps = {
+interface WithoutProviderProps {
   provider?: undefined;
   ignoreLists?: undefined;
   sources?: undefined;
   onDelete?: undefined;
   name?: string;
-};
+}
 
 type Props = {
-  onSubmit: (data: FormSchema) => void;
+  onSubmit: SubmitHandler<FormSchema>;
 } & (ExtraProviderProps | WithoutProviderProps);
 
 const ProviderEditCreate: React.FC<Props> = ({
@@ -290,7 +290,9 @@ const ProviderEditCreate: React.FC<Props> = ({
                           className="h-8 flex-1"
                           placeholder={`${t("e.g.")} threat-intelligence`}
                           value={newTag}
-                          onChange={(e) => setNewTag(e.target.value)}
+                          onChange={(e) => {
+                            setNewTag(e.target.value);
+                          }}
                         />
                         <Button
                           className="gap-2"
@@ -408,7 +410,9 @@ const ProviderEditCreate: React.FC<Props> = ({
                             "h-8 w-8 p-0",
                             !field.value && "hidden",
                           )}
-                          onClick={() => field.onChange("")}
+                          onClick={() => {
+                            field.onChange("");
+                          }}
                         >
                           <Trash size={16} />
                         </Button>
@@ -428,7 +432,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                     providerSources.data?.filter(
                       ({ id }) =>
                         !field.value.some((source) => source.id === id),
-                    ) || [];
+                    ) ?? [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
@@ -500,7 +504,7 @@ const ProviderEditCreate: React.FC<Props> = ({
                     providerIgnoreLists.data?.filter(
                       ({ id }) =>
                         !field.value.some((ignoreList) => ignoreList.id === id),
-                    ) || [];
+                    ) ?? [];
 
                   return (
                     <FormItem className="flex-1 text-sm">

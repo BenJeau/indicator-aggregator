@@ -64,7 +64,7 @@ const ListEditComponent: React.FC = () => {
       }),
     ]);
     toast.success(<Trans id="ignore.list.saved" />);
-    navigate({ to: "/lists/$slug", params: { slug } });
+    await navigate({ to: "/lists/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
@@ -77,7 +77,7 @@ const ListEditComponent: React.FC = () => {
         />
       ),
     });
-    navigate({ to: "/lists" });
+    await navigate({ to: "/lists" });
   };
 
   return (

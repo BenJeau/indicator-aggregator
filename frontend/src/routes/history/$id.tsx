@@ -32,7 +32,7 @@ const HistoryComponent: React.FC = () => {
   const requestData = useSuspenseQuery(requestDataQueryOptions(id));
   const user = useSuspenseQuery(
     userQueryOptions(request.data.userId),
-  ) as UseSuspenseQueryResult<User, Error>;
+  ) as UseSuspenseQueryResult<User>;
 
   return (
     <>
@@ -75,11 +75,11 @@ const HistoryComponent: React.FC = () => {
       />
       <div className="overflow-y-auto">
         <RequestDataView
-          data={requestData.data.reduce(
+          data={requestData.data.reduce<Record<string, ReqestSSEData>>(
             (acc, data) => {
               acc[data.id] = {
                 source: {
-                  id: data.sourceId || "",
+                  id: data.sourceId ?? "",
                   slug: data.sourceSlug,
                   name: data.sourceName,
                   url: data.sourceUrl,
@@ -101,7 +101,7 @@ const HistoryComponent: React.FC = () => {
               };
               return acc;
             },
-            {} as { [key: string]: ReqestSSEData },
+            {},
           )}
         />
       </div>

@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface Props<
   TNameInter extends string,
-  TValues extends FieldValues & { [key in TNameInter]: Array<string> },
+  TValues extends FieldValues & { [key in TNameInter]: string[] },
   TName extends Path<TValues> & ArrayPath<TValues> & TNameInter,
 > {
   name: TName;
@@ -27,7 +27,7 @@ interface Props<
 
 function ArrayField<
   TNameInter extends string,
-  TValues extends FieldValues & { [key in TNameInter]: Array<string> },
+  TValues extends FieldValues & { [key in TNameInter]: string[] },
   TName extends Path<TValues> & ArrayPath<TValues> & TNameInter,
 >({
   control,
@@ -52,7 +52,9 @@ function ArrayField<
                   className="h-8 flex-1"
                   placeholder={placeholder}
                   value={current}
-                  onChange={(e) => setCurrent(e.target.value)}
+                  onChange={(e) => {
+                    setCurrent(e.target.value);
+                  }}
                 />
                 <Button
                   className="gap-2"

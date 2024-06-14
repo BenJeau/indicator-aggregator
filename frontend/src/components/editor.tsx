@@ -1,4 +1,4 @@
-import MonacoEditor from "@monaco-editor/react";
+import MonacoEditor, { loader } from "@monaco-editor/react";
 import { useAtomValue } from "jotai";
 
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -17,7 +17,6 @@ self.MonacoEnvironment = {
   },
 };
 
-import { loader } from "@monaco-editor/react";
 import "monaco-editor/esm/vs/language/json/monaco.contribution";
 import "monaco-editor/esm/vs/language/typescript/monaco.contribution";
 import "monaco-editor/esm/vs/basic-languages/python/python.contribution";
@@ -63,7 +62,7 @@ const Editor: React.FC<Props> = ({ value, onChange, ...props }) => {
       language={language}
       value={value}
       onChange={(value) => {
-        onChange && onChange(value ?? "");
+        onChange?.(value ?? "");
       }}
       options={{
         readOnly: !onChange,

@@ -6,12 +6,12 @@ import { BadgeProps } from "@/components/ui/badge";
 import { TransId } from "@/i18n";
 
 export function dedupeListOnId<T extends { id: unknown }>(data: T[]): T[] {
-  return data.reduce((acc, list) => {
+  return data.reduce<T[]>((acc, list) => {
     if (!acc.some((i) => i.id === list.id)) {
       return [...acc, list];
     }
     return acc;
-  }, [] as T[]);
+  }, []);
 }
 
 export const runnerStatusMapping: {

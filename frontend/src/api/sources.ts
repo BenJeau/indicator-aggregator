@@ -20,7 +20,7 @@ export const sourcesQueryOptions = queryOptions({
       signal,
     });
 
-    data.map((source) => {
+    data.forEach((source) => {
       queryClient.setQueryData(["sources", source.id], source);
     });
 
@@ -28,18 +28,13 @@ export const sourcesQueryOptions = queryOptions({
   },
 });
 
-export function sourceSlugQueryOptions<T>(slug: T) {
+export function sourceSlugQueryOptions(slug: string) {
   return queryOptions({
     queryKey: ["sources", "slugs", slug],
-    queryFn: async ({ signal }) => {
-      if (!slug) {
-        return slug;
-      }
-
-      return await fetcher.get<string>(`/sources/slugs/${slug}`, {
+    queryFn: async ({ signal }) =>
+      fetcher.get<string>(`/sources/slugs/${slug}`, {
         signal,
-      });
-    },
+      }),
   });
 }
 

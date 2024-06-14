@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Plus, Power, Save, Trash, Trash2 } from "lucide-react";
 import { useCallback, useEffect } from "react";
@@ -78,7 +78,7 @@ const formSchema = z.object({
 
 export type FormSchema = z.infer<typeof formSchema>;
 
-type ExtraListProps = {
+interface ExtraListProps {
   list: IgnoreList;
   sources: {
     id: string;
@@ -92,21 +92,21 @@ type ExtraListProps = {
     data: string;
     indicatorKind: string;
   }[];
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
   name?: undefined;
-};
+}
 
-type WithoutListProps = {
+interface WithoutListProps {
   list?: undefined;
   sources?: undefined;
   providers?: undefined;
   entries?: undefined;
   onDelete?: undefined;
   name?: string;
-};
+}
 
 type Props = {
-  onSubmit: (data: FormSchema) => void;
+  onSubmit: SubmitHandler<FormSchema>;
 } & (ExtraListProps | WithoutListProps);
 
 const ListEditCreate: React.FC<Props> = ({
@@ -326,7 +326,7 @@ const ListEditCreate: React.FC<Props> = ({
                     listSources.data?.filter(
                       ({ id }) =>
                         !field.value.some((source) => source.id === id),
-                    ) || [];
+                    ) ?? [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
@@ -398,7 +398,7 @@ const ListEditCreate: React.FC<Props> = ({
                     listProviders.data?.filter(
                       ({ id }) =>
                         !field.value.some((ignoreList) => ignoreList.id === id),
-                    ) || [];
+                    ) ?? [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
@@ -541,7 +541,9 @@ const ListEditCreate: React.FC<Props> = ({
                                 <Button
                                   className="h-6 w-6 p-0"
                                   variant="destructive"
-                                  onClick={() => entryFormFields.remove(index)}
+                                  onClick={() => {
+                                    entryFormFields.remove(index);
+                                  }}
                                   disabled={entryFormFields.fields.length === 1}
                                   type="button"
                                 >
@@ -565,9 +567,9 @@ const ListEditCreate: React.FC<Props> = ({
                     size="sm"
                     variant="secondary"
                     type="button"
-                    onClick={() =>
-                      entryFormFields.append({ data: "", indicatorKind: "" })
-                    }
+                    onClick={() => {
+                      entryFormFields.append({ data: "", indicatorKind: "" });
+                    }}
                   >
                     <Plus size={16} />
                     <Trans id="add.entry" />

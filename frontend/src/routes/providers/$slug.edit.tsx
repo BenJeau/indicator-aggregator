@@ -26,7 +26,7 @@ const ProviderEditComponent: React.FC = () => {
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
     providerQueryOptions(id),
-  ) as UseSuspenseQueryResult<Provider, Error>;
+  ) as UseSuspenseQueryResult<Provider>;
   const providerIgnoreLists = useSuspenseQuery(
     providerIgnoreListsQueryOptions(id),
   );
@@ -60,7 +60,7 @@ const ProviderEditComponent: React.FC = () => {
       }),
     ]);
     toast.success(<Trans id="provider.saved" />);
-    navigate({ to: "/providers/$slug", params: { slug } });
+    await navigate({ to: "/providers/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
@@ -70,7 +70,7 @@ const ProviderEditComponent: React.FC = () => {
         <Trans id="provider.deleted.description" name={provider.data.name} />
       ),
     });
-    navigate({ to: "/providers" });
+    await navigate({ to: "/providers" });
   };
 
   return (

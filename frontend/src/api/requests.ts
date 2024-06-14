@@ -39,7 +39,7 @@ export interface ModifiedRequest extends Omit<RequestExecuteParam, "sources"> {
 
 interface RequestData {
   requestId?: string;
-  data?: { [key: string]: ReqestSSEData };
+  data?: Record<string, ReqestSSEData>;
 }
 
 export const useRequest = (request: ModifiedRequest | undefined) =>
@@ -72,9 +72,11 @@ export const useRequest = (request: ModifiedRequest | undefined) =>
               reject(event);
             },
             onopen: async () => {
-              queryClient.invalidateQueries({ queryKey: ["stats", "count"] });
+              await queryClient.invalidateQueries({
+                queryKey: ["stats", "count"],
+              });
             },
-            onmessage: async (event) => {
+            onmessage: (event) => {
               if (event.event === "fetching_start") {
                 handleFetchingStart(event, queryKey);
               } else if (event.event === "fetching_error") {
@@ -98,7 +100,7 @@ export const requestsQueryOptions = queryOptions({
       signal,
     });
 
-    data.map((request) => {
+    data.forEach((request) => {
       queryClient.setQueryData(["requests", request.id], request);
     });
 
@@ -157,12 +159,12 @@ const handleFetchingError = (event: EventSourceMessage, queryKey: QueryKey) => {
 const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
   const data = JSON.parse(event.data) as SseStartData[];
 
-  const newData = data.reduce(
+  const newData = data.reduce<RequestData>(
     (acc, { source, hasSourceCode }) => ({
       ...acc,
       requestId: event.id,
       data: {
-        ...(acc?.data ?? {}),
+        ...(acc.data ?? {}),
         [source.id]: {
           source,
           hasSourceCode,
@@ -170,7 +172,7 @@ const handleFetchingStart = (event: EventSourceMessage, queryKey: QueryKey) => {
         },
       },
     }),
-    {} as RequestData,
+    {},
   );
 
   queryClient.setQueryData<RequestData>(queryKey, () => newData);

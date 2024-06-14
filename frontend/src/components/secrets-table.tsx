@@ -94,7 +94,9 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
           <Button
             className="gap-2"
             size="sm"
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setShowForm(true);
+            }}
             type="button"
             variant="secondary"
           >
@@ -223,10 +225,12 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                           <FormItem>
                             <FormControl>
                               <DatePicker
-                                // @ts-expect-error Lazy
                                 selected={field.value}
                                 fromDate={new Date()}
-                                onSelect={(date: Date) => field.onChange(date)}
+                                // @ts-expect-error Lazy
+                                onSelect={(date: Date) => {
+                                  field.onChange(date);
+                                }}
                                 buttonClassName="dark:bg-foreground/10 rounded-sm h-7 text-xs"
                               />
                             </FormControl>
@@ -397,10 +401,12 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
               <FormItem>
                 <FormControl>
                   <DatePicker
-                    // @ts-expect-error Lazy
                     selected={field.value}
                     fromDate={new Date()}
-                    onSelect={(date: Date) => field.onChange(date)}
+                    // @ts-expect-error Lazy
+                    onSelect={(date: Date) => {
+                      field.onChange(date);
+                    }}
                     buttonClassName="dark:bg-foreground/10 rounded-sm h-7 text-xs"
                   />
                 </FormControl>
@@ -460,7 +466,9 @@ const TableRowWithData: React.FC<TableRowWithDataProps> = ({ row }) => {
             className="ml-2 h-6 w-6 p-0"
             variant="destructive"
             type="button"
-            onClick={() => deleteSecretMutation.mutate(row.id)}
+            onClick={() => {
+              deleteSecretMutation.mutate(row.id);
+            }}
           >
             <Trash2 size={14} />
           </Button>

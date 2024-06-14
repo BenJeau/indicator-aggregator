@@ -42,8 +42,8 @@ const MaskValue: React.FC<Props> = ({
           </code>
         ) : (
           <div className="flex">
-            {Array.from({ length }, () => (
-              <Asterisk size={12} className="-ml-1" />
+            {Array.from({ length }, (_, index) => (
+              <Asterisk size={12} className="-ml-1" key={index} />
             ))}
           </div>
         )}
@@ -56,7 +56,7 @@ const MaskValue: React.FC<Props> = ({
             variant="ghost"
             type="button"
             onClick={() => {
-              onToggle && onToggle(showValue);
+              onToggle?.(showValue);
               setShowValue((prev) => !prev);
             }}
           >

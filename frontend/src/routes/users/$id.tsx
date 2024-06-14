@@ -46,17 +46,16 @@ import { User } from "@/types/backendTypes";
 const UserComponent: React.FC = () => {
   const { id } = Route.useParams();
 
-  const user = useSuspenseQuery(userQueryOptions(id)) as UseSuspenseQueryResult<
-    User,
-    Error
-  >;
+  const user = useSuspenseQuery(
+    userQueryOptions(id),
+  ) as UseSuspenseQueryResult<User>;
   const userLogs = useSuspenseQuery(userLogsQueryOptions(id));
   const userRequests = useSuspenseQuery(userRequestsQueryOptions(id));
   const userSources = useSuspenseQuery(userSourcesQueryOptions(id));
   const userProviders = useSuspenseQuery(userProvidersQueryOptions(id));
   const userIgnoreLists = useSuspenseQuery(userIgnoreListsQueryOptions(id));
 
-  const firstRole = user.data.roles[0];
+  const firstRole = user.data.roles[0] as undefined | string;
   const otherRoles = user.data.roles.slice(1);
 
   const matches = useMatches();

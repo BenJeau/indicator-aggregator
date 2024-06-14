@@ -8,6 +8,7 @@ import { parseJwt } from "@/lib/auth";
 import Trans from "@/components/trans";
 import { useTranslation } from "@/i18n";
 import { store } from "@/atoms";
+import { Claims } from "@/types/backendTypes";
 
 const SaveUserData: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const SaveUserData: React.FC = () => {
     setTimeout(() => {
       let error = null;
       if (token) {
-        const claims = parseJwt(token);
+        const claims = parseJwt<Claims>(token);
 
         if (claims.name && claims.email && claims.sub) {
           let initials: string;
@@ -49,7 +50,7 @@ const SaveUserData: React.FC = () => {
           });
 
           navigate({
-            to: next || "/",
+            to: next ?? "/",
           });
           return;
         } else {

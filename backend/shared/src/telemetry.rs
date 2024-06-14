@@ -48,7 +48,7 @@ impl Telemetry {
 
         let opentelemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
         let env_filter_layer =
-            EnvFilter::try_from_default_env().unwrap_or(self.env_filter.clone().into());
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| self.env_filter.clone().into());
         let default_layer = tracing_subscriber::fmt::layer();
         let sentry_layer = sentry_tracing::layer();
 

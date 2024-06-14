@@ -5,6 +5,28 @@
 /** Cache key, consisting of a list of strings, used for cache hits and invalidations */
 export type CacheKey = string[];
 
+/** JWT claims */
+export interface Claims {
+  /** Database ID of the user */
+  sub: string;
+  /** Email of the user */
+  email: string;
+  /** Whether the user has verified their email */
+  email_verified?: boolean;
+  /** Name of the user */
+  name: string;
+  /** First name of the user */
+  given_name?: string;
+  /** Last name of the user */
+  family_name?: string;
+  /** Locale of the user */
+  locale?: string;
+  /** Roles of the user granting access to parts of the platform */
+  roles: string[];
+  /** Provider of the user */
+  provider: string;
+}
+
 /** A cache entry, encapsulating the value and the timestamp of when it was created */
 export interface CacheEntry<T> {
   /** Timestamp of when the cache entry was created */
