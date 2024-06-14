@@ -13,9 +13,7 @@ import { userAtom } from "@/atoms/auth";
 
 const Signup: React.FC = () => {
   const { next } = Route.useSearch();
-
   const signup = useUserSignup();
-
   const navigate = useNavigate();
 
   const handleOnSubmit = async (data: Forms.Signup.FormSchema) => {
@@ -25,7 +23,7 @@ const Signup: React.FC = () => {
       description: <Trans id="user.created.description" />,
     });
 
-    navigate({
+    await navigate({
       to: "/auth/login",
       search: {
         next,
@@ -67,9 +65,9 @@ const Signup: React.FC = () => {
   );
 };
 
-type SearchParams = {
+interface SearchParams {
   next?: string;
-};
+}
 
 export const Route = createFileRoute("/auth/signup")({
   component: Signup,

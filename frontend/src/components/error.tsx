@@ -24,7 +24,7 @@ import { useUpdateTheme } from "@/atoms/theme";
 
 interface Props {
   info?: ErrorInfo;
-  error: Error | unknown;
+  error: unknown;
 }
 
 const ErrorComponent: React.FC<Props> = ({ info, error }) => {

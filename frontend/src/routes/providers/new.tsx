@@ -13,7 +13,7 @@ const ProvidersNewComponent: React.FC = () => {
   const onSubmit = async (values: Forms.ProviderEditCreate.FormSchema) => {
     const { slug } = await providerCreate.mutateAsync(values);
     toast.success(<Trans id="provider.created" />);
-    navigate({ to: `/providers/$slug`, params: { slug } });
+    await navigate({ to: "/providers/$slug", params: { slug } });
   };
 
   return (
@@ -21,9 +21,9 @@ const ProvidersNewComponent: React.FC = () => {
   );
 };
 
-type ProviderSearch = {
+interface ProviderSearch {
   name?: string;
-};
+}
 
 export const Route = createFileRoute("/providers/new")({
   component: ProvidersNewComponent,

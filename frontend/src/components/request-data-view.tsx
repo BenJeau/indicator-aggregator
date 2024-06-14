@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { TransId } from "@/i18n";
 
 interface Props {
-  data?: { [key: string]: ReqestSSEData };
+  data?: Record<string, ReqestSSEData>;
   isFetching?: boolean;
 }
 

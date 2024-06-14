@@ -25,7 +25,7 @@ const axiosKiller = async <T>(
   const token = store.get(userAtom)?.token;
 
   const headers = {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${token ?? ""}`,
     ...(options?.data ? { "Content-Type": "application/json" } : {}),
     ...(options?.headers ?? {}),
   };
@@ -40,7 +40,8 @@ const axiosKiller = async <T>(
     config.rest_server_base_url +
     endpoint +
     (options?.params
-      ? "?" + new URLSearchParams(options.params as Record<string, string>)
+      ? "?" +
+        new URLSearchParams(options.params as Record<string, string>).toString()
       : "");
 
   const signals = [AbortSignal.timeout(30000)];
@@ -61,7 +62,7 @@ const axiosKiller = async <T>(
   if (!response.ok) {
     const text = await response.text();
 
-    const message = `${response.status} - ${response.statusText}${
+    const message = `${response.status.toString()} - ${response.statusText}${
       text && `: ${text}`
     }`;
 
@@ -78,7 +79,7 @@ const axiosKiller = async <T>(
         },
       });
     } else {
-      toast.error(`${response.status} - ${response.statusText}`, {
+      toast.error(`${response.status.toString()} - ${response.statusText}`, {
         description: text || undefined,
       });
     }
@@ -104,9 +105,15 @@ const anySignal = (signals: AbortSignal[]): AbortSignal => {
       return signal;
     }
 
-    signal.addEventListener("abort", () => controller.abort(signal.reason), {
-      signal: controller.signal,
-    });
+    signal.addEventListener(
+      "abort",
+      () => {
+        controller.abort(signal.reason);
+      },
+      {
+        signal: controller.signal,
+      },
+    );
   }
 
   return controller.signal;

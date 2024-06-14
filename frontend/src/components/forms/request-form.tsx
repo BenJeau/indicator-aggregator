@@ -84,11 +84,11 @@ const RequestForm = forwardRef<Ref, Props>(
           }
         }
       });
-      return () => subscription.unsubscribe();
+      return subscription.unsubscribe;
     }, [form]);
 
-    const onSubmit = (values: FormSchema) => {
-      navigate({
+    const onSubmit = async (values: FormSchema) => {
+      await navigate({
         to: "/request",
         search: {
           data: values.indicator,
@@ -130,11 +130,9 @@ const RequestForm = forwardRef<Ref, Props>(
                 control={form.control}
                 name="sources"
                 render={({ field }) => {
-                  const availableSources =
-                    sources.filter(
-                      ({ id }) =>
-                        !field.value.some((source) => source.id === id),
-                    ) || [];
+                  const availableSources = sources.filter(
+                    ({ id }) => !field.value.some((source) => source.id === id),
+                  );
 
                   return (
                     <FormItem className="flex-1 text-sm">

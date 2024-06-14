@@ -25,7 +25,7 @@ const Login: React.FC = () => {
   const handleOnSubmit = async (data: Forms.Login.FormSchema) => {
     const { jwtToken } = await login.mutateAsync(data);
 
-    navigate({
+    await navigate({
       to: "/auth/",
       search: {
         token: jwtToken,
@@ -73,7 +73,7 @@ const Login: React.FC = () => {
             </a>
           </Button>
         )}
-        {(microsoftEnabled || googleEnabled) && (
+        {(microsoftEnabled ?? googleEnabled) && (
           <div className="relative my-8 flex items-center justify-center">
             <hr className="flex-1" />
             <div className="absolute self-center bg-background px-6 text-center text-xs italic text-muted-foreground">
@@ -105,9 +105,9 @@ const Login: React.FC = () => {
   );
 };
 
-type SearchParams = {
+interface SearchParams {
   next?: string;
-};
+}
 
 export const Route = createFileRoute("/auth/login")({
   component: Login,

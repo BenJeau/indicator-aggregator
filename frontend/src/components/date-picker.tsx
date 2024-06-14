@@ -12,7 +12,7 @@ import {
 import { Trans } from "@/components";
 
 interface Props extends Omit<CalendarProps, "selected" | "mode"> {
-  selected: Date;
+  selected?: Date;
   buttonClassName?: string;
 }
 
@@ -43,7 +43,7 @@ const DatePicker: React.FC<Props> = (props) => (
             onClick={(e) => {
               e.stopPropagation();
               // @ts-expect-error onSelect is optional
-              props.onSelect && props.onSelect(null);
+              props.onSelect?.(null);
             }}
           >
             <X size={16} />

@@ -29,7 +29,7 @@ const DataTablePagination = <TData,>({
         <Trans id="table.pagination.rows.per.page" />
       </p>
       <Select
-        value={`${table.getState().pagination.pageSize}`}
+        value={table.getState().pagination.pageSize.toString()}
         onValueChange={(value) => {
           table.setPageSize(Number(value));
         }}
@@ -39,7 +39,7 @@ const DataTablePagination = <TData,>({
         </SelectTrigger>
         <SelectContent side="top">
           {[10, 20, 30, 40, 50].map((pageSize) => (
-            <SelectItem key={pageSize} value={`${pageSize}`}>
+            <SelectItem key={pageSize} value={pageSize.toString()}>
               {pageSize}
             </SelectItem>
           ))}
@@ -57,7 +57,9 @@ const DataTablePagination = <TData,>({
       <Button
         variant="outline"
         className="hidden h-8 w-8 p-0 lg:flex"
-        onClick={() => table.setPageIndex(0)}
+        onClick={() => {
+          table.setPageIndex(0);
+        }}
         disabled={!table.getCanPreviousPage()}
       >
         <span className="sr-only">
@@ -68,7 +70,9 @@ const DataTablePagination = <TData,>({
       <Button
         variant="outline"
         className="h-8 w-8 p-0"
-        onClick={() => table.previousPage()}
+        onClick={() => {
+          table.previousPage();
+        }}
         disabled={!table.getCanPreviousPage()}
       >
         <span className="sr-only">
@@ -79,7 +83,9 @@ const DataTablePagination = <TData,>({
       <Button
         variant="outline"
         className="h-8 w-8 p-0"
-        onClick={() => table.nextPage()}
+        onClick={() => {
+          table.nextPage();
+        }}
         disabled={!table.getCanNextPage()}
       >
         <span className="sr-only">
@@ -90,7 +96,9 @@ const DataTablePagination = <TData,>({
       <Button
         variant="outline"
         className="hidden h-8 w-8 p-0 lg:flex"
-        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+        onClick={() => {
+          table.setPageIndex(table.getPageCount() - 1);
+        }}
         disabled={!table.getCanNextPage()}
       >
         <span className="sr-only">

@@ -49,7 +49,7 @@ const ProviderComponent: React.FC = () => {
   const { data: id } = useSuspenseQuery(providerSlugQueryOptions(slug));
   const provider = useSuspenseQuery(
     providerQueryOptions(id),
-  ) as UseSuspenseQueryResult<Provider, Error>;
+  ) as UseSuspenseQueryResult<Provider>;
   const providerIgnoreLists = useSuspenseQuery(
     providerIgnoreListsQueryOptions(id),
   );
@@ -57,7 +57,7 @@ const ProviderComponent: React.FC = () => {
   const globalIgnoreLists = useSuspenseQuery(globalIgnoreListsQueryOptions);
   const creator = useSuspenseQuery(
     userQueryOptions(provider.data.createdUserId),
-  ) as UseSuspenseQueryResult<User, Error>;
+  ) as UseSuspenseQueryResult<User>;
   const updater = useSuspenseQuery(
     userQueryOptions(provider.data.updatedUserId),
   );
@@ -255,14 +255,17 @@ export const Route = createFileRoute("/providers/$slug")({
         const provider = await queryClient.ensureQueryData(
           providerQueryOptions(id),
         );
-        await Promise.all([
-          queryClient.ensureQueryData(
-            userQueryOptions(provider!.createdUserId),
-          ),
-          queryClient.ensureQueryData(
-            userQueryOptions(provider!.updatedUserId),
-          ),
-        ]);
+
+        if (provider) {
+          await Promise.all([
+            queryClient.ensureQueryData(
+              userQueryOptions(provider.createdUserId),
+            ),
+            queryClient.ensureQueryData(
+              userQueryOptions(provider.updatedUserId),
+            ),
+          ]);
+        }
       },
       queryClient.ensureQueryData(providerSourcesQueryOptions(id)),
       queryClient.ensureQueryData(providerIgnoreListsQueryOptions(id)),

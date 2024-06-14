@@ -22,16 +22,18 @@ export const useCreateApiTokenMutation = () =>
   useMutation({
     mutationFn: async (data: CreateApiToken) =>
       await fetcher.post<CreatedApiToken>("/apiTokens", { data }),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] });
+    },
   });
 
 export const useRegenerateApiTokenMutation = () =>
   useMutation({
     mutationFn: async (id: string) =>
       await fetcher.post<string>(`/apiTokens/${id}/regenerate`),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] });
+    },
   });
 
 interface ApiTokenPatch {
@@ -43,15 +45,17 @@ export const useUpdateApiTokenMutation = () =>
   useMutation({
     mutationFn: async ({ id, data }: ApiTokenPatch) =>
       await fetcher.patch(`/apiTokens/${id}`, { data }),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] });
+    },
   });
 
 export const useDeleteApiTokenMutation = () =>
   useMutation({
     mutationFn: async (id: string) => await fetcher.delete(`/apiTokens/${id}`),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] });
+    },
   });
 
 export const useDeleteUserApiTokensMutation = () =>
@@ -59,6 +63,7 @@ export const useDeleteUserApiTokensMutation = () =>
     mutationFn: async (userId: string) => {
       await fetcher.delete(`/users/${userId}/apiTokens`);
     },
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["apiTokens"] });
+    },
   });

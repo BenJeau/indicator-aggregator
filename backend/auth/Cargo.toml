@@ -19,6 +19,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
+typeshare = { workspace = true }
 utoipa = { workspace = true }
 
 database = { path = "../database" }

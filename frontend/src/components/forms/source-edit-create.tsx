@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Check,
@@ -128,7 +128,7 @@ const formSchema = z.object({
 
 export type FormSchema = z.infer<typeof formSchema>;
 
-type ExtraSourceProps = {
+interface ExtraSourceProps {
   source: Source;
   ignoreLists: {
     id: string;
@@ -140,20 +140,20 @@ type ExtraSourceProps = {
     description?: string;
     required: boolean;
   }[];
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
   name?: undefined;
-};
+}
 
-type WithoutSourceProps = {
+interface WithoutSourceProps {
   source?: undefined;
   ignoreLists?: undefined;
   sourceSecrets?: undefined;
   onDelete?: undefined;
   name?: string;
-};
+}
 
 type Props = {
-  onSubmit: (data: FormSchema) => void;
+  onSubmit: SubmitHandler<FormSchema>;
 } & (ExtraSourceProps | WithoutSourceProps);
 
 const SourceEditCreate: React.FC<Props> = ({
@@ -379,7 +379,9 @@ const SourceEditCreate: React.FC<Props> = ({
                             className="h-8 flex-1"
                             placeholder={t("e.g.") + " threat-intelligence"}
                             value={newTag}
-                            onChange={(e) => setNewTag(e.target.value)}
+                            onChange={(e) => {
+                              setNewTag(e.target.value);
+                            }}
                           />
                           <Button
                             className="gap-2"
@@ -535,7 +537,9 @@ const SourceEditCreate: React.FC<Props> = ({
                             "h-8 w-8 p-0",
                             !field.value && "hidden",
                           )}
-                          onClick={() => field.onChange("")}
+                          onClick={() => {
+                            field.onChange("");
+                          }}
                         >
                           <Trash size={16} />
                         </Button>
@@ -943,11 +947,11 @@ const SourceEditCreate: React.FC<Props> = ({
                                             className="h-6 w-7 p-0"
                                             variant="destructive"
                                             type="button"
-                                            onClick={() =>
+                                            onClick={() => {
                                               sourceSecretFormFields.remove(
                                                 index,
-                                              )
-                                            }
+                                              );
+                                            }}
                                           >
                                             <Trash2 size={14} />
                                           </Button>
@@ -975,13 +979,13 @@ const SourceEditCreate: React.FC<Props> = ({
                     size="sm"
                     variant="secondary"
                     type="button"
-                    onClick={() =>
+                    onClick={() => {
                       sourceSecretFormFields.append({
                         required: false,
                         name: "",
                         description: "",
-                      })
-                    }
+                      });
+                    }}
                   >
                     <Plus size={16} />
                     <Trans id="add.entry" />
@@ -999,7 +1003,7 @@ const SourceEditCreate: React.FC<Props> = ({
                     sourceIgnoreLists.data?.filter(
                       ({ id }) =>
                         !field.value.some((ignoreList) => ignoreList.id === id),
-                    ) || [];
+                    ) ?? [];
 
                   return (
                     <FormItem className="flex-1 text-sm">
@@ -1155,7 +1159,7 @@ const SourceEditCreate: React.FC<Props> = ({
                       value={field.value ?? ""}
                       onChange={
                         source?.kind === SourceKind.System
-                          ? () => {}
+                          ? undefined
                           : field.onChange
                       }
                       sourceKind={form.watch("kind") as SourceKind}

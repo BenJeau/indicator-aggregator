@@ -19,7 +19,7 @@ const findDuplicateTranslations = (languages: Languages) => {
     if (duplicateValues.length > 0) {
       foundDuplicateValues = true;
       console.error(
-        `${duplicateValues.length} duplicate values are in ${lang.lang}:`,
+        `${duplicateValues.length.toString()} duplicate values are in ${lang.lang}:`,
         duplicateValues,
       );
     }

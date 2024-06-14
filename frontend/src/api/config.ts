@@ -35,6 +35,7 @@ export const useConfigUpdate = () =>
   useMutation({
     mutationFn: async (data: UpdateServerConfig[]) =>
       await fetcher.put("/config", { data }),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ["config"] }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["config"] });
+    },
   });

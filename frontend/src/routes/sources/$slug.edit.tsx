@@ -58,7 +58,7 @@ const SourceEditComponent: React.FC = () => {
       }),
     ]);
     toast.success(<Trans id="source.saved" />);
-    navigate({ to: "/sources/$slug", params: { slug } });
+    await navigate({ to: "/sources/$slug", params: { slug } });
   };
 
   const onDelete = async () => {
@@ -68,7 +68,7 @@ const SourceEditComponent: React.FC = () => {
         <Trans id="source.deleted.description" name={source.data.name} />
       ),
     });
-    navigate({ to: "/sources" });
+    await navigate({ to: "/sources" });
   };
 
   return (

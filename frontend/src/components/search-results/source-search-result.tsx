@@ -38,8 +38,12 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
                 "hidden h-8 w-8 rounded border shadow",
                 !imgHasError && "xl:block",
               )}
-              onError={() => setImgHasError(true)}
-              onLoad={() => setImgHasError(false)}
+              onError={() => {
+                setImgHasError(true);
+              }}
+              onLoad={() => {
+                setImgHasError(false);
+              }}
             />
             <Database
               size={32}

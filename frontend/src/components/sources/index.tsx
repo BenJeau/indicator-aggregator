@@ -73,8 +73,12 @@ export const Source: React.FC<ReqestSSEData> = ({
                 "min-h-4 w-4 min-w-4 rounded border shadow",
                 imgHasError && "hidden",
               )}
-              onError={() => setImgHasError(true)}
-              onLoad={() => setImgHasError(false)}
+              onError={() => {
+                setImgHasError(true);
+              }}
+              onLoad={() => {
+                setImgHasError(false);
+              }}
             />
             <Database size={16} className={cn(!imgHasError && "hidden")} />
           </a>
@@ -106,14 +110,14 @@ export const Source: React.FC<ReqestSSEData> = ({
                 <Tooltip>
                   <TooltipTrigger>
                     <Badge className="mt-1 gap-2" variant="outline">
-                      {cache?.action === "FROM_CACHE" ? (
+                      {cache.action === "FROM_CACHE" ? (
                         <ServerCrash size={16} />
                       ) : (
                         <Save size={16} />
                       )}
                       <Trans
                         id={
-                          cache?.action === "FROM_CACHE"
+                          cache.action === "FROM_CACHE"
                             ? "response.cached"
                             : "cached.response"
                         }
@@ -126,21 +130,21 @@ export const Source: React.FC<ReqestSSEData> = ({
                         <Trans id="expires.at" />
                       </span>
                       <span>
-                        {dayjs(cache?.expiresAt).format("DD-MM-YYYY HH:mm:ss")}
+                        {dayjs(cache.expiresAt).format("DD-MM-YYYY HH:mm:ss")}
                       </span>
                     </div>
                     <div className="flex justify-between gap-2">
                       <span className="font-semibold">
                         <Trans id="cached.at" />
                       </span>
-                      {dayjs(cache?.cachedAt).format("DD-MM-YYYY HH:mm:ss")}
+                      {dayjs(cache.cachedAt).format("DD-MM-YYYY HH:mm:ss")}
                     </div>
 
                     <div className="flex justify-between gap-2">
                       <span className="font-semibold">
                         <Trans id="cache.key" />
                       </span>
-                      {cache?.cacheKey}
+                      {cache.cacheKey}
                     </div>
                   </TooltipContent>
                 </Tooltip>
@@ -212,17 +216,17 @@ export const Source: React.FC<ReqestSSEData> = ({
 
 function getElapsedTime(diff: number): string {
   if (diff < 1000) {
-    return `${diff}ms`;
+    return `${diff.toString()}ms`;
   }
 
   diff = Math.floor(diff / 1000);
 
   if (diff < 60) {
-    return `${diff}s`;
+    return `${diff.toString()}s`;
   }
 
   diff = Math.floor(diff / 60);
-  return `${diff}m`;
+  return `${diff.toString()}m`;
 }
 
 const SourceErrorPreview: { [key in SourceError["kind"]]: TransId } = {

@@ -39,7 +39,7 @@ const ListsNewComponent: React.FC = () => {
       }),
     ]);
     toast.success(<Trans id="ignore.list.created" />);
-    navigate({ to: `/lists/$slug`, params: { slug } });
+    await navigate({ to: "/lists/$slug", params: { slug } });
   };
 
   return (
@@ -47,9 +47,9 @@ const ListsNewComponent: React.FC = () => {
   );
 };
 
-type IgnoreListSearch = {
+interface IgnoreListSearch {
   name?: string;
-};
+}
 
 export const Route = createFileRoute("/lists/new")({
   component: ListsNewComponent,

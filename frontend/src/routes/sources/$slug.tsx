@@ -77,7 +77,7 @@ const SourceComponent: React.FC = () => {
   const sourceRequests = useSuspenseQuery(sourceRequestsQueryOptions(id));
   const creator = useSuspenseQuery(
     userQueryOptions(source.data.createdUserId),
-  ) as UseSuspenseQueryResult<User, Error>;
+  ) as UseSuspenseQueryResult<User>;
   const updater = useSuspenseQuery(userQueryOptions(source.data.updatedUserId));
 
   const combinedIgnoreLists = dedupeListOnId([
@@ -298,7 +298,7 @@ const SourceComponent: React.FC = () => {
                   <FullBadge
                     Icon={TimerReset}
                     label="interval"
-                    value={source.data.taskInterval + "s"}
+                    value={source.data.taskInterval.toString() + "s"}
                   />
                 )}
               </div>
@@ -330,7 +330,7 @@ const SourceComponent: React.FC = () => {
                   <FullBadge
                     Icon={TimerReset}
                     label="interval"
-                    value={source.data.cacheInterval + "s"}
+                    value={source.data.cacheInterval.toString() + "s"}
                   />
                 )}
               </div>

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Power, Save } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -28,7 +28,7 @@ export type FormSchema = z.infer<typeof formSchema>;
 
 interface Props {
   user: User;
-  onSubmit: (data: FormSchema) => void;
+  onSubmit: SubmitHandler<FormSchema>;
 }
 
 const UserEdit: React.FC<Props> = ({ user, onSubmit }) => {

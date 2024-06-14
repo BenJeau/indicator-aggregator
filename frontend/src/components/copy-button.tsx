@@ -24,7 +24,9 @@ const CopyButton: React.FC<Props> = ({
         if (text) {
           navigator.clipboard.writeText(text);
           setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
+          setTimeout(() => {
+            setCopied(false);
+          }, 1500);
         }
       }}
       className={cn(

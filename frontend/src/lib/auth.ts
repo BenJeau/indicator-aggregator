@@ -44,7 +44,7 @@ export const beforeLoadAuthenticated: BeforeLoadFn =
     }
   };
 
-export const parseJwt = (token: string) => {
+export function parseJwt<T>(token: string): T {
   const base64Url = token.split(".")[1];
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
@@ -57,8 +57,8 @@ export const parseJwt = (token: string) => {
       .join(""),
   );
 
-  return JSON.parse(jsonPayload);
-};
+  return JSON.parse(jsonPayload) as T;
+}
 
 export const userHasRoles = (user: User, roles?: string[]) =>
   !roles || roles.every((role) => user.roles.includes(role));

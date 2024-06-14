@@ -78,7 +78,9 @@ function GenericPanelSearch<T>({
               placeholder={t(searchPlaceholder) + "..."}
               value={searchValue}
               className="h-8 bg-background"
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
             />
             {createLinkTo && (
               <Link to={createLinkTo}>

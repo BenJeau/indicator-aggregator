@@ -100,17 +100,17 @@ const RequestComponent: React.FC = () => {
   );
 };
 
-type IndicatorRequest = {
+interface IndicatorRequest {
   data?: string;
   kind?: string;
   sources?: string[];
   requestId?: string;
-};
+}
 
 export const Route = createFileRoute("/request")({
   component: RequestComponent,
   beforeLoad: beforeLoadAuthenticated(["request_create"]),
   validateSearch: (search: IndicatorRequest): IndicatorRequest => search,
-  loader: async ({ context: { queryClient } }) =>
+  loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(sourcesQueryOptions),
 });

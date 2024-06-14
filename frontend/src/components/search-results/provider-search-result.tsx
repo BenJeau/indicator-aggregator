@@ -35,8 +35,12 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
                 "h-6 w-6 rounded border shadow",
                 imgHasError && "hidden",
               )}
-              onError={() => setImgHasError(true)}
-              onLoad={() => setImgHasError(false)}
+              onError={() => {
+                setImgHasError(true);
+              }}
+              onLoad={() => {
+                setImgHasError(false);
+              }}
             />
             <Globe
               size={16}

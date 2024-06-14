@@ -57,7 +57,7 @@ const ListComponent: React.FC = () => {
   );
   const creator = useSuspenseQuery(
     userQueryOptions(ignoreList.data.createdUserId),
-  ) as UseSuspenseQueryResult<User, Error>;
+  ) as UseSuspenseQueryResult<User>;
   const updater = useSuspenseQuery(
     userQueryOptions(ignoreList.data.updatedUserId),
   );

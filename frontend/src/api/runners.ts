@@ -33,7 +33,7 @@ export const useRunnersStatus = () =>
           onerror: (event) => {
             reject(event);
           },
-          onmessage: async (event) => {
+          onmessage: (event) => {
             const data = event.data as RunnerStatus;
             const id = event.id as SourceKind.Python | SourceKind.JavaScript;
 

@@ -31,7 +31,7 @@ function DynamicCustomTooltip({
   hiddenAreas,
 }: TooltipProps<ValueType, NameType> & { hiddenAreas: Set<string> }) {
   if (active) {
-    if (!payload || !payload[0]) return null;
+    if (!payload?.[0]) return null;
 
     const data = payload[0].payload as {
       original: CountPerIdWrapper;
@@ -176,7 +176,9 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
         </h3>
         <div className="flex gap-2">
           <Button
-            onClick={() => setHideAreas(new Set())}
+            onClick={() => {
+              setHideAreas(new Set());
+            }}
             className="gap-2"
             size="sm"
             variant="secondary"
@@ -186,11 +188,11 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
             <Trans id="show.all" />
           </Button>
           <Button
-            onClick={() =>
+            onClick={() => {
               setHideAreas(
                 new Set(Object.keys(areas).map((i) => `data.${i}.count`)),
-              )
-            }
+              );
+            }}
             className="gap-2"
             size="sm"
             variant="secondary"
@@ -222,8 +224,12 @@ const StackedAreaChart: React.FC<ChartDynamicProps> = ({
             <Legend
               className="cursor-pointer font-bold"
               onClick={selectLegend}
-              onMouseEnter={(e) => setHoveredArea(e.dataKey?.toString())}
-              onMouseLeave={() => setHoveredArea(undefined)}
+              onMouseEnter={(e) => {
+                setHoveredArea(e.dataKey?.toString());
+              }}
+              onMouseLeave={() => {
+                setHoveredArea(undefined);
+              }}
             />
             {Object.entries(areas).map(([id, name], index) => {
               const dataKey = `data.${id}.count`;

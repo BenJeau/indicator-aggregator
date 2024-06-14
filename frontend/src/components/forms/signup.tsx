@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Loader2, LogIn } from "lucide-react";
 
@@ -24,7 +24,7 @@ const formSchema = z.object({
 export type FormSchema = z.infer<typeof formSchema>;
 
 interface Props {
-  onSubmit: (data: FormSchema) => void;
+  onSubmit: SubmitHandler<FormSchema>;
   loading: boolean;
 }
 

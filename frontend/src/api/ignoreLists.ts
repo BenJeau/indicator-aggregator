@@ -20,7 +20,7 @@ export const globalIgnoreListsQueryOptions = queryOptions({
       signal,
     });
 
-    data.map((list) => {
+    data.forEach((list) => {
       queryClient.setQueryData(["ignoreLists", list.id], list);
     });
 
@@ -28,18 +28,13 @@ export const globalIgnoreListsQueryOptions = queryOptions({
   },
 });
 
-export function ignoreListSlugQueryOptions<T>(slug: T) {
+export function ignoreListSlugQueryOptions(slug: string) {
   return queryOptions({
     queryKey: ["ignoreLists", "slugs", slug],
-    queryFn: async ({ signal }) => {
-      if (!slug) {
-        return slug;
-      }
-
-      return await fetcher.get<string>(`/ignoreLists/slugs/${slug}`, {
+    queryFn: async ({ signal }) =>
+      fetcher.get<string>(`/ignoreLists/slugs/${slug}`, {
         signal,
-      });
-    },
+      }),
   });
 }
 
@@ -50,7 +45,7 @@ export const ignoreListsQueryOptions = queryOptions({
       signal,
     });
 
-    data.map((list) => {
+    data.forEach((list) => {
       queryClient.setQueryData(["ignoreLists", list.id], list);
     });
 

@@ -38,7 +38,7 @@ const SourceNewComponent: React.FC = () => {
     ]);
 
     toast.success(<Trans id="source.created" />);
-    navigate({ to: `/sources/$slug`, params: { slug } });
+    await navigate({ to: "/sources/$slug", params: { slug } });
   };
 
   return (
@@ -46,9 +46,9 @@ const SourceNewComponent: React.FC = () => {
   );
 };
 
-type SourceSearch = {
+interface SourceSearch {
   name?: string;
-};
+}
 
 export const Route = createFileRoute("/sources/new")({
   component: SourceNewComponent,

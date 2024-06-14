@@ -4,14 +4,14 @@ interface Props extends Record<string, React.ReactNode> {
   id: TransId;
 }
 
-const valueRegex = /{([^}]+)}/g;
+const valueRegex = /{([^}]+)}/;
 
 const Text: React.FC<Props> = ({ id, ...props }) => {
   const { t } = useTranslation();
 
   const text = t(id);
 
-  if (Object.values(props).length === 0 || !text.match(valueRegex)) {
+  if (Object.values(props).length === 0 || !valueRegex.test(text)) {
     return text;
   }
 

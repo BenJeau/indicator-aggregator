@@ -3,13 +3,8 @@ import { SetStateAction, atom, createStore } from "jotai";
 export const atomWithLocalStorage = <T>(key: string, initialValue: T) => {
   const getInitialValue = (): T => {
     const item = localStorage.getItem(key);
-    if (
-      item !== null &&
-      item !== undefined &&
-      item !== "undefined" &&
-      item !== "null"
-    ) {
-      return JSON.parse(item);
+    if (item !== null && item !== "undefined" && item !== "null") {
+      return JSON.parse(item) as T;
     }
     return initialValue;
   };

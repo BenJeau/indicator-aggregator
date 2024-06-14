@@ -193,6 +193,7 @@ const DocsComponents: React.FC = () => {
       </div>
       <div className="overflow-hidden rounded-xl border shadow">
         <iframe
+          sandbox=""
           src={`${config.rest_server_base_url}/docs`}
           width="100%"
           className="min-h-[80vh]"

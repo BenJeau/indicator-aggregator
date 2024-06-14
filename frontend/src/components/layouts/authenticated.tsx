@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   BookOpenText,
   ChevronsLeft,
@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { useRouterState, Link, Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import React from "react";
 import { useAtom, useAtomValue } from "jotai";
 
 import { cn } from "@/lib/utils";
@@ -251,7 +250,9 @@ export const Layout: React.FC = () => {
               {
                 title: t(`theme.${ThemeCycle[theme]}`),
                 icon: ThemeIcon[ThemeCycle[theme]],
-                onClick: () => setTheme((prev) => ThemeCycle[prev]),
+                onClick: () => {
+                  setTheme((prev) => ThemeCycle[prev]);
+                },
               },
               {
                 title: t("logout"),

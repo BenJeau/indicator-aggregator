@@ -36,7 +36,9 @@ export const Footer: React.FC<{ showHome?: boolean }> = ({ showHome }) => {
         <Button
           variant="link"
           className="gap-2 lowercase"
-          onClick={() => setTheme((prev) => ThemeCycle[prev])}
+          onClick={() => {
+            setTheme((prev) => ThemeCycle[prev]);
+          }}
         >
           <Icon size={16} />
           <span>

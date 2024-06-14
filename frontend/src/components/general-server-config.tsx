@@ -55,16 +55,15 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
   const { t } = useTranslation();
 
   const groupedConfig = useMemo(() => {
-    return Object.entries(config).reduce(
-      (acc, [key, curr], index) => {
-        if (!acc[curr.category]) {
-          acc[curr.category] = [];
-        }
-        acc[curr.category].push({ data: { ...curr, key }, index });
-        return acc;
-      },
-      {} as { [key: string]: { data: ServerConfigWithKey; index: number }[] },
-    );
+    return Object.entries(config).reduce<
+      Record<string, { data: ServerConfigWithKey; index: number }[]>
+    >((acc, [key, curr], index) => {
+      if (!acc[curr.category]) {
+        acc[curr.category] = [];
+      }
+      acc[curr.category].push({ data: { ...curr, key }, index });
+      return acc;
+    }, {});
   }, [config]);
 
   const configMutate = useConfigUpdate();
@@ -130,7 +129,7 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
       >
         <div className="mt-2 flex flex-col gap-4">
           {Object.entries(groupedConfig).map(([category, data]) => (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" key={category}>
               <h2 className="text-lg font-semibold">{category}</h2>
               <div
                 className={`grid gap-4 ${numberToGridCols[calulcatorOfCols(data.map((i) => i.data))]}`}
@@ -163,7 +162,9 @@ const GeneralServerConfig: React.FC<Props> = ({ config }) => {
               className="gap-2"
               disabled={!isFormDirty}
               type="button"
-              onClick={() => form.reset()}
+              onClick={() => {
+                form.reset();
+              }}
             >
               <Undo size={16} /> <Trans id="undo.changes" />
             </Button>
@@ -330,9 +331,9 @@ const ConfigEntry: React.FC<{
                   onBlur={field.onBlur}
                   name={field.name}
                   checked={field.value === "true" ? true : false}
-                  onCheckedChange={(e) =>
-                    field.onChange(e === true ? "true" : "false")
-                  }
+                  onCheckedChange={(e) => {
+                    field.onChange(e === true ? "true" : "false");
+                  }}
                 />
               )}
               {kind === ServerConfigKind.String && (
