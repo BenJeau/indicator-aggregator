@@ -25,6 +25,10 @@ pub struct Count {
     pub ignore_lists: i32,
     /// Number of enabled indicators
     pub enabled_ignore_lists: i32,
+    /// Number of users
+    pub users: i32,
+    /// Number of enabled users
+    pub enabled_users: i32,
 }
 
 /// A stats helper container for getting a count based on an ID or name of an object

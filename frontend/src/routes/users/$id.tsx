@@ -22,6 +22,7 @@ import { useMemo } from "react";
 
 import {
   FullBadge,
+  NotFound,
   SearchResults,
   SectionPanelHeader,
   TitleEntryCount,
@@ -250,8 +251,14 @@ const UserComponent: React.FC = () => {
   );
 };
 
+const NotFoundSource: React.FC = () => {
+  const { id } = Route.useParams();
+  return <NotFound title="user.not.found" data={id} />;
+};
+
 export const Route = createFileRoute("/users/$id")({
   component: UserComponent,
+  notFoundComponent: NotFoundSource,
   beforeLoad: beforeLoadAuthenticated(),
   loader: async ({ context: { queryClient }, params: { id } }) => {
     await Promise.all([

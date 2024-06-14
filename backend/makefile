@@ -1,4 +1,4 @@
-reset-db:
+db-reset:
 	./scripts/reset_db.sh && make gen-types
 
 gen-types:

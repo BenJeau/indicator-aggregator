@@ -44,6 +44,7 @@ import config from "@/lib/config";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { userAtom } from "@/atoms/auth";
 import { useTranslation } from "@/i18n";
+import { userHasAnyRoles } from "@/lib/auth";
 
 type Page =
   | "home"
@@ -61,7 +62,7 @@ export const Layout: React.FC = () => {
   const { location } = useRouterState();
   const [theme, setTheme] = useAtom(themeAtom);
   const windowWidth = useWindowWidth();
-  const auth = useAtomValue(userAtom);
+  const user = useAtomValue(userAtom);
   const { t, toggle, otherLang } = useTranslation();
 
   const statsCount = useSuspenseQuery(statsCountQueryOptions);
@@ -125,6 +126,7 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
+                roles: ["request_create"],
                 title: t("requests"),
                 icon: Send,
                 to: "/request",
@@ -132,6 +134,7 @@ export const Layout: React.FC = () => {
                 preload: false,
               },
               {
+                roles: ["request_view"],
                 title: t("history"),
                 label: statsCount.data.history,
                 icon: History,
@@ -140,9 +143,11 @@ export const Layout: React.FC = () => {
               },
             ]}
           />
-          <div className={cn("mx-4", isCollapsed && "mx-2")}>
-            <Separator />
-          </div>
+          {userHasAnyRoles(user!, ["request_create", "request_view"]) && (
+            <div className={cn("mx-4", isCollapsed && "mx-2")}>
+              <Separator />
+            </div>
+          )}
           <Nav
             isCollapsed={isCollapsed}
             links={[
@@ -176,16 +181,17 @@ export const Layout: React.FC = () => {
             isCollapsed={isCollapsed}
             links={[
               {
+                title: t("users"),
+                label: statsCount.data.users,
+                to: "/users",
+                variant: page === "users" ? "default" : "ghost",
+                icon: Users,
+              },
+              {
                 title: t("config"),
                 to: "/config",
                 variant: page === "config" ? "default" : "ghost",
                 icon: Cog,
-              },
-              {
-                title: t("users"),
-                to: "/users",
-                variant: page === "users" ? "default" : "ghost",
-                icon: Users,
               },
             ]}
           />
@@ -264,13 +270,13 @@ export const Layout: React.FC = () => {
           >
             <Avatar className="border">
               <AvatarImage alt="@shadcn" />
-              <AvatarFallback>{auth?.initials}</AvatarFallback>
+              <AvatarFallback>{user!.initials}</AvatarFallback>
             </Avatar>
             <div className={cn("flex flex-col", isCollapsed && "hidden")}>
               <span className="block whitespace-nowrap font-semibold">
-                {auth?.name}
+                {user!.name}
               </span>
-              <span className="block text-xs opacity-70">{auth?.email}</span>
+              <span className="block text-xs opacity-70">{user!.email}</span>
             </div>
           </div>
         </div>

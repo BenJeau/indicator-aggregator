@@ -1,5 +1,5 @@
 install-deps-backend:
-	cd backend && cargo install
+	cd backend/server && cargo install --path .
 
 install-deps-frontend:
 	cd frontend && pnpm install
@@ -59,7 +59,7 @@ db-create-migration:
 	cd backend/database && cargo sqlx migrate add $1
 
 db-reset:
-	cd backend && make reset-db
+	cd backend && make db-reset
 
 i18n:
 	cd frontend && pnpm i18n:sort && pnpm i18n:cleanup && pnpm i18n:unused

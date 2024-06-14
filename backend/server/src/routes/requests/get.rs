@@ -1,9 +1,10 @@
+use auth::require_roles;
 use axum::{
     extract::{Path, State},
     response::IntoResponse,
-    Json,
+    Extension, Json,
 };
-use database::{logic::requests, PgPool};
+use database::{logic::requests, schemas::users::User, PgPool};
 
 use crate::{Error, Result};
 
@@ -16,7 +17,12 @@ use crate::{Error, Result};
         (status = 200, description = "List of requests", body = [Request]),
     )
 )]
-pub async fn get_requests(State(pool): State<PgPool>) -> Result<impl IntoResponse> {
+pub async fn get_requests(
+    Extension(user): Extension<User>,
+    State(pool): State<PgPool>,
+) -> Result<impl IntoResponse> {
+    require_roles(&user.roles, &["request_view"])?;
+
     let requests = requests::get_requests(&pool).await?;
 
     Ok(Json(requests))
@@ -36,9 +42,12 @@ pub async fn get_requests(State(pool): State<PgPool>) -> Result<impl IntoRespons
     )
 )]
 pub async fn get_request(
+    Extension(user): Extension<User>,
     State(pool): State<PgPool>,
     Path(request_id): Path<String>,
 ) -> Result<impl IntoResponse> {
+    require_roles(&user.roles, &["request_view"])?;
+
     let request = requests::get_request(&pool, &request_id)
         .await?
         .ok_or(Error::NotFound)?;
@@ -59,9 +68,12 @@ pub async fn get_request(
     )
 )]
 pub async fn get_request_data(
+    Extension(user): Extension<User>,
     State(pool): State<PgPool>,
     Path(request_id): Path<String>,
 ) -> Result<impl IntoResponse> {
+    require_roles(&user.roles, &["request_view"])?;
+
     let request_data = requests::get_request_source_requests(&pool, &request_id).await?;
 
     Ok(Json(request_data))

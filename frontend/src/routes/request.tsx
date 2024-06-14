@@ -109,7 +109,7 @@ type IndicatorRequest = {
 
 export const Route = createFileRoute("/request")({
   component: RequestComponent,
-  beforeLoad: beforeLoadAuthenticated(),
+  beforeLoad: beforeLoadAuthenticated(["request_create"]),
   validateSearch: (search: IndicatorRequest): IndicatorRequest => search,
   loader: async ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(sourcesQueryOptions),

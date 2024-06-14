@@ -1,8 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { LinkProps } from "@tanstack/react-router";
 import { LucideIcon } from "lucide-react";
 
 import { TransId, useTranslation } from "@/i18n";
-import { Trans } from "@/components";
+import { Trans, AuthLink } from "@/components";
 
 interface Props {
   Icon: LucideIcon;
@@ -10,7 +10,8 @@ interface Props {
   title: TransId;
   subCount: number;
   subTitle: TransId;
-  to: string;
+  to: LinkProps["to"];
+  roles?: string[];
 }
 
 const StatsCounter: React.FC<Props> = ({
@@ -20,12 +21,13 @@ const StatsCounter: React.FC<Props> = ({
   subCount,
   subTitle,
   to,
+  roles,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <Link to={to} title={`${t("search.results")}...`}>
-      <div className="flex cursor-pointer items-center gap-4 rounded-xl border p-4 shadow-sm transition duration-100 ease-in-out hover:bg-muted">
+    <AuthLink to={to} title={`${t("search.results")}...`} roles={roles}>
+      <div className="flex items-center gap-4 rounded-xl border p-4 shadow-sm transition duration-100 ease-in-out hover:bg-muted">
         <div className="rounded-xl border bg-primary p-2">
           <Icon size={32} className="text-white dark:text-black" />
         </div>
@@ -44,7 +46,7 @@ const StatsCounter: React.FC<Props> = ({
           </div>
         </div>
       </div>
-    </Link>
+    </AuthLink>
   );
 };
 
