@@ -1,0 +1,17 @@
+version = 1
+
+[[analyzers]]
+name = "shell"
+
+[[analyzers]]
+name = "rust"
+
+[analyzers.meta]
+msrv = "stable"
+
+[[analyzers]]
+name = "javascript"
+
+[analyzers.meta]
+environment = ["browser"]
+plugins = ["react"]
