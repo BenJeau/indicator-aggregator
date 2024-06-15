@@ -32,7 +32,7 @@ export function ignoreListSlugQueryOptions(slug: string) {
   return queryOptions({
     queryKey: ["ignoreLists", "slugs", slug],
     queryFn: async ({ signal }) =>
-      fetcher.get<string>(`/ignoreLists/slugs/${slug}`, {
+      await fetcher.get<string>(`/ignoreLists/slugs/${slug}`, {
         signal,
       }),
   });

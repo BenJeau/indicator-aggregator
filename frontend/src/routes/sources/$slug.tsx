@@ -494,7 +494,7 @@ const SecretBadge: React.FC<SourceSecret> = ({ id, name, secretId }) => {
 
 const NotFoundSource: React.FC = () => {
   const { slug } = Route.useParams();
-  return <NotFound title="list.not.found" data={slug} />;
+  return <NotFound title="source.not.found" data={slug} />;
 };
 
 export const Route = createFileRoute("/sources/$slug")({

@@ -245,10 +245,10 @@ impl Modify for SecurityAddon {
         );
         openapi.components = Some(components);
 
-        let scopes: [&str; 0] = [];
+        let scopes: Vec<String> = Vec::with_capacity(0);
         let data = vec![
-            SecurityRequirement::new("api_key", scopes),
-            SecurityRequirement::new("basic_auth", scopes),
+            SecurityRequirement::new("api_key", &scopes),
+            SecurityRequirement::new("basic_auth", &scopes),
         ];
         let unauthorized_response: RefOr<_> = ResponseBuilder::new()
             .description("Need to provide valid authentication")

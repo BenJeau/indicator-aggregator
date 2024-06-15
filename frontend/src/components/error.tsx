@@ -41,6 +41,7 @@ const ErrorComponent: React.FC<Props> = ({ info, error }) => {
       <div className="hidden h-[20rem] w-[20rem] flex-col gap-6 lg:flex xl:h-[30rem] xl:w-[30rem]">
         <img
           src={Image}
+          alt={t("this.is.fine.image.alt")}
           className="h-fit w-fit rounded-xl border border-black object-cover text-white shadow-xl dark:border-border"
         />
 

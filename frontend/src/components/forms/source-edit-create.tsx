@@ -496,7 +496,7 @@ const SourceEditCreate: React.FC<Props> = ({
                       <div className="flex gap-2">
                         <img
                           src={field.value ?? undefined}
-                          alt="favicon"
+                          alt={t("source.favicon.alt")}
                           style={{ imageRendering: "pixelated" }}
                           className={cn(
                             "h-8 w-8 rounded border shadow",

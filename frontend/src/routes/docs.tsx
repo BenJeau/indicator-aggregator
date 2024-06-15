@@ -195,6 +195,7 @@ const DocsComponents: React.FC = () => {
         <iframe
           sandbox=""
           src={`${config.rest_server_base_url}/docs`}
+          title={t("docs.swagger.ui")}
           width="100%"
           className="min-h-[80vh]"
         />

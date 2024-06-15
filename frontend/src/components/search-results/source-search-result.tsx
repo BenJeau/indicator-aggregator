@@ -9,11 +9,13 @@ import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 import config from "@/lib/config";
 import { sourceKindIconMapping } from "@/lib/data";
 import { Trans } from "@/components";
+import { useTranslation } from "@/i18n";
 
 const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
   data: { slug, name, description, enabled, providerId, url, favicon, kind },
 }) => {
   const [imgHasError, setImgHasError] = useState(true);
+  const { t } = useTranslation();
 
   const SourceKindIcon = sourceKindIconMapping[kind];
 
@@ -33,6 +35,7 @@ const SourceSearchResult: React.FC<ComponentSearchResultProps<Source>> = ({
               src={
                 favicon ?? `${config.rest_server_base_url}/favicon?url=${url}`
               }
+              alt={t("source.favicon.alt")}
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "hidden h-8 w-8 rounded border shadow",

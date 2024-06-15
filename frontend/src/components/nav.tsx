@@ -59,7 +59,7 @@ const Nav: React.FC<NavProps> = ({ links, isCollapsed }) => {
   const user = useAtomValue(userAtom);
 
   const canViewAnyLinks = links.some(
-    (link) => !("roles" in link) || userHasRoles(user!, link.roles),
+    (link) => !("roles" in link) || userHasRoles(user, link.roles),
   );
 
   if (!canViewAnyLinks) {
@@ -74,7 +74,7 @@ const Nav: React.FC<NavProps> = ({ links, isCollapsed }) => {
       <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
         {links
           .filter(
-            (link) => !("roles" in link) || userHasRoles(user!, link.roles),
+            (link) => !("roles" in link) || userHasRoles(user, link.roles),
           )
           .map((link, index) =>
             isCollapsed ? (

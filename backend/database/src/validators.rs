@@ -15,7 +15,7 @@ fn validate_hash(data: &str, expected_hash: Hash) -> bool {
 
 #[instrument]
 fn validate_domain(data: &str) -> bool {
-    data.split('.').count() > 1 && data.split('.').all(|section| !section.is_empty())
+    data.contains('.') && data.split('.').all(|section| !section.is_empty())
 }
 
 impl Indicator {

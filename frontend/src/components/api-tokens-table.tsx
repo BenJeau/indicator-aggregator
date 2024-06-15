@@ -216,7 +216,7 @@ const ApiTokensTable: React.FC<Props> = ({ apiTokens }) => {
                   <TableHead>
                     <Trans id="expires.at" />
                   </TableHead>
-                  <TableHead style={{ width: 110 }}></TableHead>
+                  <TableHead style={{ width: 110 }} />
                 </TableRow>
               </TableHeader>
               <TableBody className="text-xs">

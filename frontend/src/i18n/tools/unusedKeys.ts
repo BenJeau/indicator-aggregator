@@ -29,6 +29,7 @@ const findUnusedKeys = (filesContent: string[], searchableKeys: string[]) => {
       unusedKeys,
     );
     console.error("findUnusedKeys check: FAIL\n");
+    process.exit(1);
   } else {
     console.log("All keys in en_CA and fr_CA files are used in the project!");
     console.log("findUnusedKeys check: SUCCESS\n");

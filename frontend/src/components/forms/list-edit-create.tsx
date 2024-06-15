@@ -480,7 +480,7 @@ const ListEditCreate: React.FC<Props> = ({
                           <TableHead>
                             <Trans id="kind" />
                           </TableHead>
-                          <TableHead style={{ width: 50 }}></TableHead>
+                          <TableHead style={{ width: 50 }} />
                         </TableRow>
                       </TableHeader>
                       <TableBody>

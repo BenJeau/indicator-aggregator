@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Editor, Trans } from "@/components";
-import { TransId } from "@/i18n";
+import { TransId, useTranslation } from "@/i18n";
 
 import { PhishTank } from "./phishtank";
 
@@ -39,8 +39,7 @@ export const Source: React.FC<ReqestSSEData> = ({
   errors,
   hasSourceCode,
 }) => {
-  const entryCount =
-    data == undefined ? 0 : Array.isArray(data) ? data.length : 1;
+  const entryCount = !data ? 0 : Array.isArray(data) ? data.length : 1;
   const Content =
     source.name in InnerSource
       ? InnerSource[source.name as keyof typeof InnerSource].Component
@@ -48,6 +47,7 @@ export const Source: React.FC<ReqestSSEData> = ({
   const diff = dayjs(timing?.endedAt).diff(dayjs(timing?.startedAt));
 
   const [imgHasError, setImgHasError] = useState(true);
+  const { t } = useTranslation();
 
   const shouldHaveData = errors.length === 0 && hasSourceCode;
 
@@ -64,6 +64,7 @@ export const Source: React.FC<ReqestSSEData> = ({
         <div className="flex flex-1 items-center gap-4">
           <a href={source.url} target="_blank" rel="noopener noreferrer">
             <img
+              alt={t("source.favicon.alt")}
               src={
                 source.favicon ??
                 `${config.rest_server_base_url}/favicon?url=${source.url}`
@@ -92,8 +93,8 @@ export const Source: React.FC<ReqestSSEData> = ({
         <div className="flex flex-wrap items-center justify-end gap-2 gap-y-1">
           {errors.length !== 0 && (
             <span className="flex flex-col items-end text-xs italic">
-              {errors.map((error, i) => (
-                <span key={i}>
+              {errors.map((error) => (
+                <span key={error.kind}>
                   <Trans id={SourceErrorPreview[error.kind]} />
                 </span>
               ))}

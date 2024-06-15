@@ -14,7 +14,7 @@ const SourcesComponents: React.FC = () => {
   const requests = useSuspenseQuery(requestsQueryOptions);
   const { t } = useTranslation();
 
-  const userHasRequestCreateRole = userHasRoles(user!, ["request_create"]);
+  const userHasRequestCreateRole = userHasRoles(user, ["request_create"]);
 
   return (
     <GenericPanelSearch

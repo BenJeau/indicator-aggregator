@@ -30,7 +30,7 @@ export function providerSlugQueryOptions(slug: string) {
   return queryOptions({
     queryKey: ["providers", "slugs", slug],
     queryFn: async ({ signal }) =>
-      fetcher.get<string>(`/providers/slugs/${slug}`, {
+      await fetcher.get<string>(`/providers/slugs/${slug}`, {
         signal,
       }),
   });
@@ -42,7 +42,7 @@ export function providerQueryOptions<T extends undefined | string>(
   return queryOptions({
     queryKey: ["providers", providerId],
     queryFn: async ({ signal }) => {
-      if (providerId == undefined) {
+      if (!providerId) {
         return null;
       }
 

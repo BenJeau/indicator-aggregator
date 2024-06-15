@@ -8,11 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { ComponentSearchResultProps } from "@/components/generic-panel-search";
 import config from "@/lib/config";
 import { Trans } from "@/components";
+import { useTranslation } from "@/i18n";
 
 const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
   data: { slug, name, description, enabled, numSources, url, favicon },
 }) => {
   const [imgHasError, setImgHasError] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <Link
@@ -30,6 +32,7 @@ const ProviderSearchResult: React.FC<ComponentSearchResultProps<Provider>> = ({
               src={
                 favicon ?? `${config.rest_server_base_url}/favicon?url=${url}`
               }
+              alt={t("provider.favicon.alt")}
               style={{ imageRendering: "pixelated" }}
               className={cn(
                 "h-6 w-6 rounded border shadow",

@@ -25,7 +25,7 @@ export function userQueryOptions<T extends undefined | string>(userId: T) {
   return queryOptions({
     queryKey: ["users", userId],
     queryFn: async ({ signal }) => {
-      if (userId == undefined) {
+      if (!userId) {
         return null;
       }
 

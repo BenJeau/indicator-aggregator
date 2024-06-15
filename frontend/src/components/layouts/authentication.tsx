@@ -3,11 +3,13 @@ import { TrainFrontTunnel } from "lucide-react";
 
 import { Layouts, Trans } from "@/components";
 import { getRandomBackground } from "@/assets";
+import { useTranslation } from "@/i18n";
 
 export const Authentication: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const bg = useMemo(() => getRandomBackground(), []);
+  const { t } = useTranslation();
 
   return (
     <div className="relative grid h-[800px] flex-col items-center justify-center lg:max-w-none lg:grid-cols-5 lg:ps-4">
@@ -16,11 +18,13 @@ export const Authentication: React.FC<React.PropsWithChildren> = ({
           <img
             id="lowres-login-img"
             src={bg.small}
+            alt={t("login.image.blurry.alt")}
             className="absolute h-full flex-1 object-cover blur-xl"
           />
           <img
             id="login-img"
             src={bg.big}
+            alt={t("login.image.alt")}
             className="absolute h-full flex-1 object-cover opacity-0 blur-xl transition duration-1000 ease-out"
             style={{ transitionProperty: "filter" }}
             onLoad={() => {

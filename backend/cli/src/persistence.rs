@@ -1,6 +1,6 @@
 use std::{
     env::current_dir,
-    fs::{create_dir, File},
+    fs::{create_dir_all, File},
     io::Write,
     path::PathBuf,
 };
@@ -16,7 +16,7 @@ impl SourceFileWriter {
         let mut directory = current_dir().unwrap();
         directory.push(Local::now().naive_local().to_string());
 
-        create_dir(&directory).unwrap();
+        create_dir_all(&directory).unwrap();
 
         Self { directory }
     }

@@ -41,10 +41,16 @@ const RequestDataView: React.FC<Props> = ({ isFetching, data }) => {
 
       return [
         sourceWithoutErrors.sort((a, b) => {
-          const aDataLength =
-            a.data == undefined ? 0 : Array.isArray(a.data) ? a.data.length : 1;
-          const bDataLength =
-            b.data == undefined ? 0 : Array.isArray(b.data) ? b.data.length : 1;
+          const aDataLength = !a.data
+            ? 0
+            : Array.isArray(a.data)
+              ? a.data.length
+              : 1;
+          const bDataLength = !b.data
+            ? 0
+            : Array.isArray(b.data)
+              ? b.data.length
+              : 1;
 
           if (aDataLength > bDataLength) {
             return -1;

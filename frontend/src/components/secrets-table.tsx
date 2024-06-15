@@ -144,7 +144,7 @@ const SecretsTable: React.FC<Props> = ({ secrets }) => {
                   >
                     <Trans id="sources" />
                   </TableHead>
-                  <TableHead style={{ width: 80 }}></TableHead>
+                  <TableHead style={{ width: 80 }} />
                 </TableRow>
               </TableHeader>
               <TableBody className="text-xs">

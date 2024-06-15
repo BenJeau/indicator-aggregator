@@ -142,7 +142,7 @@ export const Layout: React.FC = () => {
               },
             ]}
           />
-          {userHasAnyRoles(user!, ["request_create", "request_view"]) && (
+          {userHasAnyRoles(user, ["request_create", "request_view"]) && (
             <div className={cn("mx-4", isCollapsed && "mx-2")}>
               <Separator />
             </div>

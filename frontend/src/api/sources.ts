@@ -32,7 +32,7 @@ export function sourceSlugQueryOptions(slug: string) {
   return queryOptions({
     queryKey: ["sources", "slugs", slug],
     queryFn: async ({ signal }) =>
-      fetcher.get<string>(`/sources/slugs/${slug}`, {
+      await fetcher.get<string>(`/sources/slugs/${slug}`, {
         signal,
       }),
   });

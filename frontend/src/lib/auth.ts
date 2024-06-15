@@ -33,8 +33,8 @@ export const beforeLoadAuthenticated: BeforeLoadFn =
           toast.error(
             `You don't have the required roles to access the page ${window.location.pathname}`,
             {
-              id: "no-roles" + missingRoles,
-              description: "Missing roles: " + missingRoles,
+              id: `no-roles${missingRoles}`,
+              description: `Missing roles: ${missingRoles}`,
             },
           );
         }
@@ -60,8 +60,8 @@ export function parseJwt<T>(token: string): T {
   return JSON.parse(jsonPayload) as T;
 }
 
-export const userHasRoles = (user: User, roles?: string[]) =>
-  !roles || roles.every((role) => user.roles.includes(role));
+export const userHasRoles = (user?: User, roles?: string[]) =>
+  !roles || roles.every((role) => user?.roles.includes(role));
 
-export const userHasAnyRoles = (user: User, roles?: string[]) =>
-  !roles || roles.some((role) => user.roles.includes(role));
+export const userHasAnyRoles = (user?: User, roles?: string[]) =>
+  !roles || roles.some((role) => user?.roles.includes(role));
