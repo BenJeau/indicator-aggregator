@@ -13,7 +13,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 RUN SQLX_OFFLINE=true cargo build --release
 
-FROM debian:bookworm-20240408-slim
+FROM debian:12.6-slim
 RUN apt-get update && apt-get install -y libpq-dev ca-certificates
 COPY --from=builder /app/target/release/server /
 
